@@ -15,6 +15,7 @@ struct MapView: UIViewRepresentable {
   func makeUIView(context: Context) -> AGSMapView {
     // Set static properties on UIView
     let view = AGSMapView()
+    view.isAttributionTextVisible = false
     return view
   }
 
