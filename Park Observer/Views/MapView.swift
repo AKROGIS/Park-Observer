@@ -12,8 +12,11 @@ import UIKit
 
 struct MapView: UIViewRepresentable {
 
+  @ObservedObject var mapViewController = MapViewController()
+
   func makeUIView(context: Context) -> AGSMapView {
     // Set static properties on UIView
+    mapViewController.loadDefaultMap()
     let view = AGSMapView()
     view.isAttributionTextVisible = false
     return view
@@ -21,8 +24,7 @@ struct MapView: UIViewRepresentable {
 
   func updateUIView(_ view: AGSMapView, context: Context) {
     // Set dynamic properties on UIView
-    let map = AGSMap(basemap: .imageryWithLabels())
-    view.map = map
+    view.map = mapViewController.map
   }
 
 }

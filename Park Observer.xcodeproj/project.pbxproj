@@ -18,6 +18,7 @@
 		74716624243C422700A9C960 /* ArcGIS.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 74716623243C422700A9C960 /* ArcGIS.framework */; };
 		74716625243C422700A9C960 /* ArcGIS.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 74716623243C422700A9C960 /* ArcGIS.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		74716629243C487300A9C960 /* MapView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 74716628243C487300A9C960 /* MapView.swift */; };
+		7471662B243C4AF700A9C960 /* MapViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7471662A243C4AF700A9C960 /* MapViewController.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -69,6 +70,7 @@
 		74716620243C41C900A9C960 /* Adding ArcGIS.md */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = net.daringfireball.markdown; path = "Adding ArcGIS.md"; sourceTree = "<group>"; };
 		74716623243C422700A9C960 /* ArcGIS.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = ArcGIS.framework; path = ../../Library/SDKs/ArcGIS/iOS/Frameworks/Dynamic/ArcGIS.framework; sourceTree = "<group>"; };
 		74716628243C487300A9C960 /* MapView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MapView.swift; sourceTree = "<group>"; };
+		7471662A243C4AF700A9C960 /* MapViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MapViewController.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -176,6 +178,7 @@
 			isa = PBXGroup;
 			children = (
 				747165EB243C37A800A9C960 /* AppDelegate.swift */,
+				7471662A243C4AF700A9C960 /* MapViewController.swift */,
 				747165ED243C37A800A9C960 /* SceneDelegate.swift */,
 			);
 			path = Controllers;
@@ -365,6 +368,7 @@
 				747165EC243C37A800A9C960 /* AppDelegate.swift in Sources */,
 				74716629243C487300A9C960 /* MapView.swift in Sources */,
 				747165EE243C37A800A9C960 /* SceneDelegate.swift in Sources */,
+				7471662B243C4AF700A9C960 /* MapViewController.swift in Sources */,
 				747165F0243C37A800A9C960 /* ContentView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
