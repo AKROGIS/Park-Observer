@@ -15,6 +15,9 @@
 		747165F8243C37AA00A9C960 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 747165F6243C37AA00A9C960 /* LaunchScreen.storyboard */; };
 		74716603243C37AA00A9C960 /* Park_ObserverTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 74716602243C37AA00A9C960 /* Park_ObserverTests.swift */; };
 		7471660E243C37AA00A9C960 /* Park_ObserverUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7471660D243C37AA00A9C960 /* Park_ObserverUITests.swift */; };
+		74716624243C422700A9C960 /* ArcGIS.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 74716623243C422700A9C960 /* ArcGIS.framework */; };
+		74716625243C422700A9C960 /* ArcGIS.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 74716623243C422700A9C960 /* ArcGIS.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		74716629243C487300A9C960 /* MapView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 74716628243C487300A9C960 /* MapView.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -34,6 +37,20 @@
 		};
 /* End PBXContainerItemProxy section */
 
+/* Begin PBXCopyFilesBuildPhase section */
+		74716626243C422700A9C960 /* Embed Frameworks */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 10;
+			files = (
+				74716625243C422700A9C960 /* ArcGIS.framework in Embed Frameworks */,
+			);
+			name = "Embed Frameworks";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXCopyFilesBuildPhase section */
+
 /* Begin PBXFileReference section */
 		747165E8243C37A800A9C960 /* Park Observer.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Park Observer.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		747165EB243C37A800A9C960 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
@@ -49,6 +66,9 @@
 		74716609243C37AA00A9C960 /* Park ObserverUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "Park ObserverUITests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
 		7471660D243C37AA00A9C960 /* Park_ObserverUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Park_ObserverUITests.swift; sourceTree = "<group>"; };
 		7471660F243C37AA00A9C960 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		74716620243C41C900A9C960 /* Adding ArcGIS.md */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = net.daringfireball.markdown; path = "Adding ArcGIS.md"; sourceTree = "<group>"; };
+		74716623243C422700A9C960 /* ArcGIS.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = ArcGIS.framework; path = ../../Library/SDKs/ArcGIS/iOS/Frameworks/Dynamic/ArcGIS.framework; sourceTree = "<group>"; };
+		74716628243C487300A9C960 /* MapView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MapView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -56,6 +76,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				74716624243C422700A9C960 /* ArcGIS.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -83,6 +104,7 @@
 				74716601243C37AA00A9C960 /* Park ObserverTests */,
 				7471660C243C37AA00A9C960 /* Park ObserverUITests */,
 				747165E9243C37A800A9C960 /* Products */,
+				74716622243C422700A9C960 /* Frameworks */,
 			);
 			sourceTree = "<group>";
 		};
@@ -145,6 +167,7 @@
 			isa = PBXGroup;
 			children = (
 				747165EF243C37A800A9C960 /* ContentView.swift */,
+				74716628243C487300A9C960 /* MapView.swift */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -172,8 +195,17 @@
 		7471661F243C394400A9C960 /* Documentation */ = {
 			isa = PBXGroup;
 			children = (
+				74716620243C41C900A9C960 /* Adding ArcGIS.md */,
 			);
 			path = Documentation;
+			sourceTree = "<group>";
+		};
+		74716622243C422700A9C960 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				74716623243C422700A9C960 /* ArcGIS.framework */,
+			);
+			name = Frameworks;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -186,6 +218,8 @@
 				747165E4243C37A800A9C960 /* Sources */,
 				747165E5243C37A800A9C960 /* Frameworks */,
 				747165E6243C37A800A9C960 /* Resources */,
+				74716626243C422700A9C960 /* Embed Frameworks */,
+				74716627243C424E00A9C960 /* Run Script - Strip ArcGIS Framework */,
 			);
 			buildRules = (
 			);
@@ -302,12 +336,34 @@
 		};
 /* End PBXResourcesBuildPhase section */
 
+/* Begin PBXShellScriptBuildPhase section */
+		74716627243C424E00A9C960 /* Run Script - Strip ArcGIS Framework */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+			);
+			name = "Run Script - Strip ArcGIS Framework";
+			outputFileListPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "bash \"${BUILT_PRODUCTS_DIR}/${FRAMEWORKS_FOLDER_PATH}/ArcGIS.framework/strip-frameworks.sh\"\n\n";
+		};
+/* End PBXShellScriptBuildPhase section */
+
 /* Begin PBXSourcesBuildPhase section */
 		747165E4243C37A800A9C960 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
 				747165EC243C37A800A9C960 /* AppDelegate.swift in Sources */,
+				74716629243C487300A9C960 /* MapView.swift in Sources */,
 				747165EE243C37A800A9C960 /* SceneDelegate.swift in Sources */,
 				747165F0243C37A800A9C960 /* ContentView.swift in Sources */,
 			);
@@ -478,6 +534,10 @@
 				DEVELOPMENT_ASSET_PATHS = "\"Park Observer/Assets/Preview Content\"";
 				DEVELOPMENT_TEAM = F3CMMML9FD;
 				ENABLE_PREVIEWS = YES;
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(USER_LIBRARY_DIR)/SDKs/ArcGIS/iOS/Frameworks/Dynamic",
+				);
 				INFOPLIST_FILE = "Park Observer/Assets/Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
@@ -498,6 +558,10 @@
 				DEVELOPMENT_ASSET_PATHS = "\"Park Observer/Assets/Preview Content\"";
 				DEVELOPMENT_TEAM = F3CMMML9FD;
 				ENABLE_PREVIEWS = YES;
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(USER_LIBRARY_DIR)/SDKs/ArcGIS/iOS/Frameworks/Dynamic",
+				);
 				INFOPLIST_FILE = "Park Observer/Assets/Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
