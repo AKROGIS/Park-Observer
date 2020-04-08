@@ -127,10 +127,11 @@
 		747165EA243C37A800A9C960 /* Park Observer */ = {
 			isa = PBXGroup;
 			children = (
-				7471661E243C393B00A9C960 /* Assets */,
 				7471661D243C392E00A9C960 /* Controllers */,
 				7471661B243C391100A9C960 /* Models */,
 				7471661C243C391E00A9C960 /* Views */,
+				74716634243E844C00A9C960 /* Utilities */,
+				7471661E243C393B00A9C960 /* Assets */,
 				7471661F243C394400A9C960 /* Documentation */,
 			);
 			path = "Park Observer";
@@ -183,7 +184,6 @@
 			isa = PBXGroup;
 			children = (
 				747165EB243C37A800A9C960 /* AppDelegate.swift */,
-				7471662E243D898A00A9C960 /* LicenseManager.swift */,
 				7471662A243C4AF700A9C960 /* MapViewController.swift */,
 				747165ED243C37A800A9C960 /* SceneDelegate.swift */,
 			);
@@ -215,6 +215,14 @@
 				74716623243C422700A9C960 /* ArcGIS.framework */,
 			);
 			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		74716634243E844C00A9C960 /* Utilities */ = {
+			isa = PBXGroup;
+			children = (
+				7471662E243D898A00A9C960 /* LicenseManager.swift */,
+			);
+			path = Utilities;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
