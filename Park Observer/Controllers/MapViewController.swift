@@ -13,6 +13,7 @@ class MapViewController: ObservableObject {
 
   weak var mapView: AGSMapView?
   var locationDisplayOn: Bool = false
+  @Published var autoPanMode: AGSLocationDisplayAutoPanMode = .off
   @Published var map = AGSMap()
 
   func displayLocation(for mapView: AGSMapView) {
@@ -27,6 +28,24 @@ class MapViewController: ObservableObject {
   }
 
   // TODO: Set up a delegate to monitor changes in location authorization
+
+  func observe(_ mapView: AGSMapView) {
+    self.mapView = mapView
+    observeAutoPanMode(from: mapView)
+  }
+
+  private func observeAutoPanMode(from mapView: AGSMapView) {
+    // This change handler is not called when the mapView owner sets the property.
+    // The runtime will typically call this when it turns off autoPan mode because the user
+    // panned, rotated or zoomed the map.
+    mapView.locationDisplay.autoPanModeChangedHandler = { autoPanMode in
+      // Important: We do not know when it will be called.
+      // Needed to postpone modifying view state until view is done updating.
+      DispatchQueue.main.async {
+        self.autoPanMode = autoPanMode
+      }
+    }
+  }
 
   func loadDefaultMap() {
     // You need to copy the tile package in the document directory of the device or simulator

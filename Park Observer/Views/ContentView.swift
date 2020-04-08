@@ -9,8 +9,17 @@
 import SwiftUI
 
 struct ContentView: View {
+  @ObservedObject var controller: MapViewController = MapViewController()
+
   var body: some View {
-    MapView().edgesIgnoringSafeArea(.all)
+    VStack {
+      Button(action: {
+        self.controller.autoPanMode = .compassNavigation
+      }) {
+        Text("\(controller.autoPanMode.rawValue)")
+      }
+      MapView(mapViewController: controller).edgesIgnoringSafeArea(.all)
+    }
   }
 }
 
