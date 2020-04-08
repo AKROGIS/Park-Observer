@@ -11,7 +11,22 @@ import Foundation
 
 class MapViewController: ObservableObject {
 
+  weak var mapView: AGSMapView?
+  var locationDisplayOn: Bool = false
   @Published var map = AGSMap()
+
+  func displayLocation(for mapView: AGSMapView) {
+    self.mapView = mapView
+    mapView.locationDisplay.start { error in
+      if let error = error {
+        // No need to alert; failure is due to user choosing to disallow location services
+        print("Error starting ArcGIS location services: \(error.localizedDescription)")
+      }
+      self.locationDisplayOn = mapView.locationDisplay.started
+    }
+  }
+
+  // TODO: Set up a delegate to monitor changes in location authorization
 
   func loadDefaultMap() {
     // You need to copy the tile package in the document directory of the device or simulator

@@ -58,5 +58,9 @@
 		<string>UIInterfaceOrientationLandscapeLeft</string>
 		<string>UIInterfaceOrientationLandscapeRight</string>
 	</array>
+	<key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
+	<string>Observations cannot be recorded without a location. &quot;Allow Always&quot; will enable track logging in the background. Park Observer will not share your location with any server or services.</string>
+	<key>NSLocationWhenInUseUsageDescription</key>
+	<string>Observations cannot be recorded without a location. Park Observer will not share your location with any server or services.</string>
 </dict>
 </plist>
