@@ -12,7 +12,7 @@ import Foundation
 class MapViewController: ObservableObject {
 
   weak var mapView: AGSMapView?
-  var locationDisplayOn: Bool = false
+  @Published var locationDisplayOn: Bool = false
   @Published var autoPanMode: AGSLocationDisplayAutoPanMode = .off
   @Published var map = AGSMap()
 

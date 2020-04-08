@@ -20,6 +20,7 @@
 		74716629243C487300A9C960 /* MapView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 74716628243C487300A9C960 /* MapView.swift */; };
 		7471662B243C4AF700A9C960 /* MapViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7471662A243C4AF700A9C960 /* MapViewController.swift */; };
 		7471662F243D898A00A9C960 /* LicenseManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7471662E243D898A00A9C960 /* LicenseManager.swift */; };
+		74716633243E5B4300A9C960 /* AutoPanModeButtonView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 74716632243E5B4200A9C960 /* AutoPanModeButtonView.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -73,6 +74,7 @@
 		74716628243C487300A9C960 /* MapView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MapView.swift; sourceTree = "<group>"; };
 		7471662A243C4AF700A9C960 /* MapViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MapViewController.swift; sourceTree = "<group>"; };
 		7471662E243D898A00A9C960 /* LicenseManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LicenseManager.swift; sourceTree = "<group>"; };
+		74716632243E5B4200A9C960 /* AutoPanModeButtonView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AutoPanModeButtonView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -170,6 +172,7 @@
 		7471661C243C391E00A9C960 /* Views */ = {
 			isa = PBXGroup;
 			children = (
+				74716632243E5B4200A9C960 /* AutoPanModeButtonView.swift */,
 				747165EF243C37A800A9C960 /* ContentView.swift */,
 				74716628243C487300A9C960 /* MapView.swift */,
 			);
@@ -368,6 +371,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				74716633243E5B4300A9C960 /* AutoPanModeButtonView.swift in Sources */,
 				747165EC243C37A800A9C960 /* AppDelegate.swift in Sources */,
 				7471662F243D898A00A9C960 /* LicenseManager.swift in Sources */,
 				74716629243C487300A9C960 /* MapView.swift in Sources */,

@@ -13,10 +13,8 @@ struct ContentView: View {
 
   var body: some View {
     VStack {
-      Button(action: {
-        self.controller.autoPanMode = .compassNavigation
-      }) {
-        Text("\(controller.autoPanMode.rawValue)")
+      if controller.locationDisplayOn {
+        AutoPanModeButtonView(autoPanMode: $controller.autoPanMode)
       }
       MapView(mapViewController: controller).edgesIgnoringSafeArea(.all)
     }
