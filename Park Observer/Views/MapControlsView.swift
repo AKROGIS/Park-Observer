@@ -15,11 +15,12 @@ struct MapControlsView: View {
     HStack {
       ScalebarView(mapViewController: mapViewController)
         .frame(width: 200.0, height: 36)
-      // Important!  CompassView must be instantiated after MapView
-      //   Compass initiation requires a non-nil AGSMapView, which is created in MapView
       Spacer()
-      CompassView(mapViewController: mapViewController)
-        .frame(width: 30.0, height: 30)
+      if (mapViewController.rotation != 0.0) {
+        CompassView(rotation: mapViewController.rotation, action: {
+          self.mapViewController.mapView?.setViewpointRotation(0, completion: nil)
+        }).transition(.opacity)
+      }
       if mapViewController.locationDisplayOn {
         AutoPanModeButtonView(autoPanMode: $mapViewController.autoPanMode)
           .padding().background(Color.white)

@@ -8,27 +8,24 @@
 
 import SwiftUI
 
-final class CompassView: UIViewRepresentable {
+struct CompassView: View {
+  // I am not using bindings because I need to avoid a race condition with the
+  // rotation being set in the MapView and the CompassView.
 
-  @ObservedObject var mapViewController: MapViewController
+  var rotation: Double
+  var action: () -> Void
 
-  init(mapViewController: MapViewController) {
-    self.mapViewController = mapViewController
+  var body: some View {
+    Button(action: action) {
+      Image("CompassIcon").rotationEffect(.degrees(-rotation))
+    }
+    .buttonStyle(PlainButtonStyle())
   }
 
-  func makeUIView(context: Context) -> Compass {
-    // Set static properties on UIView
-    //FIXME: Remove forced unwrap (!)
-    let compass = Compass(mapView: mapViewController.mapView!)
-    return compass
-  }
-
-  func updateUIView(_ compass: Compass, context: Context) {
-  }
 }
 
 struct CompassView_Previews: PreviewProvider {
   static var previews: some View {
-    CompassView(mapViewController: MapViewController())
+    CompassView(rotation: 15.0, action: {})
   }
 }
