@@ -21,6 +21,11 @@
 		7471662B243C4AF700A9C960 /* MapViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7471662A243C4AF700A9C960 /* MapViewController.swift */; };
 		7471662F243D898A00A9C960 /* LicenseManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7471662E243D898A00A9C960 /* LicenseManager.swift */; };
 		74716633243E5B4300A9C960 /* AutoPanModeButtonView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 74716632243E5B4200A9C960 /* AutoPanModeButtonView.swift */; };
+		74716638243E854800A9C960 /* Compass.swift in Sources */ = {isa = PBXBuildFile; fileRef = 74716635243E854700A9C960 /* Compass.swift */; };
+		74716639243E854800A9C960 /* Coalescer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 74716636243E854700A9C960 /* Coalescer.swift */; };
+		7471663A243E854800A9C960 /* Scalebar.swift in Sources */ = {isa = PBXBuildFile; fileRef = 74716637243E854800A9C960 /* Scalebar.swift */; };
+		7471663C243E858700A9C960 /* CompassView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7471663B243E858700A9C960 /* CompassView.swift */; };
+		7471663E243E859A00A9C960 /* ScalebarView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7471663D243E859A00A9C960 /* ScalebarView.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -75,6 +80,11 @@
 		7471662A243C4AF700A9C960 /* MapViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MapViewController.swift; sourceTree = "<group>"; };
 		7471662E243D898A00A9C960 /* LicenseManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LicenseManager.swift; sourceTree = "<group>"; };
 		74716632243E5B4200A9C960 /* AutoPanModeButtonView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AutoPanModeButtonView.swift; sourceTree = "<group>"; };
+		74716635243E854700A9C960 /* Compass.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Compass.swift; sourceTree = "<group>"; };
+		74716636243E854700A9C960 /* Coalescer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Coalescer.swift; sourceTree = "<group>"; };
+		74716637243E854800A9C960 /* Scalebar.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Scalebar.swift; sourceTree = "<group>"; };
+		7471663B243E858700A9C960 /* CompassView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CompassView.swift; sourceTree = "<group>"; };
+		7471663D243E859A00A9C960 /* ScalebarView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScalebarView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -174,8 +184,12 @@
 			isa = PBXGroup;
 			children = (
 				74716632243E5B4200A9C960 /* AutoPanModeButtonView.swift */,
+				74716635243E854700A9C960 /* Compass.swift */,
+				7471663B243E858700A9C960 /* CompassView.swift */,
 				747165EF243C37A800A9C960 /* ContentView.swift */,
 				74716628243C487300A9C960 /* MapView.swift */,
+				74716637243E854800A9C960 /* Scalebar.swift */,
+				7471663D243E859A00A9C960 /* ScalebarView.swift */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -220,6 +234,7 @@
 		74716634243E844C00A9C960 /* Utilities */ = {
 			isa = PBXGroup;
 			children = (
+				74716636243E854700A9C960 /* Coalescer.swift */,
 				7471662E243D898A00A9C960 /* LicenseManager.swift */,
 			);
 			path = Utilities;
@@ -383,9 +398,14 @@
 				747165EC243C37A800A9C960 /* AppDelegate.swift in Sources */,
 				7471662F243D898A00A9C960 /* LicenseManager.swift in Sources */,
 				74716629243C487300A9C960 /* MapView.swift in Sources */,
+				7471663C243E858700A9C960 /* CompassView.swift in Sources */,
+				7471663E243E859A00A9C960 /* ScalebarView.swift in Sources */,
 				747165EE243C37A800A9C960 /* SceneDelegate.swift in Sources */,
 				7471662B243C4AF700A9C960 /* MapViewController.swift in Sources */,
+				74716638243E854800A9C960 /* Compass.swift in Sources */,
 				747165F0243C37A800A9C960 /* ContentView.swift in Sources */,
+				7471663A243E854800A9C960 /* Scalebar.swift in Sources */,
+				74716639243E854800A9C960 /* Coalescer.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
