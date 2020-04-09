@@ -15,6 +15,7 @@ class MapViewController: ObservableObject {
   @Published var locationDisplayOn: Bool = false
   @Published var autoPanMode: AGSLocationDisplayAutoPanMode = .off
   @Published var map = AGSMap()
+  @Published var rotation = 0.0
 
   func displayLocation(for mapView: AGSMapView) {
     self.mapView = mapView
@@ -32,6 +33,7 @@ class MapViewController: ObservableObject {
   func observe(_ mapView: AGSMapView) {
     self.mapView = mapView
     observeAutoPanMode(from: mapView)
+    observeRotation(from: mapView)
   }
 
   private func observeAutoPanMode(from mapView: AGSMapView) {
@@ -43,6 +45,21 @@ class MapViewController: ObservableObject {
       // Needed to postpone modifying view state until view is done updating.
       DispatchQueue.main.async {
         self.autoPanMode = autoPanMode
+      }
+    }
+  }
+
+  // Important!  If we do not retain the KeyValueObserver, it will be immediately disposed.
+  // This also means we do not need to dispose of it, as it will automatically happen.
+  private var rotationObservation: NSKeyValueObservation?
+
+  private func observeRotation(from mapView: AGSMapView) {
+    rotationObservation = mapView.observe(\.rotation, options: .new) { [weak self] (_, change) in
+      guard let rotation = change.newValue else {
+        return
+      }
+      DispatchQueue.main.async {
+        self?.rotation = rotation
       }
     }
   }
