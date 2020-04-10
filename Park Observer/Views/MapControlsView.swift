@@ -23,10 +23,9 @@ struct MapControlsView: View {
             self.mapViewController.mapView?.setViewpointRotation(0, completion: nil)
           }).transition(.opacity)
       }
-      if mapViewController.locationDisplayOn {
-        AutoPanModeButtonView(autoPanMode: $mapViewController.autoPanMode)
-      }
-      LocationDisplayButtonView(locationDisplayOn: $mapViewController.locationDisplayOn)
+      LocationButtonView(
+        buttonState: $mapViewController.locationButtonState,
+        locationAuthorized: $mapViewController.locationAuthorized)
     }
   }
 

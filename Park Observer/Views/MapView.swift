@@ -38,8 +38,15 @@ final class MapView: UIViewRepresentable {
     if view.map != mapViewController.map {
       view.map = mapViewController.map
     }
-    if view.locationDisplay.autoPanMode != mapViewController.autoPanMode {
-      view.locationDisplay.autoPanMode = mapViewController.autoPanMode
+    switch mapViewController.locationButtonState {
+    case .on(let autoPanMode):
+      if view.locationDisplay.autoPanMode != autoPanMode {
+        view.locationDisplay.autoPanMode = autoPanMode
+      }
+      break
+    case .off:
+      if view.locationDisplay.started { view.locationDisplay.stop() }
+      break
     }
   }
 
