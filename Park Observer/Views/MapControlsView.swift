@@ -25,6 +25,7 @@ struct MapControlsView: View {
         AutoPanModeButtonView(autoPanMode: $mapViewController.autoPanMode)
           .padding().background(Color.white)
       }
+      LocationDisplayButtonView(locationDisplayOn: $mapViewController.locationDisplayOn)
     }
   }
   

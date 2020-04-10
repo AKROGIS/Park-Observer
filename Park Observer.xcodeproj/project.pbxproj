@@ -26,6 +26,7 @@
 		7471663C243E858700A9C960 /* CompassView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7471663B243E858700A9C960 /* CompassView.swift */; };
 		7471663E243E859A00A9C960 /* ScalebarView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7471663D243E859A00A9C960 /* ScalebarView.swift */; };
 		74716640243F933700A9C960 /* MapControlsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7471663F243F933700A9C960 /* MapControlsView.swift */; };
+		74716644243FF0AB00A9C960 /* LocationDisplayButtonView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 74716643243FF0AB00A9C960 /* LocationDisplayButtonView.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -85,6 +86,7 @@
 		7471663B243E858700A9C960 /* CompassView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CompassView.swift; sourceTree = "<group>"; };
 		7471663D243E859A00A9C960 /* ScalebarView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScalebarView.swift; sourceTree = "<group>"; };
 		7471663F243F933700A9C960 /* MapControlsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MapControlsView.swift; sourceTree = "<group>"; };
+		74716643243FF0AB00A9C960 /* LocationDisplayButtonView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocationDisplayButtonView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -186,6 +188,7 @@
 				74716632243E5B4200A9C960 /* AutoPanModeButtonView.swift */,
 				7471663B243E858700A9C960 /* CompassView.swift */,
 				747165EF243C37A800A9C960 /* ContentView.swift */,
+				74716643243FF0AB00A9C960 /* LocationDisplayButtonView.swift */,
 				7471663F243F933700A9C960 /* MapControlsView.swift */,
 				74716628243C487300A9C960 /* MapView.swift */,
 				74716637243E854800A9C960 /* Scalebar.swift */,
@@ -401,6 +404,7 @@
 				7471663C243E858700A9C960 /* CompassView.swift in Sources */,
 				7471663E243E859A00A9C960 /* ScalebarView.swift in Sources */,
 				747165EE243C37A800A9C960 /* SceneDelegate.swift in Sources */,
+				74716644243FF0AB00A9C960 /* LocationDisplayButtonView.swift in Sources */,
 				74716640243F933700A9C960 /* MapControlsView.swift in Sources */,
 				7471662B243C4AF700A9C960 /* MapViewController.swift in Sources */,
 				747165F0243C37A800A9C960 /* ContentView.swift in Sources */,
