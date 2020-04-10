@@ -23,7 +23,6 @@ struct MapControlsView: View {
       }
       if mapViewController.locationDisplayOn {
         AutoPanModeButtonView(autoPanMode: $mapViewController.autoPanMode)
-          .padding().background(Color.white)
       }
       LocationDisplayButtonView(locationDisplayOn: $mapViewController.locationDisplayOn)
     }

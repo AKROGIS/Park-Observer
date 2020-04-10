@@ -15,8 +15,10 @@ struct AutoPanModeButtonView: View {
   var body: some View {
     Button(action: toggle) {
       Image(systemName: imageName)
-    }.buttonStyle(PlainButtonStyle())
-      .foregroundColor(.primary)
+    }
+      .padding()
+      .background(Color(.systemBackground))
+      .clipShape(Circle())
   }
 
   func toggle() {
