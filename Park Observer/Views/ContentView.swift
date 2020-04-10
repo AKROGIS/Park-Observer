@@ -14,7 +14,7 @@ struct ContentView: View {
   var body: some View {
     ZStack(alignment: .topTrailing) {
       MapView(mapViewController: controller).edgesIgnoringSafeArea(.all)
-      MapControlsView(mapViewController: controller).padding([.leading,.trailing], 20.0)
+      MapControlsView(mapViewController: controller).padding([.leading, .trailing], 20.0)
     }
   }
 }

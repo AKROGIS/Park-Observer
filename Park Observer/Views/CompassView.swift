@@ -19,7 +19,7 @@ struct CompassView: View {
     Button(action: action) {
       Image("CompassIcon").rotationEffect(.degrees(-rotation))
     }
-    .buttonStyle(PlainButtonStyle())
+      .buttonStyle(PlainButtonStyle())
   }
 
 }

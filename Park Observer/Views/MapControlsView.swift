@@ -16,10 +16,12 @@ struct MapControlsView: View {
       ScalebarView(mapViewController: mapViewController)
         .frame(width: 200.0, height: 36)
       Spacer()
-      if (mapViewController.rotation != 0.0) {
-        CompassView(rotation: mapViewController.rotation, action: {
-          self.mapViewController.mapView?.setViewpointRotation(0, completion: nil)
-        }).transition(.opacity)
+      if mapViewController.rotation != 0.0 {
+        CompassView(
+          rotation: mapViewController.rotation,
+          action: {
+            self.mapViewController.mapView?.setViewpointRotation(0, completion: nil)
+          }).transition(.opacity)
       }
       if mapViewController.locationDisplayOn {
         AutoPanModeButtonView(autoPanMode: $mapViewController.autoPanMode)
@@ -27,7 +29,7 @@ struct MapControlsView: View {
       LocationDisplayButtonView(locationDisplayOn: $mapViewController.locationDisplayOn)
     }
   }
-  
+
 }
 
 struct MapDashboardView_Previews: PreviewProvider {
