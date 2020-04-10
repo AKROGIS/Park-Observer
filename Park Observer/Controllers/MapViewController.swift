@@ -11,27 +11,51 @@ import Foundation
 
 class MapViewController: ObservableObject {
 
-  weak var mapView: AGSMapView?
-  @Published var locationDisplayOn: Bool = false
+  weak var mapView: AGSMapView? {
+    didSet { hookupMapView() }
+  }
+
+  @Published var locationDisplayOn: Bool = false {
+    didSet { setLocationDisplay() }
+  }
+
   @Published var autoPanMode: AGSLocationDisplayAutoPanMode = .off
   @Published var map = AGSMap()
   @Published var rotation = 0.0
 
-  func displayLocation(for mapView: AGSMapView) {
-    self.mapView = mapView
-    mapView.locationDisplay.start { error in
-      if let error = error {
-        // No need to alert; failure is due to user choosing to disallow location services
-        print("Error starting ArcGIS location services: \(error.localizedDescription)")
+  func hookupMapView() {
+    guard let mapView = mapView else {
+      print("Error: mapView was set to nil; Cant hook it up to the controller")
+      return
+    }
+    loadDefaultMap()
+    locationDisplayOn = true
+    startObserving(mapView)
+  }
+
+  func setLocationDisplay() {
+    guard let mapView = self.mapView else {
+      locationDisplayOn = false
+      return
+    }
+    if locationDisplayOn && !mapView.locationDisplay.started {
+      mapView.locationDisplay.start { error in
+        if let error = error {
+          // No need to alert; failure is due to user choosing to disallow location services
+          print("Error starting ArcGIS location services: \(error.localizedDescription)")
+        }
+        self.locationDisplayOn = mapView.locationDisplay.started
       }
-      self.locationDisplayOn = mapView.locationDisplay.started
+      return
+    }
+    if !locationDisplayOn && mapView.locationDisplay.started {
+      mapView.locationDisplay.stop()
     }
   }
 
   // TODO: Set up a delegate to monitor changes in location authorization
 
-  func observe(_ mapView: AGSMapView) {
-    self.mapView = mapView
+  func startObserving(_ mapView: AGSMapView) {
     observeAutoPanMode(from: mapView)
     observeRotation(from: mapView)
   }

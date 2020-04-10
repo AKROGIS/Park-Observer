@@ -28,9 +28,7 @@ final class MapView: UIViewRepresentable {
     // Set static properties on UIView
     let view = AGSMapView()
     view.isAttributionTextVisible = false
-    mapViewController.loadDefaultMap()
-    mapViewController.displayLocation(for: view)
-    mapViewController.observe(view)
+    mapViewController.mapView = view
     return view
   }
 
