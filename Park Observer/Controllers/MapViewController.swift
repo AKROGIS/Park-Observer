@@ -17,7 +17,7 @@ class MapViewController: ObservableObject {
   @Published var map = AGSMap()
   @Published var rotation = 0.0 {
     didSet {
-      if oldValue != rotation {
+      if fabs(oldValue - rotation) > 0.1 {
         print("Saving new rotation: \(rotation)")
         Defaults.mapRotation.write(rotation)
       }
@@ -27,7 +27,7 @@ class MapViewController: ObservableObject {
   //This is not published, but could be to support a scalebar in SwiftUI
   private var scale = 0.0 {
     didSet {
-      if oldValue != scale {
+      if fabs(oldValue - scale) > 1 {
         print("Saving new scale: \(scale)")
         Defaults.mapScale.write(scale)
       }
@@ -36,11 +36,11 @@ class MapViewController: ObservableObject {
 
   private var center = CLLocationCoordinate2D() {
     didSet {
-      if oldValue.latitude != center.latitude {
+      if fabs(oldValue.latitude - center.latitude) > 0.000001 {
         print("Saving new latitude: \(center.latitude)")
         Defaults.mapCenterLat.write(center.latitude)
       }
-      if oldValue.longitude != center.longitude {
+      if fabs(oldValue.longitude - center.longitude) > 0.000001 {
         print("Saving new longitude: \(center.longitude)")
         Defaults.mapCenterLon.write(center.longitude)
       }
