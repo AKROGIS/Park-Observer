@@ -16,27 +16,6 @@ class MapViewController: ObservableObject {
   }
 
   @Published var map = AGSMap()
-  @Published var locationAuthorized: Bool? = nil
-
-  @Published var locationButtonState: LocationButtonState = .off {
-    willSet(newState) {
-      // Note: for LocationButtonState .on(x) == .on(y) is true
-      if locationButtonState == .off && newState == .on(.off) {
-        startLocationDisplay()
-      }
-    }
-    didSet {
-      Defaults.mapLocationDisplay.write(locationButtonState != .off)
-      switch locationButtonState {
-      case .on(let autoPanMode):
-        Defaults.mapAutoPanMode.write(autoPanMode)
-        break
-      default:
-        break
-      }
-    }
-  }
-
   @Published var rotation = 0.0 {
     didSet {
       if oldValue != rotation {
@@ -45,6 +24,8 @@ class MapViewController: ObservableObject {
       }
     }
   }
+
+  let locationButtonController = LocationButtonController()
 
   func hookupMapView() {
     guard let mapView = mapView else {
@@ -55,7 +36,7 @@ class MapViewController: ObservableObject {
     setDefaultViewport(in: mapView) {
       // Call this after the viewport animations are done. Otherwise the animations
       // may nullify the user's autoPanning preference from the default settings.
-      self.startLocationDisplay()
+      self.locationButtonController.mapView = mapView
     }
     startObserving(mapView)
   }
@@ -95,53 +76,10 @@ class MapViewController: ObservableObject {
     }
   }
 
-  func startLocationDisplay() {
-    guard let mapView = self.mapView else {
-      locationAuthorized = nil
-      locationButtonState = .off
-      return
-    }
-    if mapView.locationDisplay.started {
-      return
-    }
-    mapView.locationDisplay.start { error in
-      if let error = error {
-        // No need to alert; failure is due to user choosing to disallow location services
-        print("Error starting ArcGIS location services: \(error.localizedDescription)")
-        self.locationAuthorized = nil
-      }
-      if mapView.locationDisplay.started {
-        self.locationAuthorized = true
-        self.locationButtonState = .on(mapView.locationDisplay.autoPanMode)
-      } else {
-        self.locationAuthorized = false
-        self.locationButtonState = .off
-      }
-    }
-  }
-
-  // TODO: Set up a delegate to monitor changes in location authorization
 
   func startObserving(_ mapView: AGSMapView) {
-    observeAutoPanMode(from: mapView)
     observeRotation(from: mapView)
     //TODO: Observe viewport changes
-  }
-
-  private func observeAutoPanMode(from mapView: AGSMapView) {
-    // The autoPanModeChangedHandler is not called when the mapView owner sets the property.
-    // The mapView will call this when the map is panned, rotated or zoomed.
-    mapView.locationDisplay.autoPanModeChangedHandler = { autoPanMode in
-      // Important: We do not know when it will be called.
-      // Needed to postpone modifying view state until view is done updating.
-      DispatchQueue.main.async {
-        if mapView.locationDisplay.started {
-          self.locationButtonState = .on(autoPanMode)
-        } else {
-          self.locationButtonState = .off
-        }
-      }
-    }
   }
 
   // Important!  If we do not retain the KeyValueObserver, it will be immediately disposed.

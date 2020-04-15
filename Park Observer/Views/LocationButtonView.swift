@@ -10,14 +10,16 @@ import ArcGIS
 import SwiftUI
 
 struct LocationButtonView: View {
-  @Binding var buttonState: LocationButtonState
-  @Binding var locationAuthorized: Bool?
+  @ObservedObject var controller: LocationButtonController
 
   @State private var showingAlert = false
 
   var body: some View {
-    Button(action: toggle) {
-      Image(systemName: imageName)
+    Button(action: {
+      self.showingAlert = self.controller.authorized == .no
+      self.controller.toggle()
+    }) {
+      Image(systemName: getImageName())
     }
       .padding()
       .background(Color(.systemBackground))
@@ -37,79 +39,30 @@ struct LocationButtonView: View {
       }
   }
 
-  func toggle() {
-    if let authorized = locationAuthorized, authorized {
-      switch buttonState {
+  private func getImageName() -> String {
+    if controller.showLocation {
+      switch controller.autoPanMode {
       case .off:
-        buttonState = .on(.off)
-        break
-      case .on(let autoPanMode):
-        switch autoPanMode {
-        case .off:
-          //TODO: set button to previous autoPanMode if turned off by map touch
-          buttonState = .on(.recenter)
-          break
-        case .recenter:
-          buttonState = .on(.navigation)
-          break
-        case .navigation:
-          buttonState = .on(.compassNavigation)
-          break
-        case .compassNavigation:
-          buttonState = .off
-          break
-        @unknown default:
-          print("Error: Unexpected enum value in AGSLocationDisplayAutoPanMode")
-          buttonState = .off
-          break
-        }
+        return "location"
+      case .compassNavigation:
+        return "location.circle"
+      case .navigation:
+        return "location.north.line.fill"
+      case .recenter:
+        return "location.fill"
+      @unknown default:
+        print("Error: Unexpected enum value in AGSLocationDisplayAutoPanMode")
+        return "exclamationmark.octagon.fill"
       }
     } else {
-      showingAlert = true
+      return "location.slash"
     }
-  }
-
-  var imageName: String {
-    if let authorized = locationAuthorized, authorized {
-      switch buttonState {
-      case .off: return "location.slash"
-      case .on(let autoPanMode):
-        switch autoPanMode {
-        case .compassNavigation: return "location.circle"
-        case .navigation: return "location.north.line.fill"
-        case .recenter: return "location.fill"
-        case .off: return "location"
-        @unknown default:
-          print("Error: Unexpected enum value in AGSLocationDisplayAutoPanMode")
-          return "location.slash"
-        }
-      }
-    }
-    return "location.slash"
   }
 
 }
 
 struct LocationButtonView_Previews: PreviewProvider {
   static var previews: some View {
-    LocationButtonView(buttonState: .constant(.off), locationAuthorized: .constant(false))
-  }
-}
-
-enum LocationButtonState {
-  case off
-  case on(AGSLocationDisplayAutoPanMode)
-}
-
-extension LocationButtonState: Equatable {
-  public static func == (lhs: LocationButtonState, rhs: LocationButtonState) -> Bool {
-    switch (lhs, rhs) {
-    case (.off, .off):
-      return true
-    case (.on, .on):
-      return true
-    default:
-      return false
-    }
+    LocationButtonView(controller: LocationButtonController())
   }
 }

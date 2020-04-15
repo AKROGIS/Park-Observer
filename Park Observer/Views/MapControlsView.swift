@@ -23,9 +23,7 @@ struct MapControlsView: View {
             self.mapViewController.mapView?.setViewpointRotation(0, completion: nil)
           }).transition(.opacity)
       }
-      LocationButtonView(
-        buttonState: $mapViewController.locationButtonState,
-        locationAuthorized: $mapViewController.locationAuthorized)
+      LocationButtonView(controller: mapViewController.locationButtonController)
     }
   }
 

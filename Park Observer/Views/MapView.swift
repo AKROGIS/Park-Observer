@@ -36,17 +36,8 @@ final class MapView: UIViewRepresentable {
     // Set dynamic properties on UIView
     // Avoid setting properties that didn't change, AGSMapView() does not check for deltas
     if view.map != mapViewController.map {
+      print("Setting MapView.map")
       view.map = mapViewController.map
-    }
-    switch mapViewController.locationButtonState {
-    case .on(let autoPanMode):
-      if view.locationDisplay.autoPanMode != autoPanMode {
-        view.locationDisplay.autoPanMode = autoPanMode
-      }
-      break
-    case .off:
-      if view.locationDisplay.started { view.locationDisplay.stop() }
-      break
     }
   }
 
