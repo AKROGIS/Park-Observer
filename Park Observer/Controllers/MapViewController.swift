@@ -24,6 +24,29 @@ class MapViewController: ObservableObject {
     }
   }
 
+  //This is not published, but could be to support a scalebar in SwiftUI
+  private var scale = 0.0 {
+    didSet {
+      if oldValue != scale {
+        print("Saving new scale: \(scale)")
+        Defaults.mapScale.write(scale)
+      }
+    }
+  }
+
+  private var center = CLLocationCoordinate2D() {
+    didSet {
+      if oldValue.latitude != center.latitude {
+        print("Saving new latitude: \(center.latitude)")
+        Defaults.mapCenterLat.write(center.latitude)
+      }
+      if oldValue.longitude != center.longitude {
+        print("Saving new longitude: \(center.longitude)")
+        Defaults.mapCenterLon.write(center.longitude)
+      }
+    }
+  }
+
   let locationButtonController = LocationButtonController()
 
   func hookupMapView() {
@@ -48,6 +71,8 @@ class MapViewController: ObservableObject {
     let rotation = Defaults.mapRotation.readDouble()
     print("Restoring rotation to \(rotation)")
     print("Restoring scale to \(scale)")
+    print("Restoring latitude to \(latitude)")
+    print("Restoring longitude to \(longitude)")
     var rotationIsAnimating = false
     var recenterIsAnimating = false
     if scale == 0 && rotation == 0 {
@@ -58,7 +83,8 @@ class MapViewController: ObservableObject {
       let location = CLLocationCoordinate2D(latitude: latitude, longitude: longitude)
       let center = AGSPoint(clLocationCoordinate2D: location)
       recenterIsAnimating = true
-      mapView.setViewpointCenter(center, scale: scale) { _ in
+      mapView.setViewpointCenter(center, scale: scale) { finished in
+        print("Recenter finished (was not interrupted): \(finished)")
         recenterIsAnimating = false
         if !rotationIsAnimating {
           completion()
@@ -67,7 +93,8 @@ class MapViewController: ObservableObject {
     }
     if rotation != 0 {
       rotationIsAnimating = true
-      mapView.setViewpointRotation(rotation) { _ in
+      mapView.setViewpointRotation(rotation) { finished in
+        print("Rotation finished (was not interrupted): \(finished)")
         rotationIsAnimating = false
         if !recenterIsAnimating {
           completion()
@@ -99,7 +126,19 @@ class MapViewController: ObservableObject {
   }
 
   private func observerViewPoint(from mapView: AGSMapView) {
-    //TODO: Observe viewport changes and save to defaults
+    let updateCoalescer = Coalescer(
+      dispatchQueue: DispatchQueue.main,
+      interval: DispatchTimeInterval.milliseconds(500)) {
+        self.scale = mapView.mapScale
+        let viewpoint = mapView.currentViewpoint(with: .centerAndScale)
+        let point = viewpoint?.targetGeometry as? AGSPoint
+        if let center = point?.toCLLocationCoordinate2D() {
+          self.center = center
+        }
+    }
+    mapView.viewpointChangedHandler = {
+      updateCoalescer.ping()
+    }
   }
 
   //MARK: - Map Loading
