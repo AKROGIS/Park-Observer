@@ -34,7 +34,7 @@ class MapViewController: ObservableObject {
       print("Error: mapView was set to nil; Cant hook it up to the controller")
       return
     }
-    loadDefaultMap()
+    setDefaultMap()
     startLocationDisplay()
     startObserving(mapView)
   }
@@ -102,17 +102,60 @@ class MapViewController: ObservableObject {
     }
   }
 
-  func loadDefaultMap() {
-    // You need to copy the tile package in the document directory of the device or simulator
+  //MARK: - Map Loading
+
+  private func setDefaultMap() {
+    //loadMap(name: "Anchorage18.tpk")
+    loadMap(name: "esri.Imagery")
+  }
+
+  func loadMap(name: String) {
+    if name.starts(with: "esri.") {
+      loadEsriBasemap(name)
+    } else {
+      loadLocalTileCache(name)
+    }
+  }
+
+  private func loadLocalTileCache(_ name: String) {
+    // The tile package needs to exist in the document directory of the device or simulator
     // For a device use iTunes File Sharing (enable in the info.plist)
     // For the simulator - breakpoint on the next line, to see what the path is
+    // This function does no I/O, so the name is not checked until mapView tries to load the map.
     let paths = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask)
     let url = paths[0]
-    let path = url.appendingPathComponent("Anchorage18.tpk")
+    let path = url.appendingPathComponent(name)
     let cache = AGSTileCache(fileURL: path)
     let layer = AGSArcGISTiledLayer(tileCache: cache)
     let basemap = AGSBasemap(baseLayer: layer)
     map = AGSMap(basemap: basemap)
+  }
+
+  let esriBasemaps: [String: () -> AGSBasemap] = [
+    "esri.DarkGrayCanvasVector": AGSBasemap.darkGrayCanvasVector,
+    "esri.Imagery": AGSBasemap.imagery,
+    "esri.ImageryWithLabels": AGSBasemap.imageryWithLabels,
+    "esri.ImageryWithLabelsVector": AGSBasemap.imageryWithLabelsVector,
+    "esri.LightGrayCanvas": AGSBasemap.lightGrayCanvas,
+    "esri.LightGrayCanvasVector": AGSBasemap.lightGrayCanvasVector,
+    "esri.NationalGeographic": AGSBasemap.nationalGeographic,
+    "esri.NavigationVector": AGSBasemap.navigationVector,
+    "esri.Oceans": AGSBasemap.oceans,
+    "esri.OpenStreetMap": AGSBasemap.openStreetMap,
+    "esri.Streets": AGSBasemap.streets,
+    "esri.StreetsNightVector": AGSBasemap.streetsNightVector,
+    "esri.StreetsVector": AGSBasemap.streetsVector,
+    "esri.StreetsWithReliefVector": AGSBasemap.streetsWithReliefVector,
+    "esri.TerrainWithLabels": AGSBasemap.terrainWithLabels,
+    "esri.TerrainWithLabelsVector": AGSBasemap.terrainWithLabelsVector,
+    "esri.Topographic": AGSBasemap.topographic,
+    "esri.TopographicVector": AGSBasemap.topographicVector,
+  ]
+
+  private func loadEsriBasemap(_ name: String) {
+    if let basemap = esriBasemaps[name] {
+      map = AGSMap(basemap: basemap())
+    }
   }
 
 }
