@@ -7,7 +7,6 @@
 //
 
 import ArcGIS
-import Foundation
 
 class MapViewController: ObservableObject {
 
@@ -29,7 +28,7 @@ class MapViewController: ObservableObject {
 
   func hookupMapView() {
     guard let mapView = mapView else {
-      print("Error: mapView was set to nil; Cant hook it up to the controller")
+      print("Error: mapView was set to nil; Can't hook it up to the controller")
       return
     }
     setDefaultMap()
@@ -38,6 +37,7 @@ class MapViewController: ObservableObject {
       // may nullify the user's autoPanning preference from the default settings.
       self.locationButtonController.mapView = mapView
     }
+    mapView.releaseHardwareResourcesWhenBackgrounded = true
     startObserving(mapView)
   }
 
@@ -76,10 +76,11 @@ class MapViewController: ObservableObject {
     }
   }
 
+  //MARK: - Map Observing
 
   func startObserving(_ mapView: AGSMapView) {
     observeRotation(from: mapView)
-    //TODO: Observe viewport changes
+    observerViewPoint(from: mapView)
   }
 
   // Important!  If we do not retain the KeyValueObserver, it will be immediately disposed.
@@ -97,12 +98,15 @@ class MapViewController: ObservableObject {
     }
   }
 
+  private func observerViewPoint(from mapView: AGSMapView) {
+    //TODO: Observe viewport changes and save to defaults
+  }
+
   //MARK: - Map Loading
 
   func setDefaultMap() {
     if let name = Defaults.mapName.readString() {
-      loadMap(name: "Anchorage18.tpk")
-      //loadMap(name: name)
+      loadMap(name: name)
     } else {
       loadMap(name: "esri.Imagery")
     }
