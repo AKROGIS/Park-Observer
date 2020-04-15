@@ -55,52 +55,31 @@ class MapViewController: ObservableObject {
       return
     }
     setDefaultMap()
-    setDefaultViewport(in: mapView) {
-      // Call this after the viewport animations are done. Otherwise the animations
-      // may nullify the user's autoPanning preference from the default settings.
-      self.locationButtonController.mapView = mapView
-    }
+    // If I do not set the mapView's map now, it will be set in the view update which occurs
+    // after setting the viewport. Setting the map resets the viewpoint to the map extents
+    mapView.map = map
+    setDefaultViewport(mapView)
+    self.locationButtonController.mapView = mapView
     mapView.releaseHardwareResourcesWhenBackgrounded = true
     observeViewPoint(mapView)
   }
 
-  func setDefaultViewport(in mapView: AGSMapView, completion: @escaping () -> Void) {
+  func setDefaultViewport(_ mapView: AGSMapView) { //, completion: @escaping () -> Void) {
+    scale = Defaults.mapScale.readDouble()
+    guard scale != 0 else {
+      // Not a valid scale, so there are no defaults (i.e. first launch)
+      return
+    }
+    rotation = Defaults.mapRotation.readDouble()
     let latitude = Defaults.mapCenterLat.readDouble()
     let longitude = Defaults.mapCenterLon.readDouble()
-    let scale = Defaults.mapScale.readDouble()
-    let rotation = Defaults.mapRotation.readDouble()
+    center = CLLocationCoordinate2D(latitude: latitude, longitude: longitude)
+    let centerPoint = AGSPoint(clLocationCoordinate2D: center)
     print("Restoring rotation to \(rotation)")
     print("Restoring scale to \(scale)")
     print("Restoring latitude to \(latitude)")
     print("Restoring longitude to \(longitude)")
-    var rotationIsAnimating = false
-    var recenterIsAnimating = false
-    if scale == 0 && rotation == 0 {
-      completion()
-      return
-    }
-    if scale != 0 {
-      let location = CLLocationCoordinate2D(latitude: latitude, longitude: longitude)
-      let center = AGSPoint(clLocationCoordinate2D: location)
-      recenterIsAnimating = true
-      mapView.setViewpointCenter(center, scale: scale) { finished in
-        print("Recenter finished (was not interrupted): \(finished)")
-        recenterIsAnimating = false
-        if !rotationIsAnimating {
-          completion()
-        }
-      }
-    }
-    if rotation != 0 {
-      rotationIsAnimating = true
-      mapView.setViewpointRotation(rotation) { finished in
-        print("Rotation finished (was not interrupted): \(finished)")
-        rotationIsAnimating = false
-        if !recenterIsAnimating {
-          completion()
-        }
-      }
-    }
+    mapView.setViewpoint(AGSViewpoint(center: centerPoint, scale: scale, rotation: rotation))
   }
 
   //MARK: - Map Observing
