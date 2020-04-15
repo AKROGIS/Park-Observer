@@ -61,7 +61,7 @@ class MapViewController: ObservableObject {
       self.locationButtonController.mapView = mapView
     }
     mapView.releaseHardwareResourcesWhenBackgrounded = true
-    startObserving(mapView)
+    observeViewPoint(mapView)
   }
 
   func setDefaultViewport(in mapView: AGSMapView, completion: @escaping () -> Void) {
@@ -105,27 +105,9 @@ class MapViewController: ObservableObject {
 
   //MARK: - Map Observing
 
-  func startObserving(_ mapView: AGSMapView) {
-    observeRotation(from: mapView)
-    observerViewPoint(from: mapView)
-  }
-
-  // Important!  If we do not retain the KeyValueObserver, it will be immediately disposed.
-  // This also means we do not need to dispose of it, as it will automatically happen.
-  private var rotationObservation: NSKeyValueObservation?
-
-  private func observeRotation(from mapView: AGSMapView) {
-    rotationObservation = mapView.observe(\.rotation, options: .new) { [weak self] (_, change) in
-      guard let rotation = change.newValue else {
-        return
-      }
-      DispatchQueue.main.async {
-        self?.rotation = rotation
-      }
-    }
-  }
-
-  private func observerViewPoint(from mapView: AGSMapView) {
+  private func observeViewPoint(_ mapView: AGSMapView) {
+    // We want the rotation as often as possible for a smooth compass display,
+    // We do the the scale and center as frequently
     let updateCoalescer = Coalescer(
       dispatchQueue: DispatchQueue.main,
       interval: DispatchTimeInterval.milliseconds(500)) {
@@ -136,7 +118,11 @@ class MapViewController: ObservableObject {
           self.center = center
         }
     }
+    // Can be called at up to 60hz
     mapView.viewpointChangedHandler = {
+      DispatchQueue.main.async {
+        self.rotation = mapView.rotation
+      }
       updateCoalescer.ping()
     }
   }
