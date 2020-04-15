@@ -25,9 +25,26 @@ class MapViewController: ObservableObject {
         startLocationDisplay()
       }
     }
+    didSet {
+      Defaults.mapLocationDisplay.write(locationButtonState != .off)
+      switch locationButtonState {
+      case .on(let autoPanMode):
+        Defaults.mapAutoPanMode.write(autoPanMode)
+        break
+      default:
+        break
+      }
+    }
   }
 
-  @Published var rotation = 0.0
+  @Published var rotation = 0.0 {
+    didSet {
+      if oldValue != rotation {
+        print("Saving new rotation: \(rotation)")
+        Defaults.mapRotation.write(rotation)
+      }
+    }
+  }
 
   func hookupMapView() {
     guard let mapView = mapView else {
@@ -35,8 +52,47 @@ class MapViewController: ObservableObject {
       return
     }
     setDefaultMap()
-    startLocationDisplay()
+    setDefaultViewport(in: mapView) {
+      // Call this after the viewport animations are done. Otherwise the animations
+      // may nullify the user's autoPanning preference from the default settings.
+      self.startLocationDisplay()
+    }
     startObserving(mapView)
+  }
+
+  func setDefaultViewport(in mapView: AGSMapView, completion: @escaping () -> Void) {
+    let latitude = Defaults.mapCenterLat.readDouble()
+    let longitude = Defaults.mapCenterLon.readDouble()
+    let scale = Defaults.mapScale.readDouble()
+    let rotation = Defaults.mapRotation.readDouble()
+    print("Restoring rotation to \(rotation)")
+    print("Restoring scale to \(scale)")
+    var rotationIsAnimating = false
+    var recenterIsAnimating = false
+    if scale == 0 && rotation == 0 {
+      completion()
+      return
+    }
+    if scale != 0 {
+      let location = CLLocationCoordinate2D(latitude: latitude, longitude: longitude)
+      let center = AGSPoint(clLocationCoordinate2D: location)
+      recenterIsAnimating = true
+      mapView.setViewpointCenter(center, scale: scale) { _ in
+        recenterIsAnimating = false
+        if !rotationIsAnimating {
+          completion()
+        }
+      }
+    }
+    if rotation != 0 {
+      rotationIsAnimating = true
+      mapView.setViewpointRotation(rotation) { _ in
+        rotationIsAnimating = false
+        if !recenterIsAnimating {
+          completion()
+        }
+      }
+    }
   }
 
   func startLocationDisplay() {
@@ -69,6 +125,7 @@ class MapViewController: ObservableObject {
   func startObserving(_ mapView: AGSMapView) {
     observeAutoPanMode(from: mapView)
     observeRotation(from: mapView)
+    //TODO: Observe viewport changes
   }
 
   private func observeAutoPanMode(from mapView: AGSMapView) {
@@ -104,12 +161,17 @@ class MapViewController: ObservableObject {
 
   //MARK: - Map Loading
 
-  private func setDefaultMap() {
-    //loadMap(name: "Anchorage18.tpk")
-    loadMap(name: "esri.Imagery")
+  func setDefaultMap() {
+    if let name = Defaults.mapName.readString() {
+      loadMap(name: "Anchorage18.tpk")
+      //loadMap(name: name)
+    } else {
+      loadMap(name: "esri.Imagery")
+    }
   }
 
   func loadMap(name: String) {
+    Defaults.mapName.write(name)
     if name.starts(with: "esri.") {
       loadEsriBasemap(name)
     } else {
