@@ -34,8 +34,13 @@ struct LocationButtonView: View {
           title: Text("Location Services Disabled"),
           message: Text(
             "Your location cannot be shown. Use Settings to enable location services."),
-          dismissButton: .default(Text("Got it!")))
-        //TODO: provide a primary (cancel) and secondary (settings) buttons
+          primaryButton: .cancel(Text("OK")),
+          secondaryButton: .default(Text("Settings")) {
+            if let settingsUrl = URL(string: UIApplication.openSettingsURLString) {
+              // URL from string is an optional, but in this case we know it will always be valid
+              UIApplication.shared.open(settingsUrl)
+            }
+          })
       }
   }
 
