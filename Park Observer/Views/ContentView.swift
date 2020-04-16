@@ -15,7 +15,7 @@ struct ContentView: View {
     ZStack(alignment: .topTrailing) {
       MapView(mapViewController: controller).edgesIgnoringSafeArea(.all)
       MapControlsView(mapViewController: controller).padding([.leading, .trailing], 20.0)
-    }.environment(\.darkMap, false)
+    }.environment(\.darkMap, true)
   }
 }
 
