@@ -11,6 +11,7 @@ import SwiftUI
 
 struct LocationButtonView: View {
   @ObservedObject var controller: LocationButtonController
+  @Environment(\.darkMap) var darkMap
 
   @State private var showingAlert = false
 
@@ -22,13 +23,9 @@ struct LocationButtonView: View {
       Image(systemName: getImageName())
     }
       .padding()
-      .background(Color(.systemBackground))
+      .background(Color(darkMap ? .white : .black).opacity(0.65))
       .clipShape(Circle())
-      //TODO: change foreground color to disabled if locationAuthorized is nil or false
-      //TODO: get background from environment (whiteish for dark maps, blackish for light maps)
-      //TODO: make background slightly transparent, make border less transparent
-      //TODO: system images are like fonts, experiment with size and weight
-      //TODO: coordinate look with CompassView
+      .overlay(Circle().stroke(Color(darkMap ? .white : .black), lineWidth: 3))
       .alert(isPresented: $showingAlert) {
         Alert(
           title: Text("Location Services Disabled"),
