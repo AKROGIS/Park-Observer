@@ -8,32 +8,37 @@
 
 import SwiftUI
 
-final class ScalebarView: UIViewRepresentable {
+// BUG: in UIViewRepresentable? (swift 5.1; iOS 13.3; Xcode 11.3)
+// the @environment only returned the default value when this was a final class
+// However that may preclude calls to update when the @ObservedObject changes
+// See discussion in MapView.swift
+
+struct ScalebarView: UIViewRepresentable {
 
   @ObservedObject var mapViewController: MapViewController
 
-  init(mapViewController: MapViewController) {
-    self.mapViewController = mapViewController
-  }
+  @Environment(\.darkMap) var darkMap
 
   func makeUIView(context: Context) -> Scalebar {
+    print("darkMap in Make scalebar = \(darkMap)")
     // Set static properties on UIView
     let scalebar = Scalebar()
     scalebar.mapView = mapViewController.mapView
     scalebar.style = .dualUnitLine
     scalebar.alignment = .left
-    scalebar.textColor = UIColor.white
-    scalebar.textShadowColor = UIColor.black.withAlphaComponent(0.80)
-    scalebar.lineColor = UIColor.white
-    scalebar.shadowColor = UIColor.black.withAlphaComponent(0.80)
     scalebar.font = UIFont.systemFont(ofSize: 11.0, weight: UIFont.Weight.semibold)
     return scalebar
   }
 
   func updateUIView(_ view: Scalebar, context: Context) {
+    print("darkMap in Update scalebar = \(darkMap)")
     if view.mapView != mapViewController.mapView {
       view.mapView = mapViewController.mapView
     }
+    view.textColor = darkMap ? UIColor.white : UIColor.black
+    view.textShadowColor = (darkMap ? UIColor.black : UIColor.white).withAlphaComponent(0.80)
+    view.lineColor = darkMap ? UIColor.white : UIColor.black
+    view.shadowColor = (darkMap ? UIColor.black : UIColor.white).withAlphaComponent(0.80)
   }
 }
 
