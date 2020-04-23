@@ -1,0 +1,782 @@
+{
+    "$schema": "http://json-schema.org/draft-07/schema#",
+    "$id": "https://akrgis.nps.gov/apps/observer/protocols/protocol.v2.schema.json",
+    "title": "Survey Protocol",
+    "description": "Describes the survey data, data collection methods, and application configuration for the NPS iPad Park Observer application.",
+    "type": "object",
+    "additionalProperties": false,
+    "properties": {
+        "meta-name": {
+            "description": "The schema used by the protocol file.",
+            "type": "string",
+            "const": "NPS-Protocol-Specification"
+        },
+        "meta-version": {
+            "description": "The version of the schema used by the protocol file.",
+            "type": "integer",
+            "const": 2
+        },
+        "name": {
+            "description": "An identifier (name) for this protocol.",
+            "type": "string",
+            "default": "No Title"
+        },
+        "version": {
+            "description": "The version of this named protocol.",
+            "type": "number"
+        },
+        "date": {
+            "description": "The publication date of the protocol file.",
+            "type": "string",
+            "format": "date"
+        },
+        "description": {
+            "description": "A description for this protocol.",
+            "type": "string"
+        },
+        "observing": {
+            "description": "An optional message to display on screen when observing (on transect).",
+            "type": "string"
+        },
+        "notobserving": {
+            "description": "An optional message to display on screen when track logging (recording) but not observing (off transect).",
+            "type": "string"
+        },
+        "status_message_fontsize": {
+            "description": "The font size for the observing/notobserving messages.",
+            "type": "number",
+            "default": 16.0
+        },
+        "cancel_on_top": {
+            "description": "Should the cancel/delete button be on the top of the editing form?",
+            "type": "boolean",
+            "default": false
+        },
+        "gps_interval": {
+            "description": "The number of seconds between saving successive GPS points to the tracklog.",
+            "type": "number",
+            "default": 0
+        },
+        "mission": {
+            "description": "An object for describing segments of the survey.",
+            "$ref": "#/definitions/Mission"
+        },
+        "features": {
+            "description": "A list of objects that describe the features that will be observed.",
+            "type": "array",
+            "items": {
+                "$ref": "#/definitions/Feature"
+            },
+            "minItems": 1,
+            "uniqueItems": true
+        },
+        "csv": {
+            "description": "The format for exporting survey data to CSV files.",
+            "$ref": "#/definitions/CSV"
+        }
+    },
+    "required": [
+        "meta-name",
+        "meta-version",
+        "name",
+        "version",
+        "features"
+    ],
+    "definitions": {
+        "Mission": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+                "attributes": {
+                    "description": "A list of the mission's attributes.",
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/Attribute"
+                    },
+                    "minItems": 1,
+                    "uniqueItems": true
+                },
+                "edit_at_start_recording": {
+                    "description": "If true, the mission attributes editor will be displayed when the start recording button is pushed.",
+                    "type": "boolean",
+                    "default": true
+                },
+                "edit_at_start_first_observing": {
+                    "description": "If true, the mission attributes editor will be displayed when the start observing button is first pushed.",
+                    "type": "boolean",
+                    "default": false
+                },
+                "edit_at_start_reobserving": {
+                    "description": "If true, the mission attributes editor will be displayed when the start observing button is pushed after the first push.",
+                    "type": "boolean",
+                    "default": true
+                },
+                "edit_prior_at_stop_observing": {
+                    "description": "If true, the mission attributes editor will be displayed for the start of the segment when the stop observing button is pushed.",
+                    "type": "boolean",
+                    "default": false
+                },
+                "edit_at_stop_observing": {
+                    "description": "If true, the mission attributes editor will be displayed when the stop observing button is pushed.",
+                    "type": "boolean",
+                    "default": false
+                },
+                "dialog": {
+                    "description": "Describes the look and feel of the mission attribute editor.",
+                    "$ref": "#/definitions/Dialog"
+                },
+                "symbology": {
+                    "description": "The graphical representation of the points when the mission properties were edited.",
+                    "$ref": "#/definitions/Symbology"
+                },
+                "on-symbology": {
+                    "description": "The graphical representation of the track log when observing (on-transect).",
+                    "$ref": "#/definitions/Symbology"
+                },
+                "off-symbology": {
+                    "description": "The graphical representation of the track log when not observing (off-transect).",
+                    "$ref": "#/definitions/Symbology"
+                },
+                "gps-symbology": {
+                    "description": "The graphical representation of the gps points along the track log.",
+                    "$ref": "#/definitions/Symbology"
+                },
+                "totalizer": {
+                    "description": "An object used to define the text summarizing the mission so far.",
+                    "$ref": "#/definitions/Totalizer"
+                }
+            },
+            "required": [
+                "symbology"
+            ],
+            "dependencies": {
+                "attributes": ["dialog"],
+                "dialog": ["attributes"]
+            },
+            "title": "Mission"
+        },
+        "Feature": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+                "name": {
+                    "description": "A short unique identifier for this feature, i.e. the item being observed.",
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 10
+                },
+                "attributes": {
+                    "description": "A list of the feature's attributes.",
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/Attribute"
+                    },
+                    "minItems": 1,
+                    "uniqueItems": true
+                },
+                "locations": {
+                    "description": "A list of the permitted techniques for specifying the location of an observation.",
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/Location"
+                    }
+                },
+                "dialog": {
+                    "description": "Describes the look and feel feature attribute editor.",
+                    "$ref": "#/definitions/Dialog"
+                },
+                "symbology": {
+                    "description": "The graphical representation of the feature.",
+                    "$ref": "#/definitions/Symbology"
+                },
+                "allow_off_transect_observations": {
+                    "description": "If true, then this feature can be observed while off transect (not observing).",
+                    "type": "boolean",
+                    "default": false
+                },
+                "label": {
+                    "description": "Describes how these features should be labeled on the map.",
+                    "$ref": "#/definitions/Label"
+                }
+            },
+            "required": [
+                "name",
+                "locations",
+                "symbology"
+            ],
+            "dependencies": {
+                "attributes": ["dialog"],
+                "dialog": ["attributes"]
+            },
+            "title": "Feature"
+        },
+        "Symbology": {
+            "description": "An esri renderer object, see https://developers.arcgis.com/documentation/common-data-types/renderer-objects.htm"
+        },
+        "Attribute": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+                "name": {
+                    "description": "The unique column name for the attribute (no spaces, numbers, or weird characters).",
+                    "type": "string",
+                    "regex": "([a-z,A-Z])+"
+                },
+                "type": {
+                    "description": "Identifies the kind of data the attribute stores (from NSAttributeType).",
+                    "type": "integer",
+                    "enum": [0, 100, 200, 300, 400, 500, 600, 700, 800, 900, 1000]
+                }
+            },
+            "required": [
+                "name",
+                "type"
+            ],
+            "title": "Attribute"
+        },
+        "Location": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+                "type": {
+                    "description": "The kind of location method described by this location.",
+                    "type": "string",
+                    "enum": ["gps", "mapTarget", "mapTouch", "angleDistance"]
+                },
+                "default": {
+                    "description": "Designates this location method as the default method if multiple are allowed.",
+                    "type": "boolean",
+                    "default": false
+                },
+                "allow": {
+                    "description": "Defines whether this type of location method is allowed.",
+                    "type": "boolean",
+                    "default": true
+                },
+                "deadAhead": {
+                    "description": "The angle measurement in degrees that means the feature is dead ahead. Only used with type angleDistance.",
+                    "type": "number",
+                    "default": 0.0,
+                    "minimum": 0.0,
+                    "maximum": 360.0
+                },
+                "units": {
+                    "description": "Units of distance measurements to the feature. Only used with type angleDistance.",
+                    "type": "string",
+                    "enum": ["feet", "meters", "yards"],
+                    "default": "meters"
+                },
+                "direction": {
+                    "description": "Defines whether angles increase in the clockwise (cw) or counter-clockwise (ccw) direction. Only used with type angleDistance.",
+                    "type": "string",
+                    "enum": ["cw", "ccw"],
+                    "default": "cw"
+                }
+            },
+            "required": [
+                "type"
+            ],
+            "title": "Location"
+        },
+        "Totalizer": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+                "fields": {
+                    "description": "The names of attributes that are 'watched'. When one of them changes, the totalizer resets.",
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    },
+                    "minItems": 1,
+                    "uniqueItems": true
+                },
+                "units": {
+                    "description": "The units for the quantities displayed in the totalizer.",
+                    "type": "string",
+                    "enum": ["kilometers", "miles", "minutes"],
+                    "default": "kilometers"
+                },
+                "includeon": {
+                    "description": "Indicate if the total distance/time while 'observing' should be displayed.",
+                    "type": "boolean",
+                    "default": true
+                },
+                "includeoff": {
+                    "description": "Indicate if the total distance/time while not 'observing' should be displayed.",
+                    "type": "boolean",
+                    "default": false
+                },
+                "includetotal": {
+                    "description": "Indicate if the total distance/time regardless of 'observing' status should be displayed.",
+                    "type": "boolean",
+                    "default": false
+                },
+                "fontsize": {
+                    "description": "The size (in points) of the font used for the totalizer text.",
+                    "type": "number",
+                    "default": 14.0
+                }
+            },
+            "required": [
+                "fields"
+            ],
+            "title": "Totalizer"
+        },
+        "Label": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+                "field": {
+                    "description": "An attribute name (from Attributes) that will be used as the text of the label.",
+                    "type": "string"
+                },
+                "color": {
+                    "description": "The color of the text as a hexidecimal triplet of red, green and blue values. `#RRGGBB`; 00 = 0 (none), FF = 255 (full).",
+                    "type": "string",
+                    "pattern": "#([0-9,A-F]){6}",
+                    "minLength": 7,
+                    "maxLength": 7,
+                    "examples": [ "#DD88FF", "#0F4EA4" ],
+                    "default": "#000000"
+                },
+                "size": {
+                    "description": "The font size of the text; in points (1/72 of an inch).",
+                    "type": "number",
+                    "default": 14.0,
+                    "minimum": 0
+                },
+                "symbol": {
+                    "description": "An esri text symbol object, see https://developers.arcgis.com/documentation/common-data-types/symbol-objects.htm"
+                }
+            },
+            "required": [
+                "field"
+            ],
+            "title": "Label"
+        },
+
+        "Dialog": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+                "title": {
+                    "description": "The text (title) at the top of the editing form.",
+                    "type": "string"
+                },
+                "grouped": {
+                    "description": "Determines if the sections in this form are grouped.  I.e. there is visual separation between sections.",
+                    "type": "boolean",
+                    "default": false
+                },
+                "sections": {
+                    "description": "A list of form elements collected into a single section.",
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/DialogSection"
+                    },
+                    "minItems": 1,
+                    "uniqueItems": true
+                }
+            },
+            "required": [
+                "sections",
+                "title"
+            ],
+            "title": "Dialog"
+        },
+        "DialogSection": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+                "title": {
+                    "description": "The text (title) at the top of this section.",
+                    "type": "string"
+                },
+                "elements": {
+                    "description": "A list of editable form elements like text boxes and option pickers.",
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/DialogElement"
+                    },
+                    "minItems": 1,
+                    "uniqueItems": true
+                }
+            },
+            "required": [
+                "elements"
+            ],
+            "title": "DialogSection"
+        },
+        "DialogElement": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+                "type": {
+                    "description": "One of a well defined set of names for specific form elements.",
+                    "$ref": "#/definitions/DialogElementType"
+                },
+                "key": {
+                    "description": "A unique identifier for this form element; Not used.",
+                    "type": "string"
+                },
+                "bind": {
+                    "description": "A special string that encodes the type and attribute name of the data for this element.",
+                    "type": "string"
+                },
+                "title": {
+                    "description": "The name/prompt that describes the data in this form element.",
+                    "type": "string"
+                },
+                "items": {
+                    "description": "A list of choices for a picklist type element (QRadioElement or QSegmentedElement).",
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    },
+                    "minItems": 2,
+                    "uniqueItems": true
+                },
+                "selected": {
+                    "description": "The zero based index of the intially selected item from the list of items.",
+                    "type": "integer",
+                    "minimum": 0
+                },
+                "boolValue": {
+                    "description": "The default value for a boolean control (0 = false, 1 = true) only used by QBooleanElement.",
+                    "type": "integer",
+                    "default": 0,
+                    "minimum": 0,
+                    "maximum": 1
+                },
+                "minimumValue": {
+                    "description": "The minimum value allowed in QIntegerElement.",
+                    "type": "integer",
+                    "default": 0
+                },
+                "maximumValue": {
+                    "description": "The maximum value allowed in QIntegerElement.",
+                    "type": "integer",
+                    "default": 100
+                },
+                "numberValue": {
+                    "description": "The default number value for a QIntegerElement or QDecimalElement.",
+                    "type": "number"
+                },
+                "placeholder": {
+                    "description": "Sample text to put in a text box to suggest to the user what to enter.",
+                    "type": "string"
+                },
+                "fractionDigits": {
+                    "description": "How many digits will be shown after the decimal point (for QDecimalElement only).",
+                    "type": "integer",
+                    "minimum": 0
+                },
+                "keyboardType": {
+                    "description": "Determines what kind of keyboard will appear when text editing is required.",
+                    "$ref": "#/definitions/DialogElementKeyboard"
+                },
+                "autocorrectionType": {
+                    "description": "Determines if a text box will auto correct (fix spelling) the user's typing.",
+                    "$ref": "#/definitions/DialogElementAutoCorrection"
+                },
+                "autocapitalizationType": {
+                    "description": "Determines if and how a text box will auto capitalize the user's typing.",
+                    "$ref": "#/definitions/DialogElementAutoCapitalization"
+                }
+            },
+            "required": [
+                "type"
+            ],
+            "title": "DialogElement"
+        },
+        "DialogElementType": {
+            "description": "The different kinds of form elements.",
+            "type": "string",
+            "enum": [
+                "QBooleanElement",
+                "QDecimalElement",
+                "QEntryElement",
+                "QIntegerElement",
+                "QLabelElement",
+                "QMultilineElement",
+                "QRadioElement",
+                "QSegmentedElement"
+            ],
+            "title": "DialogElementType"
+        },
+        "DialogElementKeyboard": {
+            "description": "The different choices for on screen keyboards.",
+            "type": "string",
+            "enum": [
+                "Default",
+                "ASCIICapable",
+                "NumbersAndPunctuation",
+                "URL",
+                "NumberPad",
+                "PhonePad",
+                "NamePhonePad",
+                "EmailAddress",
+                "DecimalPad",
+                "Twitter",
+                "Alphabet"
+            ],
+            "default": "Default",
+            "title": "DialogElementKeyboard"
+        },
+        "DialogElementAutoCorrection": {
+            "description": "The different choices for fixing spelling errors.",
+            "type": "string",
+            "enum": [
+                "Default",
+                "No",
+                "Yes"
+            ],
+            "default": "Default",
+            "title": "DialogElementAutoCorrection"
+        },
+        "DialogElementAutoCapitalization": {
+            "description": "The different choices for fixing capitalization.",
+            "type": "string",
+            "enum": [
+                "None",
+                "Words",
+                "Sentences",
+                "AllCharacters"
+            ],
+            "default": "None",
+            "title": "DialogElementAutoCapitalization"
+        },
+
+        "CSV": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+                "gps_points": {
+                    "description": "Describes how to build the GPS point feature class from the CSV file containing the GPS points.",
+                    "$ref": "#/definitions/CsvGpsPoints"
+                },
+                "track_logs": {
+                    "description": "Describes how to build the track log feature class from the CSV file containing the tracklogs and mission properties.",
+                    "$ref": "#/definitions/CsvTrackLogs"
+                },
+                "features": {
+                    "description": "Describes how to build the observer and feature point feature classes from the CSV file containing the observed features.",
+                    "$ref": "#/definitions/CsvFeatures"
+                }
+            },
+            "required": [
+                "features",
+                "gps_points",
+                "track_logs"
+            ],
+            "title": "CSV"
+        },
+        "CsvFeatures": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+                "header": {
+                    "description": "The header of the CSV file; a list of the column names in order.",
+                    "type": "string"
+                },
+                "feature_field_names": {
+                    "description": "A list of the field names from the csv header that will create the observed feature tables.",
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    },
+                    "uniqueItems": true
+                },
+                "feature_field_types": {
+                    "description": "A list of the field types for each column listed in the 'feature_field_names' property.",
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/CsvFieldType"
+                    }
+                },
+                "feature_field_map": {
+                    "description": "The column indices from the csv header, starting with zero, for the columns containing the data for the observed feature tables.",
+                    "type": "array",
+                    "items": {
+                        "type": "integer",
+                        "minimum": 0
+                    },
+                    "uniqueItems": true
+                },
+                "feature_key_indexes": {
+                    "description": "The column indices, starting with zero, for the columns containing the time, x and y coordinates of the feature.",
+                    "type": "array",
+                    "items": {
+                        "type": "integer",
+                        "minimum": 0
+                    },
+                    "minItems": 3,
+                    "maxItems": 3,
+                    "uniqueItems": true
+                },
+                "obs_name": {
+                    "description": "The name of the table in the esri geodatabase that will contain the data for the observer of the features.",
+                    "type": "string"
+                },
+                "obs_field_names": {
+                    "description": "A list of the field names from the csv header that will create the observed feature table.",
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    },
+                    "uniqueItems": true
+                },
+                "obs_field_types": {
+                    "description": "A list of the field types for each column listed in the 'obs_field_names' property.",
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/CsvFieldType"
+                    }
+                },
+                "obs_field_map": {
+                    "description": "The column indices from the csv header, starting with zero, for the columns containing the data for the observer table.",
+                    "type": "array",
+                    "items": {
+                        "type": "integer",
+                        "minimum": 0
+                    },
+                    "uniqueItems": true
+                },
+                "obs_key_indexes": {
+                    "description": "The column indices, starting with zero, for the columns containing the time, x and y coordinates of the observer.",
+                    "type": "array",
+                    "items": {
+                        "type": "integer",
+                        "minimum": 0
+                    },
+                    "minItems": 3,
+                    "maxItems": 3,
+                    "uniqueItems": true
+                }
+            },
+            "required": [
+                "feature_field_map",
+                "feature_field_names",
+                "feature_field_types",
+                "feature_key_indexes",
+                "header",
+                "obs_field_map",
+                "obs_field_names",
+                "obs_field_types",
+                "obs_key_indexes",
+                "obs_name"
+            ],
+            "title": "CsvFeatures"
+        },
+        "CsvGpsPoints": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+                "name": {
+                    "description": "The name of the csv file, and the table in the esri geodatabase.",
+                    "type": "string"
+                },
+                "field_names": {
+                    "description": "A list of the field names in the header of the CSV file in order.",
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    },
+                    "uniqueItems": true
+                },
+                "field_types": {
+                    "description": "A list of the field types in the columns of the CSV file in order.",
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/CsvFieldType"
+                    }
+                },
+                "key_indexes": {
+                    "description": "The column indices, starting with zero, for the columns containing the time, x and y coordinates of the point.",
+                    "type": "array",
+                    "items": {
+                        "type": "integer",
+                        "minimum": 0
+                    },
+                    "minItems": 3,
+                    "maxItems": 3,
+                    "uniqueItems": true
+                }
+            },
+            "required": [
+                "field_names",
+                "field_types",
+                "key_indexes",
+                "name"
+            ],
+            "title": "CsvGpsPoints"
+        },
+        "CsvTrackLogs": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+                "name": {
+                    "description": "The name of the csv file, and the table in the esri geodatabase.",
+                    "type": "string"
+                },
+                "field_names": {
+                    "description": "A list of the field names in the header of the CSV file in order.",
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    },
+                    "uniqueItems": true
+                },
+                "field_types": {
+                    "description": "A list of the field types in the columns of the CSV file in order.",
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/CsvFieldType"
+                    }
+                },
+                "start_key_indexes": {
+                    "description": "The column indices, starting with zero, for the columns containing the time, x and y coordinates of the first point in the tracklog.",
+                    "type": "array",
+                    "items": {
+                        "type": "integer",
+                        "minimum": 0
+                    },
+                    "minItems": 3,
+                    "maxItems": 3,
+                    "uniqueItems": true
+                },
+                "end_key_indexes": {
+                    "description": "The column indices, starting with zero, for the columns containing the time, x and y coordinates of the last point in the tracklog.",
+                    "type": "array",
+                    "items": {
+                        "type": "integer",
+                        "minimum": 0
+                    },
+                    "minItems": 3,
+                    "maxItems": 3,
+                    "uniqueItems": true
+                }
+            },
+            "required": [
+                "end_key_indexes",
+                "field_names",
+                "field_types",
+                "name",
+                "start_key_indexes"
+            ],
+            "title": "CsvTrackLogs"
+        },
+        "CsvFieldType": {
+            "description": "Describes the data type for a column in the CSV.  Corresponds to parameter values in the esri create geodatabase table tool",
+            "type": "string",
+            "enum": [
+                "TEXT",
+                "SHORT",
+                "DOUBLE",
+                "DATE"
+            ],
+            "title": "CsvFieldType"
+        }
+    }
+}

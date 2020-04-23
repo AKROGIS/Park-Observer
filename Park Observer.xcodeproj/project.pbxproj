@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		742B08A7244A477A00A5137C /* Protocol Specification.md in Resources */ = {isa = PBXBuildFile; fileRef = 742B08A2244A477A00A5137C /* Protocol Specification.md */; };
 		747165EC243C37A800A9C960 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 747165EB243C37A800A9C960 /* AppDelegate.swift */; };
 		747165EE243C37A800A9C960 /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 747165ED243C37A800A9C960 /* SceneDelegate.swift */; };
 		747165F0243C37A800A9C960 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 747165EF243C37A800A9C960 /* ContentView.swift */; };
@@ -29,6 +30,12 @@
 		7471664E2447917D00A9C960 /* Defaults.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7471664D2447917D00A9C960 /* Defaults.swift */; };
 		747166502447979400A9C960 /* LocationButtonController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7471664F2447979400A9C960 /* LocationButtonController.swift */; };
 		747166522448F66F00A9C960 /* Environment.swift in Sources */ = {isa = PBXBuildFile; fileRef = 747166512448F66F00A9C960 /* Environment.swift */; };
+		74A25FB82451F206006D82CE /* protocol.v1.schema.json in Resources */ = {isa = PBXBuildFile; fileRef = 74A25FB62451F206006D82CE /* protocol.v1.schema.json */; };
+		74A25FB92451F206006D82CE /* protocol.v2.schema.json in Resources */ = {isa = PBXBuildFile; fileRef = 74A25FB72451F206006D82CE /* protocol.v2.schema.json */; };
+		74A25FBB2451F33F006D82CE /* SurveyProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = 74A25FBA2451F33F006D82CE /* SurveyProtocol.swift */; };
+		74A25FBE24522466006D82CE /* Sample Protocol.v2.obsprot in Resources */ = {isa = PBXBuildFile; fileRef = 74A25FBC24522465006D82CE /* Sample Protocol.v2.obsprot */; };
+		74A25FBF24522466006D82CE /* Sample Protocol.v1.obsprot in Resources */ = {isa = PBXBuildFile; fileRef = 74A25FBD24522466006D82CE /* Sample Protocol.v1.obsprot */; };
+		74A25FC124522877006D82CE /* Protocol Guide.md in Resources */ = {isa = PBXBuildFile; fileRef = 74A25FC024522877006D82CE /* Protocol Guide.md */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -63,6 +70,7 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		742B08A2244A477A00A5137C /* Protocol Specification.md */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = net.daringfireball.markdown; path = "Protocol Specification.md"; sourceTree = "<group>"; };
 		747165E8243C37A800A9C960 /* Park Observer.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Park Observer.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		747165EB243C37A800A9C960 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		747165ED243C37A800A9C960 /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
@@ -91,6 +99,12 @@
 		7471664D2447917D00A9C960 /* Defaults.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Defaults.swift; sourceTree = "<group>"; };
 		7471664F2447979400A9C960 /* LocationButtonController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LocationButtonController.swift; sourceTree = "<group>"; };
 		747166512448F66F00A9C960 /* Environment.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Environment.swift; sourceTree = "<group>"; };
+		74A25FB62451F206006D82CE /* protocol.v1.schema.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = protocol.v1.schema.json; sourceTree = "<group>"; };
+		74A25FB72451F206006D82CE /* protocol.v2.schema.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = protocol.v2.schema.json; sourceTree = "<group>"; };
+		74A25FBA2451F33F006D82CE /* SurveyProtocol.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SurveyProtocol.swift; sourceTree = "<group>"; };
+		74A25FBC24522465006D82CE /* Sample Protocol.v2.obsprot */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = "Sample Protocol.v2.obsprot"; sourceTree = "<group>"; };
+		74A25FBD24522466006D82CE /* Sample Protocol.v1.obsprot */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = "Sample Protocol.v1.obsprot"; sourceTree = "<group>"; };
+		74A25FC024522877006D82CE /* Protocol Guide.md */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = net.daringfireball.markdown; path = "Protocol Guide.md"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -182,6 +196,7 @@
 		7471661B243C391100A9C960 /* Models */ = {
 			isa = PBXGroup;
 			children = (
+				74A25FBA2451F33F006D82CE /* SurveyProtocol.swift */,
 			);
 			path = Models;
 			sourceTree = "<group>";
@@ -226,6 +241,12 @@
 			isa = PBXGroup;
 			children = (
 				74716620243C41C900A9C960 /* Adding ArcGIS.md */,
+				74A25FC024522877006D82CE /* Protocol Guide.md */,
+				742B08A2244A477A00A5137C /* Protocol Specification.md */,
+				74A25FB62451F206006D82CE /* protocol.v1.schema.json */,
+				74A25FB72451F206006D82CE /* protocol.v2.schema.json */,
+				74A25FBD24522466006D82CE /* Sample Protocol.v1.obsprot */,
+				74A25FBC24522465006D82CE /* Sample Protocol.v2.obsprot */,
 			);
 			path = Documentation;
 			sourceTree = "<group>";
@@ -356,8 +377,14 @@
 			buildActionMask = 2147483647;
 			files = (
 				747165F8243C37AA00A9C960 /* LaunchScreen.storyboard in Resources */,
+				74A25FB82451F206006D82CE /* protocol.v1.schema.json in Resources */,
+				74A25FC124522877006D82CE /* Protocol Guide.md in Resources */,
+				74A25FBF24522466006D82CE /* Sample Protocol.v1.obsprot in Resources */,
 				747165F5243C37AA00A9C960 /* Preview Assets.xcassets in Resources */,
 				747165F2243C37AA00A9C960 /* Assets.xcassets in Resources */,
+				742B08A7244A477A00A5137C /* Protocol Specification.md in Resources */,
+				74A25FBE24522466006D82CE /* Sample Protocol.v2.obsprot in Resources */,
+				74A25FB92451F206006D82CE /* protocol.v2.schema.json in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -418,6 +445,7 @@
 				747165F0243C37A800A9C960 /* ContentView.swift in Sources */,
 				7471663A243E854800A9C960 /* Scalebar.swift in Sources */,
 				74716639243E854800A9C960 /* Coalescer.swift in Sources */,
+				74A25FBB2451F33F006D82CE /* SurveyProtocol.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
