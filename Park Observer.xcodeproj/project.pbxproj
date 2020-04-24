@@ -14,7 +14,6 @@
 		747165F2243C37AA00A9C960 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 747165F1243C37AA00A9C960 /* Assets.xcassets */; };
 		747165F5243C37AA00A9C960 /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 747165F4243C37AA00A9C960 /* Preview Assets.xcassets */; };
 		747165F8243C37AA00A9C960 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 747165F6243C37AA00A9C960 /* LaunchScreen.storyboard */; };
-		74716603243C37AA00A9C960 /* Park_ObserverTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 74716602243C37AA00A9C960 /* Park_ObserverTests.swift */; };
 		7471660E243C37AA00A9C960 /* Park_ObserverUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7471660D243C37AA00A9C960 /* Park_ObserverUITests.swift */; };
 		74716624243C422700A9C960 /* ArcGIS.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 74716623243C422700A9C960 /* ArcGIS.framework */; };
 		74716625243C422700A9C960 /* ArcGIS.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 74716623243C422700A9C960 /* ArcGIS.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
@@ -36,6 +35,14 @@
 		74A25FBE24522466006D82CE /* Sample Protocol.v2.obsprot in Resources */ = {isa = PBXBuildFile; fileRef = 74A25FBC24522465006D82CE /* Sample Protocol.v2.obsprot */; };
 		74A25FBF24522466006D82CE /* Sample Protocol.v1.obsprot in Resources */ = {isa = PBXBuildFile; fileRef = 74A25FBD24522466006D82CE /* Sample Protocol.v1.obsprot */; };
 		74A25FC124522877006D82CE /* Protocol Guide.md in Resources */ = {isa = PBXBuildFile; fileRef = 74A25FC024522877006D82CE /* Protocol Guide.md */; };
+		74A25FC324522B48006D82CE /* SurveyProtocolTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 74A25FC224522B48006D82CE /* SurveyProtocolTests.swift */; };
+		74A25FC624523371006D82CE /* Mission.swift in Sources */ = {isa = PBXBuildFile; fileRef = 74A25FC524523371006D82CE /* Mission.swift */; };
+		74A25FC824523381006D82CE /* Dialog.swift in Sources */ = {isa = PBXBuildFile; fileRef = 74A25FC724523381006D82CE /* Dialog.swift */; };
+		74A25FCA24523390006D82CE /* Feature.swift in Sources */ = {isa = PBXBuildFile; fileRef = 74A25FC924523390006D82CE /* Feature.swift */; };
+		74A25FCC245233B8006D82CE /* MissionTotalizer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 74A25FCB245233B8006D82CE /* MissionTotalizer.swift */; };
+		74A25FCE245233E1006D82CE /* CsvFormat.swift in Sources */ = {isa = PBXBuildFile; fileRef = 74A25FCD245233E1006D82CE /* CsvFormat.swift */; };
+		74A25FD0245233FF006D82CE /* Symbology.swift in Sources */ = {isa = PBXBuildFile; fileRef = 74A25FCF245233FF006D82CE /* Symbology.swift */; };
+		74A25FD124524FFB006D82CE /* ArcGIS.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 74716623243C422700A9C960 /* ArcGIS.framework */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -80,7 +87,6 @@
 		747165F7243C37AA00A9C960 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		747165F9243C37AA00A9C960 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		747165FE243C37AA00A9C960 /* Park ObserverTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "Park ObserverTests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
-		74716602243C37AA00A9C960 /* Park_ObserverTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Park_ObserverTests.swift; sourceTree = "<group>"; };
 		74716604243C37AA00A9C960 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		74716609243C37AA00A9C960 /* Park ObserverUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "Park ObserverUITests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
 		7471660D243C37AA00A9C960 /* Park_ObserverUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Park_ObserverUITests.swift; sourceTree = "<group>"; };
@@ -105,6 +111,13 @@
 		74A25FBC24522465006D82CE /* Sample Protocol.v2.obsprot */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = "Sample Protocol.v2.obsprot"; sourceTree = "<group>"; };
 		74A25FBD24522466006D82CE /* Sample Protocol.v1.obsprot */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = "Sample Protocol.v1.obsprot"; sourceTree = "<group>"; };
 		74A25FC024522877006D82CE /* Protocol Guide.md */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = net.daringfireball.markdown; path = "Protocol Guide.md"; sourceTree = "<group>"; };
+		74A25FC224522B48006D82CE /* SurveyProtocolTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SurveyProtocolTests.swift; sourceTree = "<group>"; };
+		74A25FC524523371006D82CE /* Mission.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Mission.swift; sourceTree = "<group>"; };
+		74A25FC724523381006D82CE /* Dialog.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Dialog.swift; sourceTree = "<group>"; };
+		74A25FC924523390006D82CE /* Feature.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Feature.swift; sourceTree = "<group>"; };
+		74A25FCB245233B8006D82CE /* MissionTotalizer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MissionTotalizer.swift; sourceTree = "<group>"; };
+		74A25FCD245233E1006D82CE /* CsvFormat.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CsvFormat.swift; sourceTree = "<group>"; };
+		74A25FCF245233FF006D82CE /* Symbology.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Symbology.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -120,6 +133,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				74A25FD124524FFB006D82CE /* ArcGIS.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -178,8 +192,8 @@
 		74716601243C37AA00A9C960 /* Park ObserverTests */ = {
 			isa = PBXGroup;
 			children = (
-				74716602243C37AA00A9C960 /* Park_ObserverTests.swift */,
 				74716604243C37AA00A9C960 /* Info.plist */,
+				74A25FC224522B48006D82CE /* SurveyProtocolTests.swift */,
 			);
 			path = "Park ObserverTests";
 			sourceTree = "<group>";
@@ -196,7 +210,7 @@
 		7471661B243C391100A9C960 /* Models */ = {
 			isa = PBXGroup;
 			children = (
-				74A25FBA2451F33F006D82CE /* SurveyProtocol.swift */,
+				74A25FC4245232F1006D82CE /* Survey Protocol */,
 			);
 			path = Models;
 			sourceTree = "<group>";
@@ -268,6 +282,20 @@
 				7471662E243D898A00A9C960 /* LicenseManager.swift */,
 			);
 			path = Utilities;
+			sourceTree = "<group>";
+		};
+		74A25FC4245232F1006D82CE /* Survey Protocol */ = {
+			isa = PBXGroup;
+			children = (
+				74A25FBA2451F33F006D82CE /* SurveyProtocol.swift */,
+				74A25FC524523371006D82CE /* Mission.swift */,
+				74A25FC724523381006D82CE /* Dialog.swift */,
+				74A25FC924523390006D82CE /* Feature.swift */,
+				74A25FCB245233B8006D82CE /* MissionTotalizer.swift */,
+				74A25FCD245233E1006D82CE /* CsvFormat.swift */,
+				74A25FCF245233FF006D82CE /* Symbology.swift */,
+			);
+			path = "Survey Protocol";
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -433,6 +461,7 @@
 				74716633243E5B4300A9C960 /* LocationButtonView.swift in Sources */,
 				7471664E2447917D00A9C960 /* Defaults.swift in Sources */,
 				747165EC243C37A800A9C960 /* AppDelegate.swift in Sources */,
+				74A25FC824523381006D82CE /* Dialog.swift in Sources */,
 				7471662F243D898A00A9C960 /* LicenseManager.swift in Sources */,
 				747166522448F66F00A9C960 /* Environment.swift in Sources */,
 				74716629243C487300A9C960 /* MapView.swift in Sources */,
@@ -440,12 +469,17 @@
 				7471663E243E859A00A9C960 /* ScalebarView.swift in Sources */,
 				747165EE243C37A800A9C960 /* SceneDelegate.swift in Sources */,
 				74716640243F933700A9C960 /* MapControlsView.swift in Sources */,
+				74A25FD0245233FF006D82CE /* Symbology.swift in Sources */,
 				7471662B243C4AF700A9C960 /* MapViewController.swift in Sources */,
 				747166502447979400A9C960 /* LocationButtonController.swift in Sources */,
 				747165F0243C37A800A9C960 /* ContentView.swift in Sources */,
+				74A25FCE245233E1006D82CE /* CsvFormat.swift in Sources */,
+				74A25FC624523371006D82CE /* Mission.swift in Sources */,
 				7471663A243E854800A9C960 /* Scalebar.swift in Sources */,
 				74716639243E854800A9C960 /* Coalescer.swift in Sources */,
+				74A25FCC245233B8006D82CE /* MissionTotalizer.swift in Sources */,
 				74A25FBB2451F33F006D82CE /* SurveyProtocol.swift in Sources */,
+				74A25FCA24523390006D82CE /* Feature.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -453,7 +487,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				74716603243C37AA00A9C960 /* Park_ObserverTests.swift in Sources */,
+				74A25FC324522B48006D82CE /* SurveyProtocolTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -661,6 +695,10 @@
 				BUNDLE_LOADER = "$(TEST_HOST)";
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = F3CMMML9FD;
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(USER_LIBRARY_DIR)/SDKs/ArcGIS/iOS/Frameworks/Dynamic",
+				);
 				INFOPLIST_FILE = "Park ObserverTests/Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 13.2;
 				LD_RUNPATH_SEARCH_PATHS = (
@@ -683,6 +721,10 @@
 				BUNDLE_LOADER = "$(TEST_HOST)";
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = F3CMMML9FD;
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(USER_LIBRARY_DIR)/SDKs/ArcGIS/iOS/Frameworks/Dynamic",
+				);
 				INFOPLIST_FILE = "Park ObserverTests/Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 13.2;
 				LD_RUNPATH_SEARCH_PATHS = (
