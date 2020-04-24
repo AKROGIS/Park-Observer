@@ -6,6 +6,7 @@
 //  Copyright © 2020 Alaska Region GIS Team. All rights reserved.
 //
 
+import ArcGIS
 import CoreData
 
 // MARK: - Feature
@@ -14,7 +15,7 @@ import CoreData
 struct Feature: Codable {
 
   /// If true, then this feature can be observed while off transect (not observing).
-  private let allowOffTransectObservationsOptional: Bool?
+  let allowOffTransectObservations: Bool
 
   /// A list of the feature's attributes.
   let attributes: [Attribute]?
@@ -32,10 +33,10 @@ struct Feature: Codable {
   let name: String
 
   /// The graphical representation of the feature.
-  let symbology: SimpleSymbology
+  let symbology: AGSRenderer
 
   enum CodingKeys: String, CodingKey {
-    case allowOffTransectObservationsOptional = "allow_off_transect_observations"
+    case allowOffTransectObservations = "allow_off_transect_observations"
     case attributes = "attributes"
     case dialog = "dialog"
     case label = "label"
@@ -43,6 +44,53 @@ struct Feature: Codable {
     case name = "name"
     case symbology = "symbology"
   }
+}
+
+//MARK: - Feature Codable
+// Custom coding/decoding to have AGSRenderer as property
+// AGSRenderer is a closed source objC object that does not implement Codeable
+
+extension Feature {
+
+  init(from decoder: Decoder) throws {
+    let container = try decoder.container(keyedBy: CodingKeys.self)
+    let aoto = try container.decodeIfPresent(Bool.self, forKey: .allowOffTransectObservations) ?? false
+    let attributes = try container.decodeIfPresent([Attribute].self, forKey: .attributes)
+    let dialog = try container.decodeIfPresent(Dialog.self, forKey: .dialog)
+    let label = try container.decodeIfPresent(Label.self, forKey: .label)
+    let locations = try container.decode([Location].self, forKey: .locations)
+    let name = try container.decode(String.self, forKey: .name)
+    var renderer: AGSRenderer = AGSSimpleRenderer(for: .features)
+    do {
+      if let symbology = try container.decodeIfPresent(SimpleSymbology.self, forKey: .symbology) {
+        renderer = AGSSimpleRenderer(for: .features, color: symbology.color, size: symbology.size)
+      }
+    }
+    self.init(allowOffTransectObservations: aoto,
+              attributes: attributes,
+              dialog: dialog,
+              label: label,
+              locations: locations,
+              name: name,
+              symbology: renderer)
+  }
+
+  func encode(to encoder: Encoder) throws {
+    var container = encoder.container(keyedBy: CodingKeys.self)
+    try container.encode(allowOffTransectObservations, forKey: .allowOffTransectObservations)
+    try container.encodeIfPresent(attributes, forKey: .attributes)
+    try container.encodeIfPresent(dialog, forKey: .dialog)
+    try container.encodeIfPresent(label, forKey: .label)
+    try container.encodeIfPresent(locations, forKey: .locations)
+    try container.encodeIfPresent(name, forKey: .name)
+    if let renderer = symbology as? AGSSimpleRenderer {
+      if let symbol = renderer.symbol as? AGSSimpleMarkerSymbol {
+        let symbology = SimpleSymbology(color: symbol.color , size: Double(symbol.size))
+        try container.encodeIfPresent(symbology, forKey: .symbology)
+      }
+    }
+  }
+
 }
 
 // MARK: - Attribute
@@ -154,10 +202,6 @@ struct Label: Codable {
 //TODO: Build decoder for the label; support esri JSON
 
 //MARK: - Defaults
-
-extension Feature {
-  var allowOffTransectObservations: Bool { allowOffTransectObservationsOptional ?? false }
-}
 
 extension Location {
   var allow: Bool { allowOptional ?? true }

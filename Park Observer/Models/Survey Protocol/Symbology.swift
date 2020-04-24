@@ -49,7 +49,48 @@ enum SimpleSymbol {
   case text
 }
 
+//MARK: - Default Renderers
+
+extension AGSSimpleRenderer {
+  enum DefaultRenderer {
+    /// points for observed features
+    case features
+    /// points for mission properties, i.e. tracklog observations
+    case mission
+    /// gps points
+    case gps
+    /// line segments while tracklogging but not observing, i.e. off transet
+    case onTransect
+    /// line segments while tracklogging but not observing, i.e. off transet
+    case offTransect
+  }
+
+  convenience init(for style: DefaultRenderer, color: UIColor? = nil, size: Double? = nil) {
+    switch style {
+    case .features:
+      let color = color ?? .red
+      let size = CGFloat(size ?? 14.0)
+      let symbol = AGSSimpleMarkerSymbol(style: .circle, color: color, size: size)
+      self.init(symbol: symbol)
+    case .mission:
+      let symbol = AGSSimpleMarkerSymbol(style: .circle, color: .green, size: 12.0)
+      self.init(symbol: symbol)
+    case .gps:
+      let symbol = AGSSimpleMarkerSymbol(style: .circle, color: .blue, size: 6.0)
+      self.init(symbol: symbol)
+    case .onTransect:
+      let symbol = AGSSimpleLineSymbol(style: .solid, color: .red, width: 3.0)
+      self.init(symbol: symbol)
+    case .offTransect:
+      let symbol = AGSSimpleLineSymbol(style: .solid, color: .gray, width: 1.5)
+      self.init(symbol: symbol)
+    }
+  }
+
+}
+
 //MARK: - Simple Symbology
+// For support of symbology in version 1 of protocol
 
 struct SimpleSymbology {
   let color: UIColor?
@@ -68,8 +109,13 @@ extension SimpleSymbology: Codable {
     var color: UIColor?
     if let hex = try container.decodeIfPresent(String.self, forKey: .color) {
       color = UIColor(hex: hex)
+      //TODO: if color == nil then throw parsing error
     }
-    let size: Double? = try container.decodeIfPresent(Double.self, forKey: .size)
+    var size: Double? = try container.decodeIfPresent(Double.self, forKey: .size)
+    if size != nil && size! < 0 {
+      size = nil
+      //TODO: Throw parsing error
+    }
     self.init(color: color, size: size)
   }
 
@@ -82,9 +128,8 @@ extension SimpleSymbology: Codable {
 }
 
 //MARK: - UIColor
+// Extend UIColor to read/write hex colors of the form: #RRGGBB (ignores alpha component)
 
-// Extend UIColor to read/write hex colors of the form: #RRGGBB
-// Ignores alpha component
 extension UIColor {
   public convenience init?(hex: String) {
     let r: CGFloat
