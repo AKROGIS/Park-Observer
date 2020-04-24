@@ -6,7 +6,6 @@
 //  Copyright © 2020 Alaska Region GIS Team. All rights reserved.
 //
 
-//import ArcGIS
 import XCTest
 
 @testable import Park_Observer
@@ -40,7 +39,7 @@ class SurveyProtocolTests: XCTestCase {
     let surveyProtocol = try? SurveyProtocol(json, using: .utf8)
 
     // Then:
-    XCTAssertNotNil(surveyProtocol)
+    XCTAssertNotNil(surveyProtocol)  // Failed parsing; JSON is invalid
     if let sp = surveyProtocol {
       XCTAssertEqual(sp.metaName, "NPS-Protocol-Specification")
       XCTAssertEqual(sp.metaVersion, 1)
@@ -51,8 +50,8 @@ class SurveyProtocolTests: XCTestCase {
       XCTAssertEqual(sp.features[0].name, "Birds")
       XCTAssertEqual(sp.features[0].locations.count, 1)
       XCTAssertEqual(sp.features[0].locations[0].type, .gps)
-      //TODO: Test Symbology
-      //XCTAssertEqual(sp.features[0].symbology.renderer)
+
+      // sp.features[0].symbology tests in SymbologyTests
 
       // defaults
       XCTAssertNil(sp.date)
@@ -117,6 +116,5 @@ class SurveyProtocolTests: XCTestCase {
     //TODO: support adhocTouch as synonym for mapTouch
     //TODO: support baseline as a synonym for deadAhead
   }
-
 
 }

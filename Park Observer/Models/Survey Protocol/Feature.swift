@@ -32,7 +32,7 @@ struct Feature: Codable {
   let name: String
 
   /// The graphical representation of the feature.
-  let symbology: Symbology
+  let symbology: SimpleSymbology
 
   enum CodingKeys: String, CodingKey {
     case allowOffTransectObservationsOptional = "allow_off_transect_observations"

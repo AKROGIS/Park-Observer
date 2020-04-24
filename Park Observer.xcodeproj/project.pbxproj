@@ -43,6 +43,7 @@
 		74A25FCE245233E1006D82CE /* CsvFormat.swift in Sources */ = {isa = PBXBuildFile; fileRef = 74A25FCD245233E1006D82CE /* CsvFormat.swift */; };
 		74A25FD0245233FF006D82CE /* Symbology.swift in Sources */ = {isa = PBXBuildFile; fileRef = 74A25FCF245233FF006D82CE /* Symbology.swift */; };
 		74A25FD124524FFB006D82CE /* ArcGIS.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 74716623243C422700A9C960 /* ArcGIS.framework */; };
+		74A25FD3245360A5006D82CE /* SymbologyTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 74A25FD2245360A5006D82CE /* SymbologyTests.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -118,6 +119,7 @@
 		74A25FCB245233B8006D82CE /* MissionTotalizer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MissionTotalizer.swift; sourceTree = "<group>"; };
 		74A25FCD245233E1006D82CE /* CsvFormat.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CsvFormat.swift; sourceTree = "<group>"; };
 		74A25FCF245233FF006D82CE /* Symbology.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Symbology.swift; sourceTree = "<group>"; };
+		74A25FD2245360A5006D82CE /* SymbologyTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SymbologyTests.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -194,6 +196,7 @@
 			children = (
 				74716604243C37AA00A9C960 /* Info.plist */,
 				74A25FC224522B48006D82CE /* SurveyProtocolTests.swift */,
+				74A25FD2245360A5006D82CE /* SymbologyTests.swift */,
 			);
 			path = "Park ObserverTests";
 			sourceTree = "<group>";
@@ -488,6 +491,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				74A25FC324522B48006D82CE /* SurveyProtocolTests.swift in Sources */,
+				74A25FD3245360A5006D82CE /* SymbologyTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
