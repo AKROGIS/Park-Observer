@@ -54,7 +54,9 @@ extension Feature {
 
   init(from decoder: Decoder) throws {
     let container = try decoder.container(keyedBy: CodingKeys.self)
-    let aoto = try container.decodeIfPresent(Bool.self, forKey: .allowOffTransectObservations) ?? false
+    let allowOffTransectObservations = try container.decodeIfPresent(
+      Bool.self, forKey: .allowOffTransectObservations)
+      ?? false
     let attributes = try container.decodeIfPresent([Attribute].self, forKey: .attributes)
     let dialog = try container.decodeIfPresent(Dialog.self, forKey: .dialog)
     let label = try container.decodeIfPresent(Label.self, forKey: .label)
@@ -66,13 +68,14 @@ extension Feature {
         renderer = AGSSimpleRenderer(for: .features, color: symbology.color, size: symbology.size)
       }
     }
-    self.init(allowOffTransectObservations: aoto,
-              attributes: attributes,
-              dialog: dialog,
-              label: label,
-              locations: locations,
-              name: name,
-              symbology: renderer)
+    self.init(
+      allowOffTransectObservations: allowOffTransectObservations,
+      attributes: attributes,
+      dialog: dialog,
+      label: label,
+      locations: locations,
+      name: name,
+      symbology: renderer)
   }
 
   func encode(to encoder: Encoder) throws {
@@ -85,7 +88,7 @@ extension Feature {
     try container.encodeIfPresent(name, forKey: .name)
     if let renderer = symbology as? AGSSimpleRenderer {
       if let symbol = renderer.symbol as? AGSSimpleMarkerSymbol {
-        let symbology = SimpleSymbology(color: symbol.color , size: Double(symbol.size))
+        let symbology = SimpleSymbology(color: symbol.color, size: Double(symbol.size))
         try container.encodeIfPresent(symbology, forKey: .symbology)
       }
     }
@@ -179,7 +182,7 @@ struct Label: Codable {
 
   /// The color of the text as a hexidecimal triplet of red, green and blue values. `#RRGGBB`;
   /// 00 = 0 (none), FF = 255 (full).
-  let color: String?
+  let color: String?  //FIXME: This is the wrong type (should be UIColor)
 
   /// An attribute name (from Attributes) that will be used as the text of the label.
   let field: String

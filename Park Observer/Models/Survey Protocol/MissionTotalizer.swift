@@ -8,7 +8,7 @@
 
 /// An object used to define the text summarizing the mission so far.
 struct MissionTotalizer: Codable {
-  
+
   /// The names of attributes that are 'watched'. When one of them changes, the totalizer resets.
   let fields: [String]
 

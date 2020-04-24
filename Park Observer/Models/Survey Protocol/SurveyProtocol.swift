@@ -2,7 +2,7 @@
 // It was subsequently refactored to encapsulate functionality and reduce file size.
 
 //
-//   let surveyProtocol = try? newJSONDecoder().decode(SurveyProtocol.self, from: jsonData)
+//   let surveyProtocol = try? JSONDecoder().decode(SurveyProtocol.self, from: jsonData)
 
 import Foundation  // for JSONDecoder, Data, URL
 

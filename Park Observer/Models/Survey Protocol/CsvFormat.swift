@@ -138,4 +138,3 @@ enum CSVFieldType: String, Codable {
   case short = "SHORT"
   case text = "TEXT"
 }
-
