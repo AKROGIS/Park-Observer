@@ -6,12 +6,14 @@
 //  Copyright © 2020 Alaska Region GIS Team. All rights reserved.
 //
 
+import ArcGIS
 import XCTest
 
 @testable import Park_Observer
-import ArcGIS
 
 class SymbologyTests: XCTestCase {
+
+  //MARK: - Version 1 Symbology
 
   func testSimpleSymbology() {
     // Given:
@@ -187,6 +189,8 @@ class SymbologyTests: XCTestCase {
     }
   }
 
+  //MARK: - Feature Symbology
+
   func testFeatureSymbologyV1_missing() {
     // Given:
     struct TestJson: Codable {
@@ -252,6 +256,106 @@ class SymbologyTests: XCTestCase {
       """
       {
         "feature": {
+          "name":"Birds",
+          "locations":[ {"type": "gps"} ],
+          "symbology": 14
+        }
+      }
+      """.utf8)
+
+    // When:
+    let json = try? JSONDecoder().decode(TestJson.self, from: jsonData)
+
+    // Then:
+    XCTAssertNil(json)  // Should fail parsing;
+  }
+
+  //MARK: - Mission Symbology
+
+  func testMissionSymbologyV1_missing() {
+    // Given:
+    struct TestJson: Codable {
+      let mission: Mission
+    }
+    let jsonData = Data(
+      """
+      {
+        "mission": {}
+      }
+      """.utf8)
+
+    // When:
+    let json = try? JSONDecoder().decode(TestJson.self, from: jsonData)
+
+    // Then:
+    XCTAssertNotNil(json)  // Failed parsing; JSON is invalid
+    if let test = json {
+      var renderer = AGSSimpleRenderer(for: .mission)
+      XCTAssertTrue(test.mission.symbology.isEqual(to: renderer))
+      renderer = AGSSimpleRenderer(for: .gps)
+      XCTAssertTrue(test.mission.gpsSymbology.isEqual(to: renderer))
+      renderer = AGSSimpleRenderer(for: .onTransect)
+      XCTAssertTrue(test.mission.onSymbology.isEqual(to: renderer))
+      renderer = AGSSimpleRenderer(for: .offTransect)
+      XCTAssertTrue(test.mission.offSymbology.isEqual(to: renderer))
+    }
+  }
+
+  func testMissionSymbologyV1_ok() {
+    // Given:
+    struct TestJson: Codable {
+      let mission: Mission
+    }
+    let jsonData = Data(
+      """
+      {
+        "mission": {
+          "symbology":{
+            "color":"#AA00CC",
+            "size":10
+          },
+          "onSymbology":{
+            "color":"#BB00CC",
+            "size":11
+          },
+          "offSymbology":{
+            "color":"#CC00CC",
+            "size":12
+          },
+          "gpsSymbology":{
+            "color":"#DD00CC",
+            "size":13
+          }
+        }
+      }
+      """.utf8)
+
+    // When:
+    let json = try? JSONDecoder().decode(TestJson.self, from: jsonData)
+
+    // Then:
+    XCTAssertNotNil(json)  // Failed parsing; JSON is invalid
+    if let test = json {
+      var renderer = AGSSimpleRenderer(for: .mission, color: UIColor(hex: "#AA00CC"), size: 10)
+      XCTAssertTrue(test.mission.symbology.isEqual(to: renderer))
+      renderer = AGSSimpleRenderer(for: .onTransect, color: UIColor(hex: "#BB00CC"), size: 11)
+      XCTAssertTrue(test.mission.onSymbology.isEqual(to: renderer))
+      renderer = AGSSimpleRenderer(for: .offTransect, color: UIColor(hex: "#CC00CC"), size: 12)
+      XCTAssertTrue(test.mission.offSymbology.isEqual(to: renderer))
+      renderer = AGSSimpleRenderer(for: .gps, color: UIColor(hex: "#DD00CC"), size: 13)
+      XCTAssertTrue(test.mission.gpsSymbology.isEqual(to: renderer))
+    }
+  }
+
+  func testMissionSymbologyV1_invalid() {
+    // Given:
+    struct TestJson: Codable {
+      let mission: Mission
+    }
+    let jsonData = Data(
+      """
+      {
+        "mission": {
           "name":"Birds",
           "locations":[ {"type": "gps"} ],
           "symbology": 14

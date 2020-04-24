@@ -6,6 +6,8 @@
 //  Copyright © 2020 Alaska Region GIS Team. All rights reserved.
 //
 
+import ArcGIS
+
 /// An object for describing segments of the survey.
 struct Mission: Codable {
 
@@ -16,31 +18,31 @@ struct Mission: Codable {
   let dialog: Dialog?
 
   /// If true, the mission attributes editor will be displayed when the start observing button is first pushed.
-  private let editAtStartFirstObservingOptional: Bool?
+  let editAtStartFirstObserving: Bool
 
   /// If true, the mission attributes editor will be displayed when the start recording button is pushed.
-  private let editAtStartRecordingOptional: Bool?
+  let editAtStartRecording: Bool
 
   /// If true, the mission attributes editor will be displayed when the start observing button is pushed after the first push.
-  private let editAtStartReobservingOptional: Bool?
+  let editAtStartReobserving: Bool
 
   /// If true, the mission attributes editor will be displayed when the stop observing button is pushed.
-  private let editAtStopObservingOptional: Bool?
+  let editAtStopObserving: Bool
 
   /// If true, the mission attributes editor will be displayed for the start of the segment when the stop observing button is pushed.
-  private let editPriorAtStopObservingOptional: Bool?
+  let editPriorAtStopObserving: Bool
 
   /// The graphical representation of the gps points along the track log.
-  private let gpsSymbologyOptional: Symbology?
+  let gpsSymbology: AGSRenderer
 
   /// The graphical representation of the track log when not observing (off-transect).
-  private let offSymbologyOptional: Symbology?
+  let offSymbology: AGSRenderer
 
   /// The graphical representation of the track log when observing (on-transect).
-  private let onSymbologyOptional: Symbology?
+  let onSymbology: AGSRenderer
 
   /// The graphical representation of the points when the mission properties were edited.
-  private let symbologyOptional: Symbology?
+  let symbology: AGSRenderer
 
   /// An object used to define the text summarizing the mission so far.
   let totalizer: MissionTotalizer?
@@ -48,30 +50,116 @@ struct Mission: Codable {
   enum CodingKeys: String, CodingKey {
     case attributes = "attributes"
     case dialog = "dialog"
-    case editAtStartFirstObservingOptional = "edit_at_start_first_observing"
-    case editAtStartRecordingOptional = "edit_at_start_recording"
-    case editAtStartReobservingOptional = "edit_at_start_reobserving"
-    case editAtStopObservingOptional = "edit_at_stop_observing"
-    case editPriorAtStopObservingOptional = "edit_prior_at_stop_observing"
-    case gpsSymbologyOptional = "gps-symbology"
-    case offSymbologyOptional = "off-symbology"
-    case onSymbologyOptional = "on-symbology"
-    case symbologyOptional = "symbology"
+    case editAtStartFirstObserving = "edit_at_start_first_observing"
+    case editAtStartRecording = "edit_at_start_recording"
+    case editAtStartReobserving = "edit_at_start_reobserving"
+    case editAtStopObserving = "edit_at_stop_observing"
+    case editPriorAtStopObserving = "edit_prior_at_stop_observing"
+    case gpsSymbology = "gps-symbology"
+    case offSymbology = "off-symbology"
+    case onSymbology = "on-symbology"
+    case symbology = "symbology"
     case totalizer = "totalizer"
   }
 
 }
 
-//MARK: - Defaults
+//MARK: - Mission Codable
+// Custom coding/decoding to have AGSRenderer as property
+// AGSRenderer is a closed source objC object that does not implement Codeable
 
 extension Mission {
-  var editAtStartFirstObserving: Bool { editAtStartFirstObservingOptional ?? false}
-  var editAtStartRecording: Bool { editAtStartRecordingOptional ?? false}
-  var editAtStartReobserving: Bool { editAtStartReobservingOptional ?? false}
-  var editAtStopObserving: Bool { editAtStopObservingOptional ?? false}
-  var editPriorAtStopObserving: Bool { editPriorAtStopObservingOptional ?? false}
-  var symbology: Symbology { symbologyOptional ?? Symbology(.point, size:12.0, color:.green)}
-  var gpsSymbology: Symbology { gpsSymbologyOptional ?? Symbology(.point, size:6.0, color:.blue)}
-  var onSymbology: Symbology { onSymbologyOptional ?? Symbology(.line, size:3.0, color:.red)}
-  var offSymbology: Symbology { offSymbologyOptional ?? Symbology(.line, size:1.5, color:.gray)}
+
+  init(from decoder: Decoder) throws {
+    let container = try decoder.container(keyedBy: CodingKeys.self)
+    let attributes = try container.decodeIfPresent([Attribute].self, forKey: .attributes)
+    let dialog = try container.decodeIfPresent(Dialog.self, forKey: .dialog)
+    let editAtStartFirstObserving = try container.decodeIfPresent(
+      Bool.self, forKey: .editAtStartFirstObserving) ?? false
+    let editAtStartRecording = try container.decodeIfPresent(
+      Bool.self, forKey: .editAtStartRecording) ?? false
+    let editAtStartReobserving = try container.decodeIfPresent(
+      Bool.self, forKey: .editAtStartReobserving) ?? false
+    let editAtStopObserving = try container.decodeIfPresent(Bool.self, forKey: .editAtStopObserving)
+      ?? false
+    let editPriorAtStopObserving = try container.decodeIfPresent(
+      Bool.self, forKey: .editPriorAtStopObserving) ?? false
+    let totalizer = try container.decodeIfPresent(MissionTotalizer.self, forKey: .totalizer)
+    var gpsRenderer: AGSRenderer = AGSSimpleRenderer(for: .gps)
+    do {
+      if let symbology = try container.decodeIfPresent(SimpleSymbology.self, forKey: .symbology) {
+        gpsRenderer = AGSSimpleRenderer(for: .gps, color: symbology.color, size: symbology.size)
+      }
+    }
+    var onRenderer: AGSRenderer = AGSSimpleRenderer(for: .onTransect)
+    do {
+      if let symbology = try container.decodeIfPresent(SimpleSymbology.self, forKey: .symbology) {
+        onRenderer = AGSSimpleRenderer(
+          for: .onTransect, color: symbology.color, size: symbology.size)
+      }
+    }
+    var offRenderer: AGSRenderer = AGSSimpleRenderer(for: .offTransect)
+    do {
+      if let symbology = try container.decodeIfPresent(SimpleSymbology.self, forKey: .symbology) {
+        offRenderer = AGSSimpleRenderer(
+          for: .offTransect, color: symbology.color, size: symbology.size)
+      }
+    }
+    var renderer: AGSRenderer = AGSSimpleRenderer(for: .mission)
+    do {
+      if let symbology = try container.decodeIfPresent(SimpleSymbology.self, forKey: .symbology) {
+        renderer = AGSSimpleRenderer(for: .mission, color: symbology.color, size: symbology.size)
+      }
+    }
+    self.init(
+      attributes: attributes,
+      dialog: dialog,
+      editAtStartFirstObserving: editAtStartFirstObserving,
+      editAtStartRecording: editAtStartRecording,
+      editAtStartReobserving: editAtStartReobserving,
+      editAtStopObserving: editAtStopObserving,
+      editPriorAtStopObserving: editPriorAtStopObserving,
+      gpsSymbology: gpsRenderer,
+      offSymbology: offRenderer,
+      onSymbology: onRenderer,
+      symbology: renderer,
+      totalizer: totalizer)
+  }
+
+  func encode(to encoder: Encoder) throws {
+    var container = encoder.container(keyedBy: CodingKeys.self)
+    try container.encodeIfPresent(attributes, forKey: .attributes)
+    try container.encodeIfPresent(dialog, forKey: .dialog)
+    try container.encode(editAtStartFirstObserving, forKey: .editAtStartFirstObserving)
+    try container.encode(editAtStartRecording, forKey: .editAtStartRecording)
+    try container.encode(editAtStartReobserving, forKey: .editAtStartReobserving)
+    try container.encode(editAtStopObserving, forKey: .editAtStopObserving)
+    try container.encode(editPriorAtStopObserving, forKey: .editPriorAtStopObserving)
+    if let renderer = gpsSymbology as? AGSSimpleRenderer {
+      if let symbol = renderer.symbol as? AGSSimpleMarkerSymbol {
+        let symbology = SimpleSymbology(color: symbol.color, size: Double(symbol.size))
+        try container.encodeIfPresent(symbology, forKey: .symbology)
+      }
+    }
+    if let renderer = offSymbology as? AGSSimpleRenderer {
+      if let symbol = renderer.symbol as? AGSSimpleLineSymbol {
+        let symbology = SimpleSymbology(color: symbol.color, size: Double(symbol.width))
+        try container.encodeIfPresent(symbology, forKey: .symbology)
+      }
+    }
+    if let renderer = onSymbology as? AGSSimpleRenderer {
+      if let symbol = renderer.symbol as? AGSSimpleLineSymbol {
+        let symbology = SimpleSymbology(color: symbol.color, size: Double(symbol.width))
+        try container.encodeIfPresent(symbology, forKey: .symbology)
+      }
+    }
+    if let renderer = symbology as? AGSSimpleRenderer {
+      if let symbol = renderer.symbol as? AGSSimpleMarkerSymbol {
+        let symbology = SimpleSymbology(color: symbol.color, size: Double(symbol.size))
+        try container.encodeIfPresent(symbology, forKey: .symbology)
+      }
+    }
+    try container.encodeIfPresent(totalizer, forKey: .totalizer)
+  }
+
 }

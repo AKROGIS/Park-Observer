@@ -189,7 +189,7 @@ struct Label: Codable {
 
   /// An esri text symbol object, see
   /// https://developers.arcgis.com/documentation/common-data-types/symbol-objects.htm
-  let symbol: Symbology
+  let symbol: SimpleSymbology  //FIXME: This is the wrong type (Should be AGSLabelDefinition)
 
   enum CodingKeys: String, CodingKey {
     case color = "color"
