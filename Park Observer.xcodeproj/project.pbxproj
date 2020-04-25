@@ -44,6 +44,10 @@
 		74A25FD0245233FF006D82CE /* Symbology.swift in Sources */ = {isa = PBXBuildFile; fileRef = 74A25FCF245233FF006D82CE /* Symbology.swift */; };
 		74A25FD124524FFB006D82CE /* ArcGIS.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 74716623243C422700A9C960 /* ArcGIS.framework */; };
 		74A25FD3245360A5006D82CE /* SymbologyTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 74A25FD2245360A5006D82CE /* SymbologyTests.swift */; };
+		74A25FD52453B3FD006D82CE /* MissionTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 74A25FD42453B3FD006D82CE /* MissionTests.swift */; };
+		74A25FD72453B41A006D82CE /* FeatureTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 74A25FD62453B41A006D82CE /* FeatureTests.swift */; };
+		74A25FDA2453B469006D82CE /* TotalizerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 74A25FD92453B469006D82CE /* TotalizerTests.swift */; };
+		74A25FDE2453B4FE006D82CE /* DialogTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 74A25FDD2453B4FE006D82CE /* DialogTests.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -120,6 +124,10 @@
 		74A25FCD245233E1006D82CE /* CsvFormat.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CsvFormat.swift; sourceTree = "<group>"; };
 		74A25FCF245233FF006D82CE /* Symbology.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Symbology.swift; sourceTree = "<group>"; };
 		74A25FD2245360A5006D82CE /* SymbologyTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SymbologyTests.swift; sourceTree = "<group>"; };
+		74A25FD42453B3FD006D82CE /* MissionTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MissionTests.swift; sourceTree = "<group>"; };
+		74A25FD62453B41A006D82CE /* FeatureTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FeatureTests.swift; sourceTree = "<group>"; };
+		74A25FD92453B469006D82CE /* TotalizerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TotalizerTests.swift; sourceTree = "<group>"; };
+		74A25FDD2453B4FE006D82CE /* DialogTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DialogTests.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -195,8 +203,7 @@
 			isa = PBXGroup;
 			children = (
 				74716604243C37AA00A9C960 /* Info.plist */,
-				74A25FC224522B48006D82CE /* SurveyProtocolTests.swift */,
-				74A25FD2245360A5006D82CE /* SymbologyTests.swift */,
+				74A25FD82453B436006D82CE /* Survey Protocol */,
 			);
 			path = "Park ObserverTests";
 			sourceTree = "<group>";
@@ -290,13 +297,26 @@
 		74A25FC4245232F1006D82CE /* Survey Protocol */ = {
 			isa = PBXGroup;
 			children = (
-				74A25FBA2451F33F006D82CE /* SurveyProtocol.swift */,
-				74A25FC524523371006D82CE /* Mission.swift */,
+				74A25FCD245233E1006D82CE /* CsvFormat.swift */,
 				74A25FC724523381006D82CE /* Dialog.swift */,
 				74A25FC924523390006D82CE /* Feature.swift */,
+				74A25FC524523371006D82CE /* Mission.swift */,
 				74A25FCB245233B8006D82CE /* MissionTotalizer.swift */,
-				74A25FCD245233E1006D82CE /* CsvFormat.swift */,
+				74A25FBA2451F33F006D82CE /* SurveyProtocol.swift */,
 				74A25FCF245233FF006D82CE /* Symbology.swift */,
+			);
+			path = "Survey Protocol";
+			sourceTree = "<group>";
+		};
+		74A25FD82453B436006D82CE /* Survey Protocol */ = {
+			isa = PBXGroup;
+			children = (
+				74A25FDD2453B4FE006D82CE /* DialogTests.swift */,
+				74A25FD62453B41A006D82CE /* FeatureTests.swift */,
+				74A25FD42453B3FD006D82CE /* MissionTests.swift */,
+				74A25FC224522B48006D82CE /* SurveyProtocolTests.swift */,
+				74A25FD2245360A5006D82CE /* SymbologyTests.swift */,
+				74A25FD92453B469006D82CE /* TotalizerTests.swift */,
 			);
 			path = "Survey Protocol";
 			sourceTree = "<group>";
@@ -490,8 +510,12 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				74A25FD72453B41A006D82CE /* FeatureTests.swift in Sources */,
+				74A25FD52453B3FD006D82CE /* MissionTests.swift in Sources */,
 				74A25FC324522B48006D82CE /* SurveyProtocolTests.swift in Sources */,
 				74A25FD3245360A5006D82CE /* SymbologyTests.swift in Sources */,
+				74A25FDA2453B469006D82CE /* TotalizerTests.swift in Sources */,
+				74A25FDE2453B4FE006D82CE /* DialogTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
