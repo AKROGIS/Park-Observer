@@ -141,4 +141,10 @@ class SurveyProtocolTests: XCTestCase {
   func testv2_full() {
   }
 
+  //TODO: Test totalizer fields exist in attributes
+
+  //TODO: Test that dialog fields match attributes
+
+  //TODO: Test that dialog types match attribute types
+
 }

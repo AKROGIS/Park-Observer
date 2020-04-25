@@ -8,6 +8,8 @@
 
 import XCTest
 
+@testable import Park_Observer
+
 class FeatureTests: XCTestCase {
 
   func testv1feature() {
