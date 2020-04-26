@@ -121,32 +121,34 @@ struct Attribute: Codable {
 struct Location: Codable {
 
   /// Defines whether this type of location method is allowed.
-  private let allowOptional: Bool?
+  let allow: Bool
+
+  /// A deprecated synonym for deadAhead
+  private let baseline: Double
 
   /// The angle measurement in degrees that means the feature is dead ahead. Only used with type angleDistance.
-  private let deadAheadOptional: Double?
+  let deadAhead: Double
 
   /// Designates this location method as the default method if multiple are allowed.
-  private let locationDefaultOptional: Bool?
+  let locationDefault: Bool
 
   /// Defines whether angles increase in the clockwise (cw) or counter-clockwise (ccw) direction. Only used with type angleDistance.
-  private let directionOptional: Direction?
+  let direction: Direction
 
   /// The kind of location method described by this location.
   let type: TypeEnum
 
   /// Units of distance measurements to the feature. Only used with type angleDistance.
-  private let unitsOptional: LocationUnits?
-
-  //TODO: support baseline as a synonym for deadAhead
+  let units: LocationUnits
 
   enum CodingKeys: String, CodingKey {
-    case allowOptional = "allow"
-    case deadAheadOptional = "deadAhead"
-    case locationDefaultOptional = "default"
-    case directionOptional = "direction"
+    case allow = "allow"
+    case deadAhead = "deadAhead"
+    case baseline = "baseline"
+    case locationDefault = "default"
+    case direction = "direction"
     case type = "type"
-    case unitsOptional = "units"
+    case units = "units"
   }
 
   /// Defines whether angles increase in the clockwise (cw) or counter-clockwise (ccw) direction. Only used with type angleDistance.
@@ -154,9 +156,6 @@ struct Location: Codable {
     case ccw = "ccw"
     case cw = "cw"
   }
-
-  //TODO: support adhocTarget as synonym for mapTarget
-  //TODO: support adhocTouch as synonym for mapTouch
 
   /// The kind of location method described by this location.
   enum TypeEnum: String, Codable {
@@ -173,6 +172,56 @@ struct Location: Codable {
     case yards = "yards"
   }
 
+}
+
+//MARK: - Location Codable
+// Custom decoding to support deprecated properties/values
+
+extension Location {
+  init(from decoder: Decoder) throws {
+    let container = try decoder.container(keyedBy: CodingKeys.self)
+    let allow = try container.decodeIfPresent(Bool.self, forKey: .allow) ?? true
+    let baseline = try container.decodeIfPresent(Double.self, forKey: .baseline) ?? 0.0
+    let deadAhead = try container.decodeIfPresent(Double.self, forKey: .deadAhead) ?? baseline
+    let locationDefault = try container.decodeIfPresent(Bool.self, forKey: .locationDefault) ?? false
+    let direction = try container.decodeIfPresent(Direction.self, forKey: .direction) ?? .cw
+    let units = try container.decodeIfPresent(LocationUnits.self, forKey: .units) ?? .meters
+    let type = try container.decode(TypeEnum.self, forKey: .type)
+    self.init(
+      allow: allow,
+      baseline: deadAhead,
+      deadAhead: deadAhead,
+      locationDefault: locationDefault,
+      direction: direction,
+      type: type,
+      units: units)
+  }
+
+}
+
+extension Location.TypeEnum {
+  init(from decoder: Decoder) throws {
+    let container = try decoder.singleValueContainer()
+    let decoded = try  container.decode(String.self)
+    switch decoded {
+    case "adhocTouch":
+      self = .mapTouch
+      break
+    case "adhocTarget":
+      self = .mapTarget
+      break
+    default:
+      guard let value = Self(rawValue: decoded) else {
+        throw DecodingError.dataCorrupted(
+          DecodingError.Context(
+            codingPath: decoder.codingPath,
+            debugDescription: "Cannot initialize TypeEnum from invalid String value \(decoded)"
+          )
+        )
+      }
+      self = value
+    }
+  }
 }
 
 // MARK: - Label
@@ -203,13 +252,3 @@ struct Label: Codable {
 }
 
 //TODO: Build decoder for the label; support esri JSON
-
-//MARK: - Defaults
-
-extension Location {
-  var allow: Bool { allowOptional ?? true }
-  var deadAhead: Double { deadAheadOptional ?? 0.0 }
-  var locationDefault: Bool { locationDefaultOptional ?? false }
-  var direction: Direction { directionOptional ?? .cw }
-  var units: LocationUnits { unitsOptional ?? .meters }
-}
