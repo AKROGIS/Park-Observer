@@ -152,5 +152,70 @@ class MissionTests: XCTestCase {
     }
   }
 
-  // TODO Test Mission Attributes (see Feature tests)
+  func testMissionAttributesInvalid() {
+    // Given:
+    struct TestJson: Codable {
+      let mission: Mission
+    }
+    let jsonData = Data(
+      """
+      {
+        "mission": {
+          "attributes": {}
+        }
+      }
+      """.utf8)
+
+    // When:
+    let json = try? JSONDecoder().decode(TestJson.self, from: jsonData)
+
+    // Then:
+    XCTAssertNil(json)  // Failed parsing; JSON is invalid
+  }
+
+  func testMissionAttributesEmpty() {
+    // Given:
+    struct TestJson: Codable {
+      let mission: Mission
+    }
+    let jsonData = Data(
+      """
+      {
+        "mission": {
+          "attributes": []
+        }
+      }
+      """.utf8)
+
+    // When:
+    let json = try? JSONDecoder().decode(TestJson.self, from: jsonData)
+
+    // Then:
+    XCTAssertNil(json)  // Failed parsing; JSON is invalid
+  }
+
+  func testMissionAttributesNotUnique() {
+    // Given:
+    struct TestJson: Codable {
+      let mission: Mission
+    }
+    let jsonData = Data(
+      """
+      {
+        "mission": {
+          "attributes": [
+            {"name": "one", "type": 100},
+            {"name": "One", "type": 100}
+          ]
+        }
+      }
+      """.utf8)
+
+    // When:
+    let json = try? JSONDecoder().decode(TestJson.self, from: jsonData)
+
+    // Then:
+    XCTAssertNil(json)  // Failed parsing; JSON is invalid
+  }
+
 }

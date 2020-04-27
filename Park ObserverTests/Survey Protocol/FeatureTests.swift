@@ -284,7 +284,7 @@ class FeatureTests: XCTestCase {
           "locations": [{"type": "gps"}],
           "attributes": [
             {"name": "one", "type": 100},
-            {"name": "one", "type": 100}
+            {"name": "One", "type": 100}
           ]
         }
       }

@@ -111,6 +111,28 @@ extension Mission {
         renderer = AGSSimpleRenderer(for: .mission, color: symbology.color, size: symbology.size)
       }
     }
+    // Validate attributes
+    if let attributes = attributes {
+      if attributes.count == 0 {
+        throw DecodingError.dataCorrupted(
+          DecodingError.Context(
+            codingPath: decoder.codingPath,
+            debugDescription: "Cannot initialize attributes with an empty list"
+          )
+        )
+      }
+      // Validate attributes: unique elements (based on type)
+      let attributeNames = attributes.map { $0.name.lowercased() }
+      if Set(attributeNames).count != attributeNames.count {
+        throw DecodingError.dataCorrupted(
+          DecodingError.Context(
+            codingPath: decoder.codingPath,
+            debugDescription: "Cannot initialize locations with duplicate names in the list \(attributes)"
+          )
+        )
+      }
+    }
+
     self.init(
       attributes: attributes,
       dialog: dialog,

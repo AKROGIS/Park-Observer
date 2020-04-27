@@ -70,8 +70,9 @@ extension MissionTotalizer {
         )
       )
     }
-    // TODO: use case insensitive compare
-    if Set(fields).count != fields.count {
+    // Validate fields; ensure unique with case insensitive compare
+    let fieldNames = fields.map { $0.lowercased() }
+    if Set(fieldNames).count != fieldNames.count {
       throw DecodingError.dataCorrupted(
         DecodingError.Context(
           codingPath: decoder.codingPath,

@@ -117,7 +117,7 @@ class TotalizerTests: XCTestCase {
       """
       {
         "totalizer": {
-          "fields": ["one", "one"]
+          "fields": ["one", "One"]
         }
       }
       """.utf8)
