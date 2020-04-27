@@ -62,11 +62,60 @@ extension Feature {
     let locations = try container.decode([Location].self, forKey: .locations)
     let name = try container.decode(String.self, forKey: .name)
     var renderer: AGSRenderer = AGSSimpleRenderer(for: .features)
-    do {
-      if let symbology = try container.decodeIfPresent(SimpleSymbology.self, forKey: .symbology) {
-        renderer = AGSSimpleRenderer(for: .features, color: symbology.color, size: symbology.size)
+    if let symbology = try container.decodeIfPresent(SimpleSymbology.self, forKey: .symbology) {
+      renderer = AGSSimpleRenderer(for: .features, color: symbology.color, size: symbology.size)
+    }
+    // Validate name
+    if name.count == 0 || name.count > 10 {
+      throw DecodingError.dataCorrupted(
+        DecodingError.Context(
+          codingPath: decoder.codingPath,
+          debugDescription: "Cannot initialize name with an invalid value \(name)"
+        )
+      )
+    }
+    // Validate attributes
+    if let attributes = attributes {
+      if attributes.count == 0 {
+        throw DecodingError.dataCorrupted(
+          DecodingError.Context(
+            codingPath: decoder.codingPath,
+            debugDescription: "Cannot initialize attributes with an empty list"
+          )
+        )
+      }
+      // Validate attributes: unique elements (based on type)
+      let attributeNames = attributes.map { $0.name.lowercased() }
+      if Set(attributeNames).count != attributeNames.count {
+        throw DecodingError.dataCorrupted(
+          DecodingError.Context(
+            codingPath: decoder.codingPath,
+            debugDescription: "Cannot initialize locations with duplicate names in the list \(attributes)"
+          )
+        )
       }
     }
+
+    // Validate locations: not empty
+    if locations.count == 0 {
+      throw DecodingError.dataCorrupted(
+        DecodingError.Context(
+          codingPath: decoder.codingPath,
+          debugDescription: "Cannot initialize locations with an empty list"
+        )
+      )
+    }
+    // Validate locations: unique elements (based on type)
+    let locationsTypes = locations.map { $0.type }
+    if Set(locationsTypes).count != locationsTypes.count {
+      throw DecodingError.dataCorrupted(
+        DecodingError.Context(
+          codingPath: decoder.codingPath,
+          debugDescription: "Cannot initialize locations with duplicate types in the list \(locations)"
+        )
+      )
+    }
+
     self.init(
       allowOffTransectObservations: allowOffTransectObservations,
       attributes: attributes,
@@ -283,13 +332,18 @@ struct Label: Codable {
 
   /// An esri text symbol object, see
   /// https://developers.arcgis.com/documentation/common-data-types/symbol-objects.htm
-  let symbol: SimpleSymbology  //FIXME: This is the wrong type (Should be AGSLabelDefinition)
+  let symbol: String? //AGSSymbol? // TODO: implement codable to support ArcGIS
+
+  /// An esri label definition object (new in version 2.0), see
+  /// https://developers.arcgis.com/documentation/common-data-types/labeling-objects.htm
+  let definition: String? //AGSLabelDefinition?  //TODO: make this not optional)
 
   enum CodingKeys: String, CodingKey {
     case color = "color"
     case field = "field"
     case size = "size"
     case symbol = "symbol"
+    case definition = "definition"
   }
 }
 

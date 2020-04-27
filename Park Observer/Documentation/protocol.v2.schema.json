@@ -179,7 +179,9 @@
                     "type": "array",
                     "items": {
                         "$ref": "#/definitions/Location"
-                    }
+                    },
+                    "minItems": 1,
+                    "uniqueItems": true
                 },
                 "dialog": {
                     "description": "Describes the look and feel feature attribute editor.",

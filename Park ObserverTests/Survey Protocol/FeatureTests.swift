@@ -6,21 +6,377 @@
 //  Copyright © 2020 Alaska Region GIS Team. All rights reserved.
 //
 
+import ArcGIS
 import XCTest
 
 @testable import Park_Observer
 
 class FeatureTests: XCTestCase {
 
-  func testv1feature() {
+  func testFeatureMinimal() {
+    // Given:
+    struct TestJson: Codable {
+      let feature: Feature
+    }
+    let jsonData = Data(
+      """
+      {
+        "feature": {
+          "name": "Bob",
+          "locations": [{"type": "gps"}]
+        }
+      }
+      """.utf8)
+
+    // When:
+    let json = try? JSONDecoder().decode(TestJson.self, from: jsonData)
+
+    // Then:
+    XCTAssertNotNil(json)  // Failed parsing; JSON is invalid
+    if let test = json {
+      XCTAssertEqual(test.feature.name, "Bob")
+      XCTAssertEqual(test.feature.locations[0].type, .gps)
+      XCTAssertFalse(test.feature.allowOffTransectObservations)
+      XCTAssertNil(test.feature.attributes)
+      XCTAssertNil(test.feature.dialog)
+      XCTAssertNil(test.feature.label)
+    }
   }
 
-  func testv2feature() {
+  func testFeatureAllV1() {
+    // Given:
+    struct TestJson: Codable {
+      let feature: Feature
+    }
+    let jsonData = Data(
+      """
+      {
+        "feature": {
+          "name": "Bob",
+          "attributes": [
+            {"name": "one", "type": 100}
+          ],
+          "dialog": {
+            "title": "edit",
+            "sections": [{
+              "elements": [
+                {"type": "QLabelElement"}
+              ]
+            }]
+          },
+          "locations": [{"type": "gps"}],
+          "symbology": {}
+        }
+      }
+      """.utf8)
+
+    // When:
+    let json = try? JSONDecoder().decode(TestJson.self, from: jsonData)
+
+    // Then:
+    XCTAssertNotNil(json)  // Failed parsing; JSON is invalid
+    if let test = json {
+      XCTAssertEqual(test.feature.name, "Bob")
+      XCTAssertEqual(test.feature.attributes?[0].name, "one")
+      XCTAssertEqual(test.feature.dialog?.title, "edit")
+      XCTAssertEqual(test.feature.locations[0].type, .gps)
+      let renderer = AGSSimpleRenderer(for: .features)
+      XCTAssertTrue(test.feature.symbology.isEqual(to:renderer))
+    }
   }
+
+  func testFeatureAllV2() {
+    // Given:
+    struct TestJson: Codable {
+      let feature: Feature
+    }
+    let jsonData = Data(
+      """
+      {
+        "feature": {
+          "name": "Bob",
+          "attributes": [
+            {"name": "one", "type": 100}
+          ],
+          "dialog": {
+            "title": "edit",
+            "sections": [{
+              "elements": [
+                {"type": "QLabelElement"}
+              ]
+            }]
+          },
+          "locations": [{"type": "gps"}],
+          "symbology": {},
+          "allow_off_transect_observations": true,
+          "label": {"field": "one"}
+        }
+      }
+      """.utf8)
+
+    // When:
+    let json = try? JSONDecoder().decode(TestJson.self, from: jsonData)
+
+    // Then:
+    XCTAssertNotNil(json)  // Failed parsing; JSON is invalid
+    if let test = json {
+      XCTAssertEqual(test.feature.name, "Bob")
+      XCTAssertEqual(test.feature.attributes?[0].name, "one")
+      XCTAssertEqual(test.feature.dialog?.title, "edit")
+      XCTAssertEqual(test.feature.locations[0].type, .gps)
+      let renderer = AGSSimpleRenderer(for: .features)
+      XCTAssertTrue(test.feature.symbology.isEqual(to:renderer))
+      XCTAssertTrue(test.feature.allowOffTransectObservations)
+      XCTAssertEqual(test.feature.label?.field, "one")
+      // TODO Check test.feature.label?.definition
+    }
+  }
+
+  func testFeatureAllowFalse() {
+    // Given:
+    struct TestJson: Codable {
+      let feature: Feature
+    }
+    let jsonData = Data(
+      """
+      {
+        "feature": {
+          "name": "Bob",
+          "locations": [{"type": "gps"}],
+          "allow_off_transect_observations": false
+        }
+      }
+      """.utf8)
+
+    // When:
+    let json = try? JSONDecoder().decode(TestJson.self, from: jsonData)
+
+    // Then:
+    XCTAssertNotNil(json)  // Failed parsing; JSON is invalid
+    if let test = json {
+      XCTAssertFalse(test.feature.allowOffTransectObservations)
+    }
+  }
+
+  func testFeatureAllowInvalid() {
+    // Given:
+    struct TestJson: Codable {
+      let feature: Feature
+    }
+    let jsonData = Data(
+      """
+      {
+        "feature": {
+          "name": "Bob",
+          "locations": [{"type": "gps"}],
+          "allow_off_transect_observations": "maybe"
+        }
+      }
+      """.utf8)
+
+    // When:
+    let json = try? JSONDecoder().decode(TestJson.self, from: jsonData)
+
+    // Then:
+    XCTAssertNil(json)  // Failed parsing; JSON is invalid
+  }
+
+  func testFeatureNameBadShort() {
+    // Given:
+    struct TestJson: Codable {
+      let feature: Feature
+    }
+    let jsonData = Data(
+      """
+      {
+        "feature": {
+          "name": "",
+          "locations": [{"type": "gps"}]
+        }
+      }
+      """.utf8)
+
+    // When:
+    let json = try? JSONDecoder().decode(TestJson.self, from: jsonData)
+
+    // Then:
+    XCTAssertNil(json)  // Failed parsing; JSON is invalid
+  }
+
+  func testFeatureNameBadLong() {
+    // Given:
+    struct TestJson: Codable {
+      let feature: Feature
+    }
+    let jsonData = Data(
+      """
+      {
+        "feature": {
+          "name": "B1234567890",
+          "locations": [{"type": "gps"}]
+        }
+      }
+      """.utf8)
+
+    // When:
+    let json = try? JSONDecoder().decode(TestJson.self, from: jsonData)
+
+    // Then:
+    XCTAssertNil(json)  // Failed parsing; JSON is invalid
+  }
+
+  func testFeatureAttributesInvalid() {
+    // Given:
+    struct TestJson: Codable {
+      let feature: Feature
+    }
+    let jsonData = Data(
+      """
+      {
+        "feature": {
+          "name": "Bob",
+          "locations": [{"type": "gps"}],
+          "attributes": {}
+        }
+      }
+      """.utf8)
+
+    // When:
+    let json = try? JSONDecoder().decode(TestJson.self, from: jsonData)
+
+    // Then:
+    XCTAssertNil(json)  // Failed parsing; JSON is invalid
+  }
+
+  func testFeatureAttributesEmpty() {
+    // Given:
+    struct TestJson: Codable {
+      let feature: Feature
+    }
+    let jsonData = Data(
+      """
+      {
+        "feature": {
+          "name": "Bob",
+          "locations": [{"type": "gps"}],
+          "attributes": []
+        }
+      }
+      """.utf8)
+
+    // When:
+    let json = try? JSONDecoder().decode(TestJson.self, from: jsonData)
+
+    // Then:
+    XCTAssertNil(json)  // Failed parsing; JSON is invalid
+  }
+
+  func testFeatureAttributesNotUnique() {
+    // Given:
+    struct TestJson: Codable {
+      let feature: Feature
+    }
+    let jsonData = Data(
+      """
+      {
+        "feature": {
+          "name": "Bob",
+          "locations": [{"type": "gps"}],
+          "attributes": [
+            {"name": "one", "type": 100},
+            {"name": "one", "type": 100}
+          ]
+        }
+      }
+      """.utf8)
+
+    // When:
+    let json = try? JSONDecoder().decode(TestJson.self, from: jsonData)
+
+    // Then:
+    XCTAssertNil(json)  // Failed parsing; JSON is invalid
+  }
+
+  func testFeatureLocationsInvalid() {
+    // Given:
+    struct TestJson: Codable {
+      let feature: Feature
+    }
+    let jsonData = Data(
+      """
+      {
+        "feature": {
+          "name": "Bob",
+          "locations": {}
+        }
+      }
+      """.utf8)
+
+    // When:
+    let json = try? JSONDecoder().decode(TestJson.self, from: jsonData)
+
+    // Then:
+    XCTAssertNil(json)  // Failed parsing; JSON is invalid
+  }
+
+  func testFeatureLocationsEmpty() {
+    // Given:
+    struct TestJson: Codable {
+      let feature: Feature
+    }
+    let jsonData = Data(
+      """
+      {
+        "feature": {
+          "name": "Bob",
+          "locations": []
+        }
+      }
+      """.utf8)
+
+    // When:
+    let json = try? JSONDecoder().decode(TestJson.self, from: jsonData)
+
+    // Then:
+    XCTAssertNil(json)  // Failed parsing; JSON is invalid
+  }
+
+  func testFeatureLocationsNotUnique() {
+    // Given:
+    struct TestJson: Codable {
+      let feature: Feature
+    }
+    let jsonData = Data(
+      """
+      {
+        "feature": {
+          "name": "Bob",
+          "locations": [
+            {"type": "gps"},
+            {"type": "gps"}
+          ]
+        }
+      }
+      """.utf8)
+
+    // When:
+    let json = try? JSONDecoder().decode(TestJson.self, from: jsonData)
+
+    // Then:
+    XCTAssertNil(json)  // Failed parsing; JSON is invalid
+  }
+
+
+
+
 
   func testLabel() {
     //TODO: Build decoder for the label; support esri JSON
   }
+
+
+
+
 
   func testAttributeInvalid() {
     // Given:
