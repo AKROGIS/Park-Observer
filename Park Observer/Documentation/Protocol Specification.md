@@ -173,13 +173,15 @@ Each `attribute` has the following properties
 * type
 
 #### name
-A required string identifying the attribute.
+A required string identifying the attribute.  This will be the name of the field in ArcGIS.
+It must start with a letter or underscore (`_`), and be followed by one or more letters, numbers,
+or underscores. It must be at least 2 characters long, and no longer than 30 characters.
+Spaces and special characters are prohibited.
 The name must be unique within the mission or feature.
 Different features can have attributes with the same name, but if they do they must have the same type.
 Mission property and feature attributes are unrelated -- they can have the same name with different types.
-The name used as a database column name, so it should be a simple ASCII name without spaces, numbers or special characters.
-Do not rely on upper/lowercase to distinguish two attributes (i.e. consider Name, name, and NAME to be the same).
-It will be prefixed internally to avoid clashes with reserved words
+**Important** Do not rely on upper/lowercase to distinguish two attributes; 
+consider `Name`, `name`, and `NAME` to be the same.
 
 #### type
 A required number that identifies the type (kind) of data the attribute stores

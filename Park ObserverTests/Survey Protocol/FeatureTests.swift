@@ -18,12 +18,302 @@ class FeatureTests: XCTestCase {
   func testv2feature() {
   }
 
-  func testAttributes() {
-    //TODO: Validate restrictions on name and type in the decoder
-  }
-
   func testLabel() {
     //TODO: Build decoder for the label; support esri JSON
+  }
+
+  func testAttributeInvalid() {
+    // Given:
+    struct TestJson: Codable {
+      let attribute: Attribute
+    }
+    let jsonData = Data(
+      """
+      {
+        "attribute": "bad"
+      }
+      """.utf8)
+
+    // When:
+    let json = try? JSONDecoder().decode(TestJson.self, from: jsonData)
+
+    // Then:
+    XCTAssertNil(json)  // Failed parsing; JSON is invalid
+  }
+
+  func testAttributeEmpty() {
+    // Given:
+    struct TestJson: Codable {
+      let attribute: Attribute
+    }
+    let jsonData = Data(
+      """
+      {
+        "attribute": {}
+      }
+      """.utf8)
+
+    // When:
+    let json = try? JSONDecoder().decode(TestJson.self, from: jsonData)
+
+    // Then:
+    XCTAssertNil(json)  // Failed parsing; JSON is invalid
+  }
+
+  func testAttributeIncomplete1() {
+    // Given:
+    struct TestJson: Codable {
+      let attribute: Attribute
+    }
+    let jsonData = Data(
+      """
+      {
+        "attribute": {"name": "bob"}
+      }
+      """.utf8)
+
+    // When:
+    let json = try? JSONDecoder().decode(TestJson.self, from: jsonData)
+
+    // Then:
+    XCTAssertNil(json)  // Failed parsing; JSON is invalid
+  }
+
+  func testAttributeIncomplete2() {
+    // Given:
+    struct TestJson: Codable {
+      let attribute: Attribute
+    }
+    let jsonData = Data(
+      """
+      {
+        "attribute": {"type": 100}
+      }
+      """.utf8)
+
+    // When:
+    let json = try? JSONDecoder().decode(TestJson.self, from: jsonData)
+
+    // Then:
+    XCTAssertNil(json)  // Failed parsing; JSON is invalid
+  }
+
+  func testAttributeValid() {
+    // Given:
+    struct TestJson: Codable {
+      let attributes: [Attribute]
+    }
+    let jsonData = Data(
+      """
+      {
+        "attributes": [
+          {"name": "bob", "type": 0},
+          {"name": "bob", "type": 100},
+          {"name": "bob", "type": 200},
+          {"name": "bob", "type": 300},
+          {"name": "bob", "type": 400},
+          {"name": "bob", "type": 500},
+          {"name": "bob", "type": 600},
+          {"name": "bob", "type": 700},
+          {"name": "bob", "type": 800},
+          {"name": "_abcdefghijk_lmnopqrstuvwxyz_", "type": 900},
+          {"name": "_ABCDEFGHIJK_LMNOPQRSTUVWXYZ_", "type": 1000},
+          {"name": "A123456789", "type": 1000},
+        ]
+      }
+      """.utf8)
+
+    // When:
+    let json = try? JSONDecoder().decode(TestJson.self, from: jsonData)
+
+    // Then:
+    XCTAssertNotNil(json)  // Failed parsing; JSON is invalid
+    if let test = json {
+      XCTAssertEqual(test.attributes[9].name, "_abcdefghijk_lmnopqrstuvwxyz_")
+      XCTAssertEqual(test.attributes[10].name, "_ABCDEFGHIJK_LMNOPQRSTUVWXYZ_")
+      XCTAssertEqual(test.attributes[0].type, .id)
+      XCTAssertEqual(test.attributes[1].type, .int16)
+      XCTAssertEqual(test.attributes[2].type, .int32)
+      XCTAssertEqual(test.attributes[3].type, .int64)
+      XCTAssertEqual(test.attributes[4].type, .decimal)
+      XCTAssertEqual(test.attributes[5].type, .double)
+      XCTAssertEqual(test.attributes[6].type, .float)
+      XCTAssertEqual(test.attributes[7].type, .string)
+      XCTAssertEqual(test.attributes[8].type, .bool)
+      XCTAssertEqual(test.attributes[9].type, .datetime)
+      XCTAssertEqual(test.attributes[10].type, .blob)
+    }
+  }
+
+  func testAttributeBadNameSpace() {
+    // Given:
+    struct TestJson: Codable {
+      let attribute: Attribute
+    }
+    let jsonData = Data(
+      """
+      {
+        "attribute": {"name": "space in name", "type": 100}
+      }
+      """.utf8)
+
+    // When:
+    let json = try? JSONDecoder().decode(TestJson.self, from: jsonData)
+
+    // Then:
+    XCTAssertNil(json)  // Failed parsing; JSON is invalid
+  }
+
+  func testAttributeBadNameDash() {
+    // Given:
+    struct TestJson: Codable {
+      let attribute: Attribute
+    }
+    let jsonData = Data(
+      """
+      {
+        "attribute": {"name": "dash-in-name", "type": 100}
+      }
+      """.utf8)
+
+    // When:
+    let json = try? JSONDecoder().decode(TestJson.self, from: jsonData)
+
+    // Then:
+    XCTAssertNil(json)  // Failed parsing; JSON is invalid
+  }
+
+  func testAttributeBadNameShort() {
+    // Given:
+    struct TestJson: Codable {
+      let attribute: Attribute
+    }
+    let jsonData = Data(
+      """
+      {
+        "attribute": {"name": "a", "type": 100}
+      }
+      """.utf8)
+
+    // When:
+    let json = try? JSONDecoder().decode(TestJson.self, from: jsonData)
+
+    // Then:
+    XCTAssertNil(json)  // Failed parsing; JSON is invalid
+  }
+
+  func testAttributeBadNameLong() {
+    // Given:
+    struct TestJson: Codable {
+      let attribute: Attribute
+    }
+    let jsonData = Data(
+      """
+      {
+        "attribute": {"name": "ABCDEFGHIJK_LMNOPQRSTUVWXYZ_1234", "type": 100}
+      }
+      """.utf8)
+
+    // When:
+    let json = try? JSONDecoder().decode(TestJson.self, from: jsonData)
+
+    // Then:
+    XCTAssertNil(json)  // Failed parsing; JSON is invalid
+  }
+
+  func testAttributeBadNNameNumberStart() {
+    // Given:
+    struct TestJson: Codable {
+      let attribute: Attribute
+    }
+    let jsonData = Data(
+      """
+      {
+        "attribute": {"name": "5test", "type": 100}
+      }
+      """.utf8)
+
+    // When:
+    let json = try? JSONDecoder().decode(TestJson.self, from: jsonData)
+
+    // Then:
+    XCTAssertNil(json)  // Failed parsing; JSON is invalid
+  }
+
+  func testAttributeBadNameSpaceEnd() {
+    // Given:
+    struct TestJson: Codable {
+      let attribute: Attribute
+    }
+    let jsonData = Data(
+      """
+      {
+        "attribute": {"name": "name ", "type": 100}
+      }
+      """.utf8)
+
+    // When:
+    let json = try? JSONDecoder().decode(TestJson.self, from: jsonData)
+
+    // Then:
+    XCTAssertNil(json)  // Failed parsing; JSON is invalid
+  }
+
+  func testAttributeBadType1() {
+    // Given:
+    struct TestJson: Codable {
+      let attribute: Attribute
+    }
+    let jsonData = Data(
+      """
+      {
+        "attribute": {"name": "bob", "type": -10}
+      }
+      """.utf8)
+
+    // When:
+    let json = try? JSONDecoder().decode(TestJson.self, from: jsonData)
+
+    // Then:
+    XCTAssertNil(json)  // Failed parsing; JSON is invalid
+  }
+
+  func testAttributeBadType2() {
+    // Given:
+    struct TestJson: Codable {
+      let attribute: Attribute
+    }
+    let jsonData = Data(
+      """
+      {
+        "attribute": {"name": "bob", "type": 90}
+      }
+      """.utf8)
+
+    // When:
+    let json = try? JSONDecoder().decode(TestJson.self, from: jsonData)
+
+    // Then:
+    XCTAssertNil(json)  // Failed parsing; JSON is invalid
+  }
+
+  func testAttributeBadType3() {
+    // Given:
+    struct TestJson: Codable {
+      let attribute: Attribute
+    }
+    let jsonData = Data(
+      """
+      {
+        "attribute": {"name": "bob", "type": 10000}
+      }
+      """.utf8)
+
+    // When:
+    let json = try? JSONDecoder().decode(TestJson.self, from: jsonData)
+
+    // Then:
+    XCTAssertNil(json)  // Failed parsing; JSON is invalid
   }
 
   func testLocationsInvalid() {

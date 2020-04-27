@@ -7,7 +7,6 @@
 //
 
 import ArcGIS
-import CoreData
 
 // MARK: - Feature
 
@@ -105,16 +104,58 @@ struct Attribute: Codable {
   let name: String
 
   /// Identifies the kind of data the attribute stores (from NSAttributeType).
-  let type: Int
+  let type: AttributeType
 
   enum CodingKeys: String, CodingKey {
     case name = "name"
     case type = "type"
   }
+
+  // Aligns to NSAttributeType in CoreData (except id = 0)
+  enum AttributeType: Int, Codable {
+    case id = 0
+    case int16 = 100
+    case int32 = 200
+    case int64 = 300
+    case decimal = 400  // not supported
+    case double = 500
+
+    case float = 600
+    case string = 700
+    case bool = 800
+    case datetime = 900
+    case blob = 1000  // Not supported
+  }
 }
 
-//TODO: Validate restrictions on name and type in the decoder
-//TODO: use NSAttributeType (CoreData) for type
+//MARK: - Attribute Codable
+// Custom decoding to have limit name
+// per spec name must match the regex: "([a-z,A-Z])+"
+
+extension Attribute {
+
+  init(from decoder: Decoder) throws {
+    let container = try decoder.container(keyedBy: CodingKeys.self)
+    let name = try container.decode(String.self, forKey: .name)
+    let type = try container.decode(AttributeType.self, forKey: .type)
+    //validate name matches regex: i.e. does not have any non-word characters
+    guard
+      name.count >= 2 && name.count <= 30
+        && name.range(of: #"^[a-zA-Z_][a-zA-Z0-9_]+$"#, options: .regularExpression) != nil
+    else {
+      throw DecodingError.dataCorrupted(
+        DecodingError.Context(
+          codingPath: decoder.codingPath,
+          debugDescription: "Cannot initialize Attribute.Name from invalid String value \(name)"
+        )
+      )
+    }
+    self.init(
+      name: name,
+      type: type)
+  }
+
+}
 
 // MARK: - Location
 
@@ -183,7 +224,8 @@ extension Location {
     let allow = try container.decodeIfPresent(Bool.self, forKey: .allow) ?? true
     let baseline = try container.decodeIfPresent(Double.self, forKey: .baseline) ?? 0.0
     let deadAhead = try container.decodeIfPresent(Double.self, forKey: .deadAhead) ?? baseline
-    let locationDefault = try container.decodeIfPresent(Bool.self, forKey: .locationDefault) ?? false
+    let locationDefault = try container.decodeIfPresent(Bool.self, forKey: .locationDefault)
+      ?? false
     let direction = try container.decodeIfPresent(Direction.self, forKey: .direction) ?? .cw
     let units = try container.decodeIfPresent(LocationUnits.self, forKey: .units) ?? .meters
     let type = try container.decode(TypeEnum.self, forKey: .type)
@@ -202,7 +244,7 @@ extension Location {
 extension Location.TypeEnum {
   init(from decoder: Decoder) throws {
     let container = try decoder.singleValueContainer()
-    let decoded = try  container.decode(String.self)
+    let decoded = try container.decode(String.self)
     switch decoded {
     case "adhocTouch":
       self = .mapTouch

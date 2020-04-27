@@ -172,9 +172,11 @@
             "additionalProperties": false,
             "properties": {
                 "name": {
-                    "description": "The unique column name for the attribute (no spaces, numbers, or weird characters).",
+                    "description": "The unique column name for the attribute (no spaces, numbers, or weird characters, only a-z, A-Z and _).",
                     "type": "string",
-                    "regex": "([a-z,A-Z])+"
+                    "minLength": 2
+                    "maxLength": 30
+                    "regex": "^[a-zA-Z_][a-zA-Z0-9_]+$"
                 },
                 "type": {
                     "description": "Identifies the kind of data the attribute stores (from NSAttributeType).",

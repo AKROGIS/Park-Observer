@@ -147,4 +147,9 @@ class SurveyProtocolTests: XCTestCase {
 
   //TODO: Test that dialog types match attribute types
 
+  //TODO: ensure that all attributes in a feature are unique ignoring case
+
+  //TODO: ensure that all attributes in a mission are unique ignoring case
+
+  //TODO: ensure that any attributes in multiple features have the same type.
 }
