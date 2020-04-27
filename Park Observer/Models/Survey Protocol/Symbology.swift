@@ -72,12 +72,23 @@ extension SimpleSymbology: Codable {
     var color: UIColor?
     if let hex = try container.decodeIfPresent(String.self, forKey: .color) {
       color = UIColor(hex: hex)
-      //TODO: if color == nil then throw parsing error
+      if color == nil {
+        throw DecodingError.dataCorrupted(
+          DecodingError.Context(
+            codingPath: decoder.codingPath,
+            debugDescription: "Cannot initialize color with String value \(hex)"
+          )
+        )
+      }
     }
-    var size: Double? = try container.decodeIfPresent(Double.self, forKey: .size)
-    if size != nil && size! < 0 {
-      size = nil
-      //TODO: Throw parsing error
+    let size: Double? = try container.decodeIfPresent(Double.self, forKey: .size)
+    if let size = size, size < 0 {
+      throw DecodingError.dataCorrupted(
+        DecodingError.Context(
+          codingPath: decoder.codingPath,
+          debugDescription: "Cannot initialize size with String with a negative number \(size)"
+        )
+      )
     }
     self.init(color: color, size: size)
   }

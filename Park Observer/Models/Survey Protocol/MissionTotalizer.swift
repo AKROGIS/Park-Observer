@@ -63,13 +63,29 @@ extension MissionTotalizer {
     let units = try container.decodeIfPresent(TotalizerUnits.self, forKey: .units) ?? .kilometers
     // Validate fields and fontSize
     if fields.count == 0 {
-      throw ParsingError.arrayEmpty //TODO: Throw decoding error with context
+      throw DecodingError.dataCorrupted(
+        DecodingError.Context(
+          codingPath: decoder.codingPath,
+          debugDescription: "Cannot initialize fields with an empty list"
+        )
+      )
     }
+    // TODO: use case insensitive compare
     if Set(fields).count != fields.count {
-      throw ParsingError.nonuniqueArray //TODO: Throw decoding error with context
+      throw DecodingError.dataCorrupted(
+        DecodingError.Context(
+          codingPath: decoder.codingPath,
+          debugDescription: "Cannot initialize fields with duplicate values in the list \(fields)"
+        )
+      )
     }
     if fontSize < 0 {
-      throw ParsingError.negativeNumber //TODO: Throw decoding error with context
+      throw DecodingError.dataCorrupted(
+        DecodingError.Context(
+          codingPath: decoder.codingPath,
+          debugDescription: "Cannot initialize fontsize with a negative value \(fontSize)"
+        )
+      )
     }
     self.init(
       fields: fields,
@@ -80,10 +96,4 @@ extension MissionTotalizer {
       units: units)
   }
 
-  enum ParsingError: Error {
-    case arrayEmpty
-    case nonuniqueArray
-    case negativeNumber
-  }
 }
-

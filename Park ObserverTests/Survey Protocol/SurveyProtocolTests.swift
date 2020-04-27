@@ -152,4 +152,6 @@ class SurveyProtocolTests: XCTestCase {
   //TODO: ensure that all attributes in a mission are unique ignoring case
 
   //TODO: ensure that any attributes in multiple features have the same type.
+
+  //TODO: test thrown errors
 }

@@ -109,11 +109,7 @@ class SymbologyTests: XCTestCase {
     let json = try? JSONDecoder().decode(TestJson.self, from: jsonData)
 
     // Then:
-    XCTAssertNotNil(json)  // Failed parsing; JSON is invalid
-    if let test = json {
-      XCTAssertNil(test.symbology.size)
-      //TODO: Should throw a parsing error instead of returning nil
-    }
+    XCTAssertNil(json)  // Failed parsing; JSON is invalid
   }
 
   func testSimpleSymbology_missingColor() {
@@ -182,11 +178,7 @@ class SymbologyTests: XCTestCase {
     let json = try? JSONDecoder().decode(TestJson.self, from: jsonData)
 
     // Then:
-    XCTAssertNotNil(json)  // Failed parsing; JSON is invalid
-    if let test = json {
-      //TODO: Should throw a parsing error instead of returning nil
-      XCTAssertNil(test.symbology.color)
-    }
+    XCTAssertNil(json)  // Failed parsing; JSON is invalid
   }
 
   //MARK: - Feature Symbology
