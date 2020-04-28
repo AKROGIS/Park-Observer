@@ -48,6 +48,7 @@
 		74A25FD72453B41A006D82CE /* FeatureTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 74A25FD62453B41A006D82CE /* FeatureTests.swift */; };
 		74A25FDA2453B469006D82CE /* TotalizerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 74A25FD92453B469006D82CE /* TotalizerTests.swift */; };
 		74A25FDE2453B4FE006D82CE /* DialogTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 74A25FDD2453B4FE006D82CE /* DialogTests.swift */; };
+		74D0B0D22458DC5A00624FE9 /* ArcGISSymbolDefaultTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 74D0B0D12458DC5A00624FE9 /* ArcGISSymbolDefaultTests.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -128,6 +129,7 @@
 		74A25FD62453B41A006D82CE /* FeatureTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FeatureTests.swift; sourceTree = "<group>"; };
 		74A25FD92453B469006D82CE /* TotalizerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TotalizerTests.swift; sourceTree = "<group>"; };
 		74A25FDD2453B4FE006D82CE /* DialogTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DialogTests.swift; sourceTree = "<group>"; };
+		74D0B0D12458DC5A00624FE9 /* ArcGISSymbolDefaultTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ArcGISSymbolDefaultTests.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -311,6 +313,7 @@
 		74A25FD82453B436006D82CE /* Survey Protocol */ = {
 			isa = PBXGroup;
 			children = (
+				74D0B0D12458DC5A00624FE9 /* ArcGISSymbolDefaultTests.swift */,
 				74A25FDD2453B4FE006D82CE /* DialogTests.swift */,
 				74A25FD62453B41A006D82CE /* FeatureTests.swift */,
 				74A25FD42453B3FD006D82CE /* MissionTests.swift */,
@@ -512,6 +515,7 @@
 			files = (
 				74A25FD72453B41A006D82CE /* FeatureTests.swift in Sources */,
 				74A25FD52453B3FD006D82CE /* MissionTests.swift in Sources */,
+				74D0B0D22458DC5A00624FE9 /* ArcGISSymbolDefaultTests.swift in Sources */,
 				74A25FC324522B48006D82CE /* SurveyProtocolTests.swift in Sources */,
 				74A25FD3245360A5006D82CE /* SymbologyTests.swift in Sources */,
 				74A25FDA2453B469006D82CE /* TotalizerTests.swift in Sources */,

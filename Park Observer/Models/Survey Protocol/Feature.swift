@@ -52,6 +52,16 @@ struct Feature: Codable {
 extension Feature {
 
   init(from decoder: Decoder) throws {
+
+    func corruptError(message: String) -> DecodingError {
+      return DecodingError.dataCorrupted(
+        DecodingError.Context(
+          codingPath: decoder.codingPath,
+          debugDescription: message
+        )
+      )
+    }
+
     let container = try decoder.container(keyedBy: CodingKeys.self)
     let allowOffTransectObservations = try container.decodeIfPresent(
       Bool.self, forKey: .allowOffTransectObservations)
@@ -67,53 +77,50 @@ extension Feature {
     }
     // Validate name
     if name.count == 0 || name.count > 10 {
-      throw DecodingError.dataCorrupted(
-        DecodingError.Context(
-          codingPath: decoder.codingPath,
-          debugDescription: "Cannot initialize name with an invalid value \(name)"
-        )
-      )
+      let message = "Cannot initialize name with an invalid value \(name)"
+      throw corruptError(message: message)
     }
     // Validate attributes
     if let attributes = attributes {
       if attributes.count == 0 {
-        throw DecodingError.dataCorrupted(
-          DecodingError.Context(
-            codingPath: decoder.codingPath,
-            debugDescription: "Cannot initialize attributes with an empty list"
-          )
-        )
+        let message = "Cannot initialize attributes with an empty list"
+        throw corruptError(message: message)
       }
       // Validate attributes: unique elements (based on type)
       let attributeNames = attributes.map { $0.name.lowercased() }
       if Set(attributeNames).count != attributeNames.count {
-        throw DecodingError.dataCorrupted(
-          DecodingError.Context(
-            codingPath: decoder.codingPath,
-            debugDescription: "Cannot initialize locations with duplicate names in the list \(attributes)"
-          )
-        )
+        let message = "Cannot initialize locations with duplicate names in the list \(attributes)"
+        throw corruptError(message: message)
       }
     }
-
     // Validate locations: not empty
     if locations.count == 0 {
-      throw DecodingError.dataCorrupted(
-        DecodingError.Context(
-          codingPath: decoder.codingPath,
-          debugDescription: "Cannot initialize locations with an empty list"
-        )
-      )
+      let message = "Cannot initialize locations with an empty list"
+      throw corruptError(message: message)
     }
     // Validate locations: unique elements (based on type)
     let locationsTypes = locations.map { $0.type }
     if Set(locationsTypes).count != locationsTypes.count {
-      throw DecodingError.dataCorrupted(
-        DecodingError.Context(
-          codingPath: decoder.codingPath,
-          debugDescription: "Cannot initialize locations with duplicate types in the list \(locations)"
-        )
-      )
+      let message = "Cannot initialize locations with duplicate types in the list \(locations)"
+      throw corruptError(message: message)
+    }
+    // Validate 1) if we have a label, we must have attributes
+    // 2) if definition is not provided, then field is in attributes
+    // (label will not decode if both field and definition are missing)
+    if let label = label {
+      guard let attributes = attributes else {
+        let message = "Cannot initialize feature with label \(label) and no attributes"
+        throw corruptError(message: message)
+      }
+      if let field = label.field, label.definition == nil {
+        let attributeNames = attributes.map { $0.name.lowercased() }
+
+        if !attributeNames.contains(field.lowercased()) {
+          let message =
+            "Cannot initialize feature when label field \(field) is not in attributes \(attributeNames)"
+          throw corruptError(message: message)
+        }
+      }
     }
 
     self.init(
@@ -318,25 +325,29 @@ extension Location.TypeEnum {
 // MARK: - Label
 
 /// Describes how these features should be labeled on the map.
-struct Label: Codable {
+struct Label {
 
   /// The color of the text as a hexidecimal triplet of red, green and blue values. `#RRGGBB`;
   /// 00 = 0 (none), FF = 255 (full).
-  let color: String?  //FIXME: This is the wrong type (should be UIColor)
+  let color: UIColor?
 
   /// An attribute name (from Attributes) that will be used as the text of the label.
-  let field: String
+  let field: String?
 
   /// The font size of the text; in points (1/72 of an inch).
   let size: Double?
 
   /// An esri text symbol object, see
   /// https://developers.arcgis.com/documentation/common-data-types/symbol-objects.htm
-  let symbol: String? //AGSSymbol? // TODO: implement codable to support ArcGIS
+  let symbol: AGSSymbol
 
   /// An esri label definition object (new in version 2.0), see
   /// https://developers.arcgis.com/documentation/common-data-types/labeling-objects.htm
-  let definition: String? //AGSLabelDefinition?  //TODO: make this not optional)
+  let definition: AGSLabelDefinition?
+
+}
+
+extension Label: Codable {
 
   enum CodingKeys: String, CodingKey {
     case color = "color"
@@ -345,6 +356,171 @@ struct Label: Codable {
     case symbol = "symbol"
     case definition = "definition"
   }
-}
 
-//TODO: Build decoder for the label; support esri JSON
+  init(from decoder: Decoder) throws {
+
+    func corruptError(message: String) -> DecodingError {
+      return DecodingError.dataCorrupted(
+        DecodingError.Context(
+          codingPath: decoder.codingPath,
+          debugDescription: message
+        )
+      )
+    }
+
+    let container = try decoder.container(keyedBy: CodingKeys.self)
+
+    // field
+    let field = try container.decodeIfPresent(String.self, forKey: .field)
+
+    // color
+    var color: UIColor?
+    if let hex = try container.decodeIfPresent(String.self, forKey: .color) {
+      color = UIColor(hex: hex)
+      if color == nil {
+        let message = "Cannot initialize color with String value \(hex)"
+        throw corruptError(message: message)
+      }
+    }
+
+    // size
+    let size: Double? = try container.decodeIfPresent(Double.self, forKey: .size)
+    if let size = size, size < 0 {
+      let message = "Cannot initialize size with a negative number \(size)"
+      throw corruptError(message: message)
+    }
+
+    // symbol
+    var symbol = AGSTextSymbol.label(color: color, size: size)
+    if container.contains(.symbol) {
+      // AGSSymbol does not implement Decodable, but it does support initialization from JSON
+      // the Decodable protocol hides the JSON it is decoding, so we need to use the following
+      // trick to get the JSON data under the symbol property to create a AGSSymbol.
+      // See https://stackoverflow.com/a/61356269/542911 for details.
+      if let options = decoder.userInfo[SurveyProtocolCodingOptions.key]
+        as? SurveyProtocolCodingOptions
+      {
+        // intialize item to the whole json object, then mutate it down the "path" to Bar
+        var item: Any? = options.json
+        let path = decoder.codingPath  // The path to the current object, does not include self
+        for key in path {
+          if let intKey = key.intValue {
+            //array
+            item = (item as? [Any])?[intKey]
+          } else {
+            //object
+            item = (item as? [String: Any])?[key.stringValue]
+          }
+        }
+        // item is now label, which is an object (Dictionary)
+        let label = item as? [String: Any]
+        let dataKey = CodingKeys.symbol.rawValue
+        if let data = label?[dataKey] {
+          if let trySymbol = try AGSTextSymbol.fromJSON(data) as? AGSTextSymbol {
+            symbol = trySymbol
+          } else {
+            let message = "Cannot initialize symbol; JSON provided was not a AGSTextSymbol"
+            throw corruptError(message: message)
+          }
+          if let issues = symbol.unknownJSON, issues.count > 0 {
+            let badKeys = issues.keys.joined(separator: ",")
+            let message = "Cannot initialize symbol; invalid properties found \(badKeys)"
+            throw corruptError(message: message)
+          }
+          if let issues = symbol.unsupportedJSON, issues.count > 0 {
+            let badKeys = issues.keys.joined(separator: ",")
+            let message = "Cannot initialize symbol; unsupported properties found \(badKeys)"
+            throw corruptError(message: message)
+          }
+        } else {
+          let message = "Cannot initialize symbol; source JSON does not match decoding JSON"
+          throw corruptError(message: message)
+        }
+      } else {
+        let message = "Cannot initialize symbol; source JSON not found in the DecodingOptions"
+        throw corruptError(message: message)
+      }
+    }
+
+    // definition
+    var definition: AGSLabelDefinition? = nil
+    if container.contains(.definition) {
+      // AGSLabelDefinition does not implement Decodable
+      // See discussion above for AGSSymbol
+      if let options = decoder.userInfo[SurveyProtocolCodingOptions.key]
+        as? SurveyProtocolCodingOptions
+      {
+        // intialize item to the whole json object, then mutate it down the "path" to Bar
+        var item: Any? = options.json
+        let path = decoder.codingPath  // The path to the current object, does not include self
+        for key in path {
+          if let intKey = key.intValue {
+            //array
+            item = (item as? [Any])?[intKey]
+          } else {
+            //object
+            item = (item as? [String: Any])?[key.stringValue]
+          }
+        }
+        // item is now label, which is an object (Dictionary)
+        let label = item as? [String: Any]
+        let dataKey = CodingKeys.definition.rawValue
+        if let data = label?[dataKey] {
+          if let tryDefinition = try AGSLabelDefinition.fromJSON(data) as? AGSLabelDefinition {
+            definition = tryDefinition
+          } else {
+            let message = "Cannot initialize definition; JSON provided was not a AGSLabelDefinition"
+            throw corruptError(message: message)
+          }
+          if let issues = symbol.unknownJSON, issues.count > 0 {
+            let badKeys = issues.keys.joined(separator: ",")
+            let message = "Cannot initialize definition; invalid properties found \(badKeys)"
+            throw corruptError(message: message)
+          }
+          if let issues = symbol.unsupportedJSON, issues.count > 0 {
+            let badKeys = issues.keys.joined(separator: ",")
+            let message = "Cannot initialize definition; unsupported properties found \(badKeys)"
+            throw corruptError(message: message)
+          }
+        } else {
+          let message = "Cannot initialize definition; source JSON does not match decoding JSON"
+          throw corruptError(message: message)
+        }
+      } else {
+        let message = "Cannot initialize definition; source JSON not found in the DecodingOptions"
+        throw corruptError(message: message)
+      }
+    }
+
+    // field and definition cannot both be nil
+    if field == nil && definition == nil {
+      let message = "Cannot initialize label; one of field or definition must be provided"
+      throw corruptError(message: message)
+    }
+
+    self.init(
+      color: color,
+      field: field,
+      size: size,
+      symbol: symbol,
+      definition: definition
+    )
+  }
+
+  func encode(to encoder: Encoder) throws {
+    var container = encoder.container(keyedBy: CodingKeys.self)
+    try container.encodeIfPresent(field, forKey: .field)
+    try container.encodeIfPresent(color?.hex6, forKey: .color)
+    try container.encodeIfPresent(size, forKey: .size)
+    //TODO Implement encode on AGSTextSymbol and AGSLabelDefinition
+    if definition != nil {
+      let message = "Cannot encode definition (AGSLabelDefinition)"
+      throw EncodingError.invalidValue(
+        definition,
+        EncodingError.Context(codingPath: encoder.codingPath,
+                              debugDescription: message)
+      )
+    }
+  }
+
+}

@@ -75,10 +75,22 @@ struct SurveyProtocol: Codable {
 
 // MARK: SurveyProtocol convenience initializers and mutators
 
+// Important: use the following convenience functions.
+// The following will fail
+//    let surveyProtocol = try? JSONDecoder().decode(SurveyProtocol.self, from: jsonData)
+// because several child objects required custom context set on the default decoder
+// with these convenience methods
+
 extension SurveyProtocol {
   init(data: Data) throws {
     let decoder = JSONDecoder()
     decoder.dateDecodingStrategy = .iso8601date
+    let json = try JSONSerialization.jsonObject(with: data)
+    let options = SurveyProtocolCodingOptions(
+      json: json,
+      version: .unknown)
+    decoder.userInfo = [SurveyProtocolCodingOptions.key: options]
+
     self = try JSONDecoder().decode(SurveyProtocol.self, from: data)
   }
 
@@ -105,6 +117,8 @@ extension SurveyProtocol {
     return String(data: try self.jsonData(), encoding: encoding)
   }
 }
+
+//TODO: replace defaults with a custom decoder to set the version
 
 //MARK: - Defaults
 
@@ -140,4 +154,26 @@ extension JSONDecoder.DateDecodingStrategy {
     throw DecodingError.dataCorruptedError(
       in: container, debugDescription: "Invalid date: \(string)")
   }
+}
+
+//MARK: - Coding options
+
+// This object provides context to help the decode decode child objects.
+
+struct SurveyProtocolCodingOptions {
+
+  /// The json data being decoded as a JSONSerializer() object
+  let json: Any
+
+  /// The version of the protocol being decoded
+  let version: SurveyProtocolVersion
+
+  static let key = CodingUserInfoKey(rawValue: "gov.doi.nps.akr.gis.parkobserver")!
+
+  enum SurveyProtocolVersion: Int {
+    case unknown = 0
+    case version1 = 1
+    case version2 = 2
+  }
+
 }

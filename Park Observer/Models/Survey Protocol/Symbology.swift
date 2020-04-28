@@ -52,6 +52,22 @@ extension AGSSimpleRenderer {
 
 }
 
+extension AGSTextSymbol {
+
+  static func label(color: UIColor? = nil, size: Double? = nil) -> AGSTextSymbol {
+    let label = AGSTextSymbol(
+      text: "",
+      color: color ?? .white,
+      size: CGFloat(size ?? 14.0),
+      horizontalAlignment: .left,
+      verticalAlignment: .bottom)
+    label.offsetX = 6.0
+    label.offsetY = 1.0
+    return label
+  }
+
+}
+
 //MARK: - Simple Symbology
 // For support of symbology in version 1 of protocol
 
@@ -86,7 +102,7 @@ extension SimpleSymbology: Codable {
       throw DecodingError.dataCorrupted(
         DecodingError.Context(
           codingPath: decoder.codingPath,
-          debugDescription: "Cannot initialize size with String with a negative number \(size)"
+          debugDescription: "Cannot initialize size with a negative number \(size)"
         )
       )
     }
