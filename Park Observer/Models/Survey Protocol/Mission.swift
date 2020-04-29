@@ -87,20 +87,20 @@ extension Mission {
     let totalizer = try container.decodeIfPresent(MissionTotalizer.self, forKey: .totalizer)
     var gpsRenderer: AGSRenderer = AGSSimpleRenderer(for: .gps)
     do {
-      if let symbology = try container.decodeIfPresent(SimpleSymbology.self, forKey: .symbology) {
+      if let symbology = try container.decodeIfPresent(SimpleSymbology.self, forKey: .gpsSymbology) {
         gpsRenderer = AGSSimpleRenderer(for: .gps, color: symbology.color, size: symbology.size)
       }
     }
     var onRenderer: AGSRenderer = AGSSimpleRenderer(for: .onTransect)
     do {
-      if let symbology = try container.decodeIfPresent(SimpleSymbology.self, forKey: .symbology) {
+      if let symbology = try container.decodeIfPresent(SimpleSymbology.self, forKey: .onSymbology) {
         onRenderer = AGSSimpleRenderer(
           for: .onTransect, color: symbology.color, size: symbology.size)
       }
     }
     var offRenderer: AGSRenderer = AGSSimpleRenderer(for: .offTransect)
     do {
-      if let symbology = try container.decodeIfPresent(SimpleSymbology.self, forKey: .symbology) {
+      if let symbology = try container.decodeIfPresent(SimpleSymbology.self, forKey: .offSymbology) {
         offRenderer = AGSSimpleRenderer(
           for: .offTransect, color: symbology.color, size: symbology.size)
       }

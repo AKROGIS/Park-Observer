@@ -333,15 +333,15 @@ class SymbologyTests: XCTestCase {
             "color":"#AA00CC",
             "size":10
           },
-          "onSymbology":{
+          "on-symbology":{
             "color":"#BB00CC",
             "size":11
           },
-          "offSymbology":{
+          "off-symbology":{
             "color":"#CC00CC",
             "size":12
           },
-          "gpsSymbology":{
+          "gps-symbology":{
             "color":"#DD00CC",
             "size":13
           }
