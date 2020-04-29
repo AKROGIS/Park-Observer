@@ -36,16 +36,24 @@ extension AGSSimpleRenderer {
       let symbol = AGSSimpleMarkerSymbol(style: .circle, color: color, size: size)
       self.init(symbol: symbol)
     case .mission:
-      let symbol = AGSSimpleMarkerSymbol(style: .circle, color: .green, size: 12.0)
+      let color = color ?? .green
+      let size = CGFloat(size ?? 12.0)
+      let symbol = AGSSimpleMarkerSymbol(style: .circle, color: color, size: size)
       self.init(symbol: symbol)
     case .gps:
-      let symbol = AGSSimpleMarkerSymbol(style: .circle, color: .blue, size: 6.0)
+      let color = color ?? .blue
+      let size = CGFloat(size ?? 6.0)
+      let symbol = AGSSimpleMarkerSymbol(style: .circle, color: color, size: size)
       self.init(symbol: symbol)
     case .onTransect:
-      let symbol = AGSSimpleLineSymbol(style: .solid, color: .red, width: 3.0)
+      let color = color ?? .red
+      let size = CGFloat(size ?? 3.0)
+      let symbol = AGSSimpleLineSymbol(style: .solid, color: color, width: size)
       self.init(symbol: symbol)
     case .offTransect:
-      let symbol = AGSSimpleLineSymbol(style: .solid, color: .gray, width: 1.5)
+      let color = color ?? .gray
+      let size = CGFloat(size ?? 1.5)
+      let symbol = AGSSimpleLineSymbol(style: .solid, color: color, width: size)
       self.init(symbol: symbol)
     }
   }

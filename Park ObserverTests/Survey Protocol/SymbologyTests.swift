@@ -13,6 +13,33 @@ import XCTest
 
 class SymbologyTests: XCTestCase {
 
+  func testRendererBuilder() {
+    var renderer = AGSSimpleRenderer(for: .features, color: UIColor(hex: "#5BCDEF"), size: 45.5)
+    var symbol1 = renderer.symbol! as! AGSSimpleMarkerSymbol
+    XCTAssertEqual(symbol1.color.hex6, "#5BCDEF")
+    XCTAssertEqual(symbol1.size, 45.5, accuracy: 0.001)
+
+    renderer = AGSSimpleRenderer(for: .mission, color: UIColor(hex: "#4BCDEF"), size: 45.6)
+    symbol1 = renderer.symbol! as! AGSSimpleMarkerSymbol
+    XCTAssertEqual(symbol1.color.hex6, "#4BCDEF")
+    XCTAssertEqual(symbol1.size, 45.6, accuracy: 0.001)
+
+    renderer = AGSSimpleRenderer(for: .gps, color: UIColor(hex: "#3BCDEF"), size: 45.7)
+    symbol1 = renderer.symbol! as! AGSSimpleMarkerSymbol
+    XCTAssertEqual(symbol1.color.hex6, "#3BCDEF")
+    XCTAssertEqual(symbol1.size, 45.7, accuracy: 0.001)
+
+    renderer = AGSSimpleRenderer(for: .onTransect, color: UIColor(hex: "#2BCDEF"), size: 45.8)
+    var symbol2 = renderer.symbol! as! AGSSimpleLineSymbol
+    XCTAssertEqual(symbol2.color.hex6, "#2BCDEF")
+    XCTAssertEqual(symbol2.width, 45.8, accuracy: 0.001)
+
+    renderer = AGSSimpleRenderer(for: .offTransect, color: UIColor(hex: "#1BCDEF"), size: 45.9)
+    symbol2 = renderer.symbol! as! AGSSimpleLineSymbol
+    XCTAssertEqual(symbol2.color.hex6, "#1BCDEF")
+    XCTAssertEqual(symbol2.width, 45.9, accuracy: 0.001)
+  }
+
   //MARK: - Version 1 Symbology
 
   func testSimpleSymbology() {
