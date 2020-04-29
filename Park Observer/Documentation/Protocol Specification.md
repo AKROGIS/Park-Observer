@@ -759,3 +759,319 @@ a 3 point solid red line for the tracklog while observing, and a 1.5 point gray 
 
 If you wish to not draw the track logs or gps points, then you need to provide valid symbology
 with either 0 size, or no color.
+
+## Symbols
+https://developers.arcgis.com/documentation/common-data-types/symbol-objects.htm
+
+## Simple Marker Symbol Defaults:
+minimal simple marker symbol is:
+```
+{
+  "type": "esriSMS"
+}
+```
+With the following defaults (as of 100.7.0)
+```
+style: esriSMSCircle
+color:  [211, 211, 211, 255] // Light Gray (82% white); Opaque
+size: 8.0
+angle: 0.0
+xoffset: 0.0
+yoffset: 0.0
+```
+With a minimal outline, it is:
+```
+{
+  "type": "esriSMS",
+  "outline": {}
+}
+```
+With the following defaults (as of 100.7.0)
+```
+style: esriSMSCircle
+color:  [211, 211, 211, 255] // Light Gray (82% white); Opaque
+size: 8.0
+angle: 0.0
+xoffset: 0.0
+yoffset: 0.0
+outline.width: 1.0
+outline.color: [211, 211, 211, 255]
+outline.style: esriSLSSolid
+```
+
+Properties not settable in JSON
+ * angleAlignment: AGSMarkerSymbolAngleAlignmentScreen
+ * leaderOffsetX: 0.0
+ * leaderOffsetY: 0.0
+ * outline.style: esriSLSSolid
+
+## Picture Marker Symbol Defaults:
+minimal picture marker symbol is:
+```
+{
+"type": "esriPMS"
+}
+```
+But this is is useless, as there is no image to display.
+Suggest that you use the contentType and imageData properties to provide a base64 encoded image.  If you use a URL, it must be a
+full network URL, and the network must be available when running the app, or the image will not display.
+
+With the following defaults (as of 100.7.0)
+```
+
+AGSPictureMarkerSymbol properties
+url: nil
+imageData: nil
+contentType: nil
+width: 0.0
+height: 0.0
+angle: 0.0
+xoffset: 0.0
+yoffset: 0.0
+```
+Properties not settable in JSON
+angleAlignment: AGSMarkerSymbolAngleAlignmentScreen
+leaderOffsetX: 0.0
+leaderOffsetY: 0.0
+opacity: 1.0
+
+## Simple Line Symbol Defaults:
+minimal text symbol is:
+```
+{
+  "type": "esriSLS"
+}
+```
+With the following defaults (as of 100.7.0)
+```
+style: esriSLSSolid
+color: [211, 211, 211, 255] // Light Gray (82% white); Opaque
+width: 1.0
+```
+Properties not settable in JSON
+ * antialias: false
+ * markerPlacement: AGSSimpleLineSymbolMarkerPlacementEnd
+ * markerStyle: AGSSimpleLineSymbolMarkerStyleNone
+
+## Text Symbol defaults:
+minimal text symbol is:
+```
+{
+  "type": "esriTS"
+}
+```
+With the following defaults (as of 100.7.0)
+
+```
+color:  [0, 0, 0, 255] // opaque black
+backgroundColor: [0, 0, 0, 0] // transparent black
+borderLineSize: 0.0
+borderLineColor: [0, 0, 0, 0] 
+haloSize: 0.0
+haloColor: [0, 0, 0, 0]
+verticalAlignment: middle
+horizontalAlignment: center
+angle: 0.0
+xoffset: 0.0
+yoffset: 0.0
+kerning: false
+font.family: ""
+font.size: 8.0
+font.style: normal
+font.weight: normal
+font.decoration: none
+text: ""
+```
+
+Properties not settable in JSON
+* angleAlignment: AGSMarkerSymbolAngleAlignmentScreen
+* leaderOffsetX: 0.0
+* leaderOffsetY: 0.0
+* outline.style: esriSLSSolid
+
+JSON Properties not supported in SDK
+ * rightToLeft
+
+## Renderers
+https://developers.arcgis.com/documentation/common-data-types/renderer-objects.htm
+
+## Simple renderer defaults:
+minimal text symbol is:
+```
+{
+"type": "simple"
+}
+```
+With the following defaults (as of 100.7.0).  This is useless, as it has no symbol.
+
+```
+symbol: nil
+label: ""
+description: ""
+rotationType: geographic
+rotationExpression: ""
+```
+
+Properties not settable in JSON
+sceneProperties
+
+With the following, you get a "AGSUnsupportedSymbol", which will not display.  You need to provide a minimal (or more) symbol from above.
+The symbol type should match the geometry of the objects in the layer.
+```
+{
+  "type": "simple",
+  "symbol": {}
+}
+```
+## Unique value renderer defaults:
+minimal valid (although useless) unique value renderer is:
+```
+{
+  "type": "uniqueValue"
+}
+```
+
+This has the following defaults
+```
+field1: null
+field2: null
+field3: null
+fieldDelimiter: not used
+defaultSymbol: null
+defaultLabel: ""
+rotationType: geographic
+rotationExpression: ""
+uniqueValueInfos count: 0
+```
+
+A more useful minimal example is:
+```
+{
+  "type": "uniqueValue",
+  "field1": "name",
+  "defaultSymbol": {"type":"esriSMS", "size": 5},
+  "uniqueValueInfos": [{
+    "value": "bob",
+    "symbol": {"type":"esriSMS", "size": 10}
+  },{
+    "value": "BOB",
+    "symbol": {"type":"esriSMS", "size": 20}
+  }]
+}
+```
+
+The defaults in this case are:
+
+```
+type: uniqueValue
+field1: "name"
+field2: null
+field3: null
+fieldDelimiter: not used
+defaultSymbol: <AGSSimpleMarkerSymbol>
+defaultLabel: ""
+rotationType: geographic
+rotationExpression: ""
+uniqueValue #1
+  value: [bob]
+  label: ""
+  description: "" 
+  symbol: <AGSSimpleMarkerSymbol>
+uniqueValue #2
+  value: [BOB]
+  label: ""
+  description: ""
+  symbol: <AGSSimpleMarkerSymbol>
+```
+Note that `uniqueValueInfos.value` is a list that would presumably have 1,2, or 3
+values for the 1,2, or 3 field names provided.  However the REST API does not specify
+how to provide multiple values.  If a 2nd or 3rd field is provided, then anything in `value` is ignored,
+and an empty list is returned.  Providing a list to `value` generates an error, and 
+properties `value1` .. `value3` are also ignored.
+
+At this time, it is only safe to provide a unique value renderer on 1 field.
+
+## Class breaks renderer defaults:
+minimal valid (although useless) class breaks renderer is:
+```
+{
+  "type": "classBreaks"
+}
+```
+
+This has the following defaults
+```
+field: null
+classificationMethod: esriClassifyManual
+normalizationType: esriNormalizeNone
+normalizationField: null
+normalizationTotal: nan
+defaultSymbol: null
+defaultLabel: null
+backgroundFillSymbol: null
+minValue: nan
+rotationType: geographic
+rotationExpression: null
+classBreakInfos: empty list
+```
+While not defined on https://developers.arcgis.com/documentation/common-data-types/renderer-objects.htm the classification methods are
+* esriClassifyDefinedInterval
+* esriClassifyEqualInterval
+* esriClassifyGeometricalInterval
+* esriClassifyNaturalBreaks
+* esriClassifyQuantile 
+* esriClassifyStandardDeviation
+* esriClassifyManual
+
+A more useful minimal example is:
+```
+{
+  "type": "classBreaks",
+  "field": "age",
+  "minValue" : 0,
+  "defaultSymbol": {"type":"esriSMS", "size": 5},
+  "classBreakInfos": [{
+    "classMaxValue": 25,
+    "symbol": {"type":"esriSMS", "size": 10}
+  },{
+    "classMaxValue": 100,
+    "symbol": {"type":"esriSMS", "size": 20}
+  }]
+}
+```
+
+The defaults in this case are:
+
+```
+type: simple
+field: age
+classificationMethod: esriClassifyManual
+normalizationType: esriNormalizeNone
+normalizationField: null
+normalizationTotal: nan
+defaultSymbol: <AGSSimpleMarkerSymbol>
+defaultLabel: null
+backgroundFillSymbol: null
+minValue: 0.0
+rotationType: geographic
+rotationExpression: 
+classBreak #1
+  classMinValue: nan
+  classMaxValue: 25.0
+  label: 
+  description: 
+  symbol: <AGSSimpleMarkerSymbol>
+classBreak #2
+  classMinValue: nan
+  classMaxValue: 100.0
+  label: null
+  description: null
+  symbol: <AGSSimpleMarkerSymbol>
+```
+
+## Label Definition Defaults
+https://developers.arcgis.com/documentation/common-data-types/labeling-objects.htm
+
+The AGSLabelDefinition object has no properties to inspect.
+There is no way to be sure of which properties are optional except by testing.
+A guess can be made based on the defaults for the other objects above.
