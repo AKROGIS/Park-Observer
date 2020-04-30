@@ -150,12 +150,7 @@ extension Feature {
     try container.encodeIfPresent(label, forKey: .label)
     try container.encodeIfPresent(locations, forKey: .locations)
     try container.encodeIfPresent(name, forKey: .name)
-    if let renderer = symbology as? AGSSimpleRenderer {
-      if let symbol = renderer.symbol as? AGSSimpleMarkerSymbol {
-        let symbology = SimpleSymbology(color: symbol.color, size: Double(symbol.size))
-        try container.encodeIfPresent(symbology, forKey: .symbology)
-      }
-    }
+    try container.encode(AnyJSON(value: symbology.toJSON()), forKey: .symbology)
   }
 
 }
@@ -437,15 +432,9 @@ extension Label: Codable {
     try container.encodeIfPresent(field, forKey: .field)
     try container.encodeIfPresent(color?.hex6, forKey: .color)
     try container.encodeIfPresent(size, forKey: .size)
-    //TODO Implement encode on AGSTextSymbol and AGSLabelDefinition
-    if definition != nil {
-      let message = "Cannot encode definition (AGSLabelDefinition)"
-      throw EncodingError.invalidValue(
-        definition,
-        EncodingError.Context(
-          codingPath: encoder.codingPath,
-          debugDescription: message)
-      )
+    try container.encode(AnyJSON(value: symbol.toJSON()), forKey: .symbol)
+    if let definition = definition {
+      try container.encode(AnyJSON(value: definition.toJSON()), forKey: .definition)
     }
   }
 

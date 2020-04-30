@@ -183,30 +183,10 @@ extension Mission {
     try container.encode(editAtStartReobserving, forKey: .editAtStartReobserving)
     try container.encode(editAtStopObserving, forKey: .editAtStopObserving)
     try container.encode(editPriorAtStopObserving, forKey: .editPriorAtStopObserving)
-    if let renderer = gpsSymbology as? AGSSimpleRenderer {
-      if let symbol = renderer.symbol as? AGSSimpleMarkerSymbol {
-        let symbology = SimpleSymbology(color: symbol.color, size: Double(symbol.size))
-        try container.encodeIfPresent(symbology, forKey: .symbology)
-      }
-    }
-    if let renderer = offSymbology as? AGSSimpleRenderer {
-      if let symbol = renderer.symbol as? AGSSimpleLineSymbol {
-        let symbology = SimpleSymbology(color: symbol.color, size: Double(symbol.width))
-        try container.encodeIfPresent(symbology, forKey: .symbology)
-      }
-    }
-    if let renderer = onSymbology as? AGSSimpleRenderer {
-      if let symbol = renderer.symbol as? AGSSimpleLineSymbol {
-        let symbology = SimpleSymbology(color: symbol.color, size: Double(symbol.width))
-        try container.encodeIfPresent(symbology, forKey: .symbology)
-      }
-    }
-    if let renderer = symbology as? AGSSimpleRenderer {
-      if let symbol = renderer.symbol as? AGSSimpleMarkerSymbol {
-        let symbology = SimpleSymbology(color: symbol.color, size: Double(symbol.size))
-        try container.encodeIfPresent(symbology, forKey: .symbology)
-      }
-    }
+    try container.encode(AnyJSON(value: symbology.toJSON()), forKey: .symbology)
+    try container.encode(AnyJSON(value: gpsSymbology.toJSON()), forKey: .gpsSymbology)
+    try container.encode(AnyJSON(value: onSymbology.toJSON()), forKey: .onSymbology)
+    try container.encode(AnyJSON(value: offSymbology.toJSON()), forKey: .offSymbology)
     try container.encodeIfPresent(totalizer, forKey: .totalizer)
   }
 
