@@ -463,11 +463,7 @@ class FeatureTests: XCTestCase {
       """.utf8)
 
     // When:
-    let decoder = JSONDecoder()
-    let JSON = try! JSONSerialization.jsonObject(with: jsonData)
-    let options = SurveyProtocolCodingOptions(json: JSON, version: .unknown)
-    decoder.userInfo = [SurveyProtocolCodingOptions.key: options]
-    let json = try? decoder.decode(TestJson.self, from: jsonData)
+    let json = try? JSONDecoder().decode(TestJson.self, from: jsonData)
 
     // Then:
     XCTAssertNotNil(json)  // Failed parsing; JSON is invalid
@@ -587,11 +583,7 @@ class FeatureTests: XCTestCase {
       """.utf8)
 
     // When:
-    let decoder = JSONDecoder()
-    let JSON = try! JSONSerialization.jsonObject(with: jsonData)
-    let options = SurveyProtocolCodingOptions(json: JSON, version: .unknown)
-    decoder.userInfo = [SurveyProtocolCodingOptions.key: options]
-    let json = try? decoder.decode(TestJson.self, from: jsonData)
+    let json = try? JSONDecoder().decode(TestJson.self, from: jsonData)
 
     // Then:
     XCTAssertNil(json)  // Failed parsing; JSON is invalid
@@ -618,11 +610,7 @@ class FeatureTests: XCTestCase {
       """.utf8)
 
     // When:
-    let decoder = JSONDecoder()
-    let JSON = try! JSONSerialization.jsonObject(with: jsonData)
-    let options = SurveyProtocolCodingOptions(json: JSON, version: .unknown)
-    decoder.userInfo = [SurveyProtocolCodingOptions.key: options]
-    let json = try? decoder.decode(TestJson.self, from: jsonData)
+    let json = try? JSONDecoder().decode(TestJson.self, from: jsonData)
 
     // Then:
     XCTAssertNil(json)  // Failed parsing; JSON is invalid
@@ -644,11 +632,7 @@ class FeatureTests: XCTestCase {
       """.utf8)
 
     // When:
-    let decoder = JSONDecoder()
-    let JSON = try! JSONSerialization.jsonObject(with: jsonData)
-    let options = SurveyProtocolCodingOptions(json: JSON, version: .unknown)
-    decoder.userInfo = [SurveyProtocolCodingOptions.key: options]
-    let json = try? decoder.decode(TestJson.self, from: jsonData)
+    let json = try? JSONDecoder().decode(TestJson.self, from: jsonData)
 
     // Then:
     XCTAssertNil(json)  // Failed parsing; JSON is invalid
@@ -747,11 +731,7 @@ class FeatureTests: XCTestCase {
       """.utf8)
 
     // When:
-    let decoder = JSONDecoder()
-    let JSON = try! JSONSerialization.jsonObject(with: jsonData)
-    let options = SurveyProtocolCodingOptions(json: JSON, version: .unknown)
-    decoder.userInfo = [SurveyProtocolCodingOptions.key: options]
-    let json = try? decoder.decode(TestJson.self, from: jsonData)
+    let json = try? JSONDecoder().decode(TestJson.self, from: jsonData)
 
     // Create an ArcGIS Symbol for comparison
     // NOTE: I discovered in testing that the object properties of the
@@ -811,11 +791,7 @@ class FeatureTests: XCTestCase {
       """.utf8)
 
     // When:
-    let decoder = JSONDecoder()
-    let JSON = try! JSONSerialization.jsonObject(with: jsonData)
-    let options = SurveyProtocolCodingOptions(json: JSON, version: .unknown)
-    decoder.userInfo = [SurveyProtocolCodingOptions.key: options]
-    let json = try? decoder.decode(TestJson.self, from: jsonData)
+    let json = try? JSONDecoder().decode(TestJson.self, from: jsonData)
 
     // Then:
     XCTAssertNotNil(json)  // Failed parsing; JSON is invalid

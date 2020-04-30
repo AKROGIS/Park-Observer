@@ -214,3 +214,70 @@ extension AGSRenderer {
     return nil
   }
 }
+
+//MARK: - AGSSymbol
+
+extension AGSSymbol {
+
+  // Try to get an esri Symbol from AnyJSON
+  // If it doesn't appear to be JSON appropriate for AGSSymbol, then return nil
+  // Only throw if it appears to be a symbol and is invalid
+  static func fromAnyJSON(_ agsJSON: AnyJSON, codingPath: [CodingKey]) throws -> AGSSymbol? {
+
+    func corruptError(message: String) -> DecodingError {
+      return DecodingError.dataCorrupted(
+        DecodingError.Context(
+          codingPath: codingPath,
+          debugDescription: message
+        )
+      )
+    }
+
+    if let agsObject = agsJSON.value as? [String: Any], agsObject.keys.contains("type"),
+      let type = agsObject["type"] as? String
+    {
+      let validTypes = ["esriSMS", "esriSLS", "esriSFS", "esriPMS", "esriPFS", "esriTS"]
+      guard validTypes.contains(type) else {
+        let message =
+          "Cannot initialize Symbol type of \(type), must be one of \(validTypes)"
+        throw corruptError(message: message)
+      }
+      let object = try AGSSymbol.fromJSON(agsObject)
+      guard let symbol = object as? AGSSymbol else {
+        let message = "Cannot initialize Symbol; JSON provided was not an esri Symbol"
+        throw corruptError(message: message)
+      }
+      if let issues = symbol.unknownJSON, issues.count > 0 {
+        let badKeys = issues.keys.joined(separator: ",")
+        let message = "Cannot initialize Symbol; invalid properties found \(badKeys)"
+        throw corruptError(message: message)
+      }
+      return symbol
+    }
+    return nil
+  }
+}
+
+//MARK: - AGSLabelDefinition
+
+extension AGSLabelDefinition {
+
+  // Try to get an esri AGSLabelDefinition from AnyJSON
+  // If it doesn't appear to be JSON appropriate for AGSLabelDefinition, then throw
+  static func fromAnyJSON(_ agsJSON: AnyJSON, codingPath: [CodingKey]) throws -> AGSLabelDefinition
+  {
+
+    let definition = try AGSLabelDefinition.fromJSON(agsJSON.value) as! AGSLabelDefinition
+    if let issues = definition.unknownJSON, issues.count > 0 {
+      let badKeys = issues.keys.joined(separator: ",")
+      let message = "Cannot initialize Label Definition; invalid properties found \(badKeys)"
+      throw DecodingError.dataCorrupted(
+        DecodingError.Context(
+          codingPath: codingPath,
+          debugDescription: message
+        )
+      )
+    }
+    return definition
+  }
+}

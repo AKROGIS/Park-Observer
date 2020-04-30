@@ -85,10 +85,7 @@ extension SurveyProtocol {
   init(data: Data) throws {
     let decoder = JSONDecoder()
     decoder.dateDecodingStrategy = .iso8601date
-    let json = try JSONSerialization.jsonObject(with: data)
-    let options = SurveyProtocolCodingOptions(
-      json: json,
-      version: .unknown)
+    let options = SurveyProtocolCodingOptions(version: .unknown)
     decoder.userInfo = [SurveyProtocolCodingOptions.key: options]
 
     self = try JSONDecoder().decode(SurveyProtocol.self, from: data)
@@ -161,9 +158,6 @@ extension JSONDecoder.DateDecodingStrategy {
 // This object provides context to help the decode decode child objects.
 
 struct SurveyProtocolCodingOptions {
-
-  /// The json data being decoded as a JSONSerializer() object
-  let json: Any
 
   /// The version of the protocol being decoded
   let version: SurveyProtocolVersion
