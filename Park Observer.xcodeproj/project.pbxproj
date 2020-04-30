@@ -49,6 +49,7 @@
 		74A25FDA2453B469006D82CE /* TotalizerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 74A25FD92453B469006D82CE /* TotalizerTests.swift */; };
 		74A25FDE2453B4FE006D82CE /* DialogTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 74A25FDD2453B4FE006D82CE /* DialogTests.swift */; };
 		74D0B0D22458DC5A00624FE9 /* ArcGISSymbolDefaultTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 74D0B0D12458DC5A00624FE9 /* ArcGISSymbolDefaultTests.swift */; };
+		74D0B0D4245A1FC600624FE9 /* AnyJSON.swift in Sources */ = {isa = PBXBuildFile; fileRef = 74D0B0D3245A1FC600624FE9 /* AnyJSON.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -130,6 +131,7 @@
 		74A25FD92453B469006D82CE /* TotalizerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TotalizerTests.swift; sourceTree = "<group>"; };
 		74A25FDD2453B4FE006D82CE /* DialogTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DialogTests.swift; sourceTree = "<group>"; };
 		74D0B0D12458DC5A00624FE9 /* ArcGISSymbolDefaultTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ArcGISSymbolDefaultTests.swift; sourceTree = "<group>"; };
+		74D0B0D3245A1FC600624FE9 /* AnyJSON.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AnyJSON.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -299,6 +301,7 @@
 		74A25FC4245232F1006D82CE /* Survey Protocol */ = {
 			isa = PBXGroup;
 			children = (
+				74D0B0D3245A1FC600624FE9 /* AnyJSON.swift */,
 				74A25FCD245233E1006D82CE /* CsvFormat.swift */,
 				74A25FC724523381006D82CE /* Dialog.swift */,
 				74A25FC924523390006D82CE /* Feature.swift */,
@@ -496,6 +499,7 @@
 				747165EE243C37A800A9C960 /* SceneDelegate.swift in Sources */,
 				74716640243F933700A9C960 /* MapControlsView.swift in Sources */,
 				74A25FD0245233FF006D82CE /* Symbology.swift in Sources */,
+				74D0B0D4245A1FC600624FE9 /* AnyJSON.swift in Sources */,
 				7471662B243C4AF700A9C960 /* MapViewController.swift in Sources */,
 				747166502447979400A9C960 /* LocationButtonController.swift in Sources */,
 				747165F0243C37A800A9C960 /* ContentView.swift in Sources */,

@@ -171,3 +171,46 @@ extension UIColor {
   }
 
 }
+
+//MARK: - AGSRenderer
+
+extension AGSRenderer {
+
+  // Try to get an esri Renderer from AnyJSON
+  // If it doesn't appear to be JSON appropriate for AGSRenderer, then return nil
+  // Only throw if it appears to be a renderer and is invalid
+  static func fromAnyJSON(_ agsJSON: AnyJSON, codingPath: [CodingKey]) throws -> AGSRenderer? {
+
+    func corruptError(message: String) -> DecodingError {
+      return DecodingError.dataCorrupted(
+        DecodingError.Context(
+          codingPath: codingPath,
+          debugDescription: message
+        )
+      )
+    }
+
+    if let agsObject = agsJSON.value as? [String: Any], agsObject.keys.contains("type"),
+      let type = agsObject["type"] as? String
+    {
+      let validTypes = ["simple", "classBreaks", "uniqueValue"]
+      guard validTypes.contains(type) else {
+        let message =
+          "Cannot initialize symbology with a renderer type of \(type), must be one of \(validTypes)"
+        throw corruptError(message: message)
+      }
+      let object = try AGSRenderer.fromJSON(agsObject)
+      guard let agsRenderer = object as? AGSRenderer else {
+        let message = "Cannot initialize symbology. JSON provided was not an esri Renderer"
+        throw corruptError(message: message)
+      }
+      if let issues = agsRenderer.unknownJSON, issues.count > 0 {
+        let badKeys = issues.keys.joined(separator: ",")
+        let message = "Cannot initialize symbology; invalid properties found \(badKeys)"
+        throw corruptError(message: message)
+      }
+      return agsRenderer
+    }
+    return nil
+  }
+}
