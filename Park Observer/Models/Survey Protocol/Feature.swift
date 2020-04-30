@@ -71,10 +71,19 @@ extension Feature {
     let label = try container.decodeIfPresent(Label.self, forKey: .label)
     let locations = try container.decode([Location].self, forKey: .locations)
     let name = try container.decode(String.self, forKey: .name)
-    var renderer: AGSRenderer = AGSSimpleRenderer(for: .features)
-    if let symbology = try container.decodeIfPresent(SimpleSymbology.self, forKey: .symbology) {
-      renderer = AGSSimpleRenderer(for: .features, color: symbology.color, size: symbology.size)
+
+    var renderer: AGSRenderer? = nil
+    // Version 2 Symbology
+    if let agsJSON:AnyJSON = try container.decodeIfPresent(AnyJSON.self, forKey: .symbology) {
+      renderer = try AGSRenderer.fromAnyJSON(agsJSON, codingPath: decoder.codingPath)
     }
+    // Version 1 Symbology
+    if renderer == nil {
+      if let symbology = try container.decodeIfPresent(SimpleSymbology.self, forKey: .symbology) {
+        renderer = AGSSimpleRenderer(for: .features, color: symbology.color, size: symbology.size)
+      }
+    }
+
     // Validate name
     if name.count == 0 || name.count > 10 {
       let message = "Cannot initialize name with an invalid value \(name)"
@@ -130,7 +139,7 @@ extension Feature {
       label: label,
       locations: locations,
       name: name,
-      symbology: renderer)
+      symbology: renderer ?? AGSSimpleRenderer(for: .features))
   }
 
   func encode(to encoder: Encoder) throws {
@@ -517,8 +526,9 @@ extension Label: Codable {
       let message = "Cannot encode definition (AGSLabelDefinition)"
       throw EncodingError.invalidValue(
         definition,
-        EncodingError.Context(codingPath: encoder.codingPath,
-                              debugDescription: message)
+        EncodingError.Context(
+          codingPath: encoder.codingPath,
+          debugDescription: message)
       )
     }
   }

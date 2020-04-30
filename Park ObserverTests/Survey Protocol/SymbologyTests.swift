@@ -289,6 +289,80 @@ class SymbologyTests: XCTestCase {
     XCTAssertNil(json)  // Should fail parsing;
   }
 
+  func testFeatureSymbologyV2_ok() {
+    // Given:
+    struct TestJson: Codable {
+      let feature: Feature
+    }
+    let jsonData = Data(
+      """
+      {
+        "feature": {
+          "name":"Birds",
+          "locations":[ {"type": "gps"} ],
+          "symbology": {
+            "type": "simple",
+            "symbol": {
+              "type": "esriSMS",
+              "color": [255,0,0,255],
+              "size": 5
+            }
+          }
+        }
+      }
+      """.utf8)
+    let agsData = Data(
+      """
+      {
+        "type": "simple",
+        "symbol": {
+          "type": "esriSMS",
+          "color": [255,0,0,255],
+          "size": 5
+        }
+      }
+      """.utf8)
+
+    // When:
+    let json = try? JSONDecoder().decode(TestJson.self, from: jsonData)
+    let agsJSON = try! JSONSerialization.jsonObject(
+      with: agsData, options: JSONSerialization.ReadingOptions.mutableContainers)
+    let renderer = try! AGSSimpleRenderer.fromJSON(agsJSON) as! AGSSimpleRenderer
+
+    // Then:
+    XCTAssertNotNil(json)  // Failed parsing; JSON is invalid
+    if let test = json {
+      XCTAssertTrue(test.feature.symbology.isEqual(to: renderer))
+    }
+  }
+
+  func testFeatureSymbologyV2_invalid() {
+    // Given:
+    struct TestJson: Codable {
+      let feature: Feature
+    }
+    let jsonData = Data(
+      """
+      {
+        "feature": {
+          "name":"Birds",
+          "locations":[ {"type": "gps"} ],
+          "symbology": {
+            "type": "esriSMS",
+            "color": [255,0,0,255],
+            "size": 5
+          }
+        }
+      }
+      """.utf8)
+
+    // When:
+    let json = try? JSONDecoder().decode(TestJson.self, from: jsonData)
+
+    // Then:
+    XCTAssertNil(json)  // Should fail parsing;
+  }
+
   //MARK: - Mission Symbology
 
   func testMissionSymbologyV1_missing() {
@@ -378,6 +452,303 @@ class SymbologyTests: XCTestCase {
           "name":"Birds",
           "locations":[ {"type": "gps"} ],
           "symbology": 14
+        }
+      }
+      """.utf8)
+
+    // When:
+    let json = try? JSONDecoder().decode(TestJson.self, from: jsonData)
+
+    // Then:
+    XCTAssertNil(json)  // Should fail parsing;
+  }
+
+  func testMissionSymbology1V2_ok() {
+    // Given:
+    struct TestJson: Codable {
+      let mission: Mission
+    }
+    let jsonData = Data(
+      """
+      {
+        "mission": {
+          "symbology":{
+            "type": "simple",
+            "symbol": {
+              "type": "esriSMS",
+              "color": [255,0,0,255],
+              "size": 5
+            }
+          }
+        }
+      }
+      """.utf8)
+    let agsData = Data(
+      """
+      {
+        "type": "simple",
+        "symbol": {
+          "type": "esriSMS",
+          "color": [255,0,0,255],
+          "size": 5
+        }
+      }
+      """.utf8)
+
+    // When:
+    let json = try? JSONDecoder().decode(TestJson.self, from: jsonData)
+    let agsJSON = try! JSONSerialization.jsonObject(
+      with: agsData, options: JSONSerialization.ReadingOptions.mutableContainers)
+    let renderer = try! AGSSimpleRenderer.fromJSON(agsJSON) as! AGSSimpleRenderer
+
+    // Then:
+    XCTAssertNotNil(json)  // Failed parsing; JSON is invalid
+    if let test = json {
+      XCTAssertTrue(test.mission.symbology.isEqual(to: renderer))
+    }
+  }
+
+  func testMissionSymbology2V2_ok() {
+    // Given:
+    struct TestJson: Codable {
+      let mission: Mission
+    }
+    let jsonData = Data(
+      """
+      {
+        "mission": {
+          "gps-symbology":{
+            "type": "simple",
+            "symbol": {
+              "type": "esriSMS",
+              "color": [255,0,0,255],
+              "size": 7
+            }
+          }
+        }
+      }
+      """.utf8)
+    let agsData = Data(
+      """
+      {
+        "type": "simple",
+        "symbol": {
+          "type": "esriSMS",
+          "color": [255,0,0,255],
+          "size": 7,
+        }
+      }
+      """.utf8)
+    // When:
+    let json = try? JSONDecoder().decode(TestJson.self, from: jsonData)
+    let agsJSON = try! JSONSerialization.jsonObject(
+      with: agsData, options: JSONSerialization.ReadingOptions.mutableContainers)
+    let renderer = try! AGSSimpleRenderer.fromJSON(agsJSON) as! AGSSimpleRenderer
+
+    // Then:
+    XCTAssertNotNil(json)  // Failed parsing; JSON is invalid
+    if let test = json {
+      XCTAssertTrue(test.mission.gpsSymbology.isEqual(to: renderer))
+    }
+  }
+
+  func testMissionSymbology3V2_ok() {
+    // Given:
+    struct TestJson: Codable {
+      let mission: Mission
+    }
+    let jsonData = Data(
+      """
+      {
+        "mission": {
+          "on-symbology":{
+            "type": "classBreaks",
+            "field": "age",
+            "minValue" : 0,
+            "defaultSymbol": {"type":"esriSMS", "size": 5},
+            "classBreakInfos": [{
+              "classMaxValue": 25,
+              "symbol": {"type":"esriSMS", "size": 10}
+            },{
+              "classMaxValue": 100,
+              "symbol": {"type":"esriSMS", "size": 20}
+            }]
+          }
+        }
+      }
+      """.utf8)
+    let agsData = Data(
+      """
+      {
+        "type": "classBreaks",
+        "field": "age",
+        "minValue" : 0,
+        "defaultSymbol": {"type":"esriSMS", "size": 5},
+        "classBreakInfos": [{
+          "classMaxValue": 25,
+          "symbol": {"type":"esriSMS", "size": 10}
+        },{
+          "classMaxValue": 100,
+          "symbol": {"type":"esriSMS", "size": 20}
+        }]
+      }
+      """.utf8)
+
+    // When:
+    let json = try? JSONDecoder().decode(TestJson.self, from: jsonData)
+    let agsJSON = try! JSONSerialization.jsonObject(
+      with: agsData, options: JSONSerialization.ReadingOptions.mutableContainers)
+    let renderer = try! AGSClassBreaksRenderer.fromJSON(agsJSON) as! AGSSimpleRenderer
+
+    // Then:
+    XCTAssertNotNil(json)  // Failed parsing; JSON is invalid
+    if let test = json {
+      XCTAssertTrue(test.mission.onSymbology.isEqual(to: renderer))
+    }
+  }
+
+  func testMissionSymbology4V2_ok() {
+    // Given:
+    struct TestJson: Codable {
+      let mission: Mission
+    }
+    let jsonData = Data(
+      """
+      {
+        "mission": {
+          "off-symbology":{
+            "type": "uniqueValue",
+            "field1": "observing",
+            "defaultSymbol": {"type":"esriSLS", "width": 5},
+            "uniqueValueInfos": [{
+              "value": 0,
+              "symbol": {"type":"esriSLS", "width": 10}
+            },{
+              "value": 1,
+              "symbol": {"type":"esriSLS", "width": 20}
+            }]
+          }
+        }
+      }
+      """.utf8)
+    let agsData = Data(
+      """
+      {
+        "type": "uniqueValue",
+        "field1": "observing",
+        "defaultSymbol": {"type":"esriSLS", "width": 5},
+        "uniqueValueInfos": [{
+          "value": 0,
+          "symbol": {"type":"esriSLS", "width": 10}
+        },{
+          "value": 1,
+          "symbol": {"type":"esriSLS", "width": 20}
+        }]
+      }
+      """.utf8)
+
+    // When:
+    let json = try? JSONDecoder().decode(TestJson.self, from: jsonData)
+    let agsJSON = try! JSONSerialization.jsonObject(
+      with: agsData, options: JSONSerialization.ReadingOptions.mutableContainers)
+    let renderer = try! AGSUniqueValueRenderer.fromJSON(agsJSON) as! AGSRenderer
+
+    // Then:
+    XCTAssertNotNil(json)  // Failed parsing; JSON is invalid
+    if let test = json {
+      XCTAssertTrue(test.mission.offSymbology.isEqual(to: renderer))
+    }
+  }
+
+  func testMissionSymbology1V2_invalid() {
+    // Given:
+    struct TestJson: Codable {
+      let mission: Mission
+    }
+    let jsonData = Data(
+      """
+      {
+        "mission": {
+          "symbology": {
+            "type": "esriSMS",
+            "color": [255,0,0,255],
+            "size": 5
+          }
+        }
+      }
+      """.utf8)
+
+    // When:
+    let json = try? JSONDecoder().decode(TestJson.self, from: jsonData)
+
+    // Then:
+    XCTAssertNil(json)  // Should fail parsing;
+  }
+
+  func testMissionSymbology2V2_invalid() {
+    // Given:
+    struct TestJson: Codable {
+      let mission: Mission
+    }
+    let jsonData = Data(
+      """
+      {
+        "mission": {
+          "gps-symbology": {
+            "type": "esriSMS",
+            "color": [255,0,0,255],
+            "size": 5
+          }
+        }
+      }
+      """.utf8)
+
+    // When:
+    let json = try? JSONDecoder().decode(TestJson.self, from: jsonData)
+
+    // Then:
+    XCTAssertNil(json)  // Should fail parsing;
+  }
+
+  func testMissionSymbology3V2_invalid() {
+    // Given:
+    struct TestJson: Codable {
+      let mission: Mission
+    }
+    let jsonData = Data(
+      """
+      {
+        "mission": {
+          "on-symbology": {
+            "type": "esriSMS",
+            "color": [255,0,0,255],
+            "size": 5
+          }
+        }
+      }
+      """.utf8)
+
+    // When:
+    let json = try? JSONDecoder().decode(TestJson.self, from: jsonData)
+
+    // Then:
+    XCTAssertNil(json)  // Should fail parsing;
+  }
+
+  func testMissionSymbology4V2_invalid() {
+    // Given:
+    struct TestJson: Codable {
+      let mission: Mission
+    }
+    let jsonData = Data(
+      """
+      {
+        "mission": {
+          "off-symbology": {
+            "type": "esriSMS",
+            "color": [255,0,0,255],
+            "size": 5
+          }
         }
       }
       """.utf8)

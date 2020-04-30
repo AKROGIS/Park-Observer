@@ -85,32 +85,57 @@ extension Mission {
     let editPriorAtStopObserving = try container.decodeIfPresent(
       Bool.self, forKey: .editPriorAtStopObserving) ?? false
     let totalizer = try container.decodeIfPresent(MissionTotalizer.self, forKey: .totalizer)
-    var gpsRenderer: AGSRenderer = AGSSimpleRenderer(for: .gps)
-    do {
-      if let symbology = try container.decodeIfPresent(SimpleSymbology.self, forKey: .gpsSymbology) {
+
+    // Symbology
+    var gpsRenderer: AGSRenderer? = nil
+    // Version 2 Symbology
+    if let agsJSON:AnyJSON = try container.decodeIfPresent(AnyJSON.self, forKey: .gpsSymbology) {
+      gpsRenderer = try AGSRenderer.fromAnyJSON(agsJSON, codingPath: decoder.codingPath)
+    }
+    // Version 1 Symbology
+    if gpsRenderer == nil {
+      if let symbology = try container.decodeIfPresent(SimpleSymbology.self, forKey: .gpsSymbology)
+      {
         gpsRenderer = AGSSimpleRenderer(for: .gps, color: symbology.color, size: symbology.size)
       }
     }
-    var onRenderer: AGSRenderer = AGSSimpleRenderer(for: .onTransect)
-    do {
+    var onRenderer: AGSRenderer? = nil
+    // Version 2 Symbology
+    if let agsJSON:AnyJSON = try container.decodeIfPresent(AnyJSON.self, forKey: .onSymbology) {
+      onRenderer = try AGSRenderer.fromAnyJSON(agsJSON, codingPath: decoder.codingPath)
+    }
+    // Version 1 Symbology
+    if onRenderer == nil {
       if let symbology = try container.decodeIfPresent(SimpleSymbology.self, forKey: .onSymbology) {
         onRenderer = AGSSimpleRenderer(
           for: .onTransect, color: symbology.color, size: symbology.size)
       }
     }
-    var offRenderer: AGSRenderer = AGSSimpleRenderer(for: .offTransect)
-    do {
-      if let symbology = try container.decodeIfPresent(SimpleSymbology.self, forKey: .offSymbology) {
+    var offRenderer: AGSRenderer? = nil
+    // Version 2 Symbology
+    if let agsJSON:AnyJSON = try container.decodeIfPresent(AnyJSON.self, forKey: .offSymbology) {
+      offRenderer = try AGSRenderer.fromAnyJSON(agsJSON, codingPath: decoder.codingPath)
+    }
+    // Version 1 Symbology
+    if offRenderer == nil {
+      if let symbology = try container.decodeIfPresent(SimpleSymbology.self, forKey: .offSymbology)
+      {
         offRenderer = AGSSimpleRenderer(
           for: .offTransect, color: symbology.color, size: symbology.size)
       }
     }
-    var renderer: AGSRenderer = AGSSimpleRenderer(for: .mission)
-    do {
+    var renderer: AGSRenderer? = nil
+    // Version 2 Symbology
+    if let agsJSON:AnyJSON = try container.decodeIfPresent(AnyJSON.self, forKey: .symbology) {
+      renderer = try AGSRenderer.fromAnyJSON(agsJSON, codingPath: decoder.codingPath)
+    }
+    // Version 1 Symbology
+    if renderer == nil {
       if let symbology = try container.decodeIfPresent(SimpleSymbology.self, forKey: .symbology) {
         renderer = AGSSimpleRenderer(for: .mission, color: symbology.color, size: symbology.size)
       }
     }
+
     // Validate attributes
     if let attributes = attributes {
       if attributes.count == 0 {
@@ -127,7 +152,8 @@ extension Mission {
         throw DecodingError.dataCorrupted(
           DecodingError.Context(
             codingPath: decoder.codingPath,
-            debugDescription: "Cannot initialize locations with duplicate names in the list \(attributes)"
+            debugDescription:
+              "Cannot initialize locations with duplicate names in the list \(attributes)"
           )
         )
       }
@@ -141,10 +167,10 @@ extension Mission {
       editAtStartReobserving: editAtStartReobserving,
       editAtStopObserving: editAtStopObserving,
       editPriorAtStopObserving: editPriorAtStopObserving,
-      gpsSymbology: gpsRenderer,
-      offSymbology: offRenderer,
-      onSymbology: onRenderer,
-      symbology: renderer,
+      gpsSymbology: gpsRenderer ?? AGSSimpleRenderer(for: .gps),
+      offSymbology: offRenderer ?? AGSSimpleRenderer(for: .offTransect),
+      onSymbology: onRenderer ?? AGSSimpleRenderer(for: .onTransect),
+      symbology: renderer ?? AGSSimpleRenderer(for: .mission),
       totalizer: totalizer)
   }
 
