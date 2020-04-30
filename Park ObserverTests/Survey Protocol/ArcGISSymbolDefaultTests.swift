@@ -14,7 +14,7 @@ import XCTest
 
 class ArcGISSymbolDefaultTests: XCTestCase {
 
-//MARK: - Simple Marker Symbol
+  //MARK: - Simple Marker Symbol
 
   func testMinimalSimpleMarkerSymbol() {
 
@@ -101,15 +101,15 @@ class ArcGISSymbolDefaultTests: XCTestCase {
     print("  angleAlignment: \(symbol.angleAlignment) \(symbol.angleAlignment.rawValue)")
     print("  leaderOffsetX: \(symbol.leaderOffsetX)")
     print("  leaderOffsetY: \(symbol.leaderOffsetY)")
-    print("  outline.style: \(String(describing: symbol.outline?.style)) \(String(describing: symbol.outline?.style.rawValue))")
+    print(
+      "  outline.style: \(String(describing: symbol.outline?.style)) \(String(describing: symbol.outline?.style.rawValue))"
+    )
     print("Issues")
     print("  unknownJSON: \(String(describing: symbol.unknownJSON))")
     print("  unsupportedJSON: \(String(describing: symbol.unsupportedJSON))")
   }
 
-
-//MARK: - Picture Symbol
-
+  //MARK: - Picture Symbol
 
   func testMinimalPictureSymbol() {
 
@@ -179,9 +179,7 @@ class ArcGISSymbolDefaultTests: XCTestCase {
     print("  unsupportedJSON: \(String(describing: symbol.unsupportedJSON))")
   }
 
-
   //MARK: - Simple Line Symbol
-
 
   func testMinimalSimpleLineSymbol() {
 
@@ -240,9 +238,7 @@ class ArcGISSymbolDefaultTests: XCTestCase {
     print("  unsupportedJSON: \(String(describing: symbol.unsupportedJSON))")
   }
 
-
   //MARK: - Text Symbol
-
 
   func testMinimalTextSymbol() {
 
@@ -334,9 +330,7 @@ class ArcGISSymbolDefaultTests: XCTestCase {
     print("  unsupportedJSON: \(String(describing: symbol.unsupportedJSON))")
   }
 
-
   //MARK: - Simple Renderer
-
 
   func testMinimalSimpleRenderer() {
 
@@ -410,9 +404,7 @@ class ArcGISSymbolDefaultTests: XCTestCase {
     print("  unsupportedJSON: \(String(describing: renderer.unsupportedJSON))")
   }
 
-
-//MARK: - Unique Value Renderer
-
+  //MARK: - Unique Value Renderer
 
   func testMinimalUniqueValueRenderer() {
 
@@ -463,6 +455,7 @@ class ArcGISSymbolDefaultTests: XCTestCase {
     }
     XCTAssertNotNil(jsonData)
   }
+
   func testExampleUniqueValueRenderer() {
 
     let jsonData = Data(
@@ -551,9 +544,7 @@ class ArcGISSymbolDefaultTests: XCTestCase {
     print("  unsupportedJSON: \(String(describing: renderer.unsupportedJSON))")
   }
 
-
-//MARK: - Class Breaks Renderer
-
+  //MARK: - Class Breaks Renderer
 
   func testMinimalClassBreaksRenderer() {
 
@@ -701,8 +692,11 @@ class ArcGISSymbolDefaultTests: XCTestCase {
     print("AGSClassBreaksRenderer properties")
     print("  type: simple")
     print("  field: \(renderer.fieldName)")
-    print("  classificationMethod: \(renderer.classificationMethod) \(renderer.classificationMethod.rawValue)")
-    print("  normalizationType: \(renderer.normalizationType) \(renderer.normalizationType.rawValue)")
+    print(
+      "  classificationMethod: \(renderer.classificationMethod) \(renderer.classificationMethod.rawValue)"
+    )
+    print(
+      "  normalizationType: \(renderer.normalizationType) \(renderer.normalizationType.rawValue)")
     print("  normalizationField: \(renderer.normalizationField)")
     print("  normalizationTotal: \(renderer.normalizationTotal)")
     print("  defaultSymbol: \(String(describing: renderer.defaultSymbol))")
@@ -729,12 +723,11 @@ class ArcGISSymbolDefaultTests: XCTestCase {
     print("  unsupportedJSON: \(String(describing: renderer.unsupportedJSON))")
   }
 
+  //MARK: - Label Definition
 
-//MARK: - Label Definition
-
-// The AGSLabelDefinition object has no properties to inspect.
-// There is no way to be sure of which properties are optional
-// except by testing. A guess can be made based on
-// the defaults for the other objects above.
+  // The AGSLabelDefinition object has no properties to inspect.
+  // There is no way to be sure of which properties are optional
+  // except by testing. A guess can be made based on
+  // the defaults for the other objects above.
 
 }

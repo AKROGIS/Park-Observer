@@ -13,6 +13,8 @@ import XCTest
 
 class FeatureTests: XCTestCase {
 
+  //MARK: - Feature
+
   func testFeatureMinimal() {
     // Given:
     struct TestJson: Codable {
@@ -364,6 +366,8 @@ class FeatureTests: XCTestCase {
     // Then:
     XCTAssertNil(json)  // Failed parsing; JSON is invalid
   }
+
+  //MARK: - Feature Label
 
   func testLabelFailFieldNotInAttributes() {
     // Given:
@@ -823,6 +827,8 @@ class FeatureTests: XCTestCase {
     }
   }
 
+  //MARK: - Feature Attributes
+
   func testAttributeInvalid() {
     // Given:
     struct TestJson: Codable {
@@ -1116,6 +1122,8 @@ class FeatureTests: XCTestCase {
     // Then:
     XCTAssertNil(json)  // Failed parsing; JSON is invalid
   }
+
+  //MARK: - Feature Locations
 
   func testLocationsInvalid() {
     // Given:
