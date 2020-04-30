@@ -15,4 +15,19 @@ class DialogTests: XCTestCase {
   func testDialog() {
   }
 
+  func testBindPrefixAllValid() {
+  }
+
+  func testBindPrefixBad() {
+  }
+
+  func testBindAttributeNameFormat() {
+  }
+
+  func testBindAttributeNameUnique() {
+  }
+
+  func testBindPrefixMatchesType() {
+  }
+
 }

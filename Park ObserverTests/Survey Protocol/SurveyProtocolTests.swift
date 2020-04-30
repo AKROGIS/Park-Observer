@@ -141,19 +141,144 @@ class SurveyProtocolTests: XCTestCase {
   func testv2_full() {
   }
 
-  //TODO: Test totalizer fields exist in attributes
+  func testTotalizerFieldsExistInAttributes() {
+    // Given:
+    let json =
+      """
+      {
+        "meta-name":"NPS-Protocol-Specification",
+        "meta-version":2,
+        "name":"My Protocol",
+        "version":3.2,
+        "mission": {
+          "attributes": [ {"name": "one", "type": 700} ],
+          "totalizer": { "fields": ["two"] },
+          "dialog": {"title": "a", "sections": [{"elements": [
+            {"type": "QBooleanElement", "bind": "boolValue:one"} ] } ] },
+          "symbology":{"color": "#000000", "size": 10 }
+        },
+        "features":[{
+          "name":"Cabins", "locations":[ {"type":"mapTouch"}],
+          "attributes": [ {"name": "two", "type": 700} ],
+          "dialog": {"title": "a", "sections": [{"elements": [
+            {"type": "QBooleanElement", "bind": "boolValue:two"} ] } ] },
+          "symbology":{"color": "#000000", "size": 10 }
+        }]
+      }
+      """
 
-  //TODO: Test that dialog fields match attributes
+    // When:
+    let surveyProtocol = try? SurveyProtocol(json, using: .utf8)
 
-  //TODO: Test that dialog types match attribute types
+    // Then:
+    XCTAssertNil(surveyProtocol)
+  }
 
-  //TODO: ensure that all attributes in a feature are unique ignoring case
+  func testTestDialogNamesMatchAttributeNames() {
+    // Given:
+    let json =
+      """
+      {
+        "meta-name":"NPS-Protocol-Specification",
+        "meta-version":2,
+        "name":"My Protocol",
+        "version":3.2,
+        "features":[{
+          "name":"Cabins", "locations":[ {"type":"mapTouch"}],
+          "attributes": [ {"name": "two", "type": 800} ],
+          "dialog": {"title": "a", "sections": [{"elements": [
+            {"type": "QBooleanElement", "bind": "boolValue:one"} ] } ] },
+          "symbology":{"color": "#000000", "size": 10 }
+        }]
+      }
+      """
 
-  //TODO: ensure that all attributes in a mission are unique ignoring case
+    // When:
+    let surveyProtocol = try? SurveyProtocol(json, using: .utf8)
 
-  //TODO: ensure that any attributes in multiple features have the same type.
+    // Then:
+    XCTAssertNil(surveyProtocol)
+  }
 
-  //TODO: test thrown errors
+  func testTestDialogTypesMatchAttributeTypes() {
+    // Given:
+    let json =
+      """
+      {
+        "meta-name":"NPS-Protocol-Specification",
+        "meta-version":2,
+        "name":"My Protocol",
+        "version":3.2,
+        "features":[{
+          "name":"Cabins", "locations":[ {"type":"mapTouch"}],
+          "attributes": [ {"name": "two", "type": 700} ],
+          "dialog": {"title": "a", "sections": [{"elements": [
+            {"type": "QBooleanElement", "bind": "boolValue:two"} ] } ] },
+          "symbology":{"color": "#000000", "size": 10 }
+        }]
+      }
+      """
 
-  //TODO: test feature names are unique
+    // When:
+    let surveyProtocol = try? SurveyProtocol(json, using: .utf8)
+
+    // Then:
+    XCTAssertNil(surveyProtocol)
+  }
+
+  func testAttributesInMultipleFeaturesShareType() {
+    // Given:
+    let json =
+      """
+      {
+        "meta-name":"NPS-Protocol-Specification",
+        "meta-version":2,
+        "name":"My Protocol",
+        "version":3.2,
+        "features":[{
+          "name": "Cabins", "locations": [ {"type": "mapTouch"} ],
+          "attributes": [ {"name": "two", "type": 700} ],
+          "dialog": {"title": "a", "sections": [{"elements": [
+             {"type": "QBooleanElement", "bind": "boolValue:two"} ] } ] },
+          "symbology":{"color": "#000000", "size": 10 }
+        },{
+          "name": "Cabins", "locations": [ {"type": "gps"} ],
+           "attributes": [ {"name": "two", "type": 300} ],
+          "dialog": {"title": "a", "sections": [{"elements": [
+            {"type": "QIntegerElement", "bind": "numberValue:two"} ] } ] },
+          "symbology":{"color": "#000000", "size": 10 }
+        }]
+      }
+      """
+
+    // When:
+    let surveyProtocol = try? SurveyProtocol(json, using: .utf8)
+
+    // Then:
+    XCTAssertNil(surveyProtocol)
+  }
+
+  func testFeatureNamesAreUnique() {
+    // Given:
+    let json =
+      """
+      {
+        "meta-name":"NPS-Protocol-Specification",
+        "meta-version":2,
+        "name":"My Protocol",
+        "version":3.2,
+        "features":[
+          {"name": "Cabins", "locations": [ {"type": "mapTouch"} ], "symbology":{} },
+          {"name": "Cabins", "locations": [ {"type": "gps"} ], "symbology":{} }
+        ]
+      }
+      """
+
+    // When:
+    let surveyProtocol = try? SurveyProtocol(json, using: .utf8)
+
+    // Then:
+    XCTAssertNil(surveyProtocol)
+  }
+
 }

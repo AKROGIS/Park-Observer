@@ -179,7 +179,6 @@ struct Attribute: Codable {
     case int64 = 300
     case decimal = 400  // not supported
     case double = 500
-
     case float = 600
     case string = 700
     case bool = 800
