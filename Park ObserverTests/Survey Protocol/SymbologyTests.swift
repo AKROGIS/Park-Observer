@@ -598,7 +598,7 @@ class SymbologyTests: XCTestCase {
     let json = try? JSONDecoder().decode(TestJson.self, from: jsonData)
     let agsJSON = try! JSONSerialization.jsonObject(
       with: agsData, options: JSONSerialization.ReadingOptions.mutableContainers)
-    let renderer = try! AGSClassBreaksRenderer.fromJSON(agsJSON) as! AGSSimpleRenderer
+    let renderer = try! AGSClassBreaksRenderer.fromJSON(agsJSON) as! AGSRenderer
 
     // Then:
     XCTAssertNotNil(json)  // Failed parsing; JSON is invalid
