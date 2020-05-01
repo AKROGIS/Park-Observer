@@ -179,6 +179,7 @@ struct Attribute: Codable {
     case int64 = 300
     case decimal = 400  // not supported
     case double = 500
+
     case float = 600
     case string = 700
     case bool = 800
@@ -187,21 +188,35 @@ struct Attribute: Codable {
   }
 }
 
+extension Attribute {
+
+  var isIntegral: Bool {
+    type == .int16 || type == .int32 || type == .int64 || type == .bool || type == .id
+  }
+
+  var isFractional: Bool {
+    type == .double || type == .float || type == .decimal
+  }
+
+}
+
 //MARK: - Attribute Codable
 // Custom decoding to have limit name
 // per spec name must match the regex: "([a-z,A-Z])+"
 
 extension Attribute {
 
+  static func isValid(name: String) -> Bool {
+    return name.count >= 2 && name.count <= 30
+      && name.range(of: #"^[a-zA-Z_][a-zA-Z0-9_]+$"#, options: .regularExpression) != nil
+  }
+
   init(from decoder: Decoder) throws {
     let container = try decoder.container(keyedBy: CodingKeys.self)
     let name = try container.decode(String.self, forKey: .name)
     let type = try container.decode(AttributeType.self, forKey: .type)
     //validate name matches regex: i.e. does not have any non-word characters
-    guard
-      name.count >= 2 && name.count <= 30
-        && name.range(of: #"^[a-zA-Z_][a-zA-Z0-9_]+$"#, options: .regularExpression) != nil
-    else {
+    guard Attribute.isValid(name: name) else {
       throw DecodingError.dataCorrupted(
         DecodingError.Context(
           codingPath: decoder.codingPath,
