@@ -10,7 +10,7 @@
 struct MissionTotalizer: Codable {
 
   /// The names of attributes that are 'watched'. When one of them changes, the totalizer resets.
-  let fields: [String]
+  let fields: [String]?
 
   /// The size (in points) of the font used for the totalizer text.
   let fontSize: Double
@@ -55,30 +55,32 @@ extension MissionTotalizer {
 
   init(from decoder: Decoder) throws {
     let container = try decoder.container(keyedBy: CodingKeys.self)
-    let fields = try container.decode([String].self, forKey: .fields)
+    let fields = try container.decodeIfPresent([String].self, forKey: .fields)
     let fontSize = try container.decodeIfPresent(Double.self, forKey: .fontSize) ?? 14.0
     let includeOff = try container.decodeIfPresent(Bool.self, forKey: .includeOff) ?? false
     let includeOn = try container.decodeIfPresent(Bool.self, forKey: .includeOn) ?? true
     let includeTotal = try container.decodeIfPresent(Bool.self, forKey: .includeTotal) ?? false
     let units = try container.decodeIfPresent(TotalizerUnits.self, forKey: .units) ?? .kilometers
     // Validate fields and fontSize
-    if fields.count == 0 {
-      throw DecodingError.dataCorrupted(
-        DecodingError.Context(
-          codingPath: decoder.codingPath,
-          debugDescription: "Cannot initialize fields with an empty list"
+    if let fields = fields {
+      if fields.count == 0 {
+        throw DecodingError.dataCorrupted(
+          DecodingError.Context(
+            codingPath: decoder.codingPath,
+            debugDescription: "Cannot initialize fields with an empty list"
+          )
         )
-      )
-    }
-    // Validate fields; ensure unique with case insensitive compare
-    let fieldNames = fields.map { $0.lowercased() }
-    if Set(fieldNames).count != fieldNames.count {
-      throw DecodingError.dataCorrupted(
-        DecodingError.Context(
-          codingPath: decoder.codingPath,
-          debugDescription: "Cannot initialize fields with duplicate values in the list \(fields)"
+      }
+      // Validate fields; ensure unique with case insensitive compare
+      let fieldNames = fields.map { $0.lowercased() }
+      if Set(fieldNames).count != fieldNames.count {
+        throw DecodingError.dataCorrupted(
+          DecodingError.Context(
+            codingPath: decoder.codingPath,
+            debugDescription: "Cannot initialize fields with duplicate values in the list \(fields)"
+          )
         )
-      )
+      }
     }
     if fontSize < 0 {
       throw DecodingError.dataCorrupted(

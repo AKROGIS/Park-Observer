@@ -320,9 +320,6 @@
                     "default": 14.0
                 }
             },
-            "required": [
-                "fields"
-            ],
             "title": "Totalizer"
         },
         "Label": {

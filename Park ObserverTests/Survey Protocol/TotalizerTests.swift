@@ -28,10 +28,18 @@ class TotalizerTests: XCTestCase {
     let json = try? JSONDecoder().decode(TestJson.self, from: jsonData)
 
     // Then:
-    XCTAssertNil(json)
+    XCTAssertNotNil(json)
+    if let test = json {
+      XCTAssertNil(test.totalizer.fields)
+      XCTAssertTrue(test.totalizer.includeOn)
+      XCTAssertFalse(test.totalizer.includeOff)
+      XCTAssertFalse(test.totalizer.includeTotal)
+      XCTAssertEqual(test.totalizer.fontSize, 14.0, accuracy: 0.001)
+      XCTAssertEqual(test.totalizer.units, .kilometers)
+    }
   }
 
-  func testTotalizerMinimal() {
+  func testTotalizerFields() {
     // Given:
     struct TestJson: Codable {
       let totalizer: MissionTotalizer
@@ -51,13 +59,11 @@ class TotalizerTests: XCTestCase {
     // Then:
     XCTAssertNotNil(json)
     if let test = json {
-      XCTAssertEqual(test.totalizer.fields.count, 1)
-      XCTAssertEqual(test.totalizer.fields[0], "one")
-      XCTAssertTrue(test.totalizer.includeOn)
-      XCTAssertFalse(test.totalizer.includeOff)
-      XCTAssertFalse(test.totalizer.includeTotal)
-      XCTAssertEqual(test.totalizer.fontSize, 14.0, accuracy: 0.001)
-      XCTAssertEqual(test.totalizer.units, .kilometers)
+      XCTAssertNotNil(test.totalizer.fields)
+      if let fields = test.totalizer.fields {
+        XCTAssertEqual(fields.count, 1)
+        XCTAssertEqual(fields[0], "one")
+      }
     }
   }
 
@@ -81,9 +87,12 @@ class TotalizerTests: XCTestCase {
     // Then:
     XCTAssertNotNil(json)
     if let test = json {
-      XCTAssertEqual(test.totalizer.fields.count, 2)
-      XCTAssertEqual(test.totalizer.fields[0], "one")
-      XCTAssertEqual(test.totalizer.fields[1], "two")
+      XCTAssertNotNil(test.totalizer.fields)
+      if let fields = test.totalizer.fields {
+        XCTAssertEqual(fields.count, 2)
+        XCTAssertEqual(fields[0], "one")
+        XCTAssertEqual(fields[1], "two")
+      }
     }
   }
 

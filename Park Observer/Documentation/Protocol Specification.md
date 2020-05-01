@@ -437,12 +437,17 @@ At version 1 the default symbol was the only option.
 
 ### totalizer
 An optional object used to define the parameters for collecting and displaying a Mission Totalizer.
-This is used to provide information on how long the user has been observing for a given set of conditions,
-usually this is just the transect id.
-In this case, the totalizer show how long the user has been observing on a current transect.
+This is used to provide information on how long the user has been recording and/or observing.
+The totalizer can be given an optional list of fields to monitor.  It one of the fields changes, then
+the totalizer will reset.  This it typically set to the transect id, so the totalizer will show the time or
+distance recording/observing on a given transect.  If fields are given, then the fields must be in
+the dialog (otherwise, they will never change). If an empty object is given to the totalizer,
+it will display how many kilometers you have been observing, and reset each time to stop/stop
+observing.
+
 The totalizer has the following properties
 
-* fields
+* fields (o)
 * fontsize (o)
 * includeon (o)
 * includeoff (o)
@@ -450,19 +455,20 @@ The totalizer has the following properties
 * units (o)
 
 #### fields
-A required array of field names
-when any of the fields change, a different total is displayed.
-There must be at least one field (string) in the array which matches the name of one of the attributes in the mission
+A list of attribute names. When any of the fields in this list change, a different total is displayed.
+If provided, it must have at least one field and that field must be in the referenced in the
+mission dialog (so that it can be changed -- monitoring a unchanging field is pointless).
 
 #### fontsize
 An optional floating point value that indicate the size (in points) of the totalizer text.  The default is 14.0
 
 #### includeon
-An optional boolean value (true/false), that indicate is the total while "observing" is true should be displayed.
+An optional boolean value (true/false), that indicate is the total while "observing" should be displayed.
 The default is  true
 
 #### includeoff
-An optional boolean value (true/false), that indicate if the total while "observing" is false should be displayed.
+An optional boolean value (true/false), that indicate if the total while "recording" but not "observing"
+should be displayed.
 The default is  false
 
 #### includetotal
