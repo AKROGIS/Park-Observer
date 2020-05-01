@@ -150,7 +150,6 @@
                 "symbology"
             ],
             "dependencies": {
-                "attributes": ["dialog"],
                 "dialog": ["attributes"]
             },
             "title": "Mission"
@@ -207,7 +206,6 @@
                 "symbology"
             ],
             "dependencies": {
-                "attributes": ["dialog"],
                 "dialog": ["attributes"]
             },
             "title": "Feature"

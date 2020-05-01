@@ -166,6 +166,10 @@ An optional list of attributes that apply to segments of the tracklog.
 A mission with no attributes, only collects the location where the the user
 stopped and started observing (i.e. went on/off transect). The mission
 attributes are often things like the names of the observers, and the weather.
+If there is an attribute list, then there is usually a dialog property, although this
+is not required.  It is possible that the only attribute is a sequential Id which is
+not editable and requires no dialog, or that the database schema is defined
+by other drivers, and some attributes are not collected in the survey.
 
 Each `attribute` has the following properties
 
@@ -200,9 +204,12 @@ The type must be an integer code with the following definitions (from NSAttribut
 
 ### dialog
 Provides the look and feel of the attribute editing form presented to the user.
-Required if the mission has attributes.  There should be one element in the dialog
-for each attribute that will be displayed and/or edited in the form.  This format
-was due to the selection of [QuickDialog](https://github.com/escoz/QuickDialog) as
+A dialog is not required, but the attributes cannot be edited without one.
+If a dialog is present, then there must be at least one section in the dialog and one element in the section.
+Most elements in the dialog will refer to an attribute in the list of mission attributes.
+It is an error if a dialog element refers to an attribute that is not in the list.
+The dialog format
+is due to the selection of [QuickDialog](https://github.com/escoz/QuickDialog) as
 the form editor. While QuickDialog may have supported more properties than defined
 below, the following are the only ones typically used by ParkObserver, and the only
 ones that will be supported in the future.
@@ -286,6 +293,7 @@ and which attribute it is tied to (i.e. read from and saved to).
 It is important that the type above matches the type of the attrribute in
 the Attributes section.  Note that the will always be a colon (:) in the
 bind string seperating the type from the name.
+The attribute name in the bind property must be in the list of attributes.
 
 ###### items
 A list of choices for picklist type elements. Required for `QRadioElement`

@@ -157,6 +157,18 @@ extension Mission {
           )
         )
       }
+      guard let dialog = dialog else {
+        throw DecodingError.dataCorruptedError( forKey: .attributes , in: container, debugDescription:
+          "Cannot initialize Mission without dialog when attributes are present")
+      }
+      let dialogNames = dialog.sections.flatMap {
+        $0.elements.compactMap { $0.attributeName?.lowercased() } }
+      // Every dialog name must be in attributeNames
+      let extraDialogNames = dialogNames.filter { !attributeNames.contains($0) }
+      if extraDialogNames.count > 0 {
+        throw DecodingError.dataCorruptedError( forKey: .attributes , in: container, debugDescription:
+          "Cannot initialize Mission without dialog attribute \(extraDialogNames) not in the attributes list")
+      }
     }
 
     self.init(
