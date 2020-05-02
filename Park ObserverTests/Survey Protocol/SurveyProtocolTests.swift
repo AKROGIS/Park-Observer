@@ -141,91 +141,6 @@ class SurveyProtocolTests: XCTestCase {
   func testv2_full() {
   }
 
-  func testTotalizerFieldsExistInAttributes() {
-    // Given:
-    let json =
-      """
-      {
-        "meta-name":"NPS-Protocol-Specification",
-        "meta-version":2,
-        "name":"My Protocol",
-        "version":3.2,
-        "mission": {
-          "attributes": [ {"name": "one", "type": 700} ],
-          "totalizer": { "fields": ["two"] },
-          "dialog": {"title": "a", "sections": [{"elements": [
-            {"type": "QBooleanElement", "bind": "boolValue:one"} ] } ] },
-          "symbology":{"color": "#000000", "size": 10 }
-        },
-        "features":[{
-          "name":"Cabins", "locations":[ {"type":"mapTouch"}],
-          "attributes": [ {"name": "two", "type": 700} ],
-          "dialog": {"title": "a", "sections": [{"elements": [
-            {"type": "QBooleanElement", "bind": "boolValue:two"} ] } ] },
-          "symbology":{"color": "#000000", "size": 10 }
-        }]
-      }
-      """
-
-    // When:
-    let surveyProtocol = try? SurveyProtocol(json, using: .utf8)
-
-    // Then:
-    XCTAssertNil(surveyProtocol)
-  }
-
-  func testTestDialogNamesMatchAttributeNames() {
-    // Given:
-    let json =
-      """
-      {
-        "meta-name":"NPS-Protocol-Specification",
-        "meta-version":2,
-        "name":"My Protocol",
-        "version":3.2,
-        "features":[{
-          "name":"Cabins", "locations":[ {"type":"mapTouch"}],
-          "attributes": [ {"name": "two", "type": 800} ],
-          "dialog": {"title": "a", "sections": [{"elements": [
-            {"type": "QBooleanElement", "bind": "boolValue:one"} ] } ] },
-          "symbology":{"color": "#000000", "size": 10 }
-        }]
-      }
-      """
-
-    // When:
-    let surveyProtocol = try? SurveyProtocol(json, using: .utf8)
-
-    // Then:
-    XCTAssertNil(surveyProtocol)
-  }
-
-  func testTestDialogTypesMatchAttributeTypes() {
-    // Given:
-    let json =
-      """
-      {
-        "meta-name":"NPS-Protocol-Specification",
-        "meta-version":2,
-        "name":"My Protocol",
-        "version":3.2,
-        "features":[{
-          "name":"Cabins", "locations":[ {"type":"mapTouch"}],
-          "attributes": [ {"name": "two", "type": 700} ],
-          "dialog": {"title": "a", "sections": [{"elements": [
-            {"type": "QBooleanElement", "bind": "boolValue:two"} ] } ] },
-          "symbology":{"color": "#000000", "size": 10 }
-        }]
-      }
-      """
-
-    // When:
-    let surveyProtocol = try? SurveyProtocol(json, using: .utf8)
-
-    // Then:
-    XCTAssertNil(surveyProtocol)
-  }
-
   func testAttributesInMultipleFeaturesShareType() {
     // Given:
     let json =
@@ -237,16 +152,16 @@ class SurveyProtocolTests: XCTestCase {
         "version":3.2,
         "features":[{
           "name": "Cabins", "locations": [ {"type": "mapTouch"} ],
-          "attributes": [ {"name": "two", "type": 700} ],
+          "attributes": [ {"name": "two", "type": 800} ],
           "dialog": {"title": "a", "sections": [{"elements": [
              {"type": "QBooleanElement", "bind": "boolValue:two"} ] } ] },
-          "symbology":{"color": "#000000", "size": 10 }
+          "symbology":{}
         },{
-          "name": "Cabins", "locations": [ {"type": "gps"} ],
+          "name": "Houses", "locations": [ {"type": "gps"} ],
            "attributes": [ {"name": "two", "type": 300} ],
           "dialog": {"title": "a", "sections": [{"elements": [
             {"type": "QIntegerElement", "bind": "numberValue:two"} ] } ] },
-          "symbology":{"color": "#000000", "size": 10 }
+          "symbology":{}
         }]
       }
       """

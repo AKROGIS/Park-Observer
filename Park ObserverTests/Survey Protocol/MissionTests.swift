@@ -126,7 +126,7 @@ class MissionTests: XCTestCase {
             "title": "edit",
             "sections": [{
               "elements": [
-                {"type": "QLabelElement"}
+                {"type": "QIntegerElement", "bind": "numberValue:one" }
               ]
             }]
           },
@@ -216,6 +216,145 @@ class MissionTests: XCTestCase {
 
     // Then:
     XCTAssertNil(json)  // Failed parsing; JSON is invalid
+  }
+
+  func testTotalizerFieldsExistInDialog() {
+    // Given:
+    struct Test: Codable {
+      let mission: Mission
+    }
+    let jsonData = Data(
+      """
+      {
+        "mission": {
+          "attributes": [ {"name": "one", "type": 700} ],
+          "totalizer": { "fields": ["two"] },
+          "dialog": {"title": "a", "sections": [{"elements": [
+            {"type": "QBooleanElement", "bind": "boolValue:one"} ] } ] },
+            "symbology": {}
+        }
+      }
+      """.utf8)
+
+    // When:
+    let test = try? JSONDecoder().decode(Test.self, from: jsonData)
+
+    // Then:
+    XCTAssertNil(test)
+  }
+
+  //MARK: - Mission Dialog-Attributes
+
+  func testDialogFieldsExistInAttributes() {
+    // Given:
+    struct Test: Codable {
+      let mission: Mission
+    }
+    let jsonData = Data(
+      """
+      {
+        "mission": {
+          "attributes": [ {"name": "one", "type": 800} ],
+          "dialog": {"title": "a", "sections": [{"elements": [
+            {"type": "QBooleanElement", "bind": "boolValue:TWO"} ] } ] },
+            "symbology": {}
+        }
+      }
+      """.utf8)
+
+    // When:
+    let test = try? JSONDecoder().decode(Test.self, from: jsonData)
+
+    // Then:
+    XCTAssertNil(test)
+  }
+
+  func testDialogTypesExistInAttributeTypes() {
+    // Given:
+    struct Test: Codable {
+      let mission: Mission
+    }
+    let jsonData = Data(
+      """
+      {
+        "mission": {
+          "attributes": [
+            {"name": "Name1",  "type": 800},
+            {"name": "Name2",  "type": 400},
+            {"name": "Name21", "type": 500},
+            {"name": "Name22", "type": 600},
+            {"name": "Name3",  "type": 700},
+            {"name": "Name4",  "type": 100},
+            {"name": "Name41", "type": 200},
+            {"name": "Name42", "type": 300},
+            {"name": "Name5",  "type": 0},
+            {"name": "Name6",  "type": 700},
+            {"name": "Name7",  "type": 200},
+            {"name": "Name8",  "type": 700},
+            {"name": "Name9",  "type": 300},
+            {"name": "Name10", "type": 700}
+          ],
+          "dialog": {"title": "a", "sections": [{"elements": [
+            {"type": "QBooleanElement",   "bind": "boolValue:Name1"},
+            {"type": "QDecimalElement",   "bind": "numberValue:Name2"},
+            {"type": "QDecimalElement",   "bind": "numberValue:Name21"},
+            {"type": "QDecimalElement",   "bind": "numberValue:Name22"},
+            {"type": "QEntryElement",     "bind": "textValue:Name3"},
+            {"type": "QIntegerElement",   "bind": "numberValue:Name4"},
+            {"type": "QIntegerElement",   "bind": "numberValue:Name41"},
+            {"type": "QIntegerElement",   "bind": "numberValue:Name42"},
+            {"type": "QLabelElement",     "bind": "value:Name5"},
+            {"type": "QLabelElement"},
+            {"type": "QMultilineElement", "bind": "textValue:Name6"},
+            {"type": "QRadioElement",     "bind": "selected:Name7", "items":["a","b"]},
+            {"type": "QRadioElement",     "bind": "selectedItem:Name8", "items":["a","b"]},
+            {"type": "QSegmentedElement", "bind": "selected:Name9", "items":["a","b"]},
+            {"type": "QSegmentedElement", "bind": "selectedItem:Name10", "items":["a","b"]}
+          ]}]},
+          "symbology": {}
+        }
+      }
+      """.utf8)
+
+    // When:
+    let test = try? JSONDecoder().decode(Test.self, from: jsonData)
+
+    // Then:
+    XCTAssertNotNil(test)
+    if let test = test {
+      XCTAssertNotNil(test.mission.attributes)
+      XCTAssertNotNil(test.mission.dialog)
+      XCTAssertNotNil(test.mission.dialog!.sections[0].elements[0].attributeName)
+      XCTAssertNotNil(test.mission.dialog!.sections[0].elements[0].attributeType)
+      XCTAssertEqual(test.mission.attributes![0].name, "Name1")
+      XCTAssertNotEqual(test.mission.attributes![0].name, "name1")
+      XCTAssertEqual(test.mission.dialog!.sections[0].elements[0].attributeName, "Name1")
+      XCTAssertEqual(test.mission.dialog!.sections[0].elements[0].attributeType, .bool)
+    }
+  }
+
+  func testDialogTypesDoesNotMatchAttributeTypes() {
+    // Given:
+    struct Test: Codable {
+      let mission: Mission
+    }
+    let jsonData = Data(
+      """
+      {
+        "mission": {
+          "attributes": [ {"name": "one", "type": 100} ],
+          "dialog": {"title": "a", "sections": [{"elements": [
+            {"type": "QBooleanElement", "bind": "boolValue:one"} ] } ] },
+            "symbology": {}
+        }
+      }
+      """.utf8)
+
+    // When:
+    let test = try? JSONDecoder().decode(Test.self, from: jsonData)
+
+    // Then:
+    XCTAssertNil(test)
   }
 
 }

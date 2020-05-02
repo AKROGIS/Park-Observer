@@ -83,6 +83,20 @@ class DialogTests: XCTestCase {
 
   //MARK: - DialogElement.attributeName/Type
 
+  func testElementTypeMatching() {
+    // Given:
+    // When:
+    let element = DialogElement(
+      attributeType: .index, attributeName: "Name", autocapitalizationType: .none, defaultBool: nil,
+      defaultIndex: nil, defaultNumber: nil, disableAutocorrection: true, fractionDigits: nil,
+      items: nil, keyboardType: .default, maximumValue: nil, minimumValue: nil, placeholder: nil,
+      title: nil, type: .defaultPicker)
+
+    // Then:
+    XCTAssertTrue(element.matches(attributeType: .int32))
+    XCTAssertFalse(element.matches(attributeType: .id))
+  }
+
   func testDialogElementAttributeNameType() {
     // Given:
     struct Test: Codable {

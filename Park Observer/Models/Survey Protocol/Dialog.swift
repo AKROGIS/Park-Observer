@@ -30,8 +30,48 @@ struct Dialog: Codable {
   }
 }
 
+// extension for defaults
 extension Dialog {
   var grouped: Bool { groupedOptional ?? false }
+}
+
+// Validate Dialog with Attributes
+extension Dialog {
+
+  var allElements: [DialogElement] {
+    sections.flatMap { $0.elements }
+  }
+
+  var allAttributeNames: [String] {
+    return allElements.compactMap { $0.attributeName }
+  }
+
+  var allAttributeTypes: [DialogElement.Bind] {
+    return allElements.compactMap { $0.attributeType }
+  }
+
+  func validate(with attributes: [Attribute]) -> ([String], [String]) {
+    let names = allAttributeNames
+    guard names.count > 0, attributes.count > 0 else {
+      return ([], [])
+    }
+    guard let typesLookup = Attribute.typesLookup(from: attributes) else {
+      // This will be null if the attribute names are not unique.
+      // The decode should not allow creation of a list of non-unique attribute names
+      // If it does happen, I cannot do the check, so I will return everything
+      return (names, names)
+    }
+    let attributeNames = attributes.map { $0.name }
+    let missing = names.filter { !attributeNames.contains($0) }
+    let mismatchElements = allElements.filter { element in
+      guard let name = element.attributeName else { return false }
+      guard let type = typesLookup[name] else { return false }  // Names not found are covered above
+      return !element.matches(attributeType: type)
+    }
+    let mismatch = mismatchElements.compactMap { $0.attributeName }
+    return (missing, mismatch)
+  }
+
 }
 
 // MARK: - DialogSection
@@ -187,6 +227,30 @@ extension DialogElement {
     maximumValue.map { Int($0.rounded()) }
   }
 
+  func matches(attributeType: Attribute.AttributeType) -> Bool {
+    guard let bindType = self.attributeType else {
+      return false
+    }
+    switch (bindType, self.type) {
+    case (.id, .label):
+      return attributeType == .id
+    case (.bool, .switch):
+      return attributeType == .bool
+    case (.index, .defaultPicker), (.index, .segmentedPicker):
+      return attributeType.isIntegral
+    case (.item, .defaultPicker), (.item, .segmentedPicker):
+      return attributeType == .string
+    case (.number, .stepper):
+      return attributeType.isIntegral
+    case (.number, .numberEntry):
+      return attributeType.isFractional
+    case (.text, .textEntry), (.text, .multilineText):
+      return attributeType == .string
+    default:
+      return false
+    }
+  }
+
 }
 
 //MARK: - DialogElement Codable
@@ -337,7 +401,8 @@ extension DialogElement: Codable {
         throw DecodingError.dataCorruptedError(
           forKey: .defaultIndex, in: container,
           debugDescription:
-            "Cannot initialize selected for \(type.rawValue) because it is not in the range of items")
+            "Cannot initialize selected for \(type.rawValue) because it is not in the range of items"
+        )
       }
       if autocapitalizationType != nil || defaultBool != nil || defaultNumber != nil
         || container.contains(.disableAutocorrection) || fractionDigits != nil
@@ -391,7 +456,7 @@ extension DialogElement: Codable {
         throw DecodingError.dataCorruptedError(
           forKey: .defaultIndex, in: container,
           debugDescription:
-          "Cannot initialize \(type.rawValue) because it does have textValue: in the bind property"
+            "Cannot initialize \(type.rawValue) because it does have textValue: in the bind property"
         )
       }
       if defaultBool != nil || defaultIndex != nil || items != nil || defaultNumber != nil

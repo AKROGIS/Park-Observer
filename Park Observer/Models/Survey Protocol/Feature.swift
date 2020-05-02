@@ -132,6 +132,34 @@ extension Feature {
       }
     }
 
+    // Every dialog bind name must match the name and type of an attribute in attributes.
+    if let dialog = dialog {
+      let dialogNames = dialog.allAttributeNames
+      if dialogNames.count > 0 {
+        guard let attributes = attributes else {
+          throw DecodingError.dataCorruptedError(
+            forKey: .attributes, in: container,
+            debugDescription:
+              "Cannot initialize Feature with dialog fields and no attributes")
+        }
+        let (missingNames, namesMissingTypes) = dialog.validate(with: attributes)
+        if missingNames.count > 0 {
+          throw DecodingError.dataCorruptedError(
+            forKey: .attributes, in: container,
+            debugDescription:
+              "Cannot initialize Feature with dialog attributes \(missingNames) not in the attributes list"
+          )
+        }
+        if namesMissingTypes.count > 0 {
+          throw DecodingError.dataCorruptedError(
+            forKey: .attributes, in: container,
+            debugDescription:
+              "Cannot initialize Feature when type for dialog attributes \(namesMissingTypes) do not match type in attribute list"
+          )
+        }
+      }
+    }
+
     self.init(
       allowOffTransectObservations: allowOffTransectObservations,
       attributes: attributes,
@@ -179,7 +207,6 @@ struct Attribute: Codable {
     case int64 = 300
     case decimal = 400  // not supported
     case double = 500
-
     case float = 600
     case string = 700
     case bool = 800
@@ -187,15 +214,29 @@ struct Attribute: Codable {
     case blob = 1000  // Not supported
   }
 }
-
-extension Attribute {
+extension Attribute.AttributeType {
 
   var isIntegral: Bool {
-    type == .int16 || type == .int32 || type == .int64 || type == .bool || type == .id
+    self == .int16 || self == .int32 || self == .int64
   }
 
   var isFractional: Bool {
-    type == .double || type == .float || type == .decimal
+    self == .double || self == .float || self == .decimal
+  }
+
+}
+
+extension Attribute {
+
+  static func typesLookup(from attributes: [Attribute]) -> [String: AttributeType]? {
+    // Keys must be unique or Dictionary will throw a runtime error
+    let keys = attributes.map { $0.name }
+    let values = attributes.map { $0.type }
+    guard Set(keys).count == keys.count, values.count == keys.count else {
+      return nil
+    }
+    let dict = Dictionary(uniqueKeysWithValues: zip(keys, values))
+    return dict
   }
 
 }

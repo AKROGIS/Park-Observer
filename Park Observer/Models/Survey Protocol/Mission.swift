@@ -157,17 +157,52 @@ extension Mission {
           )
         )
       }
+    }
+
+    // Totalizer.fields requires a dialog, and all fields must be dialog.attribute.names
+    if let fields = totalizer?.fields {
       guard let dialog = dialog else {
-        throw DecodingError.dataCorruptedError( forKey: .attributes , in: container, debugDescription:
-          "Cannot initialize Mission without dialog when attributes are present")
+        throw DecodingError.dataCorruptedError(
+          forKey: .attributes, in: container,
+          debugDescription:
+            "Cannot initialize Mission with totalizer fields and no dialog")
+
       }
-      let dialogNames = dialog.sections.flatMap {
-        $0.elements.compactMap { $0.attributeName?.lowercased() } }
-      // Every dialog name must be in attributeNames
-      let extraDialogNames = dialogNames.filter { !attributeNames.contains($0) }
-      if extraDialogNames.count > 0 {
-        throw DecodingError.dataCorruptedError( forKey: .attributes , in: container, debugDescription:
-          "Cannot initialize Mission without dialog attribute \(extraDialogNames) not in the attributes list")
+      let dialogNames = dialog.allAttributeNames
+      let missingNames = fields.filter { !dialogNames.contains($0) }
+      if missingNames.count > 0 {
+        throw DecodingError.dataCorruptedError(
+          forKey: .attributes, in: container,
+          debugDescription:
+            "Cannot initialize Mission with totalizer fields \(missingNames) not in the dialog")
+      }
+    }
+
+    // Every dialog bind name must match the name and type of an attribute in attributes.
+    if let dialog = dialog {
+      let dialogNames = dialog.allAttributeNames
+      if dialogNames.count > 0 {
+        guard let attributes = attributes else {
+          throw DecodingError.dataCorruptedError(
+            forKey: .attributes, in: container,
+            debugDescription:
+              "Cannot initialize Mission with dialog fields and no attributes")
+        }
+        let (missingNames, namesMissingTypes) = dialog.validate(with: attributes)
+        if missingNames.count > 0 {
+          throw DecodingError.dataCorruptedError(
+            forKey: .attributes, in: container,
+            debugDescription:
+              "Cannot initialize Mission with dialog attributes \(missingNames) not in the attributes list"
+          )
+        }
+        if namesMissingTypes.count > 0 {
+          throw DecodingError.dataCorruptedError(
+            forKey: .attributes, in: container,
+            debugDescription:
+              "Cannot initialize Mission when type for dialog attributes \(namesMissingTypes) do not match type in attribute list"
+          )
+        }
       }
     }
 
