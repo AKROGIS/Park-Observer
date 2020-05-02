@@ -13,22 +13,34 @@ import XCTest
 
 class SurveyProtocolTests: XCTestCase {
 
+  // No need to test standard decoding.
+  // The following properties have special decoding that should be tested
+  // Computed Properties
+  //   minorVersion
+  //   majorVersion
+  // Defaults for optional properties
+  //   cancel_on_top
+  //   status_message_fontsize
+  // Special date parsing
+  //   date
+  // Validation
+  //   meta-name
+  //   meta-version
+  //   features.name
+  //   features.attributes.name
+
   func testV1_minimal() {
     // Given:
     let json =
       """
       {
-        "meta-name":"NPS-Protocol-Specification",
-        "meta-version":1,
-        "name":"Test Protocol",
-        "version":1.3,
-        "features":[
-        {
-          "name":"Birds",
-          "locations":[
-              {"type":"gps"}
-          ]
-        }]
+        "meta-name": "NPS-Protocol-Specification",
+        "meta-version": 1,
+        "name": "Test Protocol",
+        "version": 1.3,
+        "features": [
+          {"name": "Birds", "locations": [ {"type": "gps"} ], "symbology": {} }
+        ]
       }
       """
 
@@ -39,7 +51,7 @@ class SurveyProtocolTests: XCTestCase {
     XCTAssertNotNil(surveyProtocol)  // Failed parsing; JSON is invalid
     if let sp = surveyProtocol {
       XCTAssertEqual(sp.metaName, "NPS-Protocol-Specification")
-      XCTAssertEqual(sp.metaVersion, 1)
+      XCTAssertEqual(sp.metaVersion, .version1)
       XCTAssertEqual(sp.name, "Test Protocol")
       XCTAssertEqual(sp.majorVersion, 1)
       XCTAssertEqual(sp.minorVersion, 3)
@@ -50,7 +62,7 @@ class SurveyProtocolTests: XCTestCase {
 
       // defaults
       XCTAssertNil(sp.date)
-      XCTAssertNil(sp.surveyProtocolDescription)
+      XCTAssertNil(sp.protocolDescription)
       XCTAssertNil(sp.mission)
       XCTAssertNil(sp.gpsInterval)
       XCTAssertNil(sp.observingMessage)
@@ -79,17 +91,13 @@ class SurveyProtocolTests: XCTestCase {
     let json =
       """
       {
-        "meta-name":"NPS-Protocol-Specification",
-        "meta-version":2,
-        "name":"My Protocol",
-        "version":3.2,
-        "features":[
-        {
-          "name":"Cabins",
-          "locations":[
-              {"type":"mapTouch"}
-          ]
-        }]
+        "meta-name": "NPS-Protocol-Specification",
+        "meta-version": 2,
+        "name": "My Protocol",
+        "version": 3.2,
+        "features": [
+          {"name": "Cabins", "locations": [ {"type": "mapTouch"} ], "symbology": {} }
+        ]
       }
       """
 
@@ -100,7 +108,7 @@ class SurveyProtocolTests: XCTestCase {
     XCTAssertNotNil(surveyProtocol)  // Failed parsing; JSON is invalid
     if let sp = surveyProtocol {
       XCTAssertEqual(sp.metaName, "NPS-Protocol-Specification")
-      XCTAssertEqual(sp.metaVersion, 2)
+      XCTAssertEqual(sp.metaVersion, .version2)
       XCTAssertEqual(sp.name, "My Protocol")
       XCTAssertEqual(sp.majorVersion, 3)
       XCTAssertEqual(sp.minorVersion, 2)
@@ -111,7 +119,7 @@ class SurveyProtocolTests: XCTestCase {
 
       // defaults
       XCTAssertNil(sp.date)
-      XCTAssertNil(sp.surveyProtocolDescription)
+      XCTAssertNil(sp.protocolDescription)
       XCTAssertNil(sp.mission)
       XCTAssertNil(sp.gpsInterval)
       XCTAssertNil(sp.observingMessage)
@@ -141,28 +149,181 @@ class SurveyProtocolTests: XCTestCase {
   func testv2_full() {
   }
 
-  func testAttributesInMultipleFeaturesShareType() {
+  //MARK: - Computed properties
+
+  // Tested in the minimal versions above
+
+  //MARK: - Defaults
+
+  // defaults are tested in the minimal input test above,
+  // non-default values are tested here
+  func testCancelOnTop() {
     // Given:
     let json =
       """
       {
-        "meta-name":"NPS-Protocol-Specification",
-        "meta-version":2,
-        "name":"My Protocol",
-        "version":3.2,
-        "features":[{
-          "name": "Cabins", "locations": [ {"type": "mapTouch"} ],
-          "attributes": [ {"name": "two", "type": 800} ],
-          "dialog": {"title": "a", "sections": [{"elements": [
-             {"type": "QBooleanElement", "bind": "boolValue:two"} ] } ] },
-          "symbology":{}
-        },{
-          "name": "Houses", "locations": [ {"type": "gps"} ],
-           "attributes": [ {"name": "two", "type": 300} ],
-          "dialog": {"title": "a", "sections": [{"elements": [
-            {"type": "QIntegerElement", "bind": "numberValue:two"} ] } ] },
-          "symbology":{}
-        }]
+        "meta-name": "NPS-Protocol-Specification",
+        "meta-version": 2,
+        "name": "My Protocol",
+        "version": 3.2,
+        "cancel_on_top": true,
+        "features": [
+          {"name": "Birds", "locations":[ {"type": "gps"} ], "symbology": {} }
+        ]
+      }
+      """
+
+    // When:
+    let surveyProtocol = try? SurveyProtocol(json, using: .utf8)
+
+    // Then:
+    XCTAssertNotNil(surveyProtocol)
+    if let test = surveyProtocol {
+      XCTAssertTrue(test.cancelOnTop)
+    }
+  }
+
+  func testStatusMessageFontsize() {
+    // Given:
+    let json =
+      """
+      {
+        "meta-name": "NPS-Protocol-Specification",
+        "meta-version": 2,
+        "name": "My Protocol",
+        "version": 3.2,
+        "status_message_fontsize": 24.5,
+        "features": [
+          {"name":"Birds", "locations":[{"type":"gps"}], "symbology": {}}
+        ]
+      }
+      """
+
+    // When:
+    let surveyProtocol = try? SurveyProtocol(json, using: .utf8)
+
+    // Then:
+    XCTAssertNotNil(surveyProtocol)
+    if let test = surveyProtocol {
+      XCTAssertEqual(test.statusMessageFontsize, 24.5, accuracy: 0.001)
+    }
+  }
+
+  //MARK: - Special Date Parsing
+
+  func testGoodDate() {
+    // Given:
+    let json =
+      """
+      {
+        "meta-name": "NPS-Protocol-Specification",
+        "meta-version": 2,
+        "name": "My Protocol",
+        "date": "2019-07-28",
+        "version": 3.2,
+        "features": [
+          {"name": "Birds", "locations": [ {"type": "gps"} ], "symbology": {} }
+        ]
+      }
+      """
+    let calendar = Calendar.current
+    let dateComponents = DateComponents(
+      calendar: calendar,
+      timeZone: TimeZone(secondsFromGMT: 0),
+      year: 2019,
+      month: 7,
+      day: 28)
+    let date = calendar.date(from: dateComponents)!
+
+    // When:
+    let surveyProtocol = try? SurveyProtocol(json, using: .utf8)
+
+    // Then:
+    XCTAssertNotNil(surveyProtocol)
+    if let test = surveyProtocol {
+      XCTAssertEqual(test.date, date)
+    }
+  }
+
+  func testBadDate() {
+    // Given:
+    let json =
+      """
+      {
+        "meta-name": "NPS-Protocol-Specification",
+        "meta-version": 2,
+        "name": "My Protocol",
+        "date": "2019-07-32",
+        "version": 3.2,
+        "features": [
+          {"name":"Birds", "locations":[{"type":"gps"}], "symbology": {}}
+        ]
+      }
+      """
+
+    // When:
+    let surveyProtocol = try? SurveyProtocol(json, using: .utf8)
+
+    // Then:
+    XCTAssertNil(surveyProtocol)
+  }
+
+  //MARK: - Validation
+
+  func testWrongMetaName() {
+    // Given:
+    let json =
+      """
+      {
+        "meta-name": "Bogus-Specification",
+        "meta-version": 2,
+        "name": "My Protocol",
+        "version": 3.2,
+        "features": [
+          {"name":"Birds", "locations":[{"type":"gps"}], "symbology": {}}
+        ]
+      }
+      """
+
+    // When:
+    let surveyProtocol = try? SurveyProtocol(json, using: .utf8)
+
+    // Then:
+    XCTAssertNil(surveyProtocol)
+  }
+
+  func testWrongMetaVersion() {
+    // Given:
+    let json =
+      """
+      {
+        "meta-name": "NPS-Protocol-Specification",
+        "meta-version": 3,
+        "name": "My Protocol",
+        "version": 3.2,
+        "features": [
+          {"name":"Birds", "locations":[{"type":"gps"}], "symbology": {}}
+        ]
+      }
+      """
+
+    // When:
+    let surveyProtocol = try? SurveyProtocol(json, using: .utf8)
+
+    // Then:
+    XCTAssertNil(surveyProtocol)
+  }
+
+  func testEmptyFeaturesList() {
+    // Given:
+    let json =
+      """
+      {
+        "meta-name": "NPS-Protocol-Specification",
+        "meta-version": 2,
+        "name": "My Protocol",
+        "version": 3.2,
+        "features": []
       }
       """
 
@@ -178,13 +339,69 @@ class SurveyProtocolTests: XCTestCase {
     let json =
       """
       {
-        "meta-name":"NPS-Protocol-Specification",
-        "meta-version":2,
-        "name":"My Protocol",
-        "version":3.2,
+        "meta-name": "NPS-Protocol-Specification",
+        "meta-version": 2,
+        "name": "My Protocol",
+        "version": 3.2,
+        "features": [
+          {"name": "Cabins", "locations": [ {"type": "mapTouch"} ], "symbology": {} },
+          {"name": "Cabins", "locations": [ {"type": "gps"} ], "symbology": {} }
+        ]
+      }
+      """
+
+    // When:
+    let surveyProtocol = try? SurveyProtocol(json, using: .utf8)
+
+    // Then:
+    XCTAssertNil(surveyProtocol)
+  }
+
+  func testAttributesInMultipleFeaturesShareTypeOK() {
+    // Given:
+    let json =
+      """
+      {
+        "meta-name": "NPS-Protocol-Specification",
+        "meta-version": 2,
+        "name": "My Protocol",
+        "version": 3.2,
         "features":[
-          {"name": "Cabins", "locations": [ {"type": "mapTouch"} ], "symbology":{} },
-          {"name": "Cabins", "locations": [ {"type": "gps"} ], "symbology":{} }
+          {
+            "name": "Cabins", "locations": [ {"type": "mapTouch"} ], "symbology": {},
+            "attributes": [ {"name": "two", "type": 800} ]
+          },{
+            "name": "Houses", "locations": [ {"type": "gps"} ], "symbology": {},
+            "attributes": [ {"name": "two", "type": 800} ]
+          }
+        ]
+      }
+      """
+
+    // When:
+    let surveyProtocol = try? SurveyProtocol(json, using: .utf8)
+
+    // Then:
+    XCTAssertNotNil(surveyProtocol)
+  }
+
+  func testAttributesInMultipleFeaturesShareTypeBad() {
+    // Given:
+    let json =
+      """
+      {
+        "meta-name": "NPS-Protocol-Specification",
+        "meta-version": 2,
+        "name": "My Protocol",
+        "version": 3.2,
+        "features":[
+          {
+            "name": "Cabins", "locations": [ {"type": "mapTouch"} ], "symbology": {},
+            "attributes": [ {"name": "two", "type": 800} ]
+          },{
+            "name": "Houses", "locations": [ {"type": "gps"} ], "symbology": {},
+            "attributes": [ {"name": "Two", "type": 300} ]
+          }
         ]
       }
       """

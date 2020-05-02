@@ -6,13 +6,11 @@
 
 import Foundation  // for JSONDecoder, Data, URL
 
-/// Describes the survey data, data collection methods, and application configuration for the
-/// NPS iPad Park Observer application.
-// MARK: - SurveyProtocol
-struct SurveyProtocol: Codable {
+/// Describes the survey data, data collection methods, and application configuration for the NPS iPad Park Observer application.
+struct SurveyProtocol {
   /// Should the cancel/delete button be on the top of the editing form?
   /// default: false
-  private let cancelOnTopOptional: Bool?
+  let cancelOnTop: Bool
 
   /// The format for exporting survey data to CSV files.
   let csv: CsvFormat?
@@ -21,7 +19,7 @@ struct SurveyProtocol: Codable {
   let date: Date?
 
   /// A description for this protocol.
-  let surveyProtocolDescription: String?
+  let protocolDescription: String?
 
   /// A list of objects that describe the features that will be observed.
   let features: [Feature]
@@ -33,7 +31,7 @@ struct SurveyProtocol: Codable {
   let metaName: String
 
   /// The version of the schema used by the protocol file.
-  let metaVersion: Int
+  let metaVersion: SurveyProtocolVersion
 
   /// An object for describing segments of the survey.
   let mission: Mission?
@@ -50,16 +48,22 @@ struct SurveyProtocol: Codable {
 
   /// The font size for the observing/notobserving messages.
   /// Default: 16.0
-  private let statusMessageFontsizeOptional: Double?
+  let statusMessageFontsize: Double
 
   /// The version of this named protocol.
   private let version: Double
 
+}
+
+//MARK: SurveyProtocol - Codable
+
+extension SurveyProtocol: Codable {
+
   enum CodingKeys: String, CodingKey {
-    case cancelOnTopOptional = "cancel_on_top"
+    case cancelOnTop = "cancel_on_top"
     case csv = "csv"
     case date = "date"
-    case surveyProtocolDescription = "description"
+    case protocolDescription = "description"
     case features = "features"
     case gpsInterval = "gps_interval"
     case metaName = "meta-name"
@@ -68,26 +72,126 @@ struct SurveyProtocol: Codable {
     case name = "name"
     case notObservingMessage = "notobserving"
     case observingMessage = "observing"
-    case statusMessageFontsizeOptional = "status_message_fontsize"
+    case statusMessageFontsize = "status_message_fontsize"
     case version = "version"
   }
+
+  init(from decoder: Decoder) throws {
+    let container = try decoder.container(keyedBy: CodingKeys.self)
+
+    // Important, if any of the standard decoders are replaced, then add test to verify
+    let cancelOnTop = try container.decodeIfPresent(Bool.self, forKey: .cancelOnTop)
+    let csv = try container.decodeIfPresent(CsvFormat.self, forKey: .csv)
+    let dateString = try container.decodeIfPresent(String.self, forKey: .date)
+    let protocolDescription = try container.decodeIfPresent(
+      String.self, forKey: .protocolDescription)
+    let features = try container.decode([Feature].self, forKey: .features)
+    let gpsInterval = try container.decodeIfPresent(Double.self, forKey: .gpsInterval)
+    let metaName = try container.decode(String.self, forKey: .metaName)
+    let metaVersion = try container.decode(SurveyProtocolVersion.self, forKey: .metaVersion)
+    let mission = try container.decodeIfPresent(Mission.self, forKey: .mission)
+    let name = try container.decode(String.self, forKey: .name)
+    let notObservingMessage = try container.decodeIfPresent(
+      String.self, forKey: .notObservingMessage)
+    let observingMessage = try container.decodeIfPresent(String.self, forKey: .observingMessage)
+    let statusMessageFontsize = try container.decodeIfPresent(
+      Double.self, forKey: .statusMessageFontsize)
+    let version = try container.decode(Double.self, forKey: .version)
+
+    // Parse Date  (note the DateDecoding Strategy does not work when implementing a custom decoder)
+    var date: Date? = nil
+    if let dateString = dateString {
+      guard let innerDate = Formatter.iso8601.date(from: dateString) else {
+        throw DecodingError.dataCorruptedError(
+          forKey: .date, in: container,
+          debugDescription:
+            "Cannot initialize SurveyProtocol; \(dateString) is not a valid date")
+      }
+      date = innerDate
+    }
+
+    // Fail on wrong metaName
+    if metaName != "NPS-Protocol-Specification" {
+      throw DecodingError.dataCorruptedError(
+        forKey: .metaName, in: container,
+        debugDescription:
+          "Cannot initialize SurveyProtocol with \(CodingKeys.metaName) \(metaName)")
+    }
+    // Fail on wrong metaVersion
+    if metaVersion == .unknown {
+      throw DecodingError.dataCorruptedError(
+        forKey: .metaVersion, in: container,
+        debugDescription:
+          "Cannot initialize SurveyProtocol with \(CodingKeys.metaVersion) \(metaVersion)")
+    }
+    // Set metaversion in userInfo for use by children
+    if let options = decoder.userInfo[SurveyProtocolCodingOptions.key]
+      as? SurveyProtocolCodingOptions
+    {
+      options.version = metaVersion
+    }
+
+    // Validate feature names are unique across features
+    if features.count == 0 {
+      throw DecodingError.dataCorruptedError(
+        forKey: .metaVersion, in: container,
+        debugDescription:
+          "Cannot initialize SurveyProtocol with an empty features list")
+    }
+    // Validate attributes: unique elements (based on type)
+    let featureNames = features.map { $0.name.lowercased() }
+    if Set(featureNames).count != featureNames.count {
+      throw DecodingError.dataCorruptedError(
+        forKey: .metaVersion, in: container,
+        debugDescription:
+          "Cannot initialize SurveyProtocol with duplicate feature names")
+    }
+
+    // Validate feature attributes with the same name have the same type
+    // Build a dictionary with lowercased names as keys and a set of Bind types as values
+    // Any entry with a values with length > 1 is a problem
+    let allAttributes = features.compactMap { $0.attributes }.flatMap { $0 }
+    let pairs = allAttributes.map { ($0.name.lowercased(), Set([$0.type])) }
+    let dict = Dictionary(pairs, uniquingKeysWith: { $0.union($1) })
+    let problems = dict.filter { (_, value) in value.count > 1 }
+    if problems.count > 0 {
+      throw DecodingError.dataCorruptedError(
+        forKey: .metaVersion, in: container,
+        debugDescription:
+          "Cannot initialize SurveyProtocol; duplicate feature names \(problems.keys) must have the same type"
+      )
+    }
+
+    self.init(
+      cancelOnTop: cancelOnTop ?? false,
+      csv: csv,
+      date: date,
+      protocolDescription: protocolDescription,
+      features: features,
+      gpsInterval: gpsInterval,
+      metaName: metaName,
+      metaVersion: metaVersion,
+      mission: mission,
+      name: name,
+      notObservingMessage: notObservingMessage,
+      observingMessage: observingMessage,
+      statusMessageFontsize: statusMessageFontsize ?? 16.0,
+      version: version)
+  }
+
 }
 
 // MARK: SurveyProtocol convenience initializers and mutators
 
 // Important: use the following convenience functions.
-// The following will fail
+// The following may fail
 //    let surveyProtocol = try? JSONDecoder().decode(SurveyProtocol.self, from: jsonData)
-// because several child objects required custom context set on the default decoder
-// with these convenience methods
+// if the child objects require custom context set on the default decoder
 
 extension SurveyProtocol {
   init(data: Data) throws {
     let decoder = JSONDecoder()
-    decoder.dateDecodingStrategy = .iso8601date
-    let options = SurveyProtocolCodingOptions(version: .unknown)
-    decoder.userInfo = [SurveyProtocolCodingOptions.key: options]
-
+    decoder.userInfo[SurveyProtocolCodingOptions.key] = SurveyProtocolCodingOptions()
     self = try JSONDecoder().decode(SurveyProtocol.self, from: data)
   }
 
@@ -115,19 +219,17 @@ extension SurveyProtocol {
   }
 }
 
-//TODO: replace defaults with a custom decoder to set the version
-
-//MARK: - Defaults
+//MARK: - Computed Properties
 
 extension SurveyProtocol {
-  var cancelOnTop: Bool { cancelOnTopOptional ?? false }
-  var statusMessageFontsize: Double { statusMessageFontsizeOptional ?? 16.0 }
+
   var majorVersion: Int { Int(version) }
 
   var minorVersion: Int {
     let temp = (version - Double(majorVersion)) * 10.0
     return Int(temp.rounded())
   }
+
 }
 
 //MARK: - Decoder extension
@@ -141,33 +243,22 @@ extension Formatter {
   }()
 }
 
-extension JSONDecoder.DateDecodingStrategy {
-  static let iso8601date = custom {
-    let container = try $0.singleValueContainer()
-    let string = try container.decode(String.self)
-    if let date = Formatter.iso8601.date(from: string) {
-      return date
-    }
-    throw DecodingError.dataCorruptedError(
-      in: container, debugDescription: "Invalid date: \(string)")
-  }
-}
-
 //MARK: - Coding options
 
 // This object provides context to help the decode decode child objects.
+// It needs to be a reference type so that the top level object can set the version
 
-struct SurveyProtocolCodingOptions {
+class SurveyProtocolCodingOptions {
 
   /// The version of the protocol being decoded
-  let version: SurveyProtocolVersion
+  var version: SurveyProtocolVersion = .unknown
 
   static let key = CodingUserInfoKey(rawValue: "gov.doi.nps.akr.gis.parkobserver")!
 
-  enum SurveyProtocolVersion: Int {
-    case unknown = 0
-    case version1 = 1
-    case version2 = 2
-  }
+}
 
+enum SurveyProtocolVersion: Int, Codable {
+  case unknown = 0
+  case version1 = 1
+  case version2 = 2
 }
