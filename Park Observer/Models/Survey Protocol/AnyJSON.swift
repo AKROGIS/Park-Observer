@@ -7,7 +7,7 @@
 import Foundation
 
 struct AnyJSON {
-  let value: Any
+  let value: Any?
 }
 
 extension AnyJSON: Codable {
@@ -18,13 +18,13 @@ extension AnyJSON: Codable {
     return DecodingError.typeMismatch(AnyJSON.self, context)
   }
 
-  static func encodingError(forValue value: Any, codingPath: [CodingKey]) -> EncodingError {
+  static func encodingError(forValue value: Any?, codingPath: [CodingKey]) -> EncodingError {
     let context = EncodingError.Context(
       codingPath: codingPath, debugDescription: "Cannot encode AnyJSON")
-    return EncodingError.invalidValue(value, context)
+    return EncodingError.invalidValue(value ?? "nil", context)
   }
 
-  static func decode(from container: SingleValueDecodingContainer) throws -> Any {
+  static func decode(from container: SingleValueDecodingContainer) throws -> Any? {
     if let value = try? container.decode(Bool.self) {
       return value
     }
@@ -38,12 +38,12 @@ extension AnyJSON: Codable {
       return value
     }
     if container.decodeNil() {
-      return JSONNull()
+      return nil
     }
     throw decodingError(forCodingPath: container.codingPath)
   }
 
-  static func decode(from container: inout UnkeyedDecodingContainer) throws -> Any {
+  static func decode(from container: inout UnkeyedDecodingContainer) throws -> Any? {
     if let value = try? container.decode(Bool.self) {
       return value
     }
@@ -58,7 +58,7 @@ extension AnyJSON: Codable {
     }
     if let value = try? container.decodeNil() {
       if value {
-        return JSONNull()
+        return nil
       }
     }
     if var container = try? container.nestedUnkeyedContainer() {
@@ -72,7 +72,7 @@ extension AnyJSON: Codable {
 
   static func decode(
     from container: inout KeyedDecodingContainer<JSONCodingKey>, forKey key: JSONCodingKey
-  ) throws -> Any {
+  ) throws -> Any? {
     if let value = try? container.decode(Bool.self, forKey: key) {
       return value
     }
@@ -87,7 +87,7 @@ extension AnyJSON: Codable {
     }
     if let value = try? container.decodeNil(forKey: key) {
       if value {
-        return JSONNull()
+        return nil
       }
     }
     if var container = try? container.nestedUnkeyedContainer(forKey: key) {
@@ -99,8 +99,8 @@ extension AnyJSON: Codable {
     throw decodingError(forCodingPath: container.codingPath)
   }
 
-  static func decodeArray(from container: inout UnkeyedDecodingContainer) throws -> [Any] {
-    var arr: [Any] = []
+  static func decodeArray(from container: inout UnkeyedDecodingContainer) throws -> [Any?] {
+    var arr: [Any?] = []
     while !container.isAtEnd {
       let value = try decode(from: &container)
       arr.append(value)
@@ -109,9 +109,9 @@ extension AnyJSON: Codable {
   }
 
   static func decodeDictionary(from container: inout KeyedDecodingContainer<JSONCodingKey>) throws
-    -> [String: Any]
+    -> [String: Any?]
   {
-    var dict = [String: Any]()
+    var dict = [String: Any?]()
     for key in container.allKeys {
       let value = try decode(from: &container, forKey: key)
       dict[key.stringValue] = value
@@ -119,7 +119,7 @@ extension AnyJSON: Codable {
     return dict
   }
 
-  static func encode(to container: inout UnkeyedEncodingContainer, array: [Any]) throws {
+  static func encode(to container: inout UnkeyedEncodingContainer, array: [Any?]) throws {
     for value in array {
       if let value = value as? Bool {
         try container.encode(value)
@@ -129,7 +129,7 @@ extension AnyJSON: Codable {
         try container.encode(value)
       } else if let value = value as? String {
         try container.encode(value)
-      } else if value is JSONNull {
+      } else if value == nil {
         try container.encodeNil()
       } else if let value = value as? [Any] {
         var container = container.nestedUnkeyedContainer()
@@ -144,7 +144,7 @@ extension AnyJSON: Codable {
   }
 
   static func encode(
-    to container: inout KeyedEncodingContainer<JSONCodingKey>, dictionary: [String: Any]
+    to container: inout KeyedEncodingContainer<JSONCodingKey>, dictionary: [String: Any?]
   ) throws {
     for (key, value) in dictionary {
       let key = JSONCodingKey(stringValue: key)!
@@ -156,7 +156,7 @@ extension AnyJSON: Codable {
         try container.encode(value, forKey: key)
       } else if let value = value as? String {
         try container.encode(value, forKey: key)
-      } else if value is JSONNull {
+      } else if value == nil {
         try container.encodeNil(forKey: key)
       } else if let value = value as? [Any] {
         var container = container.nestedUnkeyedContainer(forKey: key)
@@ -170,7 +170,7 @@ extension AnyJSON: Codable {
     }
   }
 
-  static func encode(to container: inout SingleValueEncodingContainer, value: Any) throws {
+  static func encode(to container: inout SingleValueEncodingContainer, value: Any?) throws {
     if let value = value as? Bool {
       try container.encode(value)
     } else if let value = value as? Int64 {
@@ -179,7 +179,7 @@ extension AnyJSON: Codable {
       try container.encode(value)
     } else if let value = value as? String {
       try container.encode(value)
-    } else if value is JSONNull {
+    } else if value == nil {
       try container.encodeNil()
     } else {
       throw encodingError(forValue: value, codingPath: container.codingPath)
@@ -208,35 +208,6 @@ extension AnyJSON: Codable {
       var container = encoder.singleValueContainer()
       try AnyJSON.encode(to: &container, value: self.value)
     }
-  }
-
-}
-
-//MARK: - JSONNull
-
-struct JSONNull {}
-
-extension JSONNull: Hashable {
-
-  public static func == (lhs: JSONNull, rhs: JSONNull) -> Bool {
-    return true
-  }
-}
-extension JSONNull: Codable {
-
-  init(from decoder: Decoder) throws {
-    let container = try decoder.singleValueContainer()
-    if !container.decodeNil() {
-      throw DecodingError.typeMismatch(
-        JSONNull.self,
-        DecodingError.Context(
-          codingPath: decoder.codingPath, debugDescription: "Wrong type for JSONNull"))
-    }
-  }
-
-  public func encode(to encoder: Encoder) throws {
-    var container = encoder.singleValueContainer()
-    try container.encodeNil()
   }
 
 }

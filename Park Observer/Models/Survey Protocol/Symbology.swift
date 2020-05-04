@@ -266,8 +266,15 @@ extension AGSLabelDefinition {
   // If it doesn't appear to be JSON appropriate for AGSLabelDefinition, then throw
   static func fromAnyJSON(_ agsJSON: AnyJSON, codingPath: [CodingKey]) throws -> AGSLabelDefinition
   {
-
-    let definition = try AGSLabelDefinition.fromJSON(agsJSON.value) as! AGSLabelDefinition
+    guard let value = agsJSON.value else {
+      throw DecodingError.dataCorrupted(
+        DecodingError.Context(
+          codingPath: codingPath,
+          debugDescription: "Cannot initialize Label Definition with null"
+        )
+      )
+    }
+    let definition = try AGSLabelDefinition.fromJSON(value) as! AGSLabelDefinition
     if let issues = definition.unknownJSON, issues.count > 0 {
       let badKeys = issues.keys.joined(separator: ",")
       let message = "Cannot initialize Label Definition; invalid properties found \(badKeys)"
