@@ -354,6 +354,23 @@ extension DialogElement: Codable {
 
     // Validation
 
+    if let items = items {
+      if items.count == 0 {
+        throw DecodingError.dataCorruptedError(
+          forKey: .items, in: container,
+          debugDescription:
+            "Cannot initialize Element because items is empty"
+        )
+      }
+      if items.count != Set(items).count {
+        throw DecodingError.dataCorruptedError(
+          forKey: .items, in: container,
+          debugDescription:
+            "Cannot initialize Element because there are duplicate entries in items"
+        )
+      }
+
+    }
     if let min = minimumValue, let max = maximumValue {
       if max <= min {
         throw DecodingError.dataCorruptedError(
@@ -368,7 +385,8 @@ extension DialogElement: Codable {
         throw DecodingError.dataCorruptedError(
           forKey: .defaultNumber, in: container,
           debugDescription:
-            "Cannot initialize Element because numberValue \(def) must be greater than minimumValue \(min)")
+            "Cannot initialize Element because numberValue \(def) must be greater than minimumValue \(min)"
+        )
       }
     }
     if let max = maximumValue, let def = defaultNumber {
@@ -376,7 +394,8 @@ extension DialogElement: Codable {
         throw DecodingError.dataCorruptedError(
           forKey: .defaultNumber, in: container,
           debugDescription:
-            "Cannot initialize Element because numberValue \(def) must be less than maximumValue \(max)")
+            "Cannot initialize Element because numberValue \(def) must be less than maximumValue \(max)"
+        )
       }
     }
     if let fraction = fractionDigits {

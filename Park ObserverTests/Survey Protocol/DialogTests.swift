@@ -1265,4 +1265,48 @@ class DialogTests: XCTestCase {
     XCTAssertNil(test)
   }
 
+  func testItemsEmpty() {
+    // Given:
+    struct Test: Codable {
+      let element: DialogElement
+    }
+    let jsonData = Data(
+      """
+      {
+        "element": {
+          "type": "QRadioElement", "bind": "selected:Name",
+          "items": []
+        }
+      }
+      """.utf8)
+
+    // When:
+    let test = try? JSONDecoder().decode(Test.self, from: jsonData)
+
+    // Then:
+    XCTAssertNil(test)
+  }
+
+  func testItemsNotUnique() {
+    // Given:
+    struct Test: Codable {
+      let element: DialogElement
+    }
+    let jsonData = Data(
+      """
+      {
+        "element": {
+          "type": "QRadioElement", "bind": "selected:Name",
+          "items": ["a", "a", "b"]
+        }
+      }
+      """.utf8)
+
+    // When:
+    let test = try? JSONDecoder().decode(Test.self, from: jsonData)
+
+    // Then:
+    XCTAssertNil(test)
+  }
+
 }
