@@ -94,17 +94,26 @@ struct DialogSection: Codable {
 extension DialogSection {
 
   init(from decoder: Decoder) throws {
+    var validationEnabled = true
+    if let options = decoder.userInfo[SurveyProtocolCodingOptions.key]
+      as? SurveyProtocolCodingOptions
+    {
+      validationEnabled = !options.skipValidation
+    }
+
     let container = try decoder.container(keyedBy: CodingKeys.self)
 
     let elements = try container.decode([DialogElement].self, forKey: .elements)
     let title = try container.decodeIfPresent(String.self, forKey: .title)
 
-    // Validate all element attribute names are unique (case-insensitive)
-    let names = elements.compactMap { $0.attributeName?.lowercased() }
-    if Set(names).count < names.count {
-      throw DecodingError.dataCorruptedError(
-        forKey: .elements, in: container,
-        debugDescription: "Cannot initialize \(DialogSection.self) with duplicate element names")
+    if validationEnabled {
+      // Validate all element attribute names are unique (case-insensitive)
+      let names = elements.compactMap { $0.attributeName?.lowercased() }
+      if Set(names).count < names.count {
+        throw DecodingError.dataCorruptedError(
+          forKey: .elements, in: container,
+          debugDescription: "Cannot initialize \(DialogSection.self) with duplicate element names")
+      }
     }
 
     self.init(elements: elements, title: title)
@@ -281,6 +290,13 @@ extension DialogElement: Codable {
   }
 
   init(from decoder: Decoder) throws {
+    var validationEnabled = true
+    if let options = decoder.userInfo[SurveyProtocolCodingOptions.key]
+      as? SurveyProtocolCodingOptions
+    {
+      validationEnabled = !options.skipValidation
+    }
+
     let container = try decoder.container(keyedBy: CodingKeys.self)
 
     let defaultBoolAsInt = try container.decodeIfPresent(Int.self, forKey: .defaultBool)
@@ -353,181 +369,184 @@ extension DialogElement: Codable {
     }
 
     // Validation
+    if validationEnabled {
+      if let items = items {
+        if items.count == 0 {
+          throw DecodingError.dataCorruptedError(
+            forKey: .items, in: container,
+            debugDescription:
+              "Cannot initialize Element because items is empty"
+          )
+        }
+        if items.count != Set(items).count {
+          throw DecodingError.dataCorruptedError(
+            forKey: .items, in: container,
+            debugDescription:
+              "Cannot initialize Element because there are duplicate entries in items"
+          )
+        }
 
-    if let items = items {
-      if items.count == 0 {
-        throw DecodingError.dataCorruptedError(
-          forKey: .items, in: container,
-          debugDescription:
-            "Cannot initialize Element because items is empty"
-        )
       }
-      if items.count != Set(items).count {
-        throw DecodingError.dataCorruptedError(
-          forKey: .items, in: container,
-          debugDescription:
-            "Cannot initialize Element because there are duplicate entries in items"
-        )
+      if let min = minimumValue, let max = maximumValue {
+        if max <= min {
+          throw DecodingError.dataCorruptedError(
+            forKey: .maximumValue, in: container,
+            debugDescription:
+              "Cannot initialize Element because maximumValue \(max) must be greater than minimumValue \(min)"
+          )
+        }
       }
-
-    }
-    if let min = minimumValue, let max = maximumValue {
-      if max <= min {
-        throw DecodingError.dataCorruptedError(
-          forKey: .maximumValue, in: container,
-          debugDescription:
-            "Cannot initialize Element because maximumValue \(max) must be greater than minimumValue \(min)"
-        )
+      if let min = minimumValue, let def = defaultNumber {
+        if def < min {
+          throw DecodingError.dataCorruptedError(
+            forKey: .defaultNumber, in: container,
+            debugDescription:
+              "Cannot initialize Element because numberValue \(def) must be greater than minimumValue \(min)"
+          )
+        }
       }
-    }
-    if let min = minimumValue, let def = defaultNumber {
-      if def < min {
-        throw DecodingError.dataCorruptedError(
-          forKey: .defaultNumber, in: container,
-          debugDescription:
-            "Cannot initialize Element because numberValue \(def) must be greater than minimumValue \(min)"
-        )
+      if let max = maximumValue, let def = defaultNumber {
+        if def > max {
+          throw DecodingError.dataCorruptedError(
+            forKey: .defaultNumber, in: container,
+            debugDescription:
+              "Cannot initialize Element because numberValue \(def) must be less than maximumValue \(max)"
+          )
+        }
       }
-    }
-    if let max = maximumValue, let def = defaultNumber {
-      if def > max {
-        throw DecodingError.dataCorruptedError(
-          forKey: .defaultNumber, in: container,
-          debugDescription:
-            "Cannot initialize Element because numberValue \(def) must be less than maximumValue \(max)"
-        )
+      if let fraction = fractionDigits {
+        if fraction < 0 || fraction > 8 {
+          throw DecodingError.dataCorruptedError(
+            forKey: .fractionDigits, in: container,
+            debugDescription:
+              "Cannot initialize Element because fractionValue \(fraction) must be be in [0..8]")
+        }
       }
-    }
-    if let fraction = fractionDigits {
-      if fraction < 0 || fraction > 8 {
-        throw DecodingError.dataCorruptedError(
-          forKey: .fractionDigits, in: container,
-          debugDescription:
-            "Cannot initialize Element because fractionValue \(fraction) must be be in [0..8]")
+      if type == .defaultPicker || type == .segmentedPicker {
+        if attributeType == nil || (attributeType! != .index && attributeType! != .item) {
+          throw DecodingError.dataCorruptedError(
+            forKey: .defaultIndex, in: container,
+            debugDescription:
+              "Cannot initialize \(type.rawValue) because it does not have selected: or selectedItem: in the bind property"
+          )
+        }
+        guard let items = items else {
+          throw DecodingError.dataCorruptedError(
+            forKey: .type, in: container,
+            debugDescription: "Cannot initialize \(type.rawValue) because there are no items")
+        }
+        if let index = defaultIndex, index < 0 || index >= items.count {
+          throw DecodingError.dataCorruptedError(
+            forKey: .defaultIndex, in: container,
+            debugDescription:
+              "Cannot initialize selected for \(type.rawValue) because it is not in the range of items"
+          )
+        }
+        if autocapitalizationType != nil || defaultBool != nil || defaultNumber != nil
+          || container.contains(.disableAutocorrection) || fractionDigits != nil
+          || keyboardType != nil || maximumValue != nil || minimumValue != nil || placeholder != nil
+        {
+          throw DecodingError.dataCorruptedError(
+            forKey: .defaultIndex, in: container,
+            debugDescription:
+              "Cannot initialize \(type.rawValue) because it only supports the type, bind, title, items, and selected properties"
+          )
+        }
       }
-    }
-    if type == .defaultPicker || type == .segmentedPicker {
-      if attributeType == nil || (attributeType! != .index && attributeType! != .item) {
-        throw DecodingError.dataCorruptedError(
-          forKey: .defaultIndex, in: container,
-          debugDescription:
-            "Cannot initialize \(type.rawValue) because it does not have selected: or selectedItem: in the bind property"
-        )
+      if type == .stepper {
+        if attributeType == nil || attributeType! != .number {
+          throw DecodingError.dataCorruptedError(
+            forKey: .defaultIndex, in: container,
+            debugDescription:
+              "Cannot initialize \(type.rawValue) because it does not have numberValue: in the bind property"
+          )
+        }
+        if autocapitalizationType != nil || defaultBool != nil || defaultIndex != nil
+          || items != nil
+          || container.contains(.disableAutocorrection) || fractionDigits != nil
+        {
+          throw DecodingError.dataCorruptedError(
+            forKey: .defaultIndex, in: container,
+            debugDescription:
+              "Cannot initialize \(type.rawValue) because it does not support the autocorrectionType, autocapitalizationType, boolValue, items, and selected properties"
+          )
+        }
       }
-      guard let items = items else {
-        throw DecodingError.dataCorruptedError(
-          forKey: .type, in: container,
-          debugDescription: "Cannot initialize \(type.rawValue) because there are no items")
+      if type == .numberEntry {
+        if attributeType == nil || attributeType! != .number {
+          throw DecodingError.dataCorruptedError(
+            forKey: .defaultIndex, in: container,
+            debugDescription:
+              "Cannot initialize \(type.rawValue) because it does not have numberValue: in the bind property"
+          )
+        }
+        if autocapitalizationType != nil || defaultBool != nil || defaultIndex != nil
+          || items != nil
+          || container.contains(.disableAutocorrection)
+        {
+          throw DecodingError.dataCorruptedError(
+            forKey: .defaultIndex, in: container,
+            debugDescription:
+              "Cannot initialize \(type.rawValue) because it does not support the autocorrectionType, autocapitalizationType, boolValue, items, selected and fractionDigits properties"
+          )
+        }
       }
-      if let index = defaultIndex, index < 0 || index >= items.count {
-        throw DecodingError.dataCorruptedError(
-          forKey: .defaultIndex, in: container,
-          debugDescription:
-            "Cannot initialize selected for \(type.rawValue) because it is not in the range of items"
-        )
+      if type == .multilineText || type == .textEntry {
+        if attributeType == nil || attributeType! != .text {
+          throw DecodingError.dataCorruptedError(
+            forKey: .defaultIndex, in: container,
+            debugDescription:
+              "Cannot initialize \(type.rawValue) because it does not have textValue: in the bind property"
+          )
+        }
+        if defaultBool != nil || defaultIndex != nil || items != nil || defaultNumber != nil
+          || fractionDigits != nil || maximumValue != nil || minimumValue != nil
+        {
+          throw DecodingError.dataCorruptedError(
+            forKey: .defaultIndex, in: container,
+            debugDescription:
+              "Cannot initialize \(type.rawValue) because it does not support the boolValue, numberValue, selected, items, minimumValue, macimumValue and fractionDigits properties"
+          )
+        }
       }
-      if autocapitalizationType != nil || defaultBool != nil || defaultNumber != nil
-        || container.contains(.disableAutocorrection) || fractionDigits != nil
-        || keyboardType != nil || maximumValue != nil || minimumValue != nil || placeholder != nil
-      {
-        throw DecodingError.dataCorruptedError(
-          forKey: .defaultIndex, in: container,
-          debugDescription:
-            "Cannot initialize \(type.rawValue) because it only supports the type, bind, title, items, and selected properties"
-        )
+      if type == .label {
+        if let attributeType = attributeType, attributeType != .id {
+          throw DecodingError.dataCorruptedError(
+            forKey: .defaultIndex, in: container,
+            debugDescription:
+              "Cannot initialize \(type.rawValue) because it has something besides value: in the bind property"
+          )
+        }
+        if autocapitalizationType != nil || defaultBool != nil || defaultIndex != nil
+          || defaultNumber != nil || container.contains(.disableAutocorrection)
+          || fractionDigits != nil || items != nil || keyboardType != nil || maximumValue != nil
+          || minimumValue != nil || placeholder != nil
+        {
+          throw DecodingError.dataCorruptedError(
+            forKey: .defaultIndex, in: container,
+            debugDescription:
+              "Cannot initialize \(type.rawValue) because it only supports the type, bind, and title properties"
+          )
+        }
       }
-    }
-    if type == .stepper {
-      if attributeType == nil || attributeType! != .number {
-        throw DecodingError.dataCorruptedError(
-          forKey: .defaultIndex, in: container,
-          debugDescription:
-            "Cannot initialize \(type.rawValue) because it does not have numberValue: in the bind property"
-        )
-      }
-      if autocapitalizationType != nil || defaultBool != nil || defaultIndex != nil || items != nil
-        || container.contains(.disableAutocorrection) || fractionDigits != nil
-      {
-        throw DecodingError.dataCorruptedError(
-          forKey: .defaultIndex, in: container,
-          debugDescription:
-            "Cannot initialize \(type.rawValue) because it does not support the autocorrectionType, autocapitalizationType, boolValue, items, and selected properties"
-        )
-      }
-    }
-    if type == .numberEntry {
-      if attributeType == nil || attributeType! != .number {
-        throw DecodingError.dataCorruptedError(
-          forKey: .defaultIndex, in: container,
-          debugDescription:
-            "Cannot initialize \(type.rawValue) because it does not have numberValue: in the bind property"
-        )
-      }
-      if autocapitalizationType != nil || defaultBool != nil || defaultIndex != nil || items != nil
-        || container.contains(.disableAutocorrection)
-      {
-        throw DecodingError.dataCorruptedError(
-          forKey: .defaultIndex, in: container,
-          debugDescription:
-            "Cannot initialize \(type.rawValue) because it does not support the autocorrectionType, autocapitalizationType, boolValue, items, selected and fractionDigits properties"
-        )
-      }
-    }
-    if type == .multilineText || type == .textEntry {
-      if attributeType == nil || attributeType! != .text {
-        throw DecodingError.dataCorruptedError(
-          forKey: .defaultIndex, in: container,
-          debugDescription:
-            "Cannot initialize \(type.rawValue) because it does not have textValue: in the bind property"
-        )
-      }
-      if defaultBool != nil || defaultIndex != nil || items != nil || defaultNumber != nil
-        || fractionDigits != nil || maximumValue != nil || minimumValue != nil
-      {
-        throw DecodingError.dataCorruptedError(
-          forKey: .defaultIndex, in: container,
-          debugDescription:
-            "Cannot initialize \(type.rawValue) because it does not support the boolValue, numberValue, selected, items, minimumValue, macimumValue and fractionDigits properties"
-        )
-      }
-    }
-    if type == .label {
-      if let attributeType = attributeType, attributeType != .id {
-        throw DecodingError.dataCorruptedError(
-          forKey: .defaultIndex, in: container,
-          debugDescription:
-            "Cannot initialize \(type.rawValue) because it has something besides value: in the bind property"
-        )
-      }
-      if autocapitalizationType != nil || defaultBool != nil || defaultIndex != nil
-        || defaultNumber != nil || container.contains(.disableAutocorrection)
-        || fractionDigits != nil || items != nil || keyboardType != nil || maximumValue != nil
-        || minimumValue != nil || placeholder != nil
-      {
-        throw DecodingError.dataCorruptedError(
-          forKey: .defaultIndex, in: container,
-          debugDescription:
-            "Cannot initialize \(type.rawValue) because it only supports the type, bind, and title properties"
-        )
-      }
-    }
-    if type == .switch {
-      if attributeType == nil || attributeType! != .bool {
-        throw DecodingError.dataCorruptedError(
-          forKey: .defaultIndex, in: container,
-          debugDescription:
-            "Cannot initialize \(type.rawValue) because it does not have boolValue: in the bind property"
-        )
-      }
-      if autocapitalizationType != nil || defaultIndex != nil || defaultNumber != nil
-        || container.contains(.disableAutocorrection) || fractionDigits != nil || items != nil
-        || keyboardType != nil || maximumValue != nil || minimumValue != nil || placeholder != nil
-      {
-        throw DecodingError.dataCorruptedError(
-          forKey: .defaultIndex, in: container,
-          debugDescription:
-            "Cannot initialize \(type.rawValue) because it only supports the type, bind, title, and boolValue properties"
-        )
+      if type == .switch {
+        if attributeType == nil || attributeType! != .bool {
+          throw DecodingError.dataCorruptedError(
+            forKey: .defaultIndex, in: container,
+            debugDescription:
+              "Cannot initialize \(type.rawValue) because it does not have boolValue: in the bind property"
+          )
+        }
+        if autocapitalizationType != nil || defaultIndex != nil || defaultNumber != nil
+          || container.contains(.disableAutocorrection) || fractionDigits != nil || items != nil
+          || keyboardType != nil || maximumValue != nil || minimumValue != nil || placeholder != nil
+        {
+          throw DecodingError.dataCorruptedError(
+            forKey: .defaultIndex, in: container,
+            debugDescription:
+              "Cannot initialize \(type.rawValue) because it only supports the type, bind, title, and boolValue properties"
+          )
+        }
       }
     }
 

@@ -79,7 +79,37 @@ extension SurveyProtocol: Codable {
   init(from decoder: Decoder) throws {
     let container = try decoder.container(keyedBy: CodingKeys.self)
 
-    // Important, if any of the standard decoders are replaced, then add test to verify
+    // Important, if any of the standard decoder values are manipulated, then
+    // add tests to verify the behavior (standard behavior does not need to be tested)
+
+    let metaName = try container.decode(String.self, forKey: .metaName)
+    // Fail on wrong metaName before trying to do any more decoding
+    if metaName != "NPS-Protocol-Specification" {
+      throw DecodingError.dataCorruptedError(
+        forKey: .metaName, in: container,
+        debugDescription:
+          "Cannot initialize SurveyProtocol with \(CodingKeys.metaName) \(metaName)")
+    }
+
+    let metaVersion = try container.decode(SurveyProtocolVersion.self, forKey: .metaVersion)
+    // Fail on wrong metaVersion before trying to do any more decoding
+    // Set known version in options before decoding any children
+    if metaVersion == .unknown {
+      throw DecodingError.dataCorruptedError(
+        forKey: .metaVersion, in: container,
+        debugDescription:
+          "Cannot initialize SurveyProtocol with \(CodingKeys.metaVersion) \(metaVersion)")
+    }
+    // Set metaversion in userInfo for use by children
+    // and get the validation behavior
+    var validationEnabled = true
+    if let options = decoder.userInfo[SurveyProtocolCodingOptions.key]
+      as? SurveyProtocolCodingOptions
+    {
+      options.version = metaVersion
+      validationEnabled = !options.skipValidation
+    }
+
     let cancelOnTop = try container.decodeIfPresent(Bool.self, forKey: .cancelOnTop)
     let csv = try container.decodeIfPresent(CsvFormat.self, forKey: .csv)
     let dateString = try container.decodeIfPresent(String.self, forKey: .date)
@@ -87,8 +117,6 @@ extension SurveyProtocol: Codable {
       String.self, forKey: .protocolDescription)
     let features = try container.decode([Feature].self, forKey: .features)
     let gpsInterval = try container.decodeIfPresent(Double.self, forKey: .gpsInterval)
-    let metaName = try container.decode(String.self, forKey: .metaName)
-    let metaVersion = try container.decode(SurveyProtocolVersion.self, forKey: .metaVersion)
     let mission = try container.decodeIfPresent(Mission.self, forKey: .mission)
     let name = try container.decode(String.self, forKey: .name)
     let notObservingMessage = try container.decodeIfPresent(
@@ -110,56 +138,37 @@ extension SurveyProtocol: Codable {
       date = innerDate
     }
 
-    // Fail on wrong metaName
-    if metaName != "NPS-Protocol-Specification" {
-      throw DecodingError.dataCorruptedError(
-        forKey: .metaName, in: container,
-        debugDescription:
-          "Cannot initialize SurveyProtocol with \(CodingKeys.metaName) \(metaName)")
-    }
-    // Fail on wrong metaVersion
-    if metaVersion == .unknown {
-      throw DecodingError.dataCorruptedError(
-        forKey: .metaVersion, in: container,
-        debugDescription:
-          "Cannot initialize SurveyProtocol with \(CodingKeys.metaVersion) \(metaVersion)")
-    }
-    // Set metaversion in userInfo for use by children
-    if let options = decoder.userInfo[SurveyProtocolCodingOptions.key]
-      as? SurveyProtocolCodingOptions
-    {
-      options.version = metaVersion
-    }
+    if validationEnabled {
+      // Validate feature names are unique across features
+      if features.count == 0 {
+        throw DecodingError.dataCorruptedError(
+          forKey: .metaVersion, in: container,
+          debugDescription:
+            "Cannot initialize SurveyProtocol with an empty features list")
+      }
+      // Validate attributes: unique elements (based on type)
+      let featureNames = features.map { $0.name.lowercased() }
+      if Set(featureNames).count != featureNames.count {
+        throw DecodingError.dataCorruptedError(
+          forKey: .metaVersion, in: container,
+          debugDescription:
+            "Cannot initialize SurveyProtocol with duplicate feature names")
+      }
 
-    // Validate feature names are unique across features
-    if features.count == 0 {
-      throw DecodingError.dataCorruptedError(
-        forKey: .metaVersion, in: container,
-        debugDescription:
-          "Cannot initialize SurveyProtocol with an empty features list")
-    }
-    // Validate attributes: unique elements (based on type)
-    let featureNames = features.map { $0.name.lowercased() }
-    if Set(featureNames).count != featureNames.count {
-      throw DecodingError.dataCorruptedError(
-        forKey: .metaVersion, in: container,
-        debugDescription:
-          "Cannot initialize SurveyProtocol with duplicate feature names")
-    }
-
-    // Validate feature attributes with the same name have the same type
-    // Build a dictionary with lowercased names as keys and a set of Bind types as values
-    // Any entry with a values with length > 1 is a problem
-    let allAttributes = features.compactMap { $0.attributes }.flatMap { $0 }
-    let pairs = allAttributes.map { ($0.name.lowercased(), Set([$0.type])) }
-    let dict = Dictionary(pairs, uniquingKeysWith: { $0.union($1) })
-    let problems = dict.filter { (_, value) in value.count > 1 }
-    if problems.count > 0 {
-      throw DecodingError.dataCorruptedError(
-        forKey: .metaVersion, in: container,
-        debugDescription:
-          "Cannot initialize SurveyProtocol; duplicate feature names \(problems.keys) must have the same type"
-      )
+      // Validate feature attributes with the same name have the same type
+      // Build a dictionary with lowercased names as keys and a set of Bind types as values
+      // Any entry with a values with length > 1 is a problem
+      let allAttributes = features.compactMap { $0.attributes }.flatMap { $0 }
+      let pairs = allAttributes.map { ($0.name.lowercased(), Set([$0.type])) }
+      let dict = Dictionary(pairs, uniquingKeysWith: { $0.union($1) })
+      let problems = dict.filter { (_, value) in value.count > 1 }
+      if problems.count > 0 {
+        throw DecodingError.dataCorruptedError(
+          forKey: .metaVersion, in: container,
+          debugDescription:
+            "Cannot initialize SurveyProtocol; duplicate feature names \(problems.keys) must have the same type"
+        )
+      }
     }
 
     self.init(
@@ -189,13 +198,16 @@ extension SurveyProtocol: Codable {
 // if the child objects require custom context set on the default decoder
 
 extension SurveyProtocol {
-  init(data: Data) throws {
+  init(data: Data, skipValidation: Bool = false) throws {
     let decoder = JSONDecoder()
-    decoder.userInfo[SurveyProtocolCodingOptions.key] = SurveyProtocolCodingOptions()
-    self = try JSONDecoder().decode(SurveyProtocol.self, from: data)
+    let options = SurveyProtocolCodingOptions()
+    options.skipValidation = skipValidation
+    decoder.userInfo[SurveyProtocolCodingOptions.key] = options
+    self = try decoder.decode(SurveyProtocol.self, from: data)
   }
 
-  init(_ json: String, using encoding: String.Encoding = .utf8) throws {
+  init(_ json: String, using encoding: String.Encoding = .utf8, skipValidation: Bool = false) throws
+  {
     guard let data = json.data(using: encoding) else {
       let description = "JSON string not properly encoded as \(encoding)"
       throw DecodingError.dataCorrupted(
@@ -203,11 +215,11 @@ extension SurveyProtocol {
           codingPath: [],
           debugDescription: description))
     }
-    try self.init(data: data)
+    try self.init(data: data, skipValidation: skipValidation)
   }
 
-  init(fromURL url: URL) throws {
-    try self.init(data: try Data(contentsOf: url))
+  init(fromURL url: URL, skipValidation: Bool = false) throws {
+    try self.init(data: try Data(contentsOf: url), skipValidation: skipValidation)
   }
 
   func jsonData() throws -> Data {
@@ -252,6 +264,8 @@ class SurveyProtocolCodingOptions {
 
   /// The version of the protocol being decoded
   var version: SurveyProtocolVersion = .unknown
+
+  var skipValidation: Bool = false
 
   static let key = CodingUserInfoKey(rawValue: "gov.doi.nps.akr.gis.parkobserver")!
 

@@ -92,11 +92,23 @@ extension SimpleSymbology: Codable {
   }
 
   init(from decoder: Decoder) throws {
+    var validationEnabled = true
+    if let options = decoder.userInfo[SurveyProtocolCodingOptions.key]
+      as? SurveyProtocolCodingOptions
+    {
+      validationEnabled = !options.skipValidation
+    }
+
     let container = try decoder.container(keyedBy: CodingKeys.self)
     var color: UIColor?
-    if let hex = try container.decodeIfPresent(String.self, forKey: .color) {
+    let hex = try container.decodeIfPresent(String.self, forKey: .color)
+    let size = try container.decodeIfPresent(Double.self, forKey: .size)
+    if let hex = hex {
       color = UIColor(hex: hex)
-      if color == nil {
+    }
+
+    if validationEnabled {
+      if let hex = hex, color == nil {
         throw DecodingError.dataCorrupted(
           DecodingError.Context(
             codingPath: decoder.codingPath,
@@ -104,16 +116,17 @@ extension SimpleSymbology: Codable {
           )
         )
       }
-    }
-    let size: Double? = try container.decodeIfPresent(Double.self, forKey: .size)
-    if let size = size, size < 0 {
-      throw DecodingError.dataCorrupted(
-        DecodingError.Context(
-          codingPath: decoder.codingPath,
-          debugDescription: "Cannot initialize size with a negative number \(size)"
+
+      if let size = size, size < 0 {
+        throw DecodingError.dataCorrupted(
+          DecodingError.Context(
+            codingPath: decoder.codingPath,
+            debugDescription: "Cannot initialize size with a negative number \(size)"
+          )
         )
-      )
+      }
     }
+
     self.init(color: color, size: size)
   }
 

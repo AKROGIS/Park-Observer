@@ -177,7 +177,7 @@ class SurveyProtocolTests: XCTestCase {
           dict[doc] = false
           let url = URL(fileURLWithPath: docsPath + "/" + doc)
           do {
-            _ = try SurveyProtocol(fromURL: url)
+            _ = try SurveyProtocol(fromURL: url, skipValidation: true)
             dict[doc] = true
           } catch  {
             print(doc)

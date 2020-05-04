@@ -54,6 +54,13 @@ struct MissionTotalizer: Codable {
 extension MissionTotalizer {
 
   init(from decoder: Decoder) throws {
+    var validationEnabled = true
+    if let options = decoder.userInfo[SurveyProtocolCodingOptions.key]
+      as? SurveyProtocolCodingOptions
+    {
+      validationEnabled = !options.skipValidation
+    }
+
     let container = try decoder.container(keyedBy: CodingKeys.self)
     let fields = try container.decodeIfPresent([String].self, forKey: .fields)
     let fontSize = try container.decodeIfPresent(Double.self, forKey: .fontSize) ?? 14.0
@@ -61,35 +68,40 @@ extension MissionTotalizer {
     let includeOn = try container.decodeIfPresent(Bool.self, forKey: .includeOn) ?? true
     let includeTotal = try container.decodeIfPresent(Bool.self, forKey: .includeTotal) ?? false
     let units = try container.decodeIfPresent(TotalizerUnits.self, forKey: .units) ?? .kilometers
-    // Validate fields and fontSize
-    if let fields = fields {
-      if fields.count == 0 {
-        throw DecodingError.dataCorrupted(
-          DecodingError.Context(
-            codingPath: decoder.codingPath,
-            debugDescription: "Cannot initialize fields with an empty list"
+
+    if validationEnabled {
+      // Validate fields and fontSize
+      if let fields = fields {
+        if fields.count == 0 {
+          throw DecodingError.dataCorrupted(
+            DecodingError.Context(
+              codingPath: decoder.codingPath,
+              debugDescription: "Cannot initialize fields with an empty list"
+            )
           )
-        )
+        }
+        // Validate fields; ensure unique with case insensitive compare
+        let fieldNames = fields.map { $0.lowercased() }
+        if Set(fieldNames).count != fieldNames.count {
+          throw DecodingError.dataCorrupted(
+            DecodingError.Context(
+              codingPath: decoder.codingPath,
+              debugDescription:
+                "Cannot initialize fields with duplicate values in the list \(fields)"
+            )
+          )
+        }
       }
-      // Validate fields; ensure unique with case insensitive compare
-      let fieldNames = fields.map { $0.lowercased() }
-      if Set(fieldNames).count != fieldNames.count {
+      if fontSize < 0 {
         throw DecodingError.dataCorrupted(
           DecodingError.Context(
             codingPath: decoder.codingPath,
-            debugDescription: "Cannot initialize fields with duplicate values in the list \(fields)"
+            debugDescription: "Cannot initialize fontsize with a negative value \(fontSize)"
           )
         )
       }
     }
-    if fontSize < 0 {
-      throw DecodingError.dataCorrupted(
-        DecodingError.Context(
-          codingPath: decoder.codingPath,
-          debugDescription: "Cannot initialize fontsize with a negative value \(fontSize)"
-        )
-      )
-    }
+
     self.init(
       fields: fields,
       fontSize: fontSize,

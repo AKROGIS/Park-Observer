@@ -62,6 +62,13 @@ extension Feature {
       )
     }
 
+    var validationEnabled = true
+    if let options = decoder.userInfo[SurveyProtocolCodingOptions.key]
+      as? SurveyProtocolCodingOptions
+    {
+      validationEnabled = !options.skipValidation
+    }
+
     let container = try decoder.container(keyedBy: CodingKeys.self)
     let allowOffTransectObservations = try container.decodeIfPresent(
       Bool.self, forKey: .allowOffTransectObservations)
@@ -84,78 +91,80 @@ extension Feature {
       }
     }
 
-    // Validate name
-    if name.count == 0 || name.count > 10 {
-      let message = "Cannot initialize name with an invalid value \(name)"
-      throw corruptError(message: message)
-    }
-    // Validate attributes
-    if let attributes = attributes {
-      if attributes.count == 0 {
-        let message = "Cannot initialize attributes with an empty list"
+    if validationEnabled {
+      // Validate name
+      if name.count == 0 || name.count > 10 {
+        let message = "Cannot initialize name with an invalid value \(name)"
         throw corruptError(message: message)
       }
-      // Validate attributes: unique elements (based on type)
-      let attributeNames = attributes.map { $0.name.lowercased() }
-      if Set(attributeNames).count != attributeNames.count {
-        let message = "Cannot initialize locations with duplicate names in the list \(attributes)"
-        throw corruptError(message: message)
-      }
-    }
-    // Validate locations: not empty
-    if locations.count == 0 {
-      let message = "Cannot initialize locations with an empty list"
-      throw corruptError(message: message)
-    }
-    // Validate locations: unique elements (based on type)
-    let locationsTypes = locations.map { $0.type }
-    if Set(locationsTypes).count != locationsTypes.count {
-      let message = "Cannot initialize locations with duplicate types in the list \(locations)"
-      throw corruptError(message: message)
-    }
-    // Validate 1) if we have a label, we must have attributes
-    // 2) if definition is not provided, then field is in attributes
-    // (label will not decode if both field and definition are missing)
-    if let label = label {
-      guard let attributes = attributes else {
-        let message = "Cannot initialize feature with label \(label) and no attributes"
-        throw corruptError(message: message)
-      }
-      if let field = label.field, label.definition == nil {
+      // Validate attributes
+      if let attributes = attributes {
+        if attributes.count == 0 {
+          let message = "Cannot initialize attributes with an empty list"
+          throw corruptError(message: message)
+        }
+        // Validate attributes: unique elements (based on type)
         let attributeNames = attributes.map { $0.name.lowercased() }
-
-        if !attributeNames.contains(field.lowercased()) {
-          let message =
-            "Cannot initialize feature when label field \(field) is not in attributes \(attributeNames)"
+        if Set(attributeNames).count != attributeNames.count {
+          let message = "Cannot initialize locations with duplicate names in the list \(attributes)"
           throw corruptError(message: message)
         }
       }
-    }
-
-    // Every dialog bind name must match the name and type of an attribute in attributes.
-    if let dialog = dialog {
-      let dialogNames = dialog.allAttributeNames
-      if dialogNames.count > 0 {
+      // Validate locations: not empty
+      if locations.count == 0 {
+        let message = "Cannot initialize locations with an empty list"
+        throw corruptError(message: message)
+      }
+      // Validate locations: unique elements (based on type)
+      let locationsTypes = locations.map { $0.type }
+      if Set(locationsTypes).count != locationsTypes.count {
+        let message = "Cannot initialize locations with duplicate types in the list \(locations)"
+        throw corruptError(message: message)
+      }
+      // Validate 1) if we have a label, we must have attributes
+      // 2) if definition is not provided, then field is in attributes
+      // (label will not decode if both field and definition are missing)
+      if let label = label {
         guard let attributes = attributes else {
-          throw DecodingError.dataCorruptedError(
-            forKey: .attributes, in: container,
-            debugDescription:
-              "Cannot initialize Feature with dialog fields and no attributes")
+          let message = "Cannot initialize feature with label \(label) and no attributes"
+          throw corruptError(message: message)
         }
-        let (missingNames, namesMissingTypes) = dialog.validate(with: attributes)
-        if missingNames.count > 0 {
-          throw DecodingError.dataCorruptedError(
-            forKey: .attributes, in: container,
-            debugDescription:
-              "Cannot initialize Feature with dialog attributes \(missingNames) not in the attributes list"
-          )
+        if let field = label.field, label.definition == nil {
+          let attributeNames = attributes.map { $0.name.lowercased() }
+
+          if !attributeNames.contains(field.lowercased()) {
+            let message =
+              "Cannot initialize feature when label field \(field) is not in attributes \(attributeNames)"
+            throw corruptError(message: message)
+          }
         }
-        if namesMissingTypes.count > 0 {
-          throw DecodingError.dataCorruptedError(
-            forKey: .attributes, in: container,
-            debugDescription:
-              "Cannot initialize Feature when type for dialog attributes \(namesMissingTypes) do not match type in attribute list"
-          )
+      }
+
+      // Every dialog bind name must match the name and type of an attribute in attributes.
+      if let dialog = dialog {
+        let dialogNames = dialog.allAttributeNames
+        if dialogNames.count > 0 {
+          guard let attributes = attributes else {
+            throw DecodingError.dataCorruptedError(
+              forKey: .attributes, in: container,
+              debugDescription:
+                "Cannot initialize Feature with dialog fields and no attributes")
+          }
+          let (missingNames, namesMissingTypes) = dialog.validate(with: attributes)
+          if missingNames.count > 0 {
+            throw DecodingError.dataCorruptedError(
+              forKey: .attributes, in: container,
+              debugDescription:
+                "Cannot initialize Feature with dialog attributes \(missingNames) not in the attributes list"
+            )
+          }
+          if namesMissingTypes.count > 0 {
+            throw DecodingError.dataCorruptedError(
+              forKey: .attributes, in: container,
+              debugDescription:
+                "Cannot initialize Feature when type for dialog attributes \(namesMissingTypes) do not match type in attribute list"
+            )
+          }
         }
       }
     }
@@ -253,17 +262,27 @@ extension Attribute {
   }
 
   init(from decoder: Decoder) throws {
+    var validationEnabled = true
+    if let options = decoder.userInfo[SurveyProtocolCodingOptions.key]
+      as? SurveyProtocolCodingOptions
+    {
+      validationEnabled = !options.skipValidation
+    }
+
     let container = try decoder.container(keyedBy: CodingKeys.self)
     let name = try container.decode(String.self, forKey: .name)
     let type = try container.decode(AttributeType.self, forKey: .type)
-    //validate name matches regex: i.e. does not have any non-word characters
-    guard Attribute.isValid(name: name) else {
-      throw DecodingError.dataCorrupted(
-        DecodingError.Context(
-          codingPath: decoder.codingPath,
-          debugDescription: "Cannot initialize Attribute.Name from invalid String value \(name)"
+
+    if validationEnabled {
+      //validate name matches regex: i.e. does not have any non-word characters
+      if !Attribute.isValid(name: name) {
+        throw DecodingError.dataCorrupted(
+          DecodingError.Context(
+            codingPath: decoder.codingPath,
+            debugDescription: "Cannot initialize Attribute.Name from invalid String value \(name)"
+          )
         )
-      )
+      }
     }
     self.init(
       name: name,
@@ -427,50 +446,70 @@ extension Label: Codable {
       )
     }
 
+    var validationEnabled = true
+    if let options = decoder.userInfo[SurveyProtocolCodingOptions.key]
+      as? SurveyProtocolCodingOptions
+    {
+      validationEnabled = !options.skipValidation
+    }
+
     let container = try decoder.container(keyedBy: CodingKeys.self)
 
-    // field
     let field = try container.decodeIfPresent(String.self, forKey: .field)
+    let hex = try container.decodeIfPresent(String.self, forKey: .color)
+    let size = try container.decodeIfPresent(Double.self, forKey: .size)
+    let esriSymbolJSON = try container.decodeIfPresent(AnyJSON.self, forKey: .symbol)
+    let esriLabelJSON = try container.decodeIfPresent(AnyJSON.self, forKey: .definition)
 
-    // color
     var color: UIColor?
-    if let hex = try container.decodeIfPresent(String.self, forKey: .color) {
+    if let hex = hex {
       color = UIColor(hex: hex)
-      if color == nil {
+    }
+    var symbol: AGSSymbol? = nil
+    // Version 2 Symbology
+    if let json = esriSymbolJSON {
+      symbol = try AGSSymbol.fromAnyJSON(json, codingPath: decoder.codingPath)
+    }
+    var definition: AGSLabelDefinition? = nil
+    // Version 3 label definition
+    if let json = esriLabelJSON {
+      definition = try AGSLabelDefinition.fromAnyJSON(json, codingPath: decoder.codingPath)
+    }
+
+    if validationEnabled {
+      // size, if provided must be positive
+      if let size = size, size <= 0 {
+        let message = "Cannot initialize size with a non-positive number \(size)"
+        throw corruptError(message: message)
+      }
+      // color: hex, if provided, must produce a non nil color
+      if let hex = hex, color == nil {
         let message = "Cannot initialize color with String value \(hex)"
         throw corruptError(message: message)
       }
-    }
+      // esriSymbolJSON, if provided, must produce a non-nil symbol
+      if esriSymbolJSON != nil {
+        if symbol == nil {
+          let message = "Cannot initialize Symbol with provided esriJSON"
+          throw corruptError(message: message)
+        } else {
+          if !(symbol is AGSTextSymbol) {
+            let message = "Cannot initialize symbol; it is not an esriTS"
+            throw corruptError(message: message)
+          }
+        }
 
-    // size
-    let size: Double? = try container.decodeIfPresent(Double.self, forKey: .size)
-    if let size = size, size < 0 {
-      let message = "Cannot initialize size with a negative number \(size)"
-      throw corruptError(message: message)
-    }
-
-    // Symbol
-    var symbol: AGSSymbol? = nil
-    // Version 2 Symbology
-    if let agsJSON:AnyJSON = try container.decodeIfPresent(AnyJSON.self, forKey: .symbol) {
-      symbol = try AGSSymbol.fromAnyJSON(agsJSON, codingPath: decoder.codingPath)
-    }
-    if container.contains(.symbol) && (symbol == nil || !(symbol is AGSTextSymbol)) {
-      let message = "Cannot initialize symbol; it is not an esriTS"
-      throw corruptError(message: message)
-    }
-
-    // LabelDefinition
-    var definition: AGSLabelDefinition? = nil
-    // Version 2 Symbology
-    if let agsJSON:AnyJSON = try container.decodeIfPresent(AnyJSON.self, forKey: .definition) {
-      definition = try AGSLabelDefinition.fromAnyJSON(agsJSON, codingPath: decoder.codingPath)
-    }
-
-    // field and definition cannot both be nil
-    if field == nil && definition == nil {
-      let message = "Cannot initialize label; one of field or definition must be provided"
-      throw corruptError(message: message)
+      }
+      // esriLabelJSON, if provided, must produce a non-nil labelDefinition
+      if esriLabelJSON != nil && definition == nil {
+        let message = "Cannot initialize LabelDefinition with provided esriJSON"
+        throw corruptError(message: message)
+      }
+      // field and definition cannot both be nil
+      if field == nil && definition == nil {
+        let message = "Cannot initialize label; one of field or definition must be provided"
+        throw corruptError(message: message)
+      }
     }
 
     self.init(

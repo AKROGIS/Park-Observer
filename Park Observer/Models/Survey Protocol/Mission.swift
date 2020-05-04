@@ -71,6 +71,13 @@ struct Mission: Codable {
 extension Mission {
 
   init(from decoder: Decoder) throws {
+    var validationEnabled = true
+    if let options = decoder.userInfo[SurveyProtocolCodingOptions.key]
+      as? SurveyProtocolCodingOptions
+    {
+      validationEnabled = !options.skipValidation
+    }
+
     let container = try decoder.container(keyedBy: CodingKeys.self)
     let attributes = try container.decodeIfPresent([Attribute].self, forKey: .attributes)
     let dialog = try container.decodeIfPresent(Dialog.self, forKey: .dialog)
@@ -136,72 +143,74 @@ extension Mission {
       }
     }
 
-    // Validate attributes
-    if let attributes = attributes {
-      if attributes.count == 0 {
-        throw DecodingError.dataCorrupted(
-          DecodingError.Context(
-            codingPath: decoder.codingPath,
-            debugDescription: "Cannot initialize attributes with an empty list"
+    if validationEnabled {
+      // Validate attributes
+      if let attributes = attributes {
+        if attributes.count == 0 {
+          throw DecodingError.dataCorrupted(
+            DecodingError.Context(
+              codingPath: decoder.codingPath,
+              debugDescription: "Cannot initialize attributes with an empty list"
+            )
           )
-        )
-      }
-      // Validate attributes: unique elements (based on type)
-      let attributeNames = attributes.map { $0.name.lowercased() }
-      if Set(attributeNames).count != attributeNames.count {
-        throw DecodingError.dataCorrupted(
-          DecodingError.Context(
-            codingPath: decoder.codingPath,
-            debugDescription:
-              "Cannot initialize locations with duplicate names in the list \(attributes)"
+        }
+        // Validate attributes: unique elements (based on type)
+        let attributeNames = attributes.map { $0.name.lowercased() }
+        if Set(attributeNames).count != attributeNames.count {
+          throw DecodingError.dataCorrupted(
+            DecodingError.Context(
+              codingPath: decoder.codingPath,
+              debugDescription:
+                "Cannot initialize locations with duplicate names in the list \(attributes)"
+            )
           )
-        )
+        }
       }
-    }
 
-    // Totalizer.fields requires a dialog, and all fields must be dialog.attribute.names
-    if let fields = totalizer?.fields {
-      guard let dialog = dialog else {
-        throw DecodingError.dataCorruptedError(
-          forKey: .attributes, in: container,
-          debugDescription:
-            "Cannot initialize Mission with totalizer fields and no dialog")
-
-      }
-      let dialogNames = dialog.allAttributeNames
-      let missingNames = fields.filter { !dialogNames.contains($0) }
-      if missingNames.count > 0 {
-        throw DecodingError.dataCorruptedError(
-          forKey: .attributes, in: container,
-          debugDescription:
-            "Cannot initialize Mission with totalizer fields \(missingNames) not in the dialog")
-      }
-    }
-
-    // Every dialog bind name must match the name and type of an attribute in attributes.
-    if let dialog = dialog {
-      let dialogNames = dialog.allAttributeNames
-      if dialogNames.count > 0 {
-        guard let attributes = attributes else {
+      // Totalizer.fields requires a dialog, and all fields must be dialog.attribute.names
+      if let fields = totalizer?.fields {
+        guard let dialog = dialog else {
           throw DecodingError.dataCorruptedError(
             forKey: .attributes, in: container,
             debugDescription:
-              "Cannot initialize Mission with dialog fields and no attributes")
+              "Cannot initialize Mission with totalizer fields and no dialog")
+
         }
-        let (missingNames, namesMissingTypes) = dialog.validate(with: attributes)
+        let dialogNames = dialog.allAttributeNames
+        let missingNames = fields.filter { !dialogNames.contains($0) }
         if missingNames.count > 0 {
           throw DecodingError.dataCorruptedError(
             forKey: .attributes, in: container,
             debugDescription:
-              "Cannot initialize Mission with dialog attributes \(missingNames) not in the attributes list"
-          )
+              "Cannot initialize Mission with totalizer fields \(missingNames) not in the dialog")
         }
-        if namesMissingTypes.count > 0 {
-          throw DecodingError.dataCorruptedError(
-            forKey: .attributes, in: container,
-            debugDescription:
-              "Cannot initialize Mission when type for dialog attributes \(namesMissingTypes) do not match type in attribute list"
-          )
+      }
+
+      // Every dialog bind name must match the name and type of an attribute in attributes.
+      if let dialog = dialog {
+        let dialogNames = dialog.allAttributeNames
+        if dialogNames.count > 0 {
+          guard let attributes = attributes else {
+            throw DecodingError.dataCorruptedError(
+              forKey: .attributes, in: container,
+              debugDescription:
+                "Cannot initialize Mission with dialog fields and no attributes")
+          }
+          let (missingNames, namesMissingTypes) = dialog.validate(with: attributes)
+          if missingNames.count > 0 {
+            throw DecodingError.dataCorruptedError(
+              forKey: .attributes, in: container,
+              debugDescription:
+                "Cannot initialize Mission with dialog attributes \(missingNames) not in the attributes list"
+            )
+          }
+          if namesMissingTypes.count > 0 {
+            throw DecodingError.dataCorruptedError(
+              forKey: .attributes, in: container,
+              debugDescription:
+                "Cannot initialize Mission when type for dialog attributes \(namesMissingTypes) do not match type in attribute list"
+            )
+          }
         }
       }
     }
