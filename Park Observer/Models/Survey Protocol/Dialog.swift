@@ -243,6 +243,9 @@ extension DialogElement {
     case (.number, .stepper):
       return attributeType.isIntegral
     case (.number, .numberEntry):
+      if let digits = self.fractionDigits, digits == 0 {
+        return attributeType.isFractional || attributeType.isIntegral
+      }
       return attributeType.isFractional
     case (.text, .textEntry), (.text, .multilineText):
       return attributeType == .string
