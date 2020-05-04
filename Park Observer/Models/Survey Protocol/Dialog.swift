@@ -356,7 +356,7 @@ extension DialogElement: Codable {
         throw DecodingError.dataCorruptedError(
           forKey: .maximumValue, in: container,
           debugDescription:
-            "Cannot initialize Element maximumValue \(max) must be greater than minimumValue \(min)"
+            "Cannot initialize Element because maximumValue \(max) must be greater than minimumValue \(min)"
         )
       }
     }
@@ -365,7 +365,7 @@ extension DialogElement: Codable {
         throw DecodingError.dataCorruptedError(
           forKey: .defaultNumber, in: container,
           debugDescription:
-            "Cannot initialize Element numberValue \(def) must be greater than minimumValue \(min)")
+            "Cannot initialize Element because numberValue \(def) must be greater than minimumValue \(min)")
       }
     }
     if let max = maximumValue, let def = defaultNumber {
@@ -373,7 +373,7 @@ extension DialogElement: Codable {
         throw DecodingError.dataCorruptedError(
           forKey: .defaultNumber, in: container,
           debugDescription:
-            "Cannot initialize Element numberValue \(def) must be less than maximumValue \(max)")
+            "Cannot initialize Element because numberValue \(def) must be less than maximumValue \(max)")
       }
     }
     if let fraction = fractionDigits {
@@ -381,7 +381,7 @@ extension DialogElement: Codable {
         throw DecodingError.dataCorruptedError(
           forKey: .fractionDigits, in: container,
           debugDescription:
-            "Cannot initialize Element fractionValue \(fraction) must be be in [0..8]")
+            "Cannot initialize Element because fractionValue \(fraction) must be be in [0..8]")
       }
     }
     if type == .defaultPicker || type == .segmentedPicker {
@@ -389,7 +389,7 @@ extension DialogElement: Codable {
         throw DecodingError.dataCorruptedError(
           forKey: .defaultIndex, in: container,
           debugDescription:
-            "Cannot initialize \(type.rawValue) because it does have selected: or selectedItem: in the bind property"
+            "Cannot initialize \(type.rawValue) because it does not have selected: or selectedItem: in the bind property"
         )
       }
       guard let items = items else {
@@ -420,7 +420,7 @@ extension DialogElement: Codable {
         throw DecodingError.dataCorruptedError(
           forKey: .defaultIndex, in: container,
           debugDescription:
-            "Cannot initialize \(type.rawValue) because it does have numberValue: in the bind property"
+            "Cannot initialize \(type.rawValue) because it does not have numberValue: in the bind property"
         )
       }
       if autocapitalizationType != nil || defaultBool != nil || defaultIndex != nil || items != nil
@@ -438,7 +438,7 @@ extension DialogElement: Codable {
         throw DecodingError.dataCorruptedError(
           forKey: .defaultIndex, in: container,
           debugDescription:
-            "Cannot initialize \(type.rawValue) because it does have numberValue: in the bind property"
+            "Cannot initialize \(type.rawValue) because it does not have numberValue: in the bind property"
         )
       }
       if autocapitalizationType != nil || defaultBool != nil || defaultIndex != nil || items != nil
@@ -456,7 +456,7 @@ extension DialogElement: Codable {
         throw DecodingError.dataCorruptedError(
           forKey: .defaultIndex, in: container,
           debugDescription:
-            "Cannot initialize \(type.rawValue) because it does have textValue: in the bind property"
+            "Cannot initialize \(type.rawValue) because it does not have textValue: in the bind property"
         )
       }
       if defaultBool != nil || defaultIndex != nil || items != nil || defaultNumber != nil
@@ -485,7 +485,7 @@ extension DialogElement: Codable {
         throw DecodingError.dataCorruptedError(
           forKey: .defaultIndex, in: container,
           debugDescription:
-            "Cannot initialize \(type.rawValue) because it does only supports the type, bind, and title properties"
+            "Cannot initialize \(type.rawValue) because it only supports the type, bind, and title properties"
         )
       }
     }
@@ -494,7 +494,7 @@ extension DialogElement: Codable {
         throw DecodingError.dataCorruptedError(
           forKey: .defaultIndex, in: container,
           debugDescription:
-            "Cannot initialize \(type.rawValue) because it does have boolValue: in the bind property"
+            "Cannot initialize \(type.rawValue) because it does not have boolValue: in the bind property"
         )
       }
       if autocapitalizationType != nil || defaultIndex != nil || defaultNumber != nil
@@ -504,7 +504,7 @@ extension DialogElement: Codable {
         throw DecodingError.dataCorruptedError(
           forKey: .defaultIndex, in: container,
           debugDescription:
-            "Cannot initialize \(type.rawValue) because it does only supports the type, bind, title, and boolValue properties"
+            "Cannot initialize \(type.rawValue) because it only supports the type, bind, title, and boolValue properties"
         )
       }
     }
