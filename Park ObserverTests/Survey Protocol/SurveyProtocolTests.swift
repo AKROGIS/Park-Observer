@@ -176,11 +176,11 @@ class SurveyProtocolTests: XCTestCase {
         if doc.contains(".obsprot") {
           dict[doc] = false
           let url = URL(fileURLWithPath: docsPath + "/" + doc)
-          print(doc)
           do {
             _ = try SurveyProtocol(fromURL: url)
             dict[doc] = true
           } catch  {
+            print(doc)
             print(error)
           }
         }
@@ -206,11 +206,11 @@ class SurveyProtocolTests: XCTestCase {
         if doc.contains(".obsprot") {
           dict[doc] = false
           let url = URL(fileURLWithPath: docsPath + "/" + doc)
-          print(doc)
           do {
             _ = try SurveyProtocol(fromURL: url)
             dict[doc] = true
-          } catch  {
+          } catch {
+            print(doc)
             print(error)
           }
         }
