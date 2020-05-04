@@ -52,6 +52,7 @@
 		74D0B0D4245A1FC600624FE9 /* AnyJSON.swift in Sources */ = {isa = PBXBuildFile; fileRef = 74D0B0D3245A1FC600624FE9 /* AnyJSON.swift */; };
 		74D0B0D6245E18C500624FE9 /* Sample Protocols in Resources */ = {isa = PBXBuildFile; fileRef = 74D0B0D5245E18C500624FE9 /* Sample Protocols */; };
 		74D0B0D824608DC100624FE9 /* Legacy Protocols in Resources */ = {isa = PBXBuildFile; fileRef = 74D0B0D724608DC100624FE9 /* Legacy Protocols */; };
+		74D0B0DA2460C1E100624FE9 /* DecodingError.swift in Sources */ = {isa = PBXBuildFile; fileRef = 74D0B0D92460C1E100624FE9 /* DecodingError.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -136,6 +137,7 @@
 		74D0B0D3245A1FC600624FE9 /* AnyJSON.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AnyJSON.swift; sourceTree = "<group>"; };
 		74D0B0D5245E18C500624FE9 /* Sample Protocols */ = {isa = PBXFileReference; lastKnownFileType = folder; path = "Sample Protocols"; sourceTree = "<group>"; };
 		74D0B0D724608DC100624FE9 /* Legacy Protocols */ = {isa = PBXFileReference; lastKnownFileType = folder; path = "Legacy Protocols"; sourceTree = "<group>"; };
+		74D0B0D92460C1E100624FE9 /* DecodingError.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DecodingError.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -297,6 +299,7 @@
 			isa = PBXGroup;
 			children = (
 				74716636243E854700A9C960 /* Coalescer.swift */,
+				74D0B0D92460C1E100624FE9 /* DecodingError.swift */,
 				7471664D2447917D00A9C960 /* Defaults.swift */,
 				747166512448F66F00A9C960 /* Environment.swift */,
 				7471662E243D898A00A9C960 /* LicenseManager.swift */,
@@ -516,6 +519,7 @@
 				7471663A243E854800A9C960 /* Scalebar.swift in Sources */,
 				74716639243E854800A9C960 /* Coalescer.swift in Sources */,
 				74A25FCC245233B8006D82CE /* MissionTotalizer.swift in Sources */,
+				74D0B0DA2460C1E100624FE9 /* DecodingError.swift in Sources */,
 				74A25FBB2451F33F006D82CE /* SurveyProtocol.swift in Sources */,
 				74A25FCA24523390006D82CE /* Feature.swift in Sources */,
 			);
