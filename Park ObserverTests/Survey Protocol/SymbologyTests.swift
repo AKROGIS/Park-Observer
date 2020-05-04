@@ -660,6 +660,61 @@ class SymbologyTests: XCTestCase {
     }
   }
 
+  func testMissionSymbologyWithNull() {
+    // Given:
+    struct TestJson: Codable {
+      let mission: Mission
+    }
+    let jsonData = Data(
+      """
+      {
+        "mission": {
+          "off-symbology":{
+            "type": "uniqueValue",
+            "field1": "observing",
+            "field2": null,
+            "defaultSymbol": {"type":"esriSLS", "width": 5},
+            "uniqueValueInfos": [{
+              "value": 0,
+              "symbol": {"type":"esriSLS", "width": 10}
+            },{
+              "value": 1,
+              "symbol": {"type":"esriSLS", "width": 20}
+            }]
+          }
+        }
+      }
+      """.utf8)
+    let agsData = Data(
+      """
+      {
+        "type": "uniqueValue",
+        "field1": "observing",
+        "field2": null,
+        "defaultSymbol": {"type":"esriSLS", "width": 5},
+        "uniqueValueInfos": [{
+          "value": 0,
+          "symbol": {"type":"esriSLS", "width": 10}
+        },{
+          "value": 1,
+          "symbol": {"type":"esriSLS", "width": 20}
+        }]
+      }
+      """.utf8)
+
+    // When:
+    let json = try? JSONDecoder().decode(TestJson.self, from: jsonData)
+    let agsJSON = try! JSONSerialization.jsonObject(
+      with: agsData, options: JSONSerialization.ReadingOptions.mutableContainers)
+    let renderer = try! AGSUniqueValueRenderer.fromJSON(agsJSON) as! AGSRenderer
+
+    // Then:
+    XCTAssertNotNil(json)  // Failed parsing; JSON is invalid
+    if let test = json {
+      XCTAssertTrue(test.mission.offSymbology.isEqual(to: renderer))
+    }
+  }
+
   func testMissionSymbology1V2_invalid() {
     // Given:
     struct TestJson: Codable {
