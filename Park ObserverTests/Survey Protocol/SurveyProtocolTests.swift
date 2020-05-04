@@ -29,7 +29,7 @@ class SurveyProtocolTests: XCTestCase {
   //   features.name
   //   features.attributes.name
 
-  func testV1_minimal() {
+  func testV1Minimal() {
     // Given:
     let json =
       """
@@ -86,7 +86,7 @@ class SurveyProtocolTests: XCTestCase {
     }
   }
 
-  func testV2_minimal() {
+  func testV2Minimal() {
     // Given:
     let json =
       """
@@ -143,10 +143,84 @@ class SurveyProtocolTests: XCTestCase {
     }
   }
 
-  func testV1_full() {
+  func testV1Sample() {
+    let testBundle = Bundle(for: type(of: self))
+    let fileURL = testBundle.url(forResource: "Sample Protocols/Sample Protocol.v1", withExtension: "obsprot")
+    XCTAssertNotNil(fileURL)
+    if let url = fileURL {
+      let surveyProtocol = try? SurveyProtocol(fromURL: url)
+      XCTAssertNotNil(surveyProtocol)
+    }
   }
 
-  func testv2_full() {
+  func testV2Sample() {
+    let testBundle = Bundle(for: type(of: self))
+    let fileURL = testBundle.url(forResource: "Sample Protocols/Sample Protocol.v2", withExtension: "obsprot")
+    XCTAssertNotNil(fileURL)
+    if let url = fileURL {
+      let surveyProtocol = try? SurveyProtocol(fromURL: url)
+      XCTAssertNotNil(surveyProtocol)
+    }
+  }
+
+  func testLegacySamples() {
+    let testBundle = Bundle(for: type(of: self))
+    let docsPath = testBundle.resourcePath! + "/Legacy Protocols"
+    let fileManager = FileManager.default
+    let docsArray = try? fileManager.contentsOfDirectory(atPath: docsPath)
+    XCTAssertNotNil(docsArray)
+    if let docs = docsArray {
+      XCTAssertTrue(docs.count > 0)
+      var dict: [String:Bool] = [:]
+      for doc in docs {
+        if doc.contains(".obsprot") {
+          dict[doc] = false
+          let url = URL(fileURLWithPath: docsPath + "/" + doc)
+          print(doc)
+          do {
+            _ = try SurveyProtocol(fromURL: url)
+            dict[doc] = true
+          } catch  {
+            print(error)
+          }
+        }
+      }
+      let errors = dict.filter { (_,value) in !value }
+      if errors.count > 0 {
+        print("Problem Protocols: \(errors.keys)")
+      }
+      XCTAssertEqual(errors.count, 0)
+    }
+  }
+
+  func testCurrentSamples() {
+    let testBundle = Bundle(for: type(of: self))
+    let docsPath = testBundle.resourcePath! + "/Sample Protocols"
+    let fileManager = FileManager.default
+    let docsArray = try? fileManager.contentsOfDirectory(atPath: docsPath)
+    XCTAssertNotNil(docsArray)
+    if let docs = docsArray {
+      XCTAssertTrue(docs.count > 0)
+      var dict: [String:Bool] = [:]
+      for doc in docs {
+        if doc.contains(".obsprot") {
+          dict[doc] = false
+          let url = URL(fileURLWithPath: docsPath + "/" + doc)
+          print(doc)
+          do {
+            _ = try SurveyProtocol(fromURL: url)
+            dict[doc] = true
+          } catch  {
+            print(error)
+          }
+        }
+      }
+      let errors = dict.filter { (_,value) in !value }
+      if errors.count > 0 {
+        print("Problem Protocols: \(errors.keys)")
+      }
+      XCTAssertEqual(errors.count, 0)
+    }
   }
 
   //MARK: - Computed properties

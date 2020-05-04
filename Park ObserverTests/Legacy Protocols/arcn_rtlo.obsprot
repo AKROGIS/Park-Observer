@@ -1,0 +1,160 @@
+{
+  "meta-name":"NPS-Protocol-Specification",
+  "meta-version":2,
+  "name":"ARCN RTLO Survey",
+  "version":2.0,
+  "date":"2017-06-06",
+  "description":"This survey protocol is for  Red-throated Loon Surveys on the North Slope of Alaska",
+  "gps_interval": 1,
+  "mission":{
+    "attributes":[
+      {"name":"Plot",       "type":700},
+      {"name":"Vessel",     "type":700},
+      {"name":"Recorder",   "type":700},
+      {"name":"Weather",    "type":700},
+      {"name":"Wind",       "type":700},
+      {"name":"Comments",   "type":700}
+    ],
+    "dialog":{
+      "title":"Mission Properties",
+      "grouped":true,
+      "sections":[
+        {
+          "elements":[
+            {"type":"QEntryElement", "key":"p", "bind":"textValue:Plot",         "title":"Plot #",      "placeholder":"ID", "autocorrectionType":"No"},
+            {"type":"QEntryElement", "key":"v1", "bind":"textValue:Vessel",      "title":"Vessel",      "placeholder":"Name", "autocorrectionType":"No"},
+            {"type":"QEntryElement", "key":"r",  "bind":"textValue:Recorder",    "title":"Recorder",    "placeholder":"Initials", "autocorrectionType":"No", "autocapitalizationType":"AllCharacters"},
+            {"type":"QRadioElement", "key":"w",  "bind":"selectedItem:Weather",  "title":"Weather",     "items":["<50% clouds", ">50% clouds", "Fog", "Mist", "Rain"]},
+            {"type":"QRadioElement", "key":"ws", "bind":"selectedItem:Wind",     "title":"Wind Speed",  "items":[">15 knots", "10-14 knots", "9-5 knots", "<5 knots"]},
+            {"type":"QMultilineElement", "key":"c",  "bind":"textValue:Comments",    "title":"Comments"}
+            ]
+        }
+      ]
+    },
+    "symbology":{
+      "type": "simple",
+      "symbol": {
+        "type": "esriSMS",
+        "style": "esriSMSSquare",
+        "color": [0,255,0,255],
+        "size": 13,
+        "outline": {
+          "color": [0,0,0,255],
+          "width": 1
+        }
+      }
+    },
+    "on-symbology":{
+      "type": "simple",
+      "symbol": {
+        "type": "esriSLS",
+        "style": "esriSLSSolid",
+        "color": [255,127,127,255],
+        "width": 0.5
+      }
+    },
+    "off-symbology":{
+      "type": "simple",
+      "symbol": {
+        "type": "esriSLS",
+        "style": "esriSLSDash",
+        "color": [255,255,194,255],
+        "width": 0.5
+      }
+    },
+    "gps-symbology": {
+      "type": "simple",
+      "symbol": {
+        "type": "esriSMS",
+        "style": "esriSMSCircle",
+        "color": [52,152,219,255],
+        "size": 5
+      }
+    }
+  },
+    "features":[
+    {
+      "name":"Loons",
+      "attributes":[
+        {"name":"count",    "type":100},
+        {"name":"species",  "type":700},
+        {"name":"species2", "type":700},
+        {"name":"nest",     "type":800},
+        {"name":"pair",     "type":800},
+        {"name":"countChicks", "type":100},
+        {"name":"countEggs","type":700},
+        {"name":"activity", "type":700},
+        {"name":"Waypoint", "type":700},
+        {"name":"Notes",    "type":700}
+      ],
+      "locations":[
+        {"type":"gps",           "default":false, "allow":true},
+        {"type":"mapTarget",     "default":false, "allow":true},
+        {"type":"mapTouch",      "default":false, "allow":true},
+        {"type":"angleDistance", "default":true,  "allow":false, "deadAhead":180.0, "units":"meters", "direction":"cw" }
+      ],
+      "dialog":{
+        "title":"Loons",
+        "grouped":false,
+        "sections":[
+          {
+            "elements":[
+              {"type":"QIntegerElement",   "key":"c",  "bind":"numberValue:count",     "title":"Count"},
+              {"type":"QRadioElement",     "key":"s",  "bind":"selectedItem:species",  "title":"Loons/Terns",      "items":["RTLO", "YBLO", "PALO", "ARLO", "COLO", "UNLO", "TERN", "ARTE", "ALTE", "COLONY", "RNGR", "TUSW" ,"GLGU"]},
+              {"type":"QRadioElement",     "key":"s2", "bind":"selectedItem:species2", "title":"Other Species",    "items":["COEI", "BLSC", "WWSC", "EMGO", "CANG", "LTDU", "MOX", "BEAR", "BOU", "MOOS", ""]},
+              {"type":"QBooleanElement",   "key":"n",  "bind":"boolValue:nest",          "title":"Nest?", "boolValue":0},
+              {"type":"QBooleanElement",   "key":"p",  "bind":"boolValue:pair",          "title":"Pair?", "boolValue":0},
+              {"type":"QIntegerElement",   "key":"c",  "bind":"numberValue:countChicks", "title":"Chicks"},
+              {"type":"QLabelElement",     "title":"Eggs"},
+              {"type":"QSegmentedElement", "key":"e",  "bind":"selectedItem:countEggs",    "items":["0", "1", "2"]},
+              {"type":"QLabelElement",     "title":"Nest Activity"},
+              {"type":"QSegmentedElement", "key":"a",  "bind":"selectedItem:activity",    "items":["On Nest", "Flushed", "By Nest"]},
+              {"type":"QEntryElement",     "key":"w",  "bind":"textValue:Waypoint",    "title":"Waypoint",         "placeholder":"ID", "autocorrectionType":"No"},
+              {"type":"QMultilineElement", "key":"co", "bind":"textValue:Notes",       "title":"Comments"}
+            ]
+          }
+        ]
+      },
+      "symbology":{
+        "type": "simple",
+        "symbol": {
+          "type": "esriSMS",
+          "style": "esriSMSCircle",
+          "color": [255,255,0,255],
+          "size": 18,
+          "outline": {
+            "color": [0,0,0,255],
+            "width": 1
+          }
+        }
+      }
+    }
+  ],
+  "csv":{
+    "gps_points":{
+      "name":"GpsPoints",
+      "field_names":["Timestamp", "Latitude", "Longitude", "Datum", "Error_radius_m", "Course", "Speed_mps", "Altitude_m", "Vert_error_m"],
+      "field_types":["TEXT", "DOUBLE", "DOUBLE", "TEXT", "DOUBLE", "DOUBLE", "DOUBLE", "DOUBLE", "DOUBLE"],
+      "key_indexes":[0,2,1]
+    },
+    "track_logs":{
+      "name":"TrackLogs",
+      "field_names":["Observing", "Start_UTC", "Start_Local", "Year", "Day_of_Year", "End_UTC", "End_Local", "Duration_sec", "Start_Latitude", "Start_Longitude", "End_Latitude", "End_Longitude", "Datum", "Length_m"],
+      "field_types":["TEXT", "TEXT", "TEXT", "SHORT", "SHORT", "TEXT", "TEXT", "DOUBLE", "DOUBLE", "DOUBLE", "DOUBLE", "DOUBLE", "TEXT", "DOUBLE"],
+      "start_key_indexes":[1,9,8],
+      "end_key_indexes":[5,11,10]
+    },
+    "features":{
+      "header": "Timestamp_UTC,Timestamp_Local,Year,Day_of_Year,Feature_Latitude,Feature_Longitude,Observer_Latitude,Observer_Longitude,Datum,Map_Name,Map_Author,Map_Date,Angle,Distance,Perp_Meters",
+      "feature_field_names":["Timestamp_UTC", "Timestamp_Local", "Year", "Day_of_Year", "Latitude", "Longitude", "Datum"],
+      "feature_field_types":["DATE", "DATE", "SHORT", "SHORT", "DOUBLE", "DOUBLE", "TEXT"],
+      "feature_field_map":[0,1,2,3,4,5,8],
+      "feature_key_indexes":[0,5,4],
+      "obs_name":"Observations",
+      "obs_field_names":["Timestamp_UTC", "Timestamp_Local", "Year", "Day_of_Year", "Map_Name", "Map_Author", "Map_Date", "Angle", "Distance", "Perp_meters", "Latitude", "Longitude", "Datum"],
+      "obs_field_types":["TEXT", "TEXT", "SHORT", "SHORT", "TEXT", "TEXT", "TEXT", "DOUBLE", "DOUBLE", "DOUBLE", "DOUBLE", "DOUBLE", "TEXT"],
+      "obs_field_map":[0,1,2,3,9,10,11,12,13,14,6,7,8],
+      "obs_key_indexes":[0,11,10]
+    }
+  }
+}
