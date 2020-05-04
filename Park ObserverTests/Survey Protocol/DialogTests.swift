@@ -149,7 +149,7 @@ class DialogTests: XCTestCase {
       """
       {
         "element": {
-          "type": "QLabelElement", "bind": "value:A"
+          "type": "QLabelElement", "bind": "value:"
         }
       }
       """.utf8)

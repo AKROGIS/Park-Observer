@@ -178,8 +178,8 @@ Each `attribute` has the following properties
 
 #### name
 A required string identifying the attribute.  This will be the name of the field in ArcGIS.
-It must start with a letter or underscore (`_`), and be followed by one or more letters, numbers,
-or underscores. It must be at least 2 characters long, and no longer than 30 characters.
+It must start with a letter or underscore (`_`), and be followed by zero or more letters, numbers,
+or underscores. It must be no longer than 30 characters.
 Spaces and special characters are prohibited.
 The name must be unique within the mission or feature.
 Different features can have attributes with the same name, but if they do they must have the same type.

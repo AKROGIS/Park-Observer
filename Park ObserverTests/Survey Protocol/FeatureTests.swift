@@ -995,7 +995,7 @@ class FeatureTests: XCTestCase {
     let jsonData = Data(
       """
       {
-        "attribute": {"name": "a", "type": 100}
+        "attribute": {"name": "", "type": 100}
       }
       """.utf8)
 

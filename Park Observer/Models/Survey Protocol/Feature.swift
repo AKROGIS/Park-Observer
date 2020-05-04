@@ -257,8 +257,8 @@ extension Attribute {
 extension Attribute {
 
   static func isValid(name: String) -> Bool {
-    return name.count >= 2 && name.count <= 30
-      && name.range(of: #"^[a-zA-Z_][a-zA-Z0-9_]+$"#, options: .regularExpression) != nil
+    return name.count >= 1 && name.count <= 30
+      && name.range(of: #"^[a-zA-Z_][a-zA-Z0-9_]*$"#, options: .regularExpression) != nil
   }
 
   init(from decoder: Decoder) throws {
