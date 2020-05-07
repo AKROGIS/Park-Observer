@@ -15,11 +15,15 @@
 	<key>CFBundlePackageType</key>
 	<string>$(PRODUCT_BUNDLE_PACKAGE_TYPE)</string>
 	<key>CFBundleShortVersionString</key>
-	<string>1.0</string>
+	<string>$(MARKETING_VERSION)</string>
 	<key>CFBundleVersion</key>
 	<string>1</string>
 	<key>LSRequiresIPhoneOS</key>
 	<true/>
+	<key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
+	<string>Observations cannot be recorded without a location. "Allow Always" will enable track logging in the background. Park Observer will not share your location with any server or services.</string>
+	<key>NSLocationWhenInUseUsageDescription</key>
+	<string>Observations cannot be recorded without a location. Park Observer will not share your location with any server or services.</string>
 	<key>UIApplicationSceneManifest</key>
 	<dict>
 		<key>UIApplicationSupportsMultipleScenes</key>
@@ -58,9 +62,5 @@
 		<string>UIInterfaceOrientationLandscapeLeft</string>
 		<string>UIInterfaceOrientationLandscapeRight</string>
 	</array>
-	<key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
-	<string>Observations cannot be recorded without a location. &quot;Allow Always&quot; will enable track logging in the background. Park Observer will not share your location with any server or services.</string>
-	<key>NSLocationWhenInUseUsageDescription</key>
-	<string>Observations cannot be recorded without a location. Park Observer will not share your location with any server or services.</string>
 </dict>
 </plist>
