@@ -1,196 +1,251 @@
-# Protocol Specification
+Protocol Specification
+======================
 
-The protocol file (*.obsprot) is a plain text file in `JSON` (javascript object notation) format.
+_If you just want a protocol for a new survey, please start with the [tutorial instructions](https://akrgis.nps.gov/Observer/new_survey.html) and [examples](https://akrgis.nps.gov/Observer/protocols/)._
+
+This document is a technical reference for the structure and accepted content of the Park Observer protocol file.
+A more general reference can be found in the [Protocol Guide](Protocol_Guide.html)
+
+This specification describes version 1 (v1) and 2 (v2) of the protocol file.
+Items that were introduced in version 2 are marked (v2).
+Since most of the items introduced in v2 are optional and do not conflict with
+v1, Park Observer will honor v2 items even if found in a v1 file.
+Symbology is a notable exception and will be discussed in detail.
+For clarity you are encouraged to use a v2 protocol file (defined below) when using v2 items.
+
+The protocol file is a plain text file in `JSON` (javascript object notation) format.
 The file typically contains only `ASCII` characters.
 If special characters (accents marks, emoji, etc.) are needed, the file must be encoded in `UTF8`.
+The protocol file name must end with `.obsprot`, which is short for (obs)ervation (prot)ocol.
 
-The file contains one object.
+A protocol file contains one JSON object.
 An object begins with an opening curly bracket (`{`) and ends with an closing curly bracket (`}`)
-Properties in the object are separated by a comma(`,`)
-Property names must be enclosed in double quotes (`"`).
-A colon (:) separates the property name from the property value.
-A property value can be an object, a string of text enclosed in double quotes (`"`),
+An object is a list of properties (name-value pairs) separated by a comma(`,`).
+Property names must be enclosed in double quotes (`"`) and are case sensitive.
+A colon (`:`) separates the property name from the property value.
+A property value can be an object, a text string enclosed in double quotes (`"`),
 a number, or one of the special symbols: `true`, `false`, and `null`.
 A property value can also be a list of property values.
 A list begins with an opening square bracket (`[`), and ends with a closing square bracker (`]`).
 Items in the list are separated by a comma (`,`).
 
-Official specifications on the JSON file format the can be found at http://www.json.org/.
+The official specifications of the JSON file format can be found at http://www.json.org/.
 The JSON file format is very specific and it is easy to introduce errors when editing by
-hand.  There are a number of online JSON linters (i.e. https://jsonlint.com) that will
-check your protocol file to ensure it is valid JSON, and help you find and fix those errors.
+hand.  There are a number of online JSON linters (e.g. https://jsonlint.com) that will
+check your protocol file to ensure it is valid JSON.  Most linters will also provide suggestions
+for how to fix invalid JSON.
 
-This specification describes versions 1 (v1) and 2. Properties that were introduced
-in version 2 are marked v2.  Since most of the properties introduced in v2 are
-optional and do not conflict with properties in v1 Park Observer will decode the
-v2 properties even if found in a v1 file.  The exception is the symbology properties.
-For clarity you are encouraged to mark you protocol file as v2 when using the newer
-properties.
-
-This specification is defined in a human and machine readable form in `protocol.v1.schema.json`
-and `protocol.v2.schema.json`.  These schemas are written in [JSON Schema](http://json-schema.org/).
+A JSON linter will only check for valid JSON, it will not check for compliance with
+this document. For that you will need to use a Schema Validator.
+This specification is also defined in a machine readable form in `protocol.v1.schema.json`
+and `protocol.v2.schema.json`.  These schemas are also JSON files in the
+[JSON Schema](http://json-schema.org/) format.
 These schema files can be used to validate a protocol file to ensure that it is not just valid
-JSON, but meets the requirements of this specification.  One example is
-the online validator at https://www.jsonschemavalidator.net.  The validator will work best
-if you have already verified that your protocol is a valid JSON file.
+JSON, but meets the requirements of this specification.
+One example of an online validator is https://www.jsonschemavalidator.net.
 
-The main object in the file has the following properties.
+**IMPORTANT:**
+This specification and the related schema documents, define the proper format of the
+obsprot file.  It is possible that the implementation in Park Observer is more relaxed.
+For example Park Observer might provide default values when a required value is missing,
+or accept different spellings, but that behavior is subject to change without notice.
+
+The JSON object in the protocol file understands properties with the following names.
+Properties can appear in any order, but usually in the order shown.
 Properties marked with an (o) are optional; the others are required.
 
-*	meta-name
-*	meta-version
-*	name
-*	version
-*	date (o)
-*	description (o)
-*	mission (o)
-*	features
-*	observing (o)(v2)
-*	notobserving (o)(v2)
-* status_message_fontsize (o)(v2)
-* cancel_on_top (o)(v2)
-* gps_interval (o)(v2)
-*	csv (o)
+* [`meta-name`](#meta-name)
+* [`meta-version`](#meta-version)
+* [`name`](#name)
+* [`version`](#version)
+* [`date`](#date) (o)
+* [`description`](#description) (o)
+* [`observing`](#observing) (o)(v2)
+* [`notobserving`](#notobserving) (o)(v2)
+* [`status_message_fontsize`](#status_message_fontsize) (o)(v2)
+* [`cancel_on_top`](#cancel_on_top) (o)(v2)
+* [`gps_interval`](#gps_interval) (o)(v2)
+* [`mission`](#mission) (o)
+* [`features`](#features)
+* [`csv`](#csv) (o)
 
 Each of these properties are defined in the following sections.
 
-**IMPORTANT:**
-This specification and the related schema document, define the proper format of the
-obsprot file.  It is possible that the implementation in Park Obsererver is more relaxed,
-for example it might provide default values when a required value is missing, or accept
-different spellings, but that behaviour is subject to change without notice.
+# `meta-name`
+This property is required and must be a string equal to `"NPS-Protocol-Specification"`.
+This property designates the file as subscribing to these specifications.
 
-**IMPORTANT:**
-Due to the permissive nature of the Park Observer implementation of this specification,
-many of the properties introduced in a later version of the specification will also be
-honored provided the definition of that property does not conflict with existing properties
-and that the new property has a default value. In practice, that mean that most properties
-introduced in future versions of the specification will also be available in obsprot files
-that declare this version.  However, this
-behaviour is not guaranteed.  You are urged to upgrade your obsprot file if you wish to
-use a property introduced in a new version of the specification.
+# `meta-version`
+This property is required and must be an integer.
+This property designates the version of the specification defining the content of the protocol file.
+At this time, the only valid values are `1` and `2`.
+Version `1` has been deprecated.
 
-## meta-name
-This required property designates the file as subscribing to this file format.
-It must be `NPS-Protocol-Specification`.
+# `name`
+This property is required and must be a string.
+This is a short moniker used to reference this protocol.
+It will be used in lists to choose among different protocols.
 
-## meta-version
-A required integer that defines the version of the specification.
-This is version 2.
+Names do not need to be unique, but having two protocols with the same name can cause confusion.
+Protocols can evolve (see [version](#version) and [date](#date)).
+The same name should be used for different version of the same protocol.
 
-## name
-A required identifier (name) for this protocol.
-The name should be a short piece of text that uniquely identifies the types of surveys that use this protocol.
-The same name can and should be used for different version of the same protocol (see version and date properties).
-The same name can be used with unrelated protocols, but this should be avoided where known.
-The name, version, date, and description will be available to the user to pick the appropriate
-protocol for their survey.
+Technically, a name is not required by the Park Observer application.
+However, the post processing tools (like the POZ to FGDB translator) require a name.
+A protocol without a name is very hard to work with.
 
-## version
-A required version of this named protocol.
-The version number looks like a floating point number but is actually two integers separated by a decimal point.
-The first number is the major version number the second number is the minor version number.
+# `version`
+This property is required and must be a number.
+The version number looks like a floating point number (i.e. `2.1`)
+but is actually two integers separated by a decimal point.
+The first integer is the major version number the second integer is the minor version number.
+The version number is used to track the evolution of a named protocol.
+The version number will be displayed along with the name when presenting a list of protocols.
+
 A change in the major version number represents a change in the database structure of the protocol.
-Two protocol files with the same name that differ in the major version number
-cannot share the same feature classes (GIS database) without some data manipulation.
-A change in the minor version number represents all other changes to the protocol file.
-For example, changes in symbology, location methods, or picklist values would bump the minor number.
-It is assumed that two protocol files with the same name and major version number can share the
-same feature classes (GIS database) regardless of chamges in the minor version number
+If you add, remove, rename, or change the type of mission or feature attributes (defined below),
+then you should update the major version number of your protocol.
+Databases created with the postprocessing tools will be named with the protocol name and the major version number.
+All surveys with the same protocol name and major version number can go into the same database.
+Surveys with the same protocol name and a different major version number will go into different databases.
+Databases created with different major version numbers of the same protocol will be difficult
+to merge because the database structure is different.
 
-## date
-The publication date of the protocol file.
-The date is a string in iso format, i.e. YYYY-MM-DD
-While this property is optional it is helpful in sorting protocols with the same name.
-The name, version, date, and description will be available to the user to pick the appropriate
-protocol for their survey.
+Any other changes to a protocol should be accompanied by an increase in the minor version number.
+For example, changes in symbology, location methods, and default or picklist values.
 
-## description
-An optional description for this protocol.
-It typically describes who wrote the protocol and which surveys or organizations it supports.
-Contact information can also be included.
-While this property is not required it is helpful in guiding the user's selection of the right
-protocol for their survey.
+Technically, a version is not required by the Park Observer application.
+However, the post processing tools require a major version number.
+A protocol without a version number is easily confused with other protocols with the same name.
 
-## observing
-An optional message to display on screen when observing (on transect).
-The default is nothing.
+Because the major/minor version is a single number in the JSON file, the minor version number is
+limited to the range 0..9.  This is due to the fact that 1.20 is the same number as 1.2, so the
+minor number in both cases will be 2.  There is no limit to the major version.
 
-## notobserving
-An optional message to display on screen when track logging (recording) but not observing (off transect).
-The default is nothing.
+# `date`
+This property is optional. There is no default value.
+If provided it must be a string that represent the date (but not time)
+in the ISO format `YYYY-MM-DD` (e.g. `"2016-05-24"`).
+This should be the date that the protocol file was last modified.
+If provided, the date will be used in lists to help choose among different protocols.
+If the date is missing, the wrong type, or an invalid date,
+then the Park Observer will consider the date unknown.
 
-## status_message_fontsize
-An optional floating point value that indicate the size (in points) of the `notobserving` text.  The default is 16.0.
-The `observing` text will always be 2 points bigger, bold, and red.
+# `description`
+This property is optional. If provided it must be a string. There is no default value.
+The description can be used to provide more information about the protocol than is available
+in the protocol name.nIt typically describes who wrote the protocol and which surveys or
+organizations it supports. Contact information can also be included.
 
-## cancel_on_top
-An optional boolean property. A value of `true` will put the `cancel`/`delete` button(s) on the top of the observation attributes form.
-The default is `false` -- the `cancel`/`delete` button(s) will be on the bottom of the form.
+# `observing`
+This property is optional. If provided it must be a string. There is no default value.
+If a non-empty string is provided it will be displayed on the map when the Park Observer
+application is recording __and__ observing (i.e. on-transect).
 
-## gps_interval
-An optional numeric property which specifies the number of seconds between
-saving successive GPS points to the tracklog.
-This property can be helpful when the GPS delivers locations at a very high rate
-(more than 1 per second), or if a detailed tracklog is not required.
-The default is 0 (zero) which implies that all locations provided by the GPS are saved in the tracklog.
-A number lower than the device can support will be ignored, and the default value will be used.
+This property is ignored in versions of Park Observer before 0.9.8b.
+
+# `notobserving`
+This property is optional. If provided it must be a string. There is no default value.
+If a non-empty string is provided it will be displayed on the map when the Park Observer
+application is recording __but not__ observing (i.e. off-transect).
+
+This property is ignored in versions of Park Observer before 0.9.8b.
+
+# `status_message_fontsize`
+This property is optional. If provided it must be a number. If omitted or invalid it will default to `16.0`.
+This property specifies the size (in points, i.e. 1/72 of an inch) of the `notobserving` text.
+The `observing` text will always be 2.0 points larger, bold, and red.
+This property is ignored if `notobserving` and `observing` are not provided.
+
+This property is ignored in versions of Park Observer before 1.2.0.
+
+# `cancel_on_top`
+This property is optional.  If provided it must be `true` or `false`. The default is `false`.
+If `true` the attribute editors will put the **Cancel/Delete** button on the top of
+the attribute editing forms, otherwise the button will be on the bottom of the form.
+
+This property is ignored in versions of Park Observer before 0.9.8b.
+
+# `gps_interval`
+This property is optional.  If provided it must be a positive number.  There is no default.
+The property is the number of seconds to wait between adding new GPS points to the tracklog.
+When making observations, or starting/stopping recording/observing the most recently available
+GPS point will be used regardless of this setting.
+If omitted, or not a positive number, GPS points are added to the tracklog as often as provided
+by the GPS device being used.  Typically the iPad's builtin GPS provides locations about 1 per second.
+Some external GPS devices can provide multiple locations per second.
+A number lower than the device can support will effectively be ignored.
 Using an interval greater than the GPS can support may reduce battery consumption by allowing the GPS to rest.
-Regardless of this setting creating an observation will request a current location,
-even if it is in the middle of the GPS interval.
 
-## mission
-An object that describes segments of the survey.
-This includes attributes that are fairly constant for the entire survey, i.e. observer name,
-as well as dynamic attributes like the weather.
-It also describes the look and feel of the editing form,
-and when the attributes should be edited.
+This property is ignored in versions of Park Observer before 0.9.8b.
 
-A mission has the following properties
 
-* attributes (o)
-* dialog (o)
-* edit_at_start_recording (o)(v2)
-* edit_at_start_first_observing (o)(v2)
-* edit_at_start_reobserving (o)(v2)
-* edit_prior_at_stop_observing (o)(v2)
-* edit_at_stop_observing (o)(v2)
-* symbology
-* on-symbology (o)
-* off-symbology (o)
-* gps-symbology (o)(v2)
-* totalizer (o)(v2)
 
-### attributes
-An optional list of attributes that apply to segments of the tracklog.
-A mission with no attributes, only collects the location where the the user
+# `mission`
+
+This property is optional.  If provided it must be an object.  There is no default.
+This object describes the attributes and symbology of the survey mission.
+The attributes are things that may be constant for the entire survey, i.e. observer name, as
+well as dynamic attributes like the weather.
+It also describes the look and feel of the editing form and when the attributes should be edited.
+
+A `mission` object has the following properties:
+
+* [`attributes`](#attributes) (o)
+* [`dialog`](#dialog) (o)
+* `edit_at_start_recording` (o)(v2)
+* `edit_at_start_first_observing` (o)(v2)
+* `edit_at_start_reobserving` (o)(v2)
+* `edit_prior_at_stop_observing` (o)(v2)
+* `edit_at_stop_observing` (o)(v2)
+* `symbology`
+* `on-symbology` (o)
+* `off-symbology` (o)
+* `gps-symbology` (o)(v2)
+* `totalizer` (o)(v2)
+
+Each of these properties are defined in the following sections.
+
+## `attributes`
+An optional list of attribute objects.
+The attributes are descriptive characterisitics for each segment of the survey.
+A mission with no attributes only collects the location where the the user
 stopped and started observing (i.e. went on/off transect). The mission
 attributes are often things like the names of the observers, and the weather.
-If there is an attribute list, then there is usually a dialog property, although this
-is not required.  It is possible that the only attribute is a sequential Id which is
-not editable and requires no dialog, or that the database schema is defined
-by other drivers, and some attributes are not collected in the survey.
 
-Each `attribute` has the following properties
+All the attributes default to a value of `null` until they are edited.
+The exceptions are boolean attributes which defaults to `false`, and `id` attributes which default to `1`.
+All attributes, except the `id` will never change unless you also have a `dialog` property.
+An Attribute of type `id` only applies to features, and is incremented for each observation.
+This can provide each feature with an automatic, unique, and sequential identifier.
 
-* name
-* type
+If there is an attribute list then there must be at least one valid attribute object in it.
+Each `attribute` has the following properties:
 
-#### name
-A required string identifying the attribute.  This will be the name of the field in ArcGIS.
-It must start with a letter or underscore (`_`), and be followed by zero or more letters, numbers,
+* `name`
+* `type`
+
+### `name`
+A required string identifying the attribute.  This will be the name of the column in an exported
+CSV file, or a field in an ArcGIS geodatabase.
+The name must start with a letter or underscore (`_`), and be followed by zero or more letters, numbers,
 or underscores. It must be no longer than 30 characters.
 Spaces and special characters are prohibited.
-The name must be unique within the mission or feature.
+Each name must be unique within the mission or feature.
 Different features can have attributes with the same name, but if they do they must have the same type.
-Mission property and feature attributes are unrelated -- they can have the same name with different types.
-**Important** Do not rely on upper/lowercase to distinguish two attributes; 
-consider `Name`, `name`, and `NAME` to be the same.
+Mission attributes and feature attributes are unrelated -- they can have the same name with different types.
+**Important** Do not rely on upper/lowercase to distinguish two attributes;
+`Species`, `species`, and `SPECIES` are the same attribute name.
+However, the names in this protocol must
+match in capitalization.  If you use `Species` in a `mission.totalizer` or a `feature.label`,
+it must also be refered to as `Species` in the dialog element and `Species` in the attributes list.
 
-#### type
-A required number that identifies the type (kind) of data the attribute stores
-The type must be an integer code with the following definitions (from NSAttributeType)
--   0 -> sequential integer id (not editable, only availalbe in v2)
+### `type`
+A required number that identifies the type (kind) of data the attribute stores.
+The type must be an integer code with the following definitions.
+These numbers (with the exception of 0) correspond with NSAttributeType in the iOS SDK.
+
+-   0 -> sequential integer id (not editable, only available in v2)
 -	100 -> 16bit integer
 -	200 -> 32bit integer
 -	300 -> 64bit integer
@@ -202,67 +257,85 @@ The type must be an integer code with the following definitions (from NSAttribut
 -	900 -> datetime
 -	1000 -> binary blob (? no UI support, check on ESRI support)
 
-### dialog
-Provides the look and feel of the attribute editing form presented to the user.
-A dialog is not required, but the attributes cannot be edited without one.
-If a dialog is present, then there must be at least one section in the dialog and one element in the section.
-Most elements in the dialog will refer to an attribute in the list of mission attributes.
+The type vALue of 0 is ignored in versions of Park Observer before 0.9.8.
+
+## `dialog`
+This property is optional.  If provided it must be an object.  There is no default.
+The dialog property describes the format of the editing form for the mission's attributes.
+A dialog is not required, but the mission attributes cannot be edited without one.
+If the dialog property is provided then the `attributes` property is required.
+If a dialog is provided, there must be at least one section in the dialog and one element in that section.
+All elements in the dialog except labels must refer to an attribute in the list of mission attributes.
 It is an error if a dialog element refers to an attribute that is not in the list.
-The dialog format
-is due to the selection of [QuickDialog](https://github.com/escoz/QuickDialog) as
+
+A dialog is not required because it is possible that the only attribute is a sequential Id which is
+not editable and requires no dialog, or that the database schema is defined
+by other drivers, and some attributes are not collected in the survey.
+
+The dialog properties are based on the [QuickDialog](https://github.com/escoz/QuickDialog) as
 the form editor. While QuickDialog may have supported more properties than defined
-below, the following are the only ones typically used by ParkObserver, and the only
+below, the following are the only ones typically used by Park Observer and the only
 ones that will be supported in the future.
 
- * title (o)
- * grouped (o)
- * sections
+ * `title`
+ * `grouped` (o)
+ * `sections`
 
-#### title
-Optional text (title) placed at the top of the editing form.
+### `title`
+This property is required and must be a text string.  It can be empty (`""`)
+This text is placed as a title at the top of the editing form.
+It is typically either `"Mission Properties"`or the name of the feature.
 
-#### grouped
-Determines if the sections in this form are grouped.  I.e. there is visual separation between sections.  This property is optional.  If it is missing it will default to false.
+### `grouped`
+This property is optional.  If provided it must be a boolean.  The default is `false`.
+This property determines if the sections in this form are grouped
+(i.e. There is visual separation between sections).
 
-#### sections
-A section is a list of form elements collected into a single section.  Each section has
-the following properties.
+### `sections`
+This property is requires and must be a list of one or section objects.
+A dialog form is made up of one or more sections which group the editing controls
+into logical collections. Each section object has the following properties.
 
-* title (o)
-* elements
+* `title` (o)
+* `elements`
 
-##### title
-Optional text (title) placed at the top of the editing form.
+#### `title`
+This property is optional.  If provided it must be a string.  There is no default.
+This text is placed as a title at the top of the section.
 
-##### elements
+#### `elements`
+This property is requires and must be a list of one or element objects.
 Elements make up the interesting parts of the form.  They are usually tied to an attribute
 and determine how the attribute can be edited.  Examples of form elements are text boxes,
 on/off switches, and picklists. Each element has the following properties.  Some
 properties are only relevant for certain types of elements.
+Each element object has the following properties.
 
- * title (o)
- * type
- * bind (o)
- * items (o)
- * selected (o)
- * boolValue (o)
- * minimumValue (o)
- * maximumValue (o)
- * numberValue (o)
- * placeholder (o)
- * fractionDigits (o)
- * keyboardType (o)
- * autocorrectionType (o)
- * autocapitalizationType (o)
- * key (o)
+ * `title` (o)
+ * `type`
+ * `bind` (o)
+ * `items` (o)
+ * `selected` (o)
+ * `boolValue` (o)
+ * `minimumValue` (o)
+ * `maximumValue` (o)
+ * `numberValue` (o)
+ * `placeholder` (o)
+ * `fractionDigits` (o)
+ * `keyboardType` (o)
+ * `autocorrectionType` (o)
+ * `autocapitalizationType` (o)
+ * `key` (o)
 
-###### title
-The name/prompt that describes the data in this form element.  This usually appears to
-the left of the attribute value in a different font.  This optional. This is often the
+##### `title`
+This property is optional.  If provided it must be a string.  There is no default.
+This is a name/prompt that describes the data in this form element.  This usually appears to
+the left of the attribute value in a different font. This is often the
 only property used by a `QLabelElement`.
 
-###### type
-Describes the display and editing properties for the form element.  Park Observer
+##### `type`
+This property is requires and must be one of the following text strings.
+It describes the display and editing properties for the form element.  Park Observer
 only supports the following types.  These are case sensitive.
 
 * `QBooleanElement` - an on/off switch, defaults to off.
@@ -275,9 +348,11 @@ only supports the following types.  These are case sensitive.
 * `QSegmentedElement` - A single selection picklist (as a horizontal row of buttons)
 
 
-###### bind
-A special string that encodes the type and attribute name of the data for this element.
-It is required by all form elements except label. (Label only uses the `value:` type when
+##### `bind`
+This property is required for all types except `QLabelElement` when it is optional.
+If provided it must be a specially formatted string.  There is no default.
+This string encodes the type and attribute name of the data for this element.
+`QLabelElement` only uses the `value:` type when
 displaying a unique feature id).  The bind value must start with one of the following:
 
  * `boolValue:` - a boolean (true or false) value
@@ -285,9 +360,9 @@ displaying a unique feature id).  The bind value must start with one of the foll
  * `selected:` - the zero based index of the selected item in `items`
  * `selectedItem:`  - the text of the selected item in `items`
  * `textValue:`
- * `value:` - used for Unique ID Attributes (Type = 0)
+ * `value:` - used for Unique ID Attributes (Attribute Type = 0)
 
-followed by an attribute name from the list of Attributes.
+and be followed by an attribute name from the list of Attributes.
 This will determine the type of value extracted from the form element,
 and which attribute it is tied to (i.e. read from and saved to).
 It is important that the type above matches the type of the attrribute in
@@ -295,44 +370,49 @@ the Attributes section.  Note that the will always be a colon (:) in the
 bind string seperating the type from the name.
 The attribute name in the bind property must be in the list of attributes.
 
-###### items
-A list of choices for picklist type elements. Required for `QRadioElement`
-and `QSegmentedElement`, and ignored for all other types.
+##### `items`
+This property is optional.  If provided it must be a list of one or more strings.  There is no default.
+This property provides a list of choices for picklist type elements.
+It is required for `QRadioElement` and `QSegmentedElement`, and ignored for all other types.
 
-###### selected
-The zero based index of the intially selected item from the list of items.
+##### `selected`
+This property is optional.  If provided it must be an integer.  There is no default.
+It is the zero based index of the intially selected item from the list of items.
 If not provided, nothing is selected initiailly.
 
-###### boolValue
-An optional integer value (0 or 1) that is the default value for
-`QBooleanElement`. The default is 0 (false).
+##### `boolValue`
+This property is optional.  If provided it must be an integer value of 0 or 1.  The default is 0 (false).
+This property is the initial value for the `QBooleanElement`. It is ignored by all other types.
 
-###### minimumValue
-An optional integer value that is the minimum value allowed in `QIntegerElement`.
-The default is 0.
+##### `minimumValue`
+This property is optional.  If provided it must be number.  The default is 0.
+This is the minimum value allowed in `QIntegerElement`.
 
-###### maximumValue
-An optional integer value that is the maximum value allowed in `QIntegerElement`.
-The default is 100.
+##### `maximumValue`
+This property is optional.  If provided it must be number.  The default is 100.
+This is the maximum value allowed in `QIntegerElement`.
 
-###### numberValue
-An optional number that is the initial value for `QIntegerElement` or `QDecimalElement`.
+##### `numberValue`
+This property is optional.  If provided it must be number.   There is no default.
+This is the initial value for `QIntegerElement` or `QDecimalElement`.
 There is no default; that is the initial value is null. Protocol authors are discouraged
 from using an initial value, as it causes confusion regarding whether there was an
 observation of the default value, or there was no observation.  Leaving as null removes
 the ambiguity.  If a default value is desired when there was no observation this can be
 done in post processing without lossing the fact that no observation was actually made.
 
-###### placeholder
-Optional text to put in a text box to suggest to the user what to enter.
+##### `placeholder`
+This property is optional.  If provided it must be a text string.  There is no default.
+This is the background text to put in a text box to suggest to the user what to enter.
 
-###### fractionDigits
-Optional limit on the number of digits to be shown after the decimal point. Only
+##### fractionDigits
+This property is optional.  If provided it must be an integer.   There is no default.
+This is a limit on the number of digits to be shown after the decimal point. Only
 used by `QDecimalElement`.
 
-###### keyboardType
-An optional value that determines what kind of keyboard will appear when text editing is required.
-If provided it must be one of the following **Case sensitive** values.  `Default` is the default.
+##### `keyboardType`
+This property is optional.  If provided it must be one of the text strings below (**It must match in capitalization**).  The default is `"Default"`.
+This determines what kind of keyboard will appear when text editing is required.
 
  * `Default`
  * `ASCIICapable`
@@ -346,9 +426,9 @@ If provided it must be one of the following **Case sensitive** values.  `Default
  * `Twitter`
  * `Alphabet`
 
-###### autocorrectionType
-An optional value that determines if a text box will auto correct (fix spelling) the user's typing.
-If provided it must be one of the following **Case sensitive** values.  `Default` is the default.
+##### `autocorrectionType`
+This property is optional.  If provided it must be one of the text strings below (**It must match in capitalization**).  The default is `"Default"`.
+This determines if a text box will auto correct (fix spelling) the user's typing.
 `Default` allows iOS to decide when to apply autocorrection.  If you have a preference, choose
 one of the other options.
 
@@ -356,88 +436,91 @@ one of the other options.
  * `No`
  * `Yes`
 
-###### autocapitalizationType
-An optional value that determines if and how a text box will auto capitalize the user's typing.
-If provided it must be one of the following **Case sensitive** values.  `None` is the default.
+##### `autocapitalizationType`
+This property is optional.  If provided it must be one of the text strings below (**It must match in capitalization**).  The default is `"None"`.
+This determines if and how a text box will auto capitalize the user's typing.
 
  * `None`
  * `Words`
  * `Sentences`
  * `AllCharacters`
 
-###### key
+##### `key`
+This property is optional.  If provided it must be a string. There is no default.
 A unique identifier for this element in the form. It is an alternative to bind for
-referencing the data. `bind`, but not `key` is used in Park Observer.
+referencing the data in the form. `bind`, but not `key` is used in Park Observer.
 This was not well understood initially and most protocols have a key property
-defined even though it it is not used.
+defined even though it is not used.
 
-### edit_at_start_recording
-An optional boolean value that defaults to true.  If true, the mission attributes editor will be displayed when the start recording button is pushed.
+This property is ignored in all versions of Park Observer.
 
-### edit_at_start_first_observing
-An optional boolean value that defaults to false.
-If true, then editor will be displayed when start observing button is pushed after start recording
+## `edit_at_start_recording`
+This property is optional.  If provided it must be a boolean. The default is true.
+If true, the mission attributes editor will be displayed when the start recording button is pushed.
 
-### edit_at_start_reobserving
-An optional boolean value that defaults to true.
-If true, then editor will be displayed when start observing button is pushed after stop observing
+This property is ignored in versions of Park Observer before 1.2.0.
 
-### edit_prior_at_stop_observing
-An optional boolean value that defaults to false.
-If true, then editor will be displayed for prior track log when done observing (stop observing or stop recording button)
-See the note for `edit_at_stop_observing` for an additional requirement.
+## `edit_at_start_first_observing`
+This property is optional.  If provided it must be a boolean. The default is false.
+If true, then editor will be displayed when start observing button is pushed after start recording.
 
-### edit_at_stop_observing
-An optional boolean value that defaults to false.
-If true, then editor will be displayed when when done observing (stop observing or stop recording button)
-Note: only one of `edit_prior_at_stop_observing` and `edit_at_stop_observing` should be set to true.
-If both are set to true, `edit_prior_at_stop_observing` is ignored  (you can edit the prior mission property by taping to marker on the map)
+This property is ignored in versions of Park Observer before 1.2.0.
 
-# FIXME: Clean up the Symbology section (merge with end notes)
+## `edit_at_start_reobserving`
+This property is optional.  If provided it must be a boolean. The default is true.
+If true, then editor will be displayed when start observing button is pushed after stop observing.
 
-### symbology
-This required property defines how the mission property point will be displayed on the map.
-This is a point where the mission properties are edited.  Typically it every time the user
-stops/starts recording or starts/stops observing.  This object has two formats.
-See the discussion on symbology at the end of this document.
+This property is ignored in versions of Park Observer before 1.2.0.
 
-A version 1 symbolgy object has the following properties
+## `edit_prior_at_stop_observing`
+This property is optional.  If provided it must be a boolean. The default is false.
+If true, then editor will be displayed for the prior track log segment when done observing
+(stop observing or stop recording button press).
+See the note for `edit_at_stop_observing` for an additional constraint.
 
-* color
-* size
+This property is ignored in versions of Park Observer before 1.2.0.
 
-A version2 symbology object is defined by the [renderer object in the ArcGIS ReST API](https://developers.arcgis.com/documentation/common-data-types/renderer-objects.htm)
+## `edit_at_stop_observing`
+This property is optional.  If provided it must be a boolean. The default is false.
+An optional boolean (true/false) value that defaults to false.
+If true, then editor will be displayed when when done observing (stop observing or stop recording button press)
 
-#### color
-The symbology may have an optional "color" element
-The color element is a string in the form "#FFFFFF"
-where F is a hexadecimal digit.
-The Hex pairs represent the Red, Green, and Blue respectively.
-The default if not provided, or malformed is "#000000" (black)
+**Note:** Only one of `edit_prior_at_stop_observing` and `edit_at_stop_observing` should be set to true.
+If both are set to true, `edit_prior_at_stop_observing` is ignored.
+(In this case, you can edit the prior mission property by taping the marker on the map)
 
-#### size
-The symbology may have an optional "size" element
-The size is an integer number for the size in points of the simple circle marker symbol
-The default is 12 if not provided.
+This property is ignored in versions of Park Observer before 1.2.0.
 
-### on-symbology
-Required. These are the same as the symbology property defined for features
-These symbology properties define the look of the track log when observing (on or on-transect), and not observing (off).
-The default is a 1 point wide solid black line.
+## `symbology`
+A required object as defined in the [symbology](#symbology) section at the end of this document.
+This object defines how a mission properties point is drawn on the map.  This point occurs
+when starting recording, starting/stoping recording, and when editing the mission attributes.
 
-### off-symbology
-Required. These are the same as the symbology property defined for features
-These symbology properties define the look of the track log when observing (on or on-transect), and not observing (off).
-The default is a 1 point wide solid black line.
+## `on-symbology`
+An optional object as defined in the [symbology](#symbology) section at the end of this document.
+This object defines the look of the track log line when observing (i.e. on-transect).
+The default in version 1 was a 1 point wide solid black line.
+The default in version 2 was a 3 point wide solid red line.
 
-### gps-symbology
-This property define the look of the gps points along the track log.
+## `off-symbology`
+An optional object as defined in the [symbology](#symbology) section at the end of this document.
+This object defines the look of the track log line when not observing (i.e. off-transect).
+The default in version 1 was a 1 point wide solid black line.
+The default in version 2 was a 1.5 point wide solid gray line.
+
+## `gps-symbology`
+An optional object as defined in the [symbology](#symbology) section at the end of this document.
+This object defines the look of the gps points along the track log.
 The default is a 6 point blue circle.
-At version 1 the default symbol was the only option.
 
-### totalizer
-An optional object used to define the parameters for collecting and displaying a Mission Totalizer.
-This is used to provide information on how long the user has been recording and/or observing.
+This property is ignored in versions of Park Observer before 0.9.8.  In that case,
+all gps points are rendered as a blue 6 point circle.
+
+## `totalizer`
+An optionaThis property is optional. If provided it must be an object.  There is no default.
+The totalizer object is used to define the parameters for collecting and displaying a Mission Totalizer.
+If the property is not provided, no totalizer will be shown on the map.
+The totalizer is used to provide information on how long the user has been recording and/or observing.
 The totalizer can be given an optional list of fields to monitor.  It one of the fields changes, then
 the totalizer will reset.  This it typically set to the transect id, so the totalizer will show the time or
 distance recording/observing on a given transect.  If fields are given, then the fields must be in
@@ -445,334 +528,388 @@ the dialog (otherwise, they will never change). If an empty object is given to t
 it will display how many kilometers you have been observing, and reset each time to stop/stop
 observing.
 
-The totalizer has the following properties
+This property is ignored in versions of Park Observer before 0.9.8b.
 
-* fields (o)
-* fontsize (o)
-* includeon (o)
-* includeoff (o)
-* includetotal (o)
-* units (o)
+The `totalizer` has the following properties
 
-#### fields
-A list of attribute names. When any of the fields in this list change, a different total is displayed.
-If provided, it must have at least one field and that field must be in the referenced in the
+* `fields` (o)
+* `fontsize` (o)
+* `includeon` (o)
+* `includeoff` (o)
+* `includetotal` (o)
+* `units` (o)
+
+### `fields`
+This property is optional. If provided it must be a list of one or more strings. There is no default.
+The list contains attribute names. When any of the attribute in this list change, a different total is displayed.
+The attributes in the list must be in referenced in the
 mission dialog (so that it can be changed -- monitoring a unchanging field is pointless).
 
-#### fontsize
-An optional floating point value that indicate the size (in points) of the totalizer text.  The default is 14.0
+### `fontsize`
+This property is optional. If provided it must be a number. The default is 14.0.
+This property indicates the size (in points) of the totalizer text.
 
-#### includeon
-An optional boolean value (true/false), that indicate is the total while "observing" should be displayed.
-The default is  true
+### `includeon`
+This property is optional. If provided it must be a boolean. The default is true.
+This property indicates if the total while "observing" should be displayed.
 
-#### includeoff
-An optional boolean value (true/false), that indicate if the total while "recording" but not "observing"
+### `includeoff`
+This property is optional. If provided it must be a boolean. The default is false.
+This property indicates if the total while "recording" but not "observing"
 should be displayed.
-The default is  false
 
-#### includetotal
-A boolean value (true/false), that indicate if the total regardless of "observing" status should be displayed.
-The default is false.
+### `includetotal`
+This property is optional. If provided it must be a boolean. The default is false.
+This property indicates if the total regardless of "observing" status should be displayed.
 
-#### units
-An optional element with a value of "kilometers" or "miles" or "minutes".
-The default is "kilometers".
+### `units`
+This property is optional. If provided it must be a string. The default is "kilometers".
+The property indicates the kind of total to display.
+It must be one of "kilometers", "miles" or "minutes".
 
 
-## features
-A list of objects. Each object is a feature with the following properties
 
-* name
-* attributes (o)
-* dialog (o)
-* allow_off_transect_observations (o)
-* locations
-* symbology
+# `features`
 
-### name
-Each feature must have a unique name.
-The name can be any sequence of characters, and must be enclosed in quotes
-The name is used in the interface to let the user choose among different feature types
+This property is required and must be a list of one or more feature objects.
+A feature is a kind of thing that will be observed during your survey.
+Often it is an animal species.
+It is defined by a list of attributes that you will collect every time you observe the feature.
+You can have multiple features in your protocol, however many surveys only observe one feature.
+The number of features in a protocol file should be kept as small as possible to keep the survey
+focused and easier to manage.
+
+Each feature is an object with the following properties
+
+* `name`
+* `attributes` (o)
+* `dialog` (o)
+* `allow_off_transect_observations` (o)
+* `locations`
+* `symbology`
+
+## `name`
+This property is required and must be a non-empty text string.
+Each feature name must be unique name. The name is used in the interface to let the
+user choose among different feature types. All the observation in one feature will
+be exported in a CSV file with this name, and a geodatabase table with this name.
 It should be short and descriptive.
 
-### attributes
-An optional list of attributes to collect for this feature.  If there are
-A Feature with no attributes only collects a location (and the name of the feature)
-See the mission attributes for additional details.
+## `attributes`
+An optional list of attributes to collect for this feature.
+A Feature with no attributes only collects a location and the name of the feature.
 
-### dialog
-Provides the look and feel of the attribute input form presented to the user.
-Required if the feature has attributes.  There should be one element in the dialog
-for each editable attribute.
-See the [QuickDialog](https://github.com/escoz/QuickDialog) documentation for details.
+See the [`mission.attributes`](#attributes) section for details.
 
-### allow_off_transect_observations (v2)
-An optional boolean value that defaults to false.  If true, then this feature can be observed while off transect (not observing)
+## `dialog`
+An optional property that describes the format of the editing form for this feature's attributes.
 
-### locations
-A required list of locations.
+See the [`mission.dialog`](#dialog) section for details.
+
+## `allow_off_transect_observations`
+This property is optional. If provided it must be a boolean. The default is false.
+If true, then this feature can be observed while off transect (not observing)
+
+This property is ignored in versions of Park Observer before 1.2.0.
+
+## `locations`
+This property is required and must be an array of one or more location objects.
 A location is an object that describes the permitted techniques for specifying the location of an observation. A location is defined by the following properties:
 
-* type
-* allow (o)
-* default (o)
-* deadAhead (o)
-* baseline (deprecated)
-* direction (o)
-* units (o)
+* `type`
+* `allow` (o)
+* `default` (o)
+* `deadAhead` (o)
+* `baseline` (deprecated)
+* `direction` (o)
+* `units` (o)
 
-#### type
-Each location method must have a "type" property.
-The type value must be one of `gps`, `mapTarget`, `mapTouch`, `angleDistance`.
-Any location type containing the text "Touch" is a touch location, the others are non-touch locations.
-Providing multiple locations with the same type is allowed but discouraged as the behavior is undefined.
+### `type`
+This property is required and must be one of the follwing strings:
+
+ * `gps` - locates the observation at the devices GPS location
+ * `mapTarget` - locates the observation where the target is on the map
+ * `mapTouch` - locates the observation where the user touches the map
+ * `angleDistance` - locates the observation at an angle and distance from the GPS location and course.
+
 `adhocTarget` is a deprecated synonym for `mapTarget`, and
 `adhocTouch` is a deprecated synonym for `mapTouch`.  These types should not be
 used in new protocol files, but may still exist in older files.
 
-If a touch location method is allowed then a feature will be created when the
-user taps the map without selecting an existing feature.
-If one or more non-touch location methods are allowed, then an
-_Add Feature_ button is added to the user interface.
+**Important:** Providing multiple locations with the same type not prohibited,
+ but it is discouraged as the behavior is undefined.
 
-The _Add Feature_ button has the following behavior if more than one non-touch location method is allowed:
-* **Tap:**
-If there is a location method with `"default":true`
-use that location method to add a new feature.
-If there is no location method with `"default":true` and
-if the feature's preferred location method (see Long Press) is not set, then
-set the feature's preferred method to the first of the following types to be allowed
-`gps`, `adhocTarget`, `angleDistance`.
-Use the user's preferred location method to add a new feature
+See the [Protocol Guide](Protocol_Guide.html) for details on how the user interface behaves with
+different location types.
 
-* **Long Press:**
-Provide the user with a selection list of all the allowed non-touch location methods.
-If the user selects one then a feature is added using the selected location method, and the selected location method is set as the user's preference.
+### `allow`
+This property is optional. If provided it must be a boolean. The default is true.
+If the value is false, this type of location method is not allowed.
+This is equivalent to not providing the location method in the list.
 
-#### allow
-A location method can have an optional  "allow" element with a value of either true or false.
-The value of true is assumed if this element is absent.
-If the value is false, this type of location method is not allowed.  This is equivalent to not providing the location method in the list.
-
-#### default
-A location method can have an optional default element with a value of either true or false.
-A value of false is assumed if this element is absent.
+### `default`
+This property is optional. If provided it must be a boolean. The default is false.
+This is used to determine which "allowed" non-touch location method should be used
+by default (until the user specifies thier preference).
 Only one non-touch locations should have a true value, otherwise the behavior is undefined.
 
-#### deadAhead
-A location method of "type":"angleDistance" has the following requirements
-An optional element "deadAhead" with a numeric value between 0.0 and 360.0
+### `deadAhead`
+This property is optional. If provided it must be a number between 0.0 and 360.0. The default is 0.0.
 The numeric value provided is the angle measurement in degrees that means the feature is dead ahead
-The default is 0.0
+(i.e. on course or trajectory of the device per the GPS)
 
-#### baseline (deprecated)
-This property is a synonym for `deadAhead`.
-This may be found in older protocol files.
-It is deprecated and discouraged.
-Use `deadAhead` instead.
+### `baseline` (deprecated)
+This property is a deprecated synonym for `deadAhead`.
+Its use is discouraged, but it may be found in older protocol files.
 
-#### direction
-An optional element "direction" with a value of "cw" or "ccw"
-Angles increase in the clockwise ("cw") or counter-clockwise ("ccw") direction
-The default is "cw"
+### `direction`
+This property is optional. If provided it must be one of "cw" or "ccw". The default is "cw".
+With "cw", angles for the `angleDistance` location type will increase in the clockwise direction,
+otherwise they increase in the counter-clockwise direction.
 
-#### units
-An optional element "units" with value of "feet" or "meters" or "yards"
-Distance measurements to the feature are reported in these units
-The default is "meters"
+### `units`
+This property is optional. If provided it must be one of "feet" or "meters" or "yards". The default is "meters".
+With "meters", distances for the `angleDistance` location type will be assumed to be in meters.
+Otherwise they will be in feet or yards.
 
-# FIXME: Clean up symbology
+## `symbology`
+A required object as defined in the [symbology](#symbology) section at the end of this document.
+This object defines how an observation of this feature is drawn on the map.
 
-### symbology
-This required property defines how the feature will be displayed on the map.
-If the property is not provided, the default color and size defined below
-will be used to draw a circle marker.
-There are two choices for the symbology, either the simple object described here
-or a more more descriptive esri symbology object described below.
+## `label`
+This property is optional. If provided it must be an object.  There is no default.
+The label object defines how the feature will be labeled on the map.
 
-### label
-An optional object that defines how the feature will be labeled on the map
+This `label` object has the following properties:
 
-#### field
-The label should have a `field` element
-where `field` is a string which references one of the attributes for this feature
-If the `field` is not provided, or can't be found in the feature attributes, no label is shown
+* `field`
+* `color` (o)
+* `size` (o)
+* `symbol` (o)
 
-#### color
-The label may have an optional `color` element
-The color is a string as specified above for the feature symbology.
-The default if not provided, or malformed is "#FFFFFF" (white)
+### `field`
+This property is required and must be a non-empty text string.
+The string must match one of the attribute names for this feature.
+If the `field` is not provided, or can't be found in the feature attributes, no label is shown.
 
-#### size
-The label may have an optional `size` element
-The `size` is an integer number for the size in points of the label
-The default is 14 if not provided.
+### `color`
+This property is optional. If provided it must be an string.  The default is "#FFFFFF" (white)
+The color property is discussed in more detail in the [symbology](#symbology) section at the end of this document.
 
-#### symbol
-The `label` may have an optional `symbol` element
+### `size`
+This property is optional. If provided it must be an number.  The default is 14.0
+It sepcifies the size in points of the label text.
+The size property is discussed in more detail in the [symbology](#symbology) section at the end of this document.
+
+### `symbol`
+This property is optional. If provided it must be an object.  There is no default
 The symbol is a JSON object as described in the Text Symbol section of the ArcGIS ReST API (http://resources.arcgis.com/en/help/arcgis-rest-api/#/Symbol_Objects/02r3000000n5000000/)
-If the JSON object is malformed or unrecognized, then it is ignored in deference to the field, color and size properties.
-If the symbol is valid, then the `field`, `size` and `color` properties  of `label` are ignored.
+If the JSON object is malformed or unrecognized, then it is ignored in deference to the color and size properties.
+If the symbol is valid, then the `size` and `color` properties  of `label` are ignored.
 
-## csv
-An object that describes the format of the exported survey data in CSV files.
-Currently the format of CSV files output by Park Observer is hard coded,
-and this part of the protocol file is ignored by Park Observer.
-However it is used by tools that convert the csv data to an esri file geodatabases.
+
+
+# `csv`
+
+This property is optional. If provided it must be an object.  There is no default
+
+This object describes the format of the CSV exported survey data.
+Currently the format of the CSV files output by Park Observer is hard coded.
+This part of the protocol file is ignored by Park Observer, and only used
+by tools that convert the csv data to an esri file geodatabases.
+
+If provided it must be a object identical to [csv.json](https://akrgis.nps.gov/observer/syncserver/csv.json).  If provided, it will be used by post processing tools like the POZ to FGDB translator to understand how the CSV export files are formatted. If it is not provided, the upload server, and the POZ to FGDB translator will use [csv.json](https://akrgis.nps.gov/observer/syncserver/csv.json).
+
+A future version of Park Observer may use this property to allow users to configure the format of the exported CSV files.
 
 The csv object has the following properties.  All are required.
 
-* features
-* gps_points
-* track_logs
+* `features`
+* `gps_points`
+* `track_logs`
 
-### features
+## `features`
 An object that describes how to build the observer and feature point feature classes from the CSV
 file containing the observed features. The features object has the following properties.
 All are required.
 
- * feature_field_map
- * feature_field_names
- * feature_field_types
- * feature_key_indexes
- * header
- * obs_field_map
- * obs_field_names
- * obs_field_types
- * obs_key_indexes
- * obs_name
+ * `feature_field_map`
+ * `feature_field_names`
+ * `feature_field_types`
+ * `feature_key_indexes`
+ * `header`
+ * `obs_field_map`
+ * `obs_field_names`
+ * `obs_field_types`
+ * `obs_key_indexes`
+ * `obs_name`
 
-#### feature_field_map
+### `feature_field_map`
 A list of integer column indices from the csv header, starting with zero, for the columns containing the data for the observed feature tables.
 
-#### feature_field_names
+### `feature_field_names`
 A list of the string field names from the csv header that will create the observed feature tables.
 
-#### feature_field_types
+### `feature_field_types`
 A list of the string field types for each column listed in the 'feature_field_names' property.
 
-#### feature_key_indexes
+### `feature_key_indexes`
 A list of 3 integer column indices, starting with zero, for the columns containing the time, x and y coordinates of the feature.
 
-#### header
+### `header`
 The header of the CSV file; a list of the column names in order.
 
-#### obs_field_map
+### `obs_field_map`
 A list of integer column indices from the csv header, starting with zero, for the columns containing the data for the observer table.
 
-#### obs_field_names
+### `obs_field_names`
 A list of the field names from the csv header that will create the observed feature table.
 
-#### obs_field_types
+### `obs_field_types`
 A list of the field types for each column listed in the 'obs_field_names' property.
 
-#### obs_key_indexes
+### `obs_key_indexes`
 A list of 3 integer column indices, starting with zero, for the columns containing the time, x and y coordinates of the observer.
 
-#### obs_name
+### `obs_name`
 The name of the table in the esri geodatabase that will contain the data for the observer of the features.
 
-### gps_points
+## `gps_points`
 An object that describes how to build the GPS point feature class from the CSV file containing the GPS points. The gps_points object has the following properties.
 All are required.
 
- * field_names
- * field_types
- * key_indexes
- * name
+ * `field_names`
+ * `field_types`
+ * `key_indexes`
+ * `name`
 
-#### field_names
+### `field_names`
 A list of the field names in the header of the CSV file in order.
 
-#### field_types
+### `field_types`
 A list of the field types in the columns of the CSV file in order.
 
-#### key_indexes
+### `key_indexes`
 A list of 3 integer column indices, starting with zero, for the columns containing the time, x and y coordinates of the point.
 
-#### name
+### `name`
 The name of the csv file, and the table in the esri geodatabase.
 
-
-
-### track_logs
+## `track_logs`
 An object that describes how to build the GPS point feature class from the CSV file containing the tracklogs and mission properties. The track_logs object has the following properties.
 All are required.
 
- * end_key_indexes
- * field_names
- * field_types
- * name
- * start_key_indexes
+ * `end_key_indexes`
+ * `field_names`
+ * `field_types`
+ * `name`
+ * `start_key_indexes`
 
-#### end_key_indexes
+### `end_key_indexes`
 A list of 3 integer column indices, starting with zero, for the columns containing the time, x and y coordinates of the first point in the tracklog.
 
-#### field_names
+### `field_names`
 A list of the field names in the header of the CSV file in order.
 
-#### field_types
+### `field_types`
 A list of the field types in the columns of the CSV file in order.
 
-#### name
+### `name`
 The name of the csv file, and the table in the esri geodatabase.
 
-#### start_key_indexes
+### `start_key_indexes`
 A list of 3 integer column indices, starting with zero, for the columns containing the time, x and y coordinates of the last point in the tracklog.
 
 
-# FIXME: Clean up symbology
 
-## Symbology
-Symbology determines how the points and lines appear when drawn on the map.
-The symbology in version 1 and 2 is very different.  Version 2 does not
-recognize version 1 symbology properties, and visa versa.
+# Symbology
+The symbology that Park Observer understands changed at 0.9.8.  Before that, only version 1
+symbology was understood.  After that it depended on which `meta-version` the document
+specified.
 
-is required for the lines and points to appear on the map.
-In version 1, if the symbology properties is missing or malformed, default symbology
-will be provided.  If the symbology property is missing, nothing will be drawn.
-Either version one or version two type symbols.
+## `"meta-version": 1`
+In version 1, the symbology object had only two optional properties.  If the symbology
+property was missing in versions of Park Observer before 2.0, then there would be no
+symbology for that item and it would not be drawn on the map.  However if an empty object
+was provided, then Park Observer would use the default values specified in the individual
+symbology properties.  The default values would also be provided if any of the following
+properties were missing or invalid.  The version 1 symbology object has the following
+properties
 
-Note: I consider it a bug that nothing is drawn if no symbology propoerty
-is provided for features and mission points.  They need to have symbology to be
-drawn on the map, and selected for editing.  It is concievable that the users
-would not want to see the gps points, and tracklogs.
+* `color`
+* `size`
 
-### Version 1 Symbology
-Provides a solid line, or a circle marker with the size and color specified
+### `color`
+This property is optional. If provided it must be a text string. There is no default.
+The color element is a string in the form "#FFFFFF"
+where F is a hexadecimal digit (0-9,A-F).
+The Hex pairs represent the Red, Green, and Blue respectively.
+If the string is missing, or malformed, then the esri mapping framework was free to choose
+a default value.  Typically this was black.
 
-If the size or color properties of the symbology are missing or malformed,
-default symbology will be provided.  If the symbology property is missing,
-or is not an object, nothing will be drawn.
+### `size`
+This property is optional. If provided it must be a number. There is no default.
+The size is a number for the diameter in points of the simple circle marker symbol,
+or the width of a simple solid line.
+If the number is missing, or invalid, then the esri mapping framework was free to choose
+a default value at one point this was 6 points for diameter, and 1 point for width.
 
-Note: I consider it a bug that nothing is drawn if no symbology propoerty
-is provided for features and mission points.  They need to have symbology to be
-drawn on the map and selected for editing.  It is conceivable that the user
-would not want to see the gps points, and tracklogs, but not feature or mission points.
+## `"meta-version": 2`
+With version 2, the symbology object was specified by the JSON format for ESRI Renderers
+as defined in the [renderer object in the ArcGIS ReST API](https://developers.arcgis.com/documentation/common-data-types/renderer-objects.htm).
+This is the format that esri uses when building web maps for AGOL.
+Depending on which version of the esri mapping SDK that Park Observer is using,
+some of the properties may be optional (the `type` property is always required).
+However the default value provided may vary with different versions. To be
+safest, do not rely on default values, and always test your symbology before
+distributing your protocol file.
 
-#### size
-Optional.  Defaults to 1.0 for lines, and 8.0 for points
-#### color
-Optional. Hex string, Defaults to black if not provided or malformed
+When using version2 symbology, it is on you to verify you are using the right type
+of symbol (marker symbols like `esriSMS` for points and `esriSLM` for lines).
 
-### Version 2 Symbology
-The symbology properties are specified by the JSON format for ESRI Renderers
-as defined in http://resources.arcgis.com/en/help/rest/apiref/renderer.html
-
-Not all fields in the ESRI rest API are required.
-In many cases the defaults are obvious and the field can be omitted.
-For example, `"label": ""` or `"angle": 0` could be omitted.
-I have not tested every property, so when it doubt provide a value.
-The `type` property is required and must be one of `simple`, `uniqueValue`, `classBreak`.
-_TODO: test which fields are required, and document the defaults for optional fields_
-
-If the symbology property is not present or malformed,
-then a 12 point green circle is used for observation points, a 6 point blue circle for gps points,
-a 3 point solid red line for the tracklog while observing, and a 1.5 point gray line for the track logging while not observing.
+If the symbol object was invalid, a 12 point green circle was provided for points.
+The default line symbol by property in the mission property.
 
 If you wish to not draw the track logs or gps points, then you need to provide valid symbology
-with either 0 size, or no color.
+with either 0 size, or a fully transparent color.
+
+
+
+# Park Observer 2.0
+
+Changes implemented in 2.0 which effect the processing of version 1 and 2 protocol files.
+
+ * Additional testing and validation of Attribute names and types
+ * Removed support for undocumented synonyms in Locations
+   - except adhocTouch, adhocTarget and baseline, which were present in existing published protocols.  These synonyms have been deprecated and are no longer present in published protocols.  Please remove from private protocols.
+   - if baseline and deadAhead are both provided, baseline is ignored.
+ * Symbology is no longer required, and a few bugs in providing defaults have been fixed.
+ * Negative font and symbolgy sizes are rejeccted with an error.
+ * Bad color strings in symbology are rejected with an error.
+ * feature names are limited to 10 characters.
+ * Additional constraints and testing of the fields in Totalizer.
+ * feature.location.type must be unique
+ * Version 1 and version 2 symbology are both supported in both version of the protocol file.
+ * Added an optional `definition` property to feature label to support esri label definition json.
+ * Made label.field optional. It will be ignored and can be omitted if label.definition is provided.  size, color, and symbol will also be ignored if label.definition is provided.
+ * some properties of dialog elements are no longer case sensitive: autocapitalizationType, autocorrectionType, and keyboardType
+
+label definitions:
+from https://developers.arcgis.com/ios/latest/objective-c/guide/add-labels.htm
+A label definition is constructed as a JSON string using the syntax defined in the [Web map specification](https://developers.arcgis.com/web-map-specification/objects/labelingInfo/) for label definition. In order to provide a more accurate representation of labels created in ArcGIS Pro (for a mobile map package, for example), ArcGIS Runtime defines additional JSON properties that are not included in the Web map specification. Refer to the [JSON label class properties](https://developers.arcgis.com/ios/latest/objective-c/guide/json-label-class-properties.htm) topic for a description of the available properties, their expected values, and the defaults used for each.
+
+## Label Definition Defaults
+https://developers.arcgis.com/documentation/common-data-types/labeling-objects.htm
+
+The AGSLabelDefinition object has no properties to inspect.
+There is no way to be sure of which properties are optional except by testing.
+A guess can be made based on the defaults for the other objects above.
+
+
+TODO: test that field name in label.field and label.definition are case-insensitive with attributes
+TODO: Verify: If an empty object is given to the totalizer, it will display how many kilometers you have been observing, and reset each time to stop/stop observing.
+TODO: Only one non-touch locations should have a true value, otherwise the behavior is undefined.
+
 
 ## Symbols
 https://developers.arcgis.com/documentation/common-data-types/symbol-objects.htm
@@ -880,7 +1017,7 @@ With the following defaults (as of 100.7.0)
 color:  [0, 0, 0, 255] // opaque black
 backgroundColor: [0, 0, 0, 0] // transparent black
 borderLineSize: 0.0
-borderLineColor: [0, 0, 0, 0] 
+borderLineColor: [0, 0, 0, 0]
 haloSize: 0.0
 haloColor: [0, 0, 0, 0]
 verticalAlignment: middle
@@ -989,7 +1126,7 @@ rotationExpression: ""
 uniqueValue #1
   value: [bob]
   label: ""
-  description: "" 
+  description: ""
   symbol: <AGSSimpleMarkerSymbol>
 uniqueValue #2
   value: [BOB]
@@ -1000,7 +1137,7 @@ uniqueValue #2
 Note that `uniqueValueInfos.value` is a list that would presumably have 1,2, or 3
 values for the 1,2, or 3 field names provided.  However the REST API does not specify
 how to provide multiple values.  If a 2nd or 3rd field is provided, then anything in `value` is ignored,
-and an empty list is returned.  Providing a list to `value` generates an error, and 
+and an empty list is returned.  Providing a list to `value` generates an error, and
 properties `value1` .. `value3` are also ignored.
 
 At this time, it is only safe to provide a unique value renderer on 1 field.
@@ -1033,7 +1170,7 @@ While not defined on https://developers.arcgis.com/documentation/common-data-typ
 * esriClassifyEqualInterval
 * esriClassifyGeometricalInterval
 * esriClassifyNaturalBreaks
-* esriClassifyQuantile 
+* esriClassifyQuantile
 * esriClassifyStandardDeviation
 * esriClassifyManual
 
@@ -1068,12 +1205,12 @@ defaultLabel: null
 backgroundFillSymbol: null
 minValue: 0.0
 rotationType: geographic
-rotationExpression: 
+rotationExpression:
 classBreak #1
   classMinValue: nan
   classMaxValue: 25.0
-  label: 
-  description: 
+  label:
+  description:
   symbol: <AGSSimpleMarkerSymbol>
 classBreak #2
   classMinValue: nan
@@ -1082,10 +1219,3 @@ classBreak #2
   description: null
   symbol: <AGSSimpleMarkerSymbol>
 ```
-
-## Label Definition Defaults
-https://developers.arcgis.com/documentation/common-data-types/labeling-objects.htm
-
-The AGSLabelDefinition object has no properties to inspect.
-There is no way to be sure of which properties are optional except by testing.
-A guess can be made based on the defaults for the other objects above.
