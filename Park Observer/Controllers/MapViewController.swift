@@ -130,9 +130,7 @@ class MapViewController: ObservableObject {
     // For a device use iTunes File Sharing (enable in the info.plist)
     // For the simulator - breakpoint on the next line, to see what the path is
     // This function does no I/O, so the name is not checked until mapView tries to load the map.
-    let paths = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask)
-    let url = paths[0]
-    let path = url.appendingPathComponent(name)
+    let path = FileManager.default.mapURL(with: name)
     let cache = AGSTileCache(fileURL: path)
     let layer = AGSArcGISTiledLayer(tileCache: cache)
     let basemap = AGSBasemap(baseLayer: layer)

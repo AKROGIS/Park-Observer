@@ -17,7 +17,16 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
   ) -> Bool {
     // Override point for customization after application launch.
     LicenseManager.licenseArcGISRuntime()
-    return true
+    do {
+      // Ensure we have a directory for surveys
+      // Only really needs to be done once when app is installed.
+      // This is a silent noop if the directory exists
+      try FileManager.default.createSurveyDirectory()
+      return true
+    } catch {
+      print("Unable to create directory for survey files.\n\(error)")
+      return false
+    }
   }
 
   // MARK: UISceneSession Lifecycle
