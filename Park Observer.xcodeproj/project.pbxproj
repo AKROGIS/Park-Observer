@@ -29,6 +29,8 @@
 		747166522448F66F00A9C960 /* Environment.swift in Sources */ = {isa = PBXBuildFile; fileRef = 747166512448F66F00A9C960 /* Environment.swift */; };
 		749DE9B22469CF41003D433A /* FileManagement.swift in Sources */ = {isa = PBXBuildFile; fileRef = 749DE9B12469CF41003D433A /* FileManagement.swift */; };
 		749DE9B42469D6DC003D433A /* FileManagerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 749DE9B32469D6DC003D433A /* FileManagerTests.swift */; };
+		749DE9B8246A32A3003D433A /* SurveyInfoTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 749DE9B7246A32A3003D433A /* SurveyInfoTests.swift */; };
+		749DE9BA246A3378003D433A /* SurveyInfo.swift in Sources */ = {isa = PBXBuildFile; fileRef = 749DE9B9246A3378003D433A /* SurveyInfo.swift */; };
 		74A25FBB2451F33F006D82CE /* SurveyProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = 74A25FBA2451F33F006D82CE /* SurveyProtocol.swift */; };
 		74A25FC324522B48006D82CE /* SurveyProtocolTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 74A25FC224522B48006D82CE /* SurveyProtocolTests.swift */; };
 		74A25FC624523371006D82CE /* Mission.swift in Sources */ = {isa = PBXBuildFile; fileRef = 74A25FC524523371006D82CE /* Mission.swift */; };
@@ -112,6 +114,8 @@
 		747166512448F66F00A9C960 /* Environment.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Environment.swift; sourceTree = "<group>"; };
 		749DE9B12469CF41003D433A /* FileManagement.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FileManagement.swift; sourceTree = "<group>"; };
 		749DE9B32469D6DC003D433A /* FileManagerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FileManagerTests.swift; sourceTree = "<group>"; };
+		749DE9B7246A32A3003D433A /* SurveyInfoTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SurveyInfoTests.swift; sourceTree = "<group>"; };
+		749DE9B9246A3378003D433A /* SurveyInfo.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SurveyInfo.swift; sourceTree = "<group>"; };
 		74A25FB62451F206006D82CE /* protocol.v1.schema.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = protocol.v1.schema.json; sourceTree = "<group>"; };
 		74A25FB72451F206006D82CE /* protocol.v2.schema.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = protocol.v2.schema.json; sourceTree = "<group>"; };
 		74A25FBA2451F33F006D82CE /* SurveyProtocol.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SurveyProtocol.swift; sourceTree = "<group>"; };
@@ -214,6 +218,7 @@
 				74D0B0D724608DC100624FE9 /* Legacy Protocols */,
 				74D0B0D5245E18C500624FE9 /* Sample Protocols */,
 				74A25FD82453B436006D82CE /* Survey Protocol */,
+				749DE9B7246A32A3003D433A /* SurveyInfoTests.swift */,
 			);
 			path = "Park ObserverTests";
 			sourceTree = "<group>";
@@ -231,6 +236,7 @@
 			isa = PBXGroup;
 			children = (
 				74A25FC4245232F1006D82CE /* Survey Protocol */,
+				749DE9B9246A3378003D433A /* SurveyInfo.swift */,
 			);
 			path = Models;
 			sourceTree = "<group>";
@@ -511,6 +517,7 @@
 				74A25FC624523371006D82CE /* Mission.swift in Sources */,
 				7471663A243E854800A9C960 /* Scalebar.swift in Sources */,
 				74716639243E854800A9C960 /* Coalescer.swift in Sources */,
+				749DE9BA246A3378003D433A /* SurveyInfo.swift in Sources */,
 				74A25FCC245233B8006D82CE /* MissionTotalizer.swift in Sources */,
 				74D0B0DA2460C1E100624FE9 /* DecodingError.swift in Sources */,
 				74A25FBB2451F33F006D82CE /* SurveyProtocol.swift in Sources */,
@@ -523,6 +530,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				74A25FD72453B41A006D82CE /* FeatureTests.swift in Sources */,
+				749DE9B8246A32A3003D433A /* SurveyInfoTests.swift in Sources */,
 				74A25FD52453B3FD006D82CE /* MissionTests.swift in Sources */,
 				74D0B0D22458DC5A00624FE9 /* ArcGISSymbolDefaultTests.swift in Sources */,
 				74A25FC324522B48006D82CE /* SurveyProtocolTests.swift in Sources */,

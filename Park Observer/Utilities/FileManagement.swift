@@ -14,6 +14,12 @@ extension String {
   static let surveyArchiveExtension = "poz"
   static let surveyProtocolExtension = "obsprot"
   static let tileCacheExtension = "tpk"
+
+  // Filenames internal to a survey folder; maintain for compatibility with legacy surveys
+
+  static let surveyInfoFilename = "properties.plist"
+  static let surveyProtocolFilename = "protocol.obsprot"
+  static let surveyDatabaseFilename = "survey.coredata"
 }
 
 extension FileManager {
@@ -97,6 +103,18 @@ extension FileManager {
   func createSurveyDirectory() throws {
     // Do not fail if surveyDirectory exists (withIntermediateDirectories == true)
     try createDirectory(at: surveyDirectory, withIntermediateDirectories: true, attributes: nil)
+  }
+
+  func surveyDatabaseURL(with name: String) -> URL {
+    return surveyURL(with: name).appendingPathComponent(.surveyDatabaseFilename)
+  }
+
+  func surveyInfoURL(with name: String) -> URL {
+    return surveyURL(with: name).appendingPathComponent(.surveyInfoFilename)
+  }
+
+  func surveyProtocolURL(with name: String) -> URL {
+    return surveyURL(with: name).appendingPathComponent(.surveyProtocolFilename)
   }
 
   func filenames(in directory: URL, with pathExtension: String) -> [String] {
