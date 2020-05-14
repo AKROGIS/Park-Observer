@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		740D5AC1246DB3420018A684 /* Legacy Archives in Resources */ = {isa = PBXBuildFile; fileRef = 740D5AC0246DB3420018A684 /* Legacy Archives */; };
 		747165EC243C37A800A9C960 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 747165EB243C37A800A9C960 /* AppDelegate.swift */; };
 		747165EE243C37A800A9C960 /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 747165ED243C37A800A9C960 /* SceneDelegate.swift */; };
 		747165F0243C37A800A9C960 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 747165EF243C37A800A9C960 /* ContentView.swift */; };
@@ -84,6 +85,7 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		740D5AC0246DB3420018A684 /* Legacy Archives */ = {isa = PBXFileReference; lastKnownFileType = folder; path = "Legacy Archives"; sourceTree = "<group>"; };
 		742B08A2244A477A00A5137C /* Protocol Specification.md */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = net.daringfireball.markdown; path = "Protocol Specification.md"; sourceTree = "<group>"; };
 		747165E8243C37A800A9C960 /* Park Observer.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Park Observer.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		747165EB243C37A800A9C960 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
@@ -215,6 +217,7 @@
 			children = (
 				749DE9B32469D6DC003D433A /* FileManagerTests.swift */,
 				74716604243C37AA00A9C960 /* Info.plist */,
+				740D5AC0246DB3420018A684 /* Legacy Archives */,
 				74D0B0D724608DC100624FE9 /* Legacy Protocols */,
 				74D0B0D5245E18C500624FE9 /* Sample Protocols */,
 				74A25FD82453B436006D82CE /* Survey Protocol */,
@@ -458,6 +461,7 @@
 			files = (
 				74D0B0D824608DC100624FE9 /* Legacy Protocols in Resources */,
 				74D0B0D6245E18C500624FE9 /* Sample Protocols in Resources */,
+				740D5AC1246DB3420018A684 /* Legacy Archives in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

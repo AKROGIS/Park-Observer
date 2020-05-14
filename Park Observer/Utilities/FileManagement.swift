@@ -118,6 +118,7 @@ extension String {
   // Filenames internal to a survey bundle; maintain for compatibility with legacy surveys
 
   static let surveyInfoFilename = "properties.plist"
+
   static let surveyProtocolFilename = "protocol.obsprot"
   static let surveyDatabaseFilename = "survey.coredata"
 }
@@ -139,6 +140,43 @@ extension FileManager {
 
   func surveyProtocolURL(with name: String) -> URL {
     return surveyURL(with: name).appendingPathComponent(.surveyProtocolFilename)
+  }
+
+}
+
+//MARK: - Adding Files
+
+enum ImportError: Error {
+  case exists
+  case unknownType
+}
+
+enum ConflictResolution {
+  case fail
+  case keepBoth
+  case replace
+}
+
+enum AppFileType {
+  case archive
+  case map
+  case surveyProtocol
+  case survey
+}
+
+struct AppFile {
+  let type: AppFileType
+  let name: String
+}
+
+extension FileManager {
+
+  func addToApp(url: URL, conflict: ConflictResolution = .fail) throws -> AppFile {
+    return AppFile(type: .map, name: "")
+  }
+
+  func importSurvey(from archive: String, conflict: ConflictResolution = .fail) throws -> String {
+    return ""
   }
 
 }
