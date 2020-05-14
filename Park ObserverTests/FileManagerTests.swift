@@ -187,11 +187,12 @@ class FileManagerTests: XCTestCase {
 
     // When:
     XCTAssertFalse(FileManager.default.archiveNames.contains(existingName))
-    var newFile: AppFile? = nil
-    XCTAssertNoThrow(newFile = try FileManager.default.addToApp(url: existingUrl))
-    XCTAssertNotNil(newFile)
-    XCTAssertEqual(newFile!.type, .archive)
-    let archiveName = newFile!.name
+    var maybeFile: AppFile? = nil
+    XCTAssertNoThrow(maybeFile = try FileManager.default.addToApp(url: existingUrl))
+    XCTAssertNotNil(maybeFile)
+    guard let newFile = maybeFile else { return }
+    XCTAssertEqual(newFile.type, .archive)
+    let archiveName = newFile.name
 
     // Then:
     XCTAssertTrue(FileManager.default.archiveNames.contains(archiveName))
@@ -265,12 +266,13 @@ class FileManagerTests: XCTestCase {
     XCTAssertEqual(count + 1, FileManager.default.archiveNames.count)
 
     // Then:
-    var newFile: AppFile? = nil
+    var maybeFile: AppFile? = nil
     XCTAssertNoThrow(
-      newFile = try FileManager.default.addToApp(url: existingUrl, conflict: .keepBoth))
-    XCTAssertNotNil(newFile)
-    XCTAssertEqual(newFile!.type, .archive)
-    let archiveName = newFile!.name
+      maybeFile = try FileManager.default.addToApp(url: existingUrl, conflict: .keepBoth))
+    XCTAssertNotNil(maybeFile)
+    guard let newFile = maybeFile else { return }
+    XCTAssertEqual(newFile.type, .archive)
+    let archiveName = newFile.name
     XCTAssertTrue(FileManager.default.archiveNames.contains(existingName))
     XCTAssertTrue(FileManager.default.archiveNames.contains(archiveName))
     XCTAssertNotEqual(existingName, archiveName)
@@ -302,11 +304,12 @@ class FileManagerTests: XCTestCase {
     let count = FileManager.default.mapNames.count
 
     // Then:
-    var newFile: AppFile? = nil
-    XCTAssertNoThrow(newFile = try FileManager.default.addToApp(url: url, conflict: .replace))
-    XCTAssertNotNil(newFile)
-    let newName = newFile!.name
-    XCTAssertEqual(newFile!.type, .map)
+    var maybeFile: AppFile? = nil
+    XCTAssertNoThrow(maybeFile = try FileManager.default.addToApp(url: url, conflict: .replace))
+    XCTAssertNotNil(maybeFile)
+    guard let newFile = maybeFile else { return }
+    let newName = newFile.name
+    XCTAssertEqual(newFile.type, .map)
     XCTAssertEqual(newName, name)
     XCTAssertTrue(FileManager.default.mapNames.contains(newName))
     XCTAssertEqual(count, FileManager.default.mapNames.count)
@@ -342,11 +345,12 @@ class FileManagerTests: XCTestCase {
     let count = FileManager.default.protocolNames.count
 
     // Then:
-    var newFile: AppFile? = nil
-    XCTAssertNoThrow(newFile = try FileManager.default.addToApp(url: url, conflict: .keepBoth))
-    XCTAssertNotNil(newFile)
-    let newName = newFile!.name
-    XCTAssertEqual(newFile!.type, .surveyProtocol)
+    var maybeFile: AppFile? = nil
+    XCTAssertNoThrow(maybeFile = try FileManager.default.addToApp(url: url, conflict: .keepBoth))
+    XCTAssertNotNil(maybeFile)
+    guard let newFile = maybeFile else { return }
+    let newName = newFile.name
+    XCTAssertEqual(newFile.type, .surveyProtocol)
     XCTAssertNotEqual(newName, name)
     XCTAssertTrue(FileManager.default.protocolNames.contains(name))
     XCTAssertTrue(FileManager.default.protocolNames.contains(newName))
@@ -384,16 +388,18 @@ class FileManagerTests: XCTestCase {
     let existingPath = testBundle.resourcePath! + existingPoz
     let existingUrl = URL(fileURLWithPath: existingPath)
     // Copy existing POZ to the App
-    var newFile: AppFile? = nil
-    XCTAssertNoThrow(newFile = try FileManager.default.addToApp(url: existingUrl))
-    let archiveName = newFile!.name
+    var maybeFile: AppFile? = nil
+    XCTAssertNoThrow(maybeFile = try FileManager.default.addToApp(url: existingUrl))
+    XCTAssertNotNil(maybeFile)
+    guard let newFile = maybeFile else { return }
+    let archiveName = newFile.name
     XCTAssertTrue(FileManager.default.archiveNames.contains(archiveName))
 
     // When:
     var maybeName: String? = nil
     XCTAssertNoThrow(maybeName = try FileManager.default.importSurvey(from: archiveName))
     XCTAssertNotNil(maybeName)
-    let surveyName = maybeName!
+    guard let surveyName = maybeName else { return }
 
     // Then:
     // survey exists
@@ -418,9 +424,10 @@ class FileManagerTests: XCTestCase {
     let existingPath = testBundle.resourcePath! + existingPoz
     let existingUrl = URL(fileURLWithPath: existingPath)
     // Copy existing POZ to the App
-    var newFile: AppFile? = nil
-    XCTAssertNoThrow(newFile = try FileManager.default.addToApp(url: existingUrl))
-    let archiveName = newFile!.name
+    var maybeFile: AppFile? = nil
+    XCTAssertNoThrow(maybeFile = try FileManager.default.addToApp(url: existingUrl))
+    guard let newFile = maybeFile else { return }
+    let archiveName = newFile.name
     XCTAssertTrue(FileManager.default.archiveNames.contains(archiveName))
 
     // When:
@@ -437,13 +444,13 @@ class FileManagerTests: XCTestCase {
     XCTAssertNoThrow(
       maybeName = try FileManager.default.importSurvey(from: archiveName, conflict: .replace))
     XCTAssertNotNil(maybeName)
-    let surveyName = maybeName!
+    guard let surveyName = maybeName else { return }
     XCTAssertEqual(existingSurveyName, surveyName)
     XCTAssertTrue(FileManager.default.surveyNames.contains(surveyName))
     XCTAssertNoThrow(
       maybeName = try FileManager.default.importSurvey(from: archiveName, conflict: .keepBoth))
     XCTAssertNotNil(maybeName)
-    let surveyName2 = maybeName!
+    guard let surveyName2 = maybeName else { return }
     XCTAssertNotEqual(existingSurveyName, surveyName2)
     XCTAssertTrue(FileManager.default.surveyNames.contains(surveyName2))
 
@@ -458,23 +465,32 @@ class FileManagerTests: XCTestCase {
 
   func testUnpackArchiveWithoutSurvey() {
     // Given:
-    let mapName = "myWeirdTestName123"
-    let file1 = FileManager.default.mapURL(with: mapName)
-    XCTAssertNoThrow(try "I'm not a survey".write(to: file1, atomically: true, encoding: .utf8))
-    let archiveName = "myWeirdTestName123"
-    var zipURL: URL? = nil
-    //XCTAssertNoThrow(zipURL = try Zip.quickZipFiles([file1], fileName: archiveName))
-    XCTAssertNotNil(zipURL)
-    let archiveURL = zipURL!
-    // reaname to a zipURL to a poz file
+    let existingPoz = "/Legacy Archives/Bad Protocol.poz"
+    // Get exisitng POZ
+    let testBundle = Bundle(for: type(of: self))
+    let existingPath = testBundle.resourcePath! + existingPoz
+    let existingUrl = URL(fileURLWithPath: existingPath)
+    // Copy existing POZ to the App
+    var newFile: AppFile? = nil
+    XCTAssertNoThrow(newFile = try FileManager.default.addToApp(url: existingUrl))
+    guard let archiveName = newFile?.name else { return }
 
     // When:
     XCTAssertTrue(FileManager.default.archiveNames.contains(archiveName))
-    XCTAssertThrowsError(try FileManager.default.importSurvey(from: archiveName))
+    let count = FileManager.default.surveyNames.count
 
     // Then:
-    XCTAssertNoThrow(try FileManager.default.deleteMap(with: mapName))
-    XCTAssertFalse(FileManager.default.mapNames.contains(mapName))
+    do {
+      let _ = try FileManager.default.importSurvey(from: archiveName)
+      XCTAssertTrue(false)
+    } catch ImportError.invalidArchive {
+      // expected path, do nothing
+    } catch {
+      XCTAssertTrue(false)
+    }
+    XCTAssertEqual(count, FileManager.default.surveyNames.count)
+
+    // Cleanup:
     XCTAssertNoThrow(try FileManager.default.deleteArchive(with: archiveName))
     XCTAssertFalse(FileManager.default.archiveNames.contains(archiveName))
   }
@@ -486,9 +502,20 @@ class FileManagerTests: XCTestCase {
     XCTAssertNoThrow(try "I'm not Zip data".write(to: url, atomically: true, encoding: .utf8))
 
     // When:
-    XCTAssertThrowsError(try FileManager.default.importSurvey(from: testName))
+    let count = FileManager.default.surveyNames.count
 
     // Then:
+    do {
+      let _ = try FileManager.default.importSurvey(from: testName)
+      XCTAssertTrue(false)
+    } catch ImportError.invalidArchive {
+      // expected path, do nothing
+    } catch {
+      XCTAssertTrue(false)
+    }
+    XCTAssertEqual(count, FileManager.default.surveyNames.count)
+
+    // Cleanup:
     XCTAssertNoThrow(try FileManager.default.deleteArchive(with: testName))
     XCTAssertFalse(FileManager.default.archiveNames.contains(testName))
   }

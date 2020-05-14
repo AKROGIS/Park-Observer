@@ -149,6 +149,7 @@ extension FileManager {
 enum ImportError: Error {
   case exists
   case unknownType
+  case invalidArchive
 }
 
 enum ConflictResolution {
