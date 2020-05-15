@@ -354,7 +354,7 @@ class FileManagerTests: XCTestCase {
     XCTAssertNotEqual(newName, name)
     XCTAssertTrue(FileManager.default.protocolNames.contains(name))
     XCTAssertTrue(FileManager.default.protocolNames.contains(newName))
-    XCTAssertEqual(count + 1, FileManager.default.archiveNames.count)
+    XCTAssertEqual(count + 1, FileManager.default.protocolNames.count)
     // Check Contents
     var contents = try? String(
       contentsOf: FileManager.default.protocolURL(with: name), encoding: .utf8)

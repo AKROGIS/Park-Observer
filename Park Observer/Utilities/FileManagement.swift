@@ -163,6 +163,25 @@ enum AppFileType {
   case map
   case surveyProtocol
   case survey
+
+  init?(from url: URL) {
+    switch url.pathExtension.lowercased() {
+    case "poz":
+      self = .archive
+      break
+    case "tpk":
+      self = .map
+      break
+    case "obsprot":
+      self = .surveyProtocol
+      break
+    case "obssurv":
+      self = .survey
+      break
+    default:
+      return nil
+    }
+  }
 }
 
 struct AppFile {
@@ -170,14 +189,78 @@ struct AppFile {
   let name: String
 }
 
+extension AppFile {
+  init?(from url: URL) {
+    let maybeType = AppFileType(from: url)
+    if maybeType == nil { return nil }
+    type = maybeType!
+    name = url.deletingPathExtension().lastPathComponent
+  }
+}
+
 extension FileManager {
 
   func addToApp(url: URL, conflict: ConflictResolution = .fail) throws -> AppFile {
-    return AppFile(type: .map, name: "")
+    guard let appFile = AppFile(from: url) else {
+      throw ImportError.unknownType
+    }
+    let newURL: URL = {
+      switch appFile.type {
+      case .archive:
+        return archiveURL(with: appFile.name)
+      case .map:
+        return mapURL(with: appFile.name)
+      case .survey:
+        return surveyURL(with: appFile.name)
+      case .surveyProtocol:
+        return protocolURL(with: appFile.name)
+      }
+    }()
+    do {
+      try copyItem(at: url, to: newURL)
+    } catch let error as NSError {
+      if error.code == NSFileWriteFileExistsError {
+        switch conflict {
+        case .replace:
+          try removeItem(at: newURL)
+          try copyItem(at: url, to: newURL)
+          break
+        case .keepBoth:
+          let newURL = try copyUniqueItem(at: url, to: newURL)
+          let name = newURL.deletingPathExtension().lastPathComponent
+          return AppFile(type: appFile.type, name: name)
+        default:
+          throw error
+        }
+      } else {
+        throw error
+      }
+    }
+    return appFile
   }
 
   func importSurvey(from archive: String, conflict: ConflictResolution = .fail) throws -> String {
     return ""
+  }
+
+  func copyUniqueItem(at url: URL, to destURL: URL) throws -> URL {
+    // This method assumes that newURL exists
+    let ext = destURL.pathExtension
+    let name = destURL.deletingPathExtension().lastPathComponent
+    let baseURL = destURL.deletingLastPathComponent()
+    var newURL = destURL
+    for counter in 2... {
+      let newName = "\(name) \(counter)"
+      newURL = baseURL.appendingPathComponent(newName).appendingPathExtension(ext)
+      do {
+        try copyItem(at: url, to: newURL)
+        break
+      } catch CocoaError.fileWriteFileExists {
+        //Do nothing; increase the counter and try again
+        //Any other errors will be thrown
+      }
+    }
+    return newURL
   }
 
 }
