@@ -34,7 +34,7 @@ struct SurveyProtocol {
   let metaVersion: SurveyProtocolVersion
 
   /// An object for describing segments of the survey.
-  let mission: Mission?
+  let mission: ProtocolMission?
 
   /// An identifier (name) for this protocol.
   let name: String
@@ -117,7 +117,7 @@ extension SurveyProtocol: Codable {
       String.self, forKey: .protocolDescription)
     let features = try container.decode([Feature].self, forKey: .features)
     let gpsInterval = try container.decodeIfPresent(Double.self, forKey: .gpsInterval)
-    let mission = try container.decodeIfPresent(Mission.self, forKey: .mission)
+    let mission = try container.decodeIfPresent(ProtocolMission.self, forKey: .mission)
     let name = try container.decode(String.self, forKey: .name)
     let notObservingMessage = try container.decodeIfPresent(
       String.self, forKey: .notObservingMessage)

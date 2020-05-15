@@ -363,12 +363,12 @@ class SymbologyTests: XCTestCase {
     XCTAssertNil(json)  // Should fail parsing;
   }
 
-  //MARK: - Mission Symbology
+  //MARK: - ProtocolMission Symbology
 
   func testMissionSymbologyV1_missing() {
     // Given:
     struct TestJson: Codable {
-      let mission: Mission
+      let mission: ProtocolMission
     }
     let jsonData = Data(
       """
@@ -397,7 +397,7 @@ class SymbologyTests: XCTestCase {
   func testMissionSymbologyV1_ok() {
     // Given:
     struct TestJson: Codable {
-      let mission: Mission
+      let mission: ProtocolMission
     }
     let jsonData = Data(
       """
@@ -443,7 +443,7 @@ class SymbologyTests: XCTestCase {
   func testMissionSymbologyV1_invalid() {
     // Given:
     struct TestJson: Codable {
-      let mission: Mission
+      let mission: ProtocolMission
     }
     let jsonData = Data(
       """
@@ -466,7 +466,7 @@ class SymbologyTests: XCTestCase {
   func testMissionSymbology1V2_ok() {
     // Given:
     struct TestJson: Codable {
-      let mission: Mission
+      let mission: ProtocolMission
     }
     let jsonData = Data(
       """
@@ -511,7 +511,7 @@ class SymbologyTests: XCTestCase {
   func testMissionSymbology2V2_ok() {
     // Given:
     struct TestJson: Codable {
-      let mission: Mission
+      let mission: ProtocolMission
     }
     let jsonData = Data(
       """
@@ -555,7 +555,7 @@ class SymbologyTests: XCTestCase {
   func testMissionSymbology3V2_ok() {
     // Given:
     struct TestJson: Codable {
-      let mission: Mission
+      let mission: ProtocolMission
     }
     let jsonData = Data(
       """
@@ -610,7 +610,7 @@ class SymbologyTests: XCTestCase {
   func testMissionSymbology4V2_ok() {
     // Given:
     struct TestJson: Codable {
-      let mission: Mission
+      let mission: ProtocolMission
     }
     let jsonData = Data(
       """
@@ -663,7 +663,7 @@ class SymbologyTests: XCTestCase {
   func testMissionSymbologyWithNull() {
     // Given:
     struct TestJson: Codable {
-      let mission: Mission
+      let mission: ProtocolMission
     }
     let jsonData = Data(
       """
@@ -718,7 +718,7 @@ class SymbologyTests: XCTestCase {
   func testMissionSymbology1V2_invalid() {
     // Given:
     struct TestJson: Codable {
-      let mission: Mission
+      let mission: ProtocolMission
     }
     let jsonData = Data(
       """
@@ -743,7 +743,7 @@ class SymbologyTests: XCTestCase {
   func testMissionSymbology2V2_invalid() {
     // Given:
     struct TestJson: Codable {
-      let mission: Mission
+      let mission: ProtocolMission
     }
     let jsonData = Data(
       """
@@ -768,7 +768,7 @@ class SymbologyTests: XCTestCase {
   func testMissionSymbology3V2_invalid() {
     // Given:
     struct TestJson: Codable {
-      let mission: Mission
+      let mission: ProtocolMission
     }
     let jsonData = Data(
       """
@@ -793,7 +793,7 @@ class SymbologyTests: XCTestCase {
   func testMissionSymbology4V2_invalid() {
     // Given:
     struct TestJson: Codable {
-      let mission: Mission
+      let mission: ProtocolMission
     }
     let jsonData = Data(
       """

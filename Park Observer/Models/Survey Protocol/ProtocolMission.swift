@@ -1,5 +1,5 @@
 //
-//  Mission.swift
+//  ProtocolMission.swift
 //  Park Observer
 //
 //  Created by Regan E. Sarwas on 4/23/20.
@@ -9,7 +9,7 @@
 import ArcGIS
 
 /// An object for describing segments of the survey.
-struct Mission: Codable {
+struct ProtocolMission: Codable {
 
   /// A list of the mission's attributes.
   let attributes: [Attribute]?
@@ -64,11 +64,11 @@ struct Mission: Codable {
 
 }
 
-//MARK: - Mission Codable
+//MARK: - ProtocolMission Codable
 // Custom coding/decoding to have AGSRenderer as property
 // AGSRenderer is a closed source objC object that does not implement Codeable
 
-extension Mission {
+extension ProtocolMission {
 
   init(from decoder: Decoder) throws {
     var validationEnabled = true

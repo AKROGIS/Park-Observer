@@ -15,7 +15,7 @@ class MissionTests: XCTestCase {
   func testMinimalMission() {
     // Given:
     struct TestJson: Codable {
-      let mission: Mission
+      let mission: ProtocolMission
     }
     let jsonData = Data(
       """
@@ -49,7 +49,7 @@ class MissionTests: XCTestCase {
   func testMissionBooleansTrue() {
     // Given:
     struct TestJson: Codable {
-      let mission: Mission
+      let mission: ProtocolMission
     }
     let jsonData = Data(
       """
@@ -81,7 +81,7 @@ class MissionTests: XCTestCase {
   func testMissionBooleansFalse() {
     // Given:
     struct TestJson: Codable {
-      let mission: Mission
+      let mission: ProtocolMission
     }
     let jsonData = Data(
       """
@@ -113,7 +113,7 @@ class MissionTests: XCTestCase {
   func testMissionObjects() {
     // Given:
     struct TestJson: Codable {
-      let mission: Mission
+      let mission: ProtocolMission
     }
     let jsonData = Data(
       """
@@ -155,7 +155,7 @@ class MissionTests: XCTestCase {
   func testMissionAttributesInvalid() {
     // Given:
     struct TestJson: Codable {
-      let mission: Mission
+      let mission: ProtocolMission
     }
     let jsonData = Data(
       """
@@ -176,7 +176,7 @@ class MissionTests: XCTestCase {
   func testMissionAttributesEmpty() {
     // Given:
     struct TestJson: Codable {
-      let mission: Mission
+      let mission: ProtocolMission
     }
     let jsonData = Data(
       """
@@ -197,7 +197,7 @@ class MissionTests: XCTestCase {
   func testMissionAttributesNotUnique() {
     // Given:
     struct TestJson: Codable {
-      let mission: Mission
+      let mission: ProtocolMission
     }
     let jsonData = Data(
       """
@@ -221,7 +221,7 @@ class MissionTests: XCTestCase {
   func testTotalizerFieldsExistInDialog() {
     // Given:
     struct Test: Codable {
-      let mission: Mission
+      let mission: ProtocolMission
     }
     let jsonData = Data(
       """
@@ -243,12 +243,12 @@ class MissionTests: XCTestCase {
     XCTAssertNil(test)
   }
 
-  //MARK: - Mission Dialog-Attributes
+  //MARK: - ProtocolMission Dialog-Attributes
 
   func testDialogFieldsExistInAttributes() {
     // Given:
     struct Test: Codable {
-      let mission: Mission
+      let mission: ProtocolMission
     }
     let jsonData = Data(
       """
@@ -272,7 +272,7 @@ class MissionTests: XCTestCase {
   func testDialogTypesExistInAttributeTypes() {
     // Given:
     struct Test: Codable {
-      let mission: Mission
+      let mission: ProtocolMission
     }
     let jsonData = Data(
       """
@@ -336,7 +336,7 @@ class MissionTests: XCTestCase {
   func testDialogTypesDoesNotMatchAttributeTypes() {
     // Given:
     struct Test: Codable {
-      let mission: Mission
+      let mission: ProtocolMission
     }
     let jsonData = Data(
       """
