@@ -394,6 +394,10 @@ class FileManagerTests: XCTestCase {
     guard let newFile = maybeFile else { return }
     let archiveName = newFile.name
     XCTAssertTrue(FileManager.default.archiveNames.contains(archiveName))
+    defer {
+      XCTAssertNoThrow(try FileManager.default.deleteArchive(with: archiveName))
+      XCTAssertFalse(FileManager.default.archiveNames.contains(archiveName))
+    }
 
     // When:
     var maybeName: String? = nil
@@ -409,8 +413,6 @@ class FileManagerTests: XCTestCase {
     XCTAssertTrue(FileManager.default.archiveNames.contains(archiveName))
 
     // Cleanup
-    XCTAssertNoThrow(try FileManager.default.deleteArchive(with: archiveName))
-    XCTAssertFalse(FileManager.default.archiveNames.contains(archiveName))
     XCTAssertNoThrow(try FileManager.default.deleteSurvey(with: surveyName))
     XCTAssertFalse(FileManager.default.surveyNames.contains(surveyName))
   }
@@ -429,6 +431,10 @@ class FileManagerTests: XCTestCase {
     guard let newFile = maybeFile else { return }
     let archiveName = newFile.name
     XCTAssertTrue(FileManager.default.archiveNames.contains(archiveName))
+    defer {
+      XCTAssertNoThrow(try FileManager.default.deleteArchive(with: archiveName))
+      XCTAssertFalse(FileManager.default.archiveNames.contains(archiveName))
+    }
 
     // When:
     XCTAssertFalse(FileManager.default.surveyNames.contains(existingSurveyName))
@@ -445,6 +451,10 @@ class FileManagerTests: XCTestCase {
       maybeName = try FileManager.default.importSurvey(from: archiveName, conflict: .replace))
     XCTAssertNotNil(maybeName)
     guard let surveyName = maybeName else { return }
+    defer {
+      XCTAssertNoThrow(try FileManager.default.deleteSurvey(with: surveyName))
+      XCTAssertFalse(FileManager.default.surveyNames.contains(surveyName))
+    }
     XCTAssertEqual(existingSurveyName, surveyName)
     XCTAssertTrue(FileManager.default.surveyNames.contains(surveyName))
     XCTAssertNoThrow(
@@ -455,17 +465,13 @@ class FileManagerTests: XCTestCase {
     XCTAssertTrue(FileManager.default.surveyNames.contains(surveyName2))
 
     // Cleanup
-    XCTAssertNoThrow(try FileManager.default.deleteArchive(with: archiveName))
-    XCTAssertFalse(FileManager.default.archiveNames.contains(archiveName))
-    XCTAssertNoThrow(try FileManager.default.deleteSurvey(with: surveyName))
-    XCTAssertFalse(FileManager.default.surveyNames.contains(surveyName))
     XCTAssertNoThrow(try FileManager.default.deleteSurvey(with: surveyName2))
     XCTAssertFalse(FileManager.default.surveyNames.contains(surveyName2))
   }
 
   func testUnpackArchiveWithoutSurvey() {
     // Given:
-    let existingPoz = "/Legacy Archives/Bad Protocol.poz"
+    let existingPoz = "/Legacy Archives/Bad Archive.poz"
     // Get exisitng POZ
     let testBundle = Bundle(for: type(of: self))
     let existingPath = testBundle.resourcePath! + existingPoz
@@ -486,6 +492,7 @@ class FileManagerTests: XCTestCase {
     } catch ImportError.invalidArchive {
       // expected path, do nothing
     } catch {
+      print(error)
       XCTAssertTrue(false)
     }
     XCTAssertEqual(count, FileManager.default.surveyNames.count)
@@ -511,6 +518,7 @@ class FileManagerTests: XCTestCase {
     } catch ImportError.invalidArchive {
       // expected path, do nothing
     } catch {
+      print(error)
       XCTAssertTrue(false)
     }
     XCTAssertEqual(count, FileManager.default.surveyNames.count)

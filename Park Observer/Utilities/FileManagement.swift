@@ -7,6 +7,7 @@
 //
 
 import Foundation
+import Zip
 
 //MARK: - Discovering Files
 
@@ -118,7 +119,6 @@ extension String {
   // Filenames internal to a survey bundle; maintain for compatibility with legacy surveys
 
   static let surveyInfoFilename = "properties.plist"
-
   static let surveyProtocolFilename = "protocol.obsprot"
   static let surveyDatabaseFilename = "survey.coredata"
 }
@@ -240,7 +240,24 @@ extension FileManager {
   }
 
   func importSurvey(from archive: String, conflict: ConflictResolution = .fail) throws -> String {
-    return ""
+    let zipURL = archiveURL(with: archive)
+    let tempURL = temporaryDirectory.appendingPathComponent("zip_unpack", isDirectory: true)
+    try createDirectory(at: tempURL, withIntermediateDirectories: false, attributes: nil)
+    defer { try? removeItem(at: tempURL) }
+    Zip.addCustomFileExtension(.surveyArchiveExtension)
+    do {
+      try Zip.unzipFile(zipURL, destination: tempURL, overwrite: true, password: nil, progress: nil)
+    } catch ZipError.unzipFail {
+      throw ImportError.invalidArchive
+    }
+    let names = filenames(in: tempURL, with: .surveyExtension)
+    guard names.count == 1 else {
+      throw ImportError.invalidArchive
+    }
+    let name = names[0]
+    let surveyURL = tempURL.appendingPathComponent(name).appendingPathExtension(.surveyExtension)
+    let appFile = try addToApp(url: surveyURL, conflict: conflict)
+    return appFile.name
   }
 
   func copyUniqueItem(at url: URL, to destURL: URL) throws -> URL {
