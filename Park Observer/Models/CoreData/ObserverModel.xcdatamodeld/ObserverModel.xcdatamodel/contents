@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<model type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="15702" systemVersion="18G95" minimumToolsVersion="Xcode 11.0" sourceLanguage="Swift" userDefinedModelVersionIdentifier="">
+    <entity name="AdhocLocation" representedClassName="AdhocLocation" syncable="YES">
+        <attribute name="latitude" attributeType="Double" minValueString="-90" maxValueString="90" usesScalarValueType="NO"/>
+        <attribute name="longitude" attributeType="Double" minValueString="-180" maxValueString="180" usesScalarValueType="NO"/>
+        <attribute name="timestamp" optional="YES" attributeType="Date" usesScalarValueType="NO"/>
+        <relationship name="map" minCount="1" maxCount="1" deletionRule="Nullify" destinationEntity="Map" inverseName="adhocLocations" inverseEntity="Map"/>
+        <relationship name="missionProperty" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="MissionProperty" inverseName="adhocLocation" inverseEntity="MissionProperty"/>
+        <relationship name="observation" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="Observation" inverseName="adhocLocation" inverseEntity="Observation"/>
+    </entity>
+    <entity name="AngleDistanceLocation" representedClassName="AngleDistanceLocation" syncable="YES">
+        <attribute name="angle" attributeType="Double" defaultValueString="0.0" usesScalarValueType="NO"/>
+        <attribute name="direction" attributeType="Double" defaultValueString="0.0" usesScalarValueType="NO"/>
+        <attribute name="distance" attributeType="Double" minValueString="0" defaultValueString="0.0" usesScalarValueType="NO"/>
+        <relationship name="observation" minCount="1" maxCount="1" deletionRule="Nullify" destinationEntity="Observation" inverseName="angleDistanceLocation" inverseEntity="Observation"/>
+    </entity>
+    <entity name="GpsPoint" representedClassName="GpsPoint" syncable="YES">
+        <attribute name="altitude" optional="YES" attributeType="Double" defaultValueString="-1" usesScalarValueType="NO"/>
+        <attribute name="course" optional="YES" attributeType="Double" defaultValueString="-1" usesScalarValueType="NO"/>
+        <attribute name="horizontalAccuracy" optional="YES" attributeType="Double" defaultValueString="-1" usesScalarValueType="NO"/>
+        <attribute name="latitude" attributeType="Double" usesScalarValueType="NO"/>
+        <attribute name="longitude" attributeType="Double" usesScalarValueType="NO"/>
+        <attribute name="speed" optional="YES" attributeType="Double" defaultValueString="-1" usesScalarValueType="NO"/>
+        <attribute name="timestamp" attributeType="Date" usesScalarValueType="NO"/>
+        <attribute name="verticalAccuracy" optional="YES" attributeType="Double" defaultValueString="-1" usesScalarValueType="NO"/>
+        <relationship name="mission" minCount="1" maxCount="1" deletionRule="Nullify" destinationEntity="Mission" inverseName="gpsPoints" inverseEntity="Mission"/>
+        <relationship name="missionProperty" optional="YES" maxCount="1" deletionRule="Deny" destinationEntity="MissionProperty" inverseName="gpsPoint" inverseEntity="MissionProperty"/>
+        <relationship name="observation" optional="YES" maxCount="1" deletionRule="Deny" destinationEntity="Observation" inverseName="gpsPoint" inverseEntity="Observation"/>
+        <fetchIndex name="byLatitudeIndex">
+            <fetchIndexElement property="latitude" type="Binary" order="ascending"/>
+        </fetchIndex>
+        <fetchIndex name="byLongitudeIndex">
+            <fetchIndexElement property="longitude" type="Binary" order="ascending"/>
+        </fetchIndex>
+        <fetchIndex name="byTimestampIndex">
+            <fetchIndexElement property="timestamp" type="Binary" order="ascending"/>
+        </fetchIndex>
+    </entity>
+    <entity name="Map" representedClassName="MapReference" syncable="YES">
+        <attribute name="author" optional="YES" attributeType="String"/>
+        <attribute name="date" optional="YES" attributeType="Date" usesScalarValueType="NO"/>
+        <attribute name="name" attributeType="String"/>
+        <relationship name="adhocLocations" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="AdhocLocation" inverseName="map" inverseEntity="AdhocLocation"/>
+    </entity>
+    <entity name="Mission" representedClassName="Mission" syncable="YES">
+        <relationship name="gpsPoints" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="GpsPoint" inverseName="mission" inverseEntity="GpsPoint"/>
+        <relationship name="missionProperties" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="MissionProperty" inverseName="mission" inverseEntity="MissionProperty"/>
+        <relationship name="observations" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="Observation" inverseName="mission" inverseEntity="Observation"/>
+    </entity>
+    <entity name="MissionProperty" representedClassName="MissionProperty" syncable="YES">
+        <attribute name="observing" optional="YES" attributeType="Boolean" usesScalarValueType="NO"/>
+        <relationship name="adhocLocation" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="AdhocLocation" inverseName="missionProperty" inverseEntity="AdhocLocation"/>
+        <relationship name="gpsPoint" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="GpsPoint" inverseName="missionProperty" inverseEntity="GpsPoint"/>
+        <relationship name="mission" minCount="1" maxCount="1" deletionRule="Nullify" destinationEntity="Mission" inverseName="missionProperties" inverseEntity="Mission"/>
+    </entity>
+    <entity name="Observation" representedClassName="Observation" syncable="YES">
+        <relationship name="adhocLocation" optional="YES" maxCount="1" deletionRule="Cascade" destinationEntity="AdhocLocation" inverseName="observation" inverseEntity="AdhocLocation"/>
+        <relationship name="angleDistanceLocation" optional="YES" maxCount="1" deletionRule="Cascade" destinationEntity="AngleDistanceLocation" inverseName="observation" inverseEntity="AngleDistanceLocation"/>
+        <relationship name="gpsPoint" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="GpsPoint" inverseName="observation" inverseEntity="GpsPoint"/>
+        <relationship name="mission" minCount="1" maxCount="1" deletionRule="Nullify" destinationEntity="Mission" inverseName="observations" inverseEntity="Mission"/>
+    </entity>
+    <elements>
+        <element name="AdhocLocation" positionX="16" positionY="-646" width="128" height="133"/>
+        <element name="AngleDistanceLocation" positionX="18" positionY="-490" width="144" height="103"/>
+        <element name="GpsPoint" positionX="25" positionY="-361" width="128" height="208"/>
+        <element name="Map" positionX="-164" positionY="-648" width="101" height="103"/>
+        <element name="Mission" positionX="7" positionY="-97" width="110" height="88"/>
+        <element name="MissionProperty" positionX="-173" positionY="-369" width="128" height="103"/>
+        <element name="Observation" positionX="250" positionY="-351" width="128" height="103"/>
+    </elements>
+</model>

@@ -52,6 +52,21 @@
 		74D0B0D6245E18C500624FE9 /* Sample Protocols in Resources */ = {isa = PBXBuildFile; fileRef = 74D0B0D5245E18C500624FE9 /* Sample Protocols */; };
 		74D0B0D824608DC100624FE9 /* Legacy Protocols in Resources */ = {isa = PBXBuildFile; fileRef = 74D0B0D724608DC100624FE9 /* Legacy Protocols */; };
 		74D0B0DA2460C1E100624FE9 /* DecodingError.swift in Sources */ = {isa = PBXBuildFile; fileRef = 74D0B0D92460C1E100624FE9 /* DecodingError.swift */; };
+		74D85B50246F1EB60091EA8E /* GpsPoint+CoreDataClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = 74D85B40246F1EB50091EA8E /* GpsPoint+CoreDataClass.swift */; };
+		74D85B51246F1EB60091EA8E /* AdhocLocation+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = 74D85B41246F1EB50091EA8E /* AdhocLocation+CoreDataProperties.swift */; };
+		74D85B52246F1EB60091EA8E /* Mission+CoreDataClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = 74D85B42246F1EB50091EA8E /* Mission+CoreDataClass.swift */; };
+		74D85B53246F1EB60091EA8E /* MissionProperty+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = 74D85B43246F1EB50091EA8E /* MissionProperty+CoreDataProperties.swift */; };
+		74D85B54246F1EB60091EA8E /* AngleDistanceLocation+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = 74D85B44246F1EB50091EA8E /* AngleDistanceLocation+CoreDataProperties.swift */; };
+		74D85B55246F1EB60091EA8E /* GpsPoint+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = 74D85B45246F1EB50091EA8E /* GpsPoint+CoreDataProperties.swift */; };
+		74D85B56246F1EB60091EA8E /* MapReference+CoreDataClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = 74D85B46246F1EB50091EA8E /* MapReference+CoreDataClass.swift */; };
+		74D85B57246F1EB60091EA8E /* Observation+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = 74D85B47246F1EB50091EA8E /* Observation+CoreDataProperties.swift */; };
+		74D85B58246F1EB60091EA8E /* ObserverModel.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 74D85B48246F1EB50091EA8E /* ObserverModel.xcdatamodeld */; };
+		74D85B59246F1EB60091EA8E /* MapReference+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = 74D85B4A246F1EB50091EA8E /* MapReference+CoreDataProperties.swift */; };
+		74D85B5A246F1EB60091EA8E /* AngleDistanceLocation+CoreDataClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = 74D85B4B246F1EB60091EA8E /* AngleDistanceLocation+CoreDataClass.swift */; };
+		74D85B5B246F1EB60091EA8E /* AdhocLocation+CoreDataClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = 74D85B4C246F1EB60091EA8E /* AdhocLocation+CoreDataClass.swift */; };
+		74D85B5C246F1EB60091EA8E /* Observation+CoreDataClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = 74D85B4D246F1EB60091EA8E /* Observation+CoreDataClass.swift */; };
+		74D85B5D246F1EB60091EA8E /* MissionProperty+CoreDataClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = 74D85B4E246F1EB60091EA8E /* MissionProperty+CoreDataClass.swift */; };
+		74D85B5E246F1EB60091EA8E /* Mission+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = 74D85B4F246F1EB60091EA8E /* Mission+CoreDataProperties.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -142,6 +157,21 @@
 		74D0B0D5245E18C500624FE9 /* Sample Protocols */ = {isa = PBXFileReference; lastKnownFileType = folder; path = "Sample Protocols"; sourceTree = "<group>"; };
 		74D0B0D724608DC100624FE9 /* Legacy Protocols */ = {isa = PBXFileReference; lastKnownFileType = folder; path = "Legacy Protocols"; sourceTree = "<group>"; };
 		74D0B0D92460C1E100624FE9 /* DecodingError.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DecodingError.swift; sourceTree = "<group>"; };
+		74D85B40246F1EB50091EA8E /* GpsPoint+CoreDataClass.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "GpsPoint+CoreDataClass.swift"; sourceTree = "<group>"; };
+		74D85B41246F1EB50091EA8E /* AdhocLocation+CoreDataProperties.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "AdhocLocation+CoreDataProperties.swift"; sourceTree = "<group>"; };
+		74D85B42246F1EB50091EA8E /* Mission+CoreDataClass.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Mission+CoreDataClass.swift"; sourceTree = "<group>"; };
+		74D85B43246F1EB50091EA8E /* MissionProperty+CoreDataProperties.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "MissionProperty+CoreDataProperties.swift"; sourceTree = "<group>"; };
+		74D85B44246F1EB50091EA8E /* AngleDistanceLocation+CoreDataProperties.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "AngleDistanceLocation+CoreDataProperties.swift"; sourceTree = "<group>"; };
+		74D85B45246F1EB50091EA8E /* GpsPoint+CoreDataProperties.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "GpsPoint+CoreDataProperties.swift"; sourceTree = "<group>"; };
+		74D85B46246F1EB50091EA8E /* MapReference+CoreDataClass.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "MapReference+CoreDataClass.swift"; sourceTree = "<group>"; };
+		74D85B47246F1EB50091EA8E /* Observation+CoreDataProperties.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Observation+CoreDataProperties.swift"; sourceTree = "<group>"; };
+		74D85B49246F1EB50091EA8E /* ObserverModel.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = ObserverModel.xcdatamodel; sourceTree = "<group>"; };
+		74D85B4A246F1EB50091EA8E /* MapReference+CoreDataProperties.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "MapReference+CoreDataProperties.swift"; sourceTree = "<group>"; };
+		74D85B4B246F1EB60091EA8E /* AngleDistanceLocation+CoreDataClass.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "AngleDistanceLocation+CoreDataClass.swift"; sourceTree = "<group>"; };
+		74D85B4C246F1EB60091EA8E /* AdhocLocation+CoreDataClass.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "AdhocLocation+CoreDataClass.swift"; sourceTree = "<group>"; };
+		74D85B4D246F1EB60091EA8E /* Observation+CoreDataClass.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Observation+CoreDataClass.swift"; sourceTree = "<group>"; };
+		74D85B4E246F1EB60091EA8E /* MissionProperty+CoreDataClass.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "MissionProperty+CoreDataClass.swift"; sourceTree = "<group>"; };
+		74D85B4F246F1EB60091EA8E /* Mission+CoreDataProperties.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Mission+CoreDataProperties.swift"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -240,6 +270,7 @@
 		7471661B243C391100A9C960 /* Models */ = {
 			isa = PBXGroup;
 			children = (
+				74D85B3F246F1E8B0091EA8E /* CoreData */,
 				74A25FC4245232F1006D82CE /* Survey Protocol */,
 				749DE9B9246A3378003D433A /* SurveyInfo.swift */,
 			);
@@ -344,6 +375,28 @@
 				74A25FD92453B469006D82CE /* TotalizerTests.swift */,
 			);
 			path = "Survey Protocol";
+			sourceTree = "<group>";
+		};
+		74D85B3F246F1E8B0091EA8E /* CoreData */ = {
+			isa = PBXGroup;
+			children = (
+				74D85B4C246F1EB60091EA8E /* AdhocLocation+CoreDataClass.swift */,
+				74D85B41246F1EB50091EA8E /* AdhocLocation+CoreDataProperties.swift */,
+				74D85B4B246F1EB60091EA8E /* AngleDistanceLocation+CoreDataClass.swift */,
+				74D85B44246F1EB50091EA8E /* AngleDistanceLocation+CoreDataProperties.swift */,
+				74D85B40246F1EB50091EA8E /* GpsPoint+CoreDataClass.swift */,
+				74D85B45246F1EB50091EA8E /* GpsPoint+CoreDataProperties.swift */,
+				74D85B46246F1EB50091EA8E /* MapReference+CoreDataClass.swift */,
+				74D85B4A246F1EB50091EA8E /* MapReference+CoreDataProperties.swift */,
+				74D85B42246F1EB50091EA8E /* Mission+CoreDataClass.swift */,
+				74D85B4F246F1EB60091EA8E /* Mission+CoreDataProperties.swift */,
+				74D85B4E246F1EB60091EA8E /* MissionProperty+CoreDataClass.swift */,
+				74D85B43246F1EB50091EA8E /* MissionProperty+CoreDataProperties.swift */,
+				74D85B4D246F1EB60091EA8E /* Observation+CoreDataClass.swift */,
+				74D85B47246F1EB50091EA8E /* Observation+CoreDataProperties.swift */,
+				74D85B48246F1EB50091EA8E /* ObserverModel.xcdatamodeld */,
+			);
+			path = CoreData;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -509,30 +562,45 @@
 			buildActionMask = 2147483647;
 			files = (
 				74716633243E5B4300A9C960 /* LocationButtonView.swift in Sources */,
+				74D85B55246F1EB60091EA8E /* GpsPoint+CoreDataProperties.swift in Sources */,
 				7471664E2447917D00A9C960 /* Defaults.swift in Sources */,
+				74D85B50246F1EB60091EA8E /* GpsPoint+CoreDataClass.swift in Sources */,
 				747165EC243C37A800A9C960 /* AppDelegate.swift in Sources */,
 				749DE9B22469CF41003D433A /* FileManagement.swift in Sources */,
 				74A25FC824523381006D82CE /* Dialog.swift in Sources */,
 				7471662F243D898A00A9C960 /* LicenseManager.swift in Sources */,
+				74D85B56246F1EB60091EA8E /* MapReference+CoreDataClass.swift in Sources */,
 				747166522448F66F00A9C960 /* Environment.swift in Sources */,
 				74716629243C487300A9C960 /* MapView.swift in Sources */,
 				7471663C243E858700A9C960 /* CompassView.swift in Sources */,
+				74D85B5E246F1EB60091EA8E /* Mission+CoreDataProperties.swift in Sources */,
 				7471663E243E859A00A9C960 /* ScalebarView.swift in Sources */,
 				747165EE243C37A800A9C960 /* SceneDelegate.swift in Sources */,
 				74716640243F933700A9C960 /* MapControlsView.swift in Sources */,
+				74D85B53246F1EB60091EA8E /* MissionProperty+CoreDataProperties.swift in Sources */,
 				74A25FD0245233FF006D82CE /* Symbology.swift in Sources */,
 				74D0B0D4245A1FC600624FE9 /* AnyJSON.swift in Sources */,
+				74D85B57246F1EB60091EA8E /* Observation+CoreDataProperties.swift in Sources */,
 				7471662B243C4AF700A9C960 /* MapViewController.swift in Sources */,
+				74D85B59246F1EB60091EA8E /* MapReference+CoreDataProperties.swift in Sources */,
 				747166502447979400A9C960 /* LocationButtonController.swift in Sources */,
 				747165F0243C37A800A9C960 /* ContentView.swift in Sources */,
 				74A25FCE245233E1006D82CE /* CsvFormat.swift in Sources */,
 				74A25FC624523371006D82CE /* ProtocolMission.swift in Sources */,
+				74D85B5D246F1EB60091EA8E /* MissionProperty+CoreDataClass.swift in Sources */,
+				74D85B51246F1EB60091EA8E /* AdhocLocation+CoreDataProperties.swift in Sources */,
+				74D85B54246F1EB60091EA8E /* AngleDistanceLocation+CoreDataProperties.swift in Sources */,
 				7471663A243E854800A9C960 /* Scalebar.swift in Sources */,
+				74D85B5C246F1EB60091EA8E /* Observation+CoreDataClass.swift in Sources */,
 				74716639243E854800A9C960 /* Coalescer.swift in Sources */,
 				749DE9BA246A3378003D433A /* SurveyInfo.swift in Sources */,
+				74D85B5B246F1EB60091EA8E /* AdhocLocation+CoreDataClass.swift in Sources */,
+				74D85B52246F1EB60091EA8E /* Mission+CoreDataClass.swift in Sources */,
 				74A25FCC245233B8006D82CE /* MissionTotalizer.swift in Sources */,
 				74D0B0DA2460C1E100624FE9 /* DecodingError.swift in Sources */,
+				74D85B58246F1EB60091EA8E /* ObserverModel.xcdatamodeld in Sources */,
 				74A25FBB2451F33F006D82CE /* SurveyProtocol.swift in Sources */,
+				74D85B5A246F1EB60091EA8E /* AngleDistanceLocation+CoreDataClass.swift in Sources */,
 				74A25FCA24523390006D82CE /* Feature.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -903,6 +971,19 @@
 			productName = Zip;
 		};
 /* End XCSwiftPackageProductDependency section */
+
+/* Begin XCVersionGroup section */
+		74D85B48246F1EB50091EA8E /* ObserverModel.xcdatamodeld */ = {
+			isa = XCVersionGroup;
+			children = (
+				74D85B49246F1EB50091EA8E /* ObserverModel.xcdatamodel */,
+			);
+			currentVersion = 74D85B49246F1EB50091EA8E /* ObserverModel.xcdatamodel */;
+			path = ObserverModel.xcdatamodeld;
+			sourceTree = "<group>";
+			versionGroupType = wrapper.xcdatamodel;
+		};
+/* End XCVersionGroup section */
 	};
 	rootObject = 747165E0243C37A800A9C960 /* Project object */;
 }
