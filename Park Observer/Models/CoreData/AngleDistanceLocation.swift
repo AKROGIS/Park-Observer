@@ -16,7 +16,7 @@ public class AngleDistanceLocation: NSManagedObject {}
 extension AngleDistanceLocation {
 
   @nonobjc public class func fetchRequest() -> NSFetchRequest<AngleDistanceLocation> {
-    return NSFetchRequest<AngleDistanceLocation>(entityName: "AngleDistanceLocation")
+    return NSFetchRequest<AngleDistanceLocation>(entityName: .entityNameAngleDistanceLocation)
   }
 
   @NSManaged public var angle: NSNumber?

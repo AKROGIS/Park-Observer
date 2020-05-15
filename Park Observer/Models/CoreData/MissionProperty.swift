@@ -16,7 +16,7 @@ public class MissionProperty: NSManagedObject {}
 extension MissionProperty {
 
   @nonobjc public class func fetchRequest() -> NSFetchRequest<MissionProperty> {
-    return NSFetchRequest<MissionProperty>(entityName: "MissionProperty")
+    return NSFetchRequest<MissionProperty>(entityName: .entityNameMissionProperty)
   }
 
   @NSManaged public var observing: NSNumber?

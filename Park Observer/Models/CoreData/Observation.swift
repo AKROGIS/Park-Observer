@@ -16,7 +16,7 @@ public class Observation: NSManagedObject {}
 extension Observation {
 
   @nonobjc public class func fetchRequest() -> NSFetchRequest<Observation> {
-    return NSFetchRequest<Observation>(entityName: "Observation")
+    return NSFetchRequest<Observation>(entityName: .entityNameObservation)
   }
 
   @NSManaged public var adhocLocation: AdhocLocation?

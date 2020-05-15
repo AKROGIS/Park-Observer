@@ -60,6 +60,7 @@
 		74D85B5B246F1EB60091EA8E /* AdhocLocation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 74D85B4C246F1EB60091EA8E /* AdhocLocation.swift */; };
 		74D85B5C246F1EB60091EA8E /* Observation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 74D85B4D246F1EB60091EA8E /* Observation.swift */; };
 		74D85B5D246F1EB60091EA8E /* MissionProperty.swift in Sources */ = {isa = PBXBuildFile; fileRef = 74D85B4E246F1EB60091EA8E /* MissionProperty.swift */; };
+		74D85B66246F3AE90091EA8E /* EntityNames.swift in Sources */ = {isa = PBXBuildFile; fileRef = 74D85B65246F3AE90091EA8E /* EntityNames.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -158,6 +159,7 @@
 		74D85B4C246F1EB60091EA8E /* AdhocLocation.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AdhocLocation.swift; sourceTree = "<group>"; };
 		74D85B4D246F1EB60091EA8E /* Observation.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Observation.swift; sourceTree = "<group>"; };
 		74D85B4E246F1EB60091EA8E /* MissionProperty.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MissionProperty.swift; sourceTree = "<group>"; };
+		74D85B65246F3AE90091EA8E /* EntityNames.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EntityNames.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -368,6 +370,7 @@
 			children = (
 				74D85B4C246F1EB60091EA8E /* AdhocLocation.swift */,
 				74D85B4B246F1EB60091EA8E /* AngleDistanceLocation.swift */,
+				74D85B65246F3AE90091EA8E /* EntityNames.swift */,
 				74D85B40246F1EB50091EA8E /* GpsPoint.swift */,
 				74D85B46246F1EB50091EA8E /* MapReference.swift */,
 				74D85B42246F1EB50091EA8E /* Mission.swift */,
@@ -572,6 +575,7 @@
 				74D0B0DA2460C1E100624FE9 /* DecodingError.swift in Sources */,
 				74D85B58246F1EB60091EA8E /* ObserverModel.xcdatamodeld in Sources */,
 				74A25FBB2451F33F006D82CE /* SurveyProtocol.swift in Sources */,
+				74D85B66246F3AE90091EA8E /* EntityNames.swift in Sources */,
 				74D85B5A246F1EB60091EA8E /* AngleDistanceLocation.swift in Sources */,
 				74A25FCA24523390006D82CE /* Feature.swift in Sources */,
 			);

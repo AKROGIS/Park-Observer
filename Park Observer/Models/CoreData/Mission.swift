@@ -16,7 +16,7 @@ public class Mission: NSManagedObject {}
 extension Mission {
 
   @nonobjc public class func fetchRequest() -> NSFetchRequest<Mission> {
-    return NSFetchRequest<Mission>(entityName: "Mission")
+    return NSFetchRequest<Mission>(entityName: .entityNameMission)
   }
 
   @NSManaged public var gpsPoints: NSSet?

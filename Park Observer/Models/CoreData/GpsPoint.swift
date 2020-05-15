@@ -16,7 +16,7 @@ public class GpsPoint: NSManagedObject {}
 extension GpsPoint {
 
   @nonobjc public class func fetchRequest() -> NSFetchRequest<GpsPoint> {
-    return NSFetchRequest<GpsPoint>(entityName: "GpsPoint")
+    return NSFetchRequest<GpsPoint>(entityName: .entityNameGpsPoint)
   }
 
   @NSManaged public var altitude: NSNumber?

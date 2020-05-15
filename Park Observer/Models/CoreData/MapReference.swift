@@ -16,7 +16,7 @@ public class MapReference: NSManagedObject {}
 extension MapReference {
 
   @nonobjc public class func fetchRequest() -> NSFetchRequest<MapReference> {
-    return NSFetchRequest<MapReference>(entityName: "Map")
+    return NSFetchRequest<MapReference>(entityName: .entityNameMap)
   }
 
   @NSManaged public var author: String?

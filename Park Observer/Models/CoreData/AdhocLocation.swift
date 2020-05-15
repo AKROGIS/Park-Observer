@@ -16,7 +16,7 @@ public class AdhocLocation: NSManagedObject {}
 extension AdhocLocation {
 
   @nonobjc public class func fetchRequest() -> NSFetchRequest<AdhocLocation> {
-    return NSFetchRequest<AdhocLocation>(entityName: "AdhocLocation")
+    return NSFetchRequest<AdhocLocation>(entityName: .entityNameAdhocLocation)
   }
 
   @NSManaged public var latitude: NSNumber?
