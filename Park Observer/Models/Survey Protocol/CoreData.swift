@@ -14,7 +14,6 @@ extension String {
   // Prefix the user provided attribute and table names to avoid collisions with database reserved words
   // Do not change these definitions; they are required for compatibility with legacy databases
   static let attributePrefix = "A_"
-
   static let observationPrefix = "O_"
 }
 
@@ -81,10 +80,26 @@ extension Feature {
 extension SurveyProtocol {
 
   var managedObjectModel: NSManagedObjectModel? {
-    // Get the default model -- merge of all models (1) in the main App bundle
-    guard let mom = NSManagedObjectModel.mergedModel(from: nil) else {
-      return nil
+    return mergedManagedObjectModel(bundles: nil)
+  }
+
+  func mergedManagedObjectModel(url: URL) -> NSManagedObjectModel? {
+    if let mom = NSManagedObjectModel.init(contentsOf: url) {
+      return mergedManagedObjectModel(managedObjectModel: mom)
     }
+    return nil
+  }
+
+  func mergedManagedObjectModel(bundles: [Bundle]? = nil) -> NSManagedObjectModel? {
+    // if bundle is nil then get the the model from the main app bundle (doesn'r work for testing)
+    if let mom = NSManagedObjectModel.mergedModel(from: bundles) {
+      return mergedManagedObjectModel(managedObjectModel: mom)
+    }
+    return nil
+  }
+
+  func mergedManagedObjectModel(managedObjectModel mom: NSManagedObjectModel) -> NSManagedObjectModel {
+
     // Add mission attributes
     if let missionEntity = mom.entitiesByName[.entityNameMissionProperty] {
       if let missionAttributes = self.mission?.propertyDescriptions {

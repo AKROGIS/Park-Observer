@@ -62,6 +62,8 @@
 		74D85B5D246F1EB60091EA8E /* MissionProperty.swift in Sources */ = {isa = PBXBuildFile; fileRef = 74D85B4E246F1EB60091EA8E /* MissionProperty.swift */; };
 		74D85B64246F354F0091EA8E /* CoreData.swift in Sources */ = {isa = PBXBuildFile; fileRef = 74D85B63246F354F0091EA8E /* CoreData.swift */; };
 		74D85B66246F3AE90091EA8E /* EntityNames.swift in Sources */ = {isa = PBXBuildFile; fileRef = 74D85B65246F3AE90091EA8E /* EntityNames.swift */; };
+		74D85B67246F88D20091EA8E /* ObserverModel.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 74D85B48246F1EB50091EA8E /* ObserverModel.xcdatamodeld */; };
+		74D85B69246F89730091EA8E /* CoreDataTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 74D85B68246F89730091EA8E /* CoreDataTests.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -162,6 +164,7 @@
 		74D85B4E246F1EB60091EA8E /* MissionProperty.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MissionProperty.swift; sourceTree = "<group>"; };
 		74D85B63246F354F0091EA8E /* CoreData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CoreData.swift; sourceTree = "<group>"; };
 		74D85B65246F3AE90091EA8E /* EntityNames.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EntityNames.swift; sourceTree = "<group>"; };
+		74D85B68246F89730091EA8E /* CoreDataTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CoreDataTests.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -237,6 +240,7 @@
 		74716601243C37AA00A9C960 /* Park ObserverTests */ = {
 			isa = PBXGroup;
 			children = (
+				74D85B68246F89730091EA8E /* CoreDataTests.swift */,
 				749DE9B32469D6DC003D433A /* FileManagerTests.swift */,
 				74716604243C37AA00A9C960 /* Info.plist */,
 				740D5AC0246DB3420018A684 /* Legacy Archives */,
@@ -342,14 +346,14 @@
 			isa = PBXGroup;
 			children = (
 				74D0B0D3245A1FC600624FE9 /* AnyJSON.swift */,
+				74D85B63246F354F0091EA8E /* CoreData.swift */,
 				74A25FCD245233E1006D82CE /* CsvFormat.swift */,
 				74A25FC724523381006D82CE /* Dialog.swift */,
 				74A25FC924523390006D82CE /* Feature.swift */,
-				74A25FC524523371006D82CE /* ProtocolMission.swift */,
 				74A25FCB245233B8006D82CE /* MissionTotalizer.swift */,
+				74A25FC524523371006D82CE /* ProtocolMission.swift */,
 				74A25FBA2451F33F006D82CE /* SurveyProtocol.swift */,
 				74A25FCF245233FF006D82CE /* Symbology.swift */,
-				74D85B63246F354F0091EA8E /* CoreData.swift */,
 			);
 			path = "Survey Protocol";
 			sourceTree = "<group>";
@@ -596,6 +600,8 @@
 				74A25FC324522B48006D82CE /* SurveyProtocolTests.swift in Sources */,
 				74A25FD3245360A5006D82CE /* SymbologyTests.swift in Sources */,
 				74A25FDA2453B469006D82CE /* TotalizerTests.swift in Sources */,
+				74D85B69246F89730091EA8E /* CoreDataTests.swift in Sources */,
+				74D85B67246F88D20091EA8E /* ObserverModel.xcdatamodeld in Sources */,
 				74A25FDE2453B4FE006D82CE /* DialogTests.swift in Sources */,
 				749DE9B42469D6DC003D433A /* FileManagerTests.swift in Sources */,
 			);
