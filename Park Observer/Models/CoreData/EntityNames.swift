@@ -15,4 +15,7 @@ extension String {
   static let entityNameMission = "Mission"
   static let entityNameMissionProperty = "MissionProperty"
   static let entityNameObservation = "Observation"
+
+  // Class names do not need to match the entity names
+  static let classNameObservtion = "Observation"
 }

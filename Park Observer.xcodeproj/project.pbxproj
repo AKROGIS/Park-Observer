@@ -60,6 +60,7 @@
 		74D85B5B246F1EB60091EA8E /* AdhocLocation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 74D85B4C246F1EB60091EA8E /* AdhocLocation.swift */; };
 		74D85B5C246F1EB60091EA8E /* Observation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 74D85B4D246F1EB60091EA8E /* Observation.swift */; };
 		74D85B5D246F1EB60091EA8E /* MissionProperty.swift in Sources */ = {isa = PBXBuildFile; fileRef = 74D85B4E246F1EB60091EA8E /* MissionProperty.swift */; };
+		74D85B64246F354F0091EA8E /* CoreData.swift in Sources */ = {isa = PBXBuildFile; fileRef = 74D85B63246F354F0091EA8E /* CoreData.swift */; };
 		74D85B66246F3AE90091EA8E /* EntityNames.swift in Sources */ = {isa = PBXBuildFile; fileRef = 74D85B65246F3AE90091EA8E /* EntityNames.swift */; };
 /* End PBXBuildFile section */
 
@@ -159,6 +160,7 @@
 		74D85B4C246F1EB60091EA8E /* AdhocLocation.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AdhocLocation.swift; sourceTree = "<group>"; };
 		74D85B4D246F1EB60091EA8E /* Observation.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Observation.swift; sourceTree = "<group>"; };
 		74D85B4E246F1EB60091EA8E /* MissionProperty.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MissionProperty.swift; sourceTree = "<group>"; };
+		74D85B63246F354F0091EA8E /* CoreData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CoreData.swift; sourceTree = "<group>"; };
 		74D85B65246F3AE90091EA8E /* EntityNames.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EntityNames.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -347,6 +349,7 @@
 				74A25FCB245233B8006D82CE /* MissionTotalizer.swift */,
 				74A25FBA2451F33F006D82CE /* SurveyProtocol.swift */,
 				74A25FCF245233FF006D82CE /* Symbology.swift */,
+				74D85B63246F354F0091EA8E /* CoreData.swift */,
 			);
 			path = "Survey Protocol";
 			sourceTree = "<group>";
@@ -547,6 +550,7 @@
 				7471664E2447917D00A9C960 /* Defaults.swift in Sources */,
 				74D85B50246F1EB60091EA8E /* GpsPoint.swift in Sources */,
 				747165EC243C37A800A9C960 /* AppDelegate.swift in Sources */,
+				74D85B64246F354F0091EA8E /* CoreData.swift in Sources */,
 				749DE9B22469CF41003D433A /* FileManagement.swift in Sources */,
 				74A25FC824523381006D82CE /* Dialog.swift in Sources */,
 				7471662F243D898A00A9C960 /* LicenseManager.swift in Sources */,
