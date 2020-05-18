@@ -71,4 +71,16 @@ extension Survey {
     }
   }
 
+  func save() throws {
+    try viewContext.save()
+  }
+
+  func close() {
+    if let psc = viewContext.persistentStoreCoordinator {
+      for store in psc.persistentStores {
+        try? psc.remove(store)
+      }
+    }
+  }
+
 }
