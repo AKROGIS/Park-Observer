@@ -64,18 +64,18 @@ class CoreDataTests: XCTestCase {
     // Given:
     let surveyTests = [
       //(filename, name of survey in archive, number of gps points in survey)
-      ("ARCN Bears.poz", "ARCN Bears", 696),  // has invalid protocol (by new tests)
-      //("LACL Bear Trends.poz", "LACL Bear Trends", 11250), // does not unpack into a sub folder
-      //("SEAN KIMU Protocol (BIG).poz", "SEAN KIMU Protocol", 39237),
-      ("SEAN KIMU Protocol.poz", "SEAN KIMU Protocol", 800),  // survey name clash with previous
-      ("Sheep Transects Short.poz", "Sheep Transects Short", 180),
-      ("Test Protocol Version 2.poz", "Test Protocol Version 2", 41),
-      ("Test Protocol.poz", "Test Protocol", 0),
+      ("ARCN Bears.poz", 696),  // has invalid protocol (by new tests)
+      //("LACL Bear Trends.poz", 11250), // does not unpack into a sub folder
+      ("SEAN KIMU Protocol (BIG).poz", 39237),
+      ("SEAN KIMU Protocol.poz", 800),  // survey name clash with previous
+      ("Sheep Transects Short.poz", 180),
+      ("Test Protocol Version 2.poz", 41),
+      ("Test Protocol.poz", 0),
     ]
+    var surveysToDelete = [String]()
     for test in surveyTests {
       let existingPoz = "/Legacy Archives/" + test.0
-      let existingSurveyName = test.1
-      let gpsPointCount = test.2
+      let gpsPointCount = test.1
       // Get exisitng POZ
       let testBundle = Bundle(for: type(of: self))
       let existingPath = testBundle.resourcePath! + existingPoz
@@ -89,15 +89,17 @@ class CoreDataTests: XCTestCase {
         try? FileManager.default.deleteArchive(with: archive.name)
       }
       // Unpack the POZ as a survey
-      guard let surveyName = try? FileManager.default.importSurvey(from: archive.name) else {
+      guard let surveyName = try? FileManager.default.importSurvey(from: archive.name, conflict:.keepBoth) else {
         XCTAssertTrue(false)
         return
       }
+      surveysToDelete.append(surveyName)
 
       // Then:
       // survey exists, lets try and load it
-      let expectation1 = expectation(description: "Survey \(existingSurveyName) was loaded")
+      let expectation1 = expectation(description: "Survey \(surveyName) was loaded")
 
+      print("Loading \(surveyName)...")
       Survey.load(surveyName) { (result) in
         switch result {
         case .success(let survey):
@@ -122,8 +124,8 @@ class CoreDataTests: XCTestCase {
         XCTFail("Test timed out waiting unmet expectationns: \(error)")
       }
     }
-    for test in surveyTests {
-      try? FileManager.default.deleteSurvey(with: test.1)
+    for name in surveysToDelete {
+      try? FileManager.default.deleteSurvey(with: name)
     }
 
   }
