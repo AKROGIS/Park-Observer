@@ -60,58 +60,72 @@ class CoreDataTests: XCTestCase {
     }
   }
 
-  func testLoadSurvey() {
+  func testLoadLegacySurvey() {
     // Given:
-    let existingPoz = "/Legacy Archives/Test Protocol Version 2.poz"
-    let existingSurveyName = "Test Protocol Version 2"  // base name for survey bundle in POZ
-    // Get exisitng POZ
-    let testBundle = Bundle(for: type(of: self))
-    let existingPath = testBundle.resourcePath! + existingPoz
-    let existingUrl = URL(fileURLWithPath: existingPath)
-    // Copy POZ to the App
-    guard let archive = try? FileManager.default.addToApp(url: existingUrl) else {
-      XCTAssertTrue(false)
-      return
-    }
-    defer {
-      try? FileManager.default.deleteArchive(with: archive.name)
-    }
-    // Unpack the POZ as a survey
-    guard let surveyName = try? FileManager.default.importSurvey(from: archive.name) else {
-      XCTAssertTrue(false)
-      return
-    }
-    defer {
-      try? FileManager.default.deleteSurvey(with: surveyName)
-    }
-
-    // Then:
-    // survey exists, lets try and load it
-    let expectation1 = expectation(description: "Survey was loaded")
-
-    Survey.load(surveyName) { (result) in
-      switch result {
-      case .success(let survey):
-        let request: NSFetchRequest<GpsPoint> = GpsPoint.fetchRequest()
-        let results = try? survey.viewContext.fetch(request)
-        XCTAssertNotNil(results)
-        if let gpsPoint = results {
-          XCTAssertEqual(gpsPoint.count, 41)
-        }
-        break
-      case .failure(let error):
-        print(error)
+    let surveyTests = [
+      //(filename, name of survey in archive, number of gps points in survey)
+      //("ARCN Bears.poz", "ARCN Bears", 696),  // has invalid protocol (by new tests)
+      //("LACL Bear Trends.poz", "LACL Bear Trends", 11250), // does not unpack into a sub folder
+      //("SEAN KIMU Protocol (BIG).poz", "SEAN KIMU Protocol", 39237),
+      ("SEAN KIMU Protocol.poz", "SEAN KIMU Protocol", 800),  // survey name clash with previous
+      ("Sheep Transects Short.poz", "Sheep Transects Short", 180),
+      ("Test Protocol Version 2.poz", "Test Protocol Version 2", 41),
+      ("Test Protocol.poz", "Test Protocol", 0),
+    ]
+    for test in surveyTests {
+      let existingPoz = "/Legacy Archives/" + test.0
+      let existingSurveyName = test.1
+      let gpsPointCount = test.2
+      // Get exisitng POZ
+      let testBundle = Bundle(for: type(of: self))
+      let existingPath = testBundle.resourcePath! + existingPoz
+      let existingUrl = URL(fileURLWithPath: existingPath)
+      // Copy POZ to the App
+      guard let archive = try? FileManager.default.addToApp(url: existingUrl) else {
         XCTAssertTrue(false)
-        break
+        return
       }
-      expectation1.fulfill()
+      defer {
+        try? FileManager.default.deleteArchive(with: archive.name)
+      }
+      // Unpack the POZ as a survey
+      guard let surveyName = try? FileManager.default.importSurvey(from: archive.name) else {
+        XCTAssertTrue(false)
+        return
+      }
+
+      // Then:
+      // survey exists, lets try and load it
+      let expectation1 = expectation(description: "Survey \(existingSurveyName) was loaded")
+
+      Survey.load(surveyName) { (result) in
+        switch result {
+        case .success(let survey):
+          let request: NSFetchRequest<GpsPoint> = GpsPoint.fetchRequest()
+          let results = try? survey.viewContext.fetch(request)
+          XCTAssertNotNil(results)
+          if let gpsPoint = results {
+            XCTAssertEqual(gpsPoint.count, gpsPointCount)
+          }
+          break
+        case .failure(let error):
+          print(error)
+          XCTAssertTrue(false)
+          break
+        }
+        expectation1.fulfill()
+      }
     }
 
-    waitForExpectations(timeout: 1) { error in
+    waitForExpectations(timeout: 5) { error in
       if let error = error {
-        XCTFail("waitForExpectationsWithTimeout errored: \(error)")
+        XCTFail("Test timed out waiting unmet expectationns: \(error)")
       }
     }
+    for test in surveyTests {
+      try? FileManager.default.deleteSurvey(with: test.1)
+    }
+
   }
 
 }
