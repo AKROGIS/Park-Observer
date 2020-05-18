@@ -37,8 +37,10 @@ extension Survey {
       do {
         let info = try SurveyInfo(fromURL: FileManager.default.surveyInfoURL(with: name))
         do {
+          let skipValidation = info.codingVersion == 1  // Skip validation on legacy surveys
           let config = try SurveyProtocol(
-            fromURL: FileManager.default.surveyProtocolURL(with: name))
+            fromURL: FileManager.default.surveyProtocolURL(with: name),
+            skipValidation: skipValidation)
           if let mom = config.managedObjectModel {
             let url = FileManager.default.surveyDatabaseURL(with: name)
             let psc = NSPersistentStoreCoordinator(managedObjectModel: mom)
