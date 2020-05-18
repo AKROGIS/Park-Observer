@@ -6,6 +6,7 @@
 //  Copyright © 2020 Alaska Region GIS Team. All rights reserved.
 //
 
+import CoreData
 import XCTest
 
 @testable import Park_Observer
@@ -56,6 +57,60 @@ class CoreDataTests: XCTestCase {
     XCTAssertNotNil(featureEntity)
     if let featureEntity = featureEntity {
       XCTAssertEqual(featureEntity.properties.count, 6)  // 0 standard + 2 custom + 4 relations
+    }
+  }
+
+  func testLoadSurvey() {
+    // Given:
+    let existingPoz = "/Legacy Archives/Test Protocol Version 2.poz"
+    let existingSurveyName = "Test Protocol Version 2"  // base name for survey bundle in POZ
+    // Get exisitng POZ
+    let testBundle = Bundle(for: type(of: self))
+    let existingPath = testBundle.resourcePath! + existingPoz
+    let existingUrl = URL(fileURLWithPath: existingPath)
+    // Copy POZ to the App
+    guard let archive = try? FileManager.default.addToApp(url: existingUrl) else {
+      XCTAssertTrue(false)
+      return
+    }
+    defer {
+      try? FileManager.default.deleteArchive(with: archive.name)
+    }
+    // Unpack the POZ as a survey
+    guard let surveyName = try? FileManager.default.importSurvey(from: archive.name) else {
+      XCTAssertTrue(false)
+      return
+    }
+    defer {
+      try? FileManager.default.deleteSurvey(with: surveyName)
+    }
+
+    // Then:
+    // survey exists, lets try and load it
+    let expectation1 = expectation(description: "Survey was loaded")
+
+    Survey.load(surveyName) { (result) in
+      switch result {
+      case .success(let survey):
+        let request: NSFetchRequest<GpsPoint> = GpsPoint.fetchRequest()
+        let results = try? survey.viewContext.fetch(request)
+        XCTAssertNotNil(results)
+        if let gpsPoint = results {
+          XCTAssertEqual(gpsPoint.count, 41)
+        }
+        break
+      case .failure(let error):
+        print(error)
+        XCTAssertTrue(false)
+        break
+      }
+      expectation1.fulfill()
+    }
+
+    waitForExpectations(timeout: 1) { error in
+      if let error = error {
+        XCTFail("waitForExpectationsWithTimeout errored: \(error)")
+      }
     }
   }
 

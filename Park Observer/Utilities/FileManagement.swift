@@ -120,7 +120,7 @@ extension String {
 
   static let surveyInfoFilename = "properties.plist"
   static let surveyProtocolFilename = "protocol.obsprot"
-  static let surveyDatabaseFilename = "survey.coredata"
+  static let surveyDatabaseFilename = "survey.coredata/StoreContent/persistentStore"
 }
 
 extension FileManager {

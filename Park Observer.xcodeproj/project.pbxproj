@@ -64,6 +64,7 @@
 		74D85B66246F3AE90091EA8E /* EntityNames.swift in Sources */ = {isa = PBXBuildFile; fileRef = 74D85B65246F3AE90091EA8E /* EntityNames.swift */; };
 		74D85B67246F88D20091EA8E /* ObserverModel.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 74D85B48246F1EB50091EA8E /* ObserverModel.xcdatamodeld */; };
 		74D85B69246F89730091EA8E /* CoreDataTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 74D85B68246F89730091EA8E /* CoreDataTests.swift */; };
+		74D85B6B2472EEC30091EA8E /* Survey.swift in Sources */ = {isa = PBXBuildFile; fileRef = 74D85B6A2472EEC30091EA8E /* Survey.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -165,6 +166,7 @@
 		74D85B63246F354F0091EA8E /* CoreData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CoreData.swift; sourceTree = "<group>"; };
 		74D85B65246F3AE90091EA8E /* EntityNames.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EntityNames.swift; sourceTree = "<group>"; };
 		74D85B68246F89730091EA8E /* CoreDataTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CoreDataTests.swift; sourceTree = "<group>"; };
+		74D85B6A2472EEC30091EA8E /* Survey.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Survey.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -266,6 +268,7 @@
 			children = (
 				74D85B3F246F1E8B0091EA8E /* CoreData */,
 				74A25FC4245232F1006D82CE /* Survey Protocol */,
+				74D85B6A2472EEC30091EA8E /* Survey.swift */,
 				749DE9B9246A3378003D433A /* SurveyInfo.swift */,
 			);
 			path = Models;
@@ -572,6 +575,7 @@
 				747165F0243C37A800A9C960 /* ContentView.swift in Sources */,
 				74A25FCE245233E1006D82CE /* CsvFormat.swift in Sources */,
 				74A25FC624523371006D82CE /* ProtocolMission.swift in Sources */,
+				74D85B6B2472EEC30091EA8E /* Survey.swift in Sources */,
 				74D85B5D246F1EB60091EA8E /* MissionProperty.swift in Sources */,
 				7471663A243E854800A9C960 /* Scalebar.swift in Sources */,
 				74D85B5C246F1EB60091EA8E /* Observation.swift in Sources */,
