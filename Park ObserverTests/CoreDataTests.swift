@@ -65,7 +65,7 @@ class CoreDataTests: XCTestCase {
     let surveyTests = [
       //(filename, name of survey in archive, number of gps points in survey)
       ("ARCN Bears.poz", 696),  // has invalid protocol (by new tests)
-      //("LACL Bear Trends.poz", 11250), // does not unpack into a sub folder
+      ("LACL Bear Trends.poz", 11250), // does not unpack into a sub folder
       ("SEAN KIMU Protocol (BIG).poz", 39237),
       ("SEAN KIMU Protocol.poz", 800),  // survey name clash with previous
       ("Sheep Transects Short.poz", 180),
