@@ -204,6 +204,20 @@ class SurveyInfoTests: XCTestCase {
     XCTAssertEqual(test.title, title)
   }
 
+  func testCreateNewNamedInfo() {
+    // Given:
+    let name = "My New Survey!"
+
+    // When:
+    let info = SurveyInfo(named: name)
+
+    // Then:
+    XCTAssertEqual(info.title, name)
+    XCTAssertEqual(info.codingVersion, 2)
+    XCTAssertNotNil(info.creationDate)
+    XCTAssertEqual(info.state, .unborn)
+    XCTAssertNil(info.modificationDate)
+  }
 }
 
 extension String {

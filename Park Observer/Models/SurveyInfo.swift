@@ -9,11 +9,12 @@
 import Foundation
 
 struct SurveyInfo {
-  let codingVersion: Int  //Legacy
-  let creationDate: Date?
+  let codingVersion: Int  // Legacy = 1; new = 2
+  let creationDate: Date?  // This is nil in legacy, but never nil in new
 
   let exportDate: Date?
-  let modificationDate: Date  //Legacy
+
+  let modificationDate: Date?  // Legacy is never nil
   let syncDate: Date?
 
   let state: SurveyState  //Legacy
@@ -65,6 +66,18 @@ extension SurveyInfo {
 
   init(fromURL url: URL) throws {
     try self.init(data: try Data(contentsOf: url))
+  }
+
+  init(named name: String) {
+    self.init(
+      codingVersion: 2,
+      creationDate: Date(),
+      exportDate: nil,
+      modificationDate: nil,
+      syncDate: nil,
+      state: .unborn,
+      title: name
+    )
   }
 
   func with(
