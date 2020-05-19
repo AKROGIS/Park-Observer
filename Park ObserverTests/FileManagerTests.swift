@@ -554,4 +554,110 @@ class FileManagerTests: XCTestCase {
     XCTAssertEqual(expecting, cleanName)
   }
 
+  func testNewSurveyDirectoryOK() {
+    // Given:
+    let dirtyName = #"M/y| \T:o?y% *B"o<a>t's Cool!"#
+    let expecting = "M_y_ _T_o_y_ _B_o_a_t's Cool!"
+
+    // When:
+    XCTAssertFalse(FileManager.default.surveyNames.contains(dirtyName))
+    XCTAssertFalse(FileManager.default.surveyNames.contains(expecting))
+    guard let newSurveyName = try? FileManager.default.newSurveyDirectory(dirtyName) else {
+      XCTAssertTrue(false)
+      return
+    }
+
+    // Then:
+    XCTAssertEqual(expecting, newSurveyName)
+    XCTAssertTrue(FileManager.default.surveyNames.contains(newSurveyName))
+
+    // Cleanup
+    try? FileManager.default.deleteSurvey(with: newSurveyName)
+  }
+
+  func testNewSurveyDirectoryConflict() {
+    // Given:
+    let desiredName = "My New Survey"
+    // Create one that will pre-exist
+    guard let newSurveyName = try? FileManager.default.newSurveyDirectory(desiredName) else {
+      XCTAssertTrue(false)
+      return
+    }
+    defer {
+      try? FileManager.default.deleteSurvey(with: desiredName)
+    }
+
+    // When:
+    XCTAssertTrue(FileManager.default.surveyNames.contains(desiredName))
+
+    // Then:
+    XCTAssertThrowsError(try FileManager.default.newSurveyDirectory(desiredName, conflict: .fail))
+    XCTAssertThrowsError(try FileManager.default.newSurveyDirectory(desiredName))
+  }
+
+  func testNewSurveyDirectoryReplace() {
+    // Given:
+    let desiredName = "My New Survey"
+    // Create a file in the survey that should get removed
+    guard let _ = try? FileManager.default.newSurveyDirectory(desiredName) else {
+      XCTAssertTrue(false)
+      return
+    }
+    let surveyFileURL = FileManager.default.surveyURL(with: desiredName).appendingPathComponent(
+      "file.txt")
+    XCTAssertNoThrow(try "Junk Data".write(to: surveyFileURL, atomically: false, encoding: .utf8))
+    defer {
+      try? FileManager.default.deleteSurvey(with: desiredName)
+    }
+
+    // When:
+    XCTAssertTrue(FileManager.default.surveyNames.contains(desiredName))
+    XCTAssertTrue(FileManager.default.fileExists(atPath: surveyFileURL.path))
+    guard
+      let newSurveyName = try? FileManager.default.newSurveyDirectory(
+        desiredName, conflict: .replace)
+    else {
+      XCTAssertTrue(false)
+      return
+    }
+    defer {
+      try? FileManager.default.deleteSurvey(with: newSurveyName)
+    }
+
+    // Then:
+    XCTAssertEqual(desiredName, newSurveyName)
+    XCTAssertTrue(FileManager.default.surveyNames.contains(newSurveyName))
+    XCTAssertFalse(FileManager.default.fileExists(atPath: surveyFileURL.path))
+  }
+
+  func testNewSurveyDirectoryKeepBoth() {
+    // Given:
+    let desiredName = "My New Survey"
+    // Create one that will pre-exist
+    guard let _ = try? FileManager.default.newSurveyDirectory(desiredName) else {
+      XCTAssertTrue(false)
+      return
+    }
+    defer {
+      try? FileManager.default.deleteSurvey(with: desiredName)
+    }
+
+    // When:
+    XCTAssertTrue(FileManager.default.surveyNames.contains(desiredName))
+    guard
+      let newSurveyName = try? FileManager.default.newSurveyDirectory(
+        desiredName, conflict: .keepBoth)
+    else {
+      XCTAssertTrue(false)
+      return
+    }
+    defer {
+      try? FileManager.default.deleteSurvey(with: newSurveyName)
+    }
+
+    // Then:
+    XCTAssertNotEqual(desiredName, newSurveyName)
+    XCTAssertTrue(FileManager.default.surveyNames.contains(desiredName))
+    XCTAssertTrue(FileManager.default.surveyNames.contains(newSurveyName))
+  }
 }

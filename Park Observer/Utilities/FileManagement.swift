@@ -285,8 +285,48 @@ extension FileManager {
 //MARK: - Create New Survey
 
 extension String {
+
   var sanitizedFileName: String {
     return components(separatedBy: .init(charactersIn: #"/|\:?%*"<>"#)).joined(separator: "_")
   }
+
 }
 
+extension FileManager {
+
+  func newSurveyDirectory(_ name: String, conflict: ConflictResolution = .fail) throws -> String {
+    var newName = name.sanitizedFileName
+    let potentialUrl = surveyURL(with: newName)
+    do {
+      try createDirectory(at: potentialUrl, withIntermediateDirectories: false, attributes: nil)
+    } catch let error as NSError {
+      if error.code == NSFileWriteFileExistsError {
+        switch conflict {
+        case .replace:
+          try removeItem(at: potentialUrl)
+          try createDirectory(at: potentialUrl, withIntermediateDirectories: false, attributes: nil)
+          break
+        case .keepBoth:
+          for counter in 2... {
+            newName = "\(name.sanitizedFileName) \(counter)"
+            let potentialUrl = surveyURL(with: newName)
+            do {
+              try createDirectory(
+                at: potentialUrl, withIntermediateDirectories: false, attributes: nil)
+              break
+            } catch CocoaError.fileWriteFileExists {
+              //Do nothing; increase the counter and try again
+              //Any other errors will be thrown
+            }
+          }
+        default:
+          throw error
+        }
+      } else {
+        throw error
+      }
+    }
+    return newName
+  }
+
+}
