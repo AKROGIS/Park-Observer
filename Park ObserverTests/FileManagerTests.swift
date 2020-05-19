@@ -528,4 +528,30 @@ class FileManagerTests: XCTestCase {
     XCTAssertFalse(FileManager.default.archiveNames.contains(testName))
   }
 
+  //MARK: - New Survey
+
+  func testSanitizeCleanFilename() {
+    // Given:
+    let dirtyName = "My Toy Boat's Cool!"
+    let expecting = "My Toy Boat's Cool!"
+
+    // When:
+    let cleanName = dirtyName.sanitizedFileName
+
+    // Then:
+    XCTAssertEqual(expecting, cleanName)
+  }
+
+  func testSanitizeDirtyFilename() {
+    // Given:
+    let dirtyName = #"M/y| \T:o?y% *B"o<a>t's Cool!"#
+    let expecting = "M_y_ _T_o_y_ _B_o_a_t's Cool!"
+
+    // When:
+    let cleanName = dirtyName.sanitizedFileName
+
+    // Then:
+    XCTAssertEqual(expecting, cleanName)
+  }
+
 }

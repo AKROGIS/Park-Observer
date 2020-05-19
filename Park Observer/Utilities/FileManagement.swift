@@ -281,3 +281,12 @@ extension FileManager {
   }
 
 }
+
+//MARK: - Create New Survey
+
+extension String {
+  var sanitizedFileName: String {
+    return components(separatedBy: .init(charactersIn: #"/|\:?%*"<>"#)).joined(separator: "_")
+  }
+}
+
