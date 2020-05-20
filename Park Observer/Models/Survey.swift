@@ -42,7 +42,9 @@ extension Survey {
             fromURL: FileManager.default.surveyProtocolURL(with: name),
             skipValidation: skipValidation)
           if let mom = config.managedObjectModel {
-            let url = FileManager.default.surveyDatabaseURL(with: name)
+            let url = info.version == 1
+              ? FileManager.default.surveyOldDatabaseURL(with: name)
+              : FileManager.default.surveyDatabaseURL(with: name)
             let psc = NSPersistentStoreCoordinator(managedObjectModel: mom)
             let context = NSManagedObjectContext(concurrencyType: .mainQueueConcurrencyType)
             context.persistentStoreCoordinator = psc

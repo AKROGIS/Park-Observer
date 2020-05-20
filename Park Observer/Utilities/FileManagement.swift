@@ -120,7 +120,8 @@ extension String {
 
   static let surveyInfoFilename = "properties.plist"
   static let surveyProtocolFilename = "protocol.obsprot"
-  static let surveyDatabaseFilename = "survey.coredata/StoreContent/persistentStore"
+  static let surveyOldDatabaseFilename = "survey.coredata/StoreContent/persistentStore"
+  static let surveyDatabaseFilename = "database.sqlite3"
 }
 
 extension FileManager {
@@ -128,6 +129,10 @@ extension FileManager {
   func createSurveyDirectory() throws {
     // Do not fail if surveyDirectory exists (withIntermediateDirectories == true)
     try createDirectory(at: surveyDirectory, withIntermediateDirectories: true, attributes: nil)
+  }
+
+  func surveyOldDatabaseURL(with name: String) -> URL {
+    return surveyURL(with: name).appendingPathComponent(.surveyOldDatabaseFilename)
   }
 
   func surveyDatabaseURL(with name: String) -> URL {

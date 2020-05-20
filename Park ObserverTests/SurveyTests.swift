@@ -234,4 +234,64 @@ class SurveyTests: XCTestCase {
     XCTAssertEqual(surveyName, info?.title)
   }
 
+  func testCreateAndLoadNewSurvey() {
+    // Given:
+    let surveyName = "My Survey"
+    // Get a protocol File
+    let existingProtocol = "/Sample Protocols/Sample Protocol.v2.obsprot"
+    let testBundle = Bundle(for: type(of: self))
+    let existingPath = testBundle.resourcePath! + existingProtocol
+    let existingUrl = URL(fileURLWithPath: existingPath)
+    let newFile = try? FileManager.default.addToApp(url: existingUrl)
+    guard let file = newFile, file.type == .surveyProtocol else {
+      XCTAssertTrue(false)
+      return
+    }
+    let protocolName = file.name
+    defer {
+      try? FileManager.default.deleteProtocol(with: protocolName)
+    }
+
+    // When:
+    XCTAssertFalse(FileManager.default.surveyNames.contains(surveyName))
+    XCTAssertTrue(FileManager.default.protocolNames.contains(protocolName))
+    // Create Survey
+    guard let newSurveyName = try? Survey.create(surveyName, from: protocolName) else {
+      XCTAssertTrue(false)
+      return
+    }
+    defer {
+      try? FileManager.default.deleteSurvey(with: newSurveyName)
+    }
+
+    // Then:
+    // survey created, lets try and load it
+    let expectation1 = expectation(description: "Survey \(newSurveyName) was loaded")
+
+    print("Loading \(newSurveyName)...")
+    Survey.load(newSurveyName) { (result) in
+      switch result {
+      case .success(let survey):
+        let request: NSFetchRequest<GpsPoint> = GpsPoint.fetchRequest()
+        let results = try? survey.viewContext.fetch(request)
+        XCTAssertNotNil(results)
+        if let gpsPoint = results {
+          XCTAssertEqual(gpsPoint.count, 0)
+        }
+        survey.close()
+        break
+      case .failure(let error):
+        print(error)
+        XCTAssertTrue(false)
+        break
+      }
+      expectation1.fulfill()
+    }
+
+    waitForExpectations(timeout: 1) { error in
+      if let error = error {
+        XCTFail("Test timed out awaiting unmet expectations: \(error)")
+      }
+    }
+  }
 }
