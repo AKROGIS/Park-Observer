@@ -71,6 +71,30 @@ extension Survey {
     }
   }
 
+  /// Creates (but does not open) a new survey
+  /// It returns the filename of the new survey (may be changed to reflect replacing bad filesystem characters or to avoid a conflict)
+  /// Will throw if the file exists, unless conflict is .replace or .keepBoth
+  /// May also throw if there are other file system errors;
+  /// If it does throw, all intermediate files will be deleted, otherwise the new survey is ready to be loaded
+  static func create(
+    _ name: String, from protocolFile: String, conflict: ConflictResolution = .fail
+  ) throws -> String {
+    let newName = try FileManager.default.newSurveyDirectory(
+      name.sanitizedFileName, conflict: conflict)
+    do {
+      let sourceProtocolURL = FileManager.default.protocolURL(with: protocolFile)
+      let surveyProtocolURL = FileManager.default.surveyProtocolURL(with: newName)
+      try FileManager.default.copyItem(at: sourceProtocolURL, to: surveyProtocolURL)
+      let infoURL = FileManager.default.surveyInfoURL(with: newName)
+      let info = SurveyInfo(named: name)
+      try info.write(to: infoURL)
+    } catch {
+      try? FileManager.default.deleteSurvey(with: newName)
+      throw error
+    }
+    return newName
+  }
+
   func save() throws {
     try viewContext.save()
   }
