@@ -37,7 +37,7 @@ extension Survey {
       do {
         let info = try SurveyInfo(fromURL: FileManager.default.surveyInfoURL(with: name))
         do {
-          let skipValidation = info.codingVersion == 1  // Skip validation on legacy surveys
+          let skipValidation = info.version == 1  // Skip validation on legacy surveys
           let config = try SurveyProtocol(
             fromURL: FileManager.default.surveyProtocolURL(with: name),
             skipValidation: skipValidation)

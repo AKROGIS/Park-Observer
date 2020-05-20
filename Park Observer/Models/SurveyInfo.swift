@@ -8,17 +8,16 @@
 
 import Foundation
 
+/// An object to store Survey Name (not necessarily the file name);
+/// and other info about the survey that may be presented to the user without opening the database
 struct SurveyInfo {
-  let codingVersion: Int  // Legacy = 1; new = 2
-  let creationDate: Date?  // This is nil in legacy, but never nil in new
-
+  let creationDate: Date?      // n/a in legacy, but never nil in new
   let exportDate: Date?
-
   let modificationDate: Date?  // Legacy is never nil
   let syncDate: Date?
-
-  let state: SurveyState  //Legacy
-  let title: String  //Legacy
+  let state: SurveyState
+  let title: String
+  let version: Int             // Legacy = 1; new = 2
 
   //Legacy values; do not change
   enum SurveyState: Int, Codable {
@@ -35,12 +34,12 @@ struct SurveyInfo {
 
 extension SurveyInfo: Codable {
   enum CodingKeys: String, CodingKey {
-    case codingVersion = "codingversion"
-    case title = "title"
-    case state = "state"
+    case version = "codingversion"    // Legacy
+    case title = "title"              // Legacy
+    case state = "state"              // Legacy
     case creationDate = "creationdate"
-    case modificationDate = "date"
-    case syncDate = "syncdate"
+    case modificationDate = "date"    // Legacy
+    case syncDate = "syncdate"        // Legacy (optional)
     case exportDate = "exportdate"
   }
 }
@@ -70,33 +69,33 @@ extension SurveyInfo {
 
   init(named name: String) {
     self.init(
-      codingVersion: 2,
       creationDate: Date(),
       exportDate: nil,
       modificationDate: nil,
       syncDate: nil,
       state: .unborn,
-      title: name
+      title: name,
+      version: 2
     )
   }
 
   func with(
-    codingVersion: Int? = nil,
     creationDate: Date? = nil,
     exportDate: Date? = nil,
     modificationDate: Date? = nil,
     syncDate: Date? = nil,
     state: SurveyState? = nil,
-    title: String? = nil
+    title: String? = nil,
+    version: Int? = nil
   ) -> SurveyInfo {
     return SurveyInfo(
-      codingVersion: codingVersion ?? self.codingVersion,
       creationDate: creationDate ?? self.creationDate,
       exportDate: exportDate ?? self.exportDate,
       modificationDate: modificationDate ?? self.modificationDate,
       syncDate: syncDate ?? self.syncDate,
       state: state ?? self.state,
-      title: title ?? self.title
+      title: title ?? self.title,
+      version: version ?? self.version
     )
   }
 

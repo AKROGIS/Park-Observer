@@ -39,7 +39,7 @@ class SurveyInfoTests: XCTestCase {
     // Then:
     XCTAssertNotNil(surveyInfo)
     if let test = surveyInfo {
-      XCTAssertEqual(test.codingVersion, 1)
+      XCTAssertEqual(test.version, 1)
       XCTAssertEqual(test.title, "Test Protocol Version 2")
       XCTAssertEqual(test.modificationDate, date)
       XCTAssertEqual(test.state, SurveyInfo.SurveyState(rawValue: 2))
@@ -57,7 +57,6 @@ class SurveyInfoTests: XCTestCase {
 
   func testNewInfoAsData() {
     // Given:
-    let codingVersion = 1
     // Note: using Date(), as the real code will do, also works but is hard to test
     // because the internal accuracy is higher than stored in the property list encoding
     let creationDate = ISO8601DateFormatter().date(from: "2020-05-11T15:30:26Z")
@@ -66,11 +65,12 @@ class SurveyInfoTests: XCTestCase {
     let syncDate: Date? = nil
     let state = SurveyInfo.SurveyState.saved
     let title = "My Title"
+    let version = 1
 
     // When:
     let surveyInfo = SurveyInfo(
-      codingVersion: codingVersion, creationDate: creationDate, exportDate: exportDate,
-      modificationDate: modificationDate, syncDate: syncDate, state: state, title: title)
+      creationDate: creationDate, exportDate: exportDate, modificationDate: modificationDate,
+      syncDate: syncDate, state: state, title: title, version: version)
     let plist = try? surveyInfo.plistData()
     var newSurveyInfo: SurveyInfo? = nil
     if let plist = plist {
@@ -80,7 +80,6 @@ class SurveyInfoTests: XCTestCase {
     // Then:
     XCTAssertNotNil(newSurveyInfo)
     if let test = newSurveyInfo {
-      XCTAssertEqual(test.codingVersion, codingVersion)
       XCTAssertNotNil(test.creationDate)
       XCTAssertEqual(test.creationDate, creationDate)
       XCTAssertNotNil(test.exportDate)
@@ -90,12 +89,12 @@ class SurveyInfoTests: XCTestCase {
       XCTAssertEqual(test.syncDate, syncDate)
       XCTAssertEqual(test.state, state)
       XCTAssertEqual(test.title, title)
+      XCTAssertEqual(test.version, version)
     }
   }
 
   func testReadWriteToURL() {
     // Given:
-    let codingVersion = 1
     // Note: using Date(), as the real code will do, also works but is hard to test
     // because the internal accuracy is higher than stored in the property list encoding
     let creationDate = ISO8601DateFormatter().date(from: "2020-05-11T15:30:26Z")
@@ -104,11 +103,12 @@ class SurveyInfoTests: XCTestCase {
     let syncDate: Date? = modificationDate.addingTimeInterval(100)
     let state = SurveyInfo.SurveyState.saved
     let title = "My Title"
+    let version = 1
 
     // When:
     let surveyInfo = SurveyInfo(
-      codingVersion: codingVersion, creationDate: creationDate, exportDate: exportDate,
-      modificationDate: modificationDate, syncDate: syncDate, state: state, title: title)
+      creationDate: creationDate, exportDate: exportDate, modificationDate: modificationDate,
+      syncDate: syncDate, state: state, title: title, version: version)
     let surveyName = "NewSurvey"
     let surveyURL = FileManager.default.surveyURL(with: surveyName)
     try! FileManager.default.createDirectory(
@@ -125,13 +125,13 @@ class SurveyInfoTests: XCTestCase {
     // Then:
     XCTAssertNotNil(newSurveyInfo)
     if let test = newSurveyInfo {
-      XCTAssertEqual(test.codingVersion, codingVersion)
       XCTAssertEqual(test.creationDate, creationDate)
       XCTAssertEqual(test.exportDate, exportDate)
       XCTAssertEqual(test.modificationDate, modificationDate)
       XCTAssertEqual(test.syncDate, syncDate)
       XCTAssertEqual(test.state, state)
       XCTAssertEqual(test.title, title)
+      XCTAssertEqual(test.version, version)
     }
 
     // Cleanup
@@ -140,7 +140,6 @@ class SurveyInfoTests: XCTestCase {
 
   func testInitializer1() {
     // Given:
-    let codingVersion = 1
     // Note: using Date(), as the real code will do, also works but is hard to test
     // because the internal accuracy is higher than stored in the property list encoding
     let creationDate = ISO8601DateFormatter().date(from: "2020-05-11T15:30:26Z")
@@ -149,18 +148,18 @@ class SurveyInfoTests: XCTestCase {
     let syncDate: Date? = modificationDate.addingTimeInterval(100)
     let state = SurveyInfo.SurveyState.saved
     let title = "My Title"
+    let version = 1
 
     // When:
     let surveyInfo = SurveyInfo(
-      codingVersion: 123, creationDate: nil, exportDate: nil,
-      modificationDate: Date(), syncDate: nil, state: SurveyInfo.SurveyState.unborn, title: "none")
+      creationDate: nil, exportDate: nil, modificationDate: Date(),
+      syncDate: nil, state: SurveyInfo.SurveyState.unborn, title: "none", version: 123)
     let newSurveyInfo = surveyInfo.with(
-      codingVersion: codingVersion, creationDate: creationDate, exportDate: exportDate,
-      modificationDate: modificationDate, syncDate: syncDate, state: state, title: title)
+      creationDate: creationDate, exportDate: exportDate, modificationDate: modificationDate,
+      syncDate: syncDate, state: state, title: title, version: version)
 
     // Then:
     let test = newSurveyInfo
-    XCTAssertEqual(test.codingVersion, codingVersion)
     XCTAssertNotNil(test.creationDate)
     XCTAssertEqual(test.creationDate, creationDate)
     XCTAssertNotNil(test.exportDate)
@@ -170,11 +169,11 @@ class SurveyInfoTests: XCTestCase {
     XCTAssertEqual(test.syncDate, syncDate)
     XCTAssertEqual(test.state, state)
     XCTAssertEqual(test.title, title)
+    XCTAssertEqual(test.version, version)
   }
 
   func testInitializer2() {
     // Given:
-    let codingVersion = 1
     // Note: using Date(), as the real code will do, also works but is hard to test
     // because the internal accuracy is higher than stored in the property list encoding
     let creationDate = ISO8601DateFormatter().date(from: "2020-05-11T15:30:26Z")
@@ -183,16 +182,16 @@ class SurveyInfoTests: XCTestCase {
     let syncDate: Date? = modificationDate.addingTimeInterval(100)
     let state = SurveyInfo.SurveyState.saved
     let title = "My Title"
+    let version = 1
 
     // When:
     let surveyInfo = SurveyInfo(
-      codingVersion: codingVersion, creationDate: creationDate, exportDate: exportDate,
-      modificationDate: modificationDate, syncDate: syncDate, state: state, title: title)
+      creationDate: creationDate, exportDate: exportDate, modificationDate: modificationDate,
+      syncDate: syncDate, state: state, title: title, version: version)
     let newSurveyInfo = surveyInfo.with()
 
     // Then:
     let test = newSurveyInfo
-    XCTAssertEqual(test.codingVersion, codingVersion)
     XCTAssertNotNil(test.creationDate)
     XCTAssertEqual(test.creationDate, creationDate)
     XCTAssertNotNil(test.exportDate)
@@ -202,6 +201,7 @@ class SurveyInfoTests: XCTestCase {
     XCTAssertEqual(test.syncDate, syncDate)
     XCTAssertEqual(test.state, state)
     XCTAssertEqual(test.title, title)
+    XCTAssertEqual(test.version, version)
   }
 
   func testCreateNewNamedInfo() {
@@ -213,7 +213,7 @@ class SurveyInfoTests: XCTestCase {
 
     // Then:
     XCTAssertEqual(info.title, name)
-    XCTAssertEqual(info.codingVersion, 2)
+    XCTAssertEqual(info.version, 2)
     XCTAssertNotNil(info.creationDate)
     XCTAssertEqual(info.state, .unborn)
     XCTAssertNil(info.modificationDate)
