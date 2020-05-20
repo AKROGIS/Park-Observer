@@ -292,9 +292,16 @@ extension String {
 
 }
 
+enum CreateError: Error {
+  case noName
+}
+
 extension FileManager {
 
   func newSurveyDirectory(_ name: String, conflict: ConflictResolution = .fail) throws -> String {
+    guard !name.isEmpty else {
+      throw CreateError.noName
+    }
     var newName = name.sanitizedFileName
     let potentialUrl = surveyURL(with: newName)
     do {

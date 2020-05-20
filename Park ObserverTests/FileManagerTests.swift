@@ -575,6 +575,17 @@ class FileManagerTests: XCTestCase {
     try? FileManager.default.deleteSurvey(with: newSurveyName)
   }
 
+  func testNewSurveyDirectoryEmptyName() {
+    // Given:
+    let surveyName = ""
+
+    // When:
+    XCTAssertFalse(FileManager.default.surveyNames.contains(surveyName))
+
+    // Then:
+    XCTAssertThrowsError(try FileManager.default.newSurveyDirectory(surveyName))
+  }
+
   func testNewSurveyDirectoryConflict() {
     // Given:
     let desiredName = "My New Survey"
