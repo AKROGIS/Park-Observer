@@ -98,7 +98,9 @@ extension Survey {
   }
 
   func save() throws {
-    try viewContext.save()
+    if viewContext.hasChanges {
+      try viewContext.save()
+    }
   }
 
   func close() {
