@@ -222,7 +222,7 @@ class SurveyTests: XCTestCase {
       return
     }
     defer {
-      try? FileManager.default.deleteSurvey(with: newSurveyName)
+      try? FileManager.default.deleteSurvey(with: newerSurveyName)
     }
     XCTAssertTrue(FileManager.default.surveyNames.contains(newSurveyName))
     XCTAssertTrue(FileManager.default.surveyNames.contains(newerSurveyName))
