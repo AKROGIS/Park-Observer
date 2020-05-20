@@ -20,6 +20,12 @@ extension String {
 
 extension FileManager {
 
+  func createNewTempDirectory() throws -> URL {
+    let url = temporaryDirectory.appendingPathComponent(UUID().uuidString, isDirectory: true)
+    try createDirectory(at: url, withIntermediateDirectories: false, attributes: nil)
+    return url
+  }
+
   var documentDirectory: URL {
     urls(for: .documentDirectory, in: .userDomainMask)[0]
   }
@@ -246,9 +252,10 @@ extension FileManager {
 
   func importSurvey(from archive: String, conflict: ConflictResolution = .fail) throws -> String {
     let zipURL = archiveURL(with: archive)
-    let tempURL = temporaryDirectory.appendingPathComponent("zip_unpack", isDirectory: true)
-    try createDirectory(at: tempURL, withIntermediateDirectories: false, attributes: nil)
-    defer { try? removeItem(at: tempURL) }
+    let tempURL = try createNewTempDirectory()
+    defer {
+      try? removeItem(at: tempURL)
+    }
     Zip.addCustomFileExtension(.surveyArchiveExtension)
     do {
       try Zip.unzipFile(zipURL, destination: tempURL, overwrite: true, password: nil, progress: nil)
