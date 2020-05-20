@@ -112,3 +112,27 @@ extension Survey {
   }
 
 }
+
+//MARK: - Adding Features
+
+// Called by user actions (UI thread), or CoreLocation updates
+// Assume for now that CoreLocation updates happen on the UI thread as they also update the map.
+
+//MARK: - Refresh Map
+
+// Grabs all objects in a freshly opened survey to update the map.
+// Loading large surveys takes a few seconds, but it is unclear where the bottleneck is.
+// This might work best if called on as a background task to create the UI data structures
+// Then update the map on the UI thread.
+
+//MARK: - Export to CSV
+
+// Grabs all objects in a freshly saved survey, and writes to CSV files
+// Should be done on a background thread with a callback.
+
+extension Survey {
+
+  func exportAsCSV(at url: URL, _ completionHandler: @escaping (Error?) -> ()) {
+    completionHandler(nil)
+  }
+}

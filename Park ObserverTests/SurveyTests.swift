@@ -294,4 +294,88 @@ class SurveyTests: XCTestCase {
       }
     }
   }
+
+  func testCreateCSV() {
+    // Given:
+    let existingPoz = "/Legacy Archives/Test Protocol Version 2.poz"
+    let testBundle = Bundle(for: type(of: self))
+    let existingPath = testBundle.resourcePath! + existingPoz
+    let existingUrl = URL(fileURLWithPath: existingPath)
+    // Copy POZ to the App
+    guard let archive = try? FileManager.default.addToApp(url: existingUrl) else {
+      XCTAssertTrue(false)
+      return
+    }
+    defer {
+      try? FileManager.default.deleteArchive(with: archive.name)
+    }
+    // Unpack the POZ as a survey
+    guard
+      let surveyName = try? FileManager.default.importSurvey(
+        from: archive.name, conflict: .keepBoth)
+      else {
+        XCTAssertTrue(false)
+        return
+    }
+    // I would like the CSV files from the archive, but I haven't made ZIP available to the test code
+    // I don't want to create a unzip method in the app just for testing
+    // So I'' just use some cached data for now
+    let csvInfo = [
+      ("Birds.csv", 329),
+      ("Cabins.csv", 323),
+      ("Nests.csv", 528),
+      ("TrackLogs.csv", 1238),
+      ("GpsPoints.csv", 3241),
+    ]
+
+    // When:
+    // survey created, lets try and load it
+    let expectation1 = expectation(description: "Survey \(surveyName) was loaded")
+
+    Survey.load(surveyName) { (result) in
+      switch result {
+      case .success(let survey):
+        // Survey Loaded, lets export as CSV to temp directory
+        guard let tempURL = try? FileManager.default.createNewTempDirectory() else {
+          XCTAssertTrue(false)
+          expectation1.fulfill()
+          break
+        }
+        survey.exportAsCSV(at: tempURL) { (error) in
+          if let error = error {
+            print(error)
+            XCTAssertTrue(false)
+          } else {
+            for (name, bytes) in csvInfo {
+              let path = tempURL.appendingPathComponent(name).path
+              XCTAssertTrue(FileManager.default.fileExists(atPath: path))
+              let content = try? String(contentsOfFile: path, encoding: .utf8)
+              XCTAssertNotNil(content)
+              if let content = content {
+                XCTAssertEqual(content.count, bytes)
+              }
+            }
+          }
+          try? FileManager.default.removeItem(at: tempURL)
+          survey.close()
+          expectation1.fulfill()
+        }
+        break
+      case .failure(let error):
+        print(error)
+        XCTAssertTrue(false)
+        expectation1.fulfill()
+        break
+      }
+    }
+
+    waitForExpectations(timeout: 3) { error in
+      if let error = error {
+        XCTFail("Test timed out awaiting unmet expectations: \(error)")
+      }
+    }
+
+    try? FileManager.default.deleteSurvey(with: surveyName)
+  }
+
 }
