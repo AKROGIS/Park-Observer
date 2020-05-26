@@ -1,0 +1,3 @@
+countWaterPending,countWaterMarbled,countWaterKitlitz,countWaterUnknown,countFlyingPending,countFlyingMarbled,countFlyingKitlitz,countFlyingUnknown,Timestamp_UTC,Timestamp_Local,Year,Day_of_Year,Feature_Latitude,Feature_Longitude,Observer_Latitude,Observer_Longitude,Datum,Map_Name,Map_Author,Map_Date,Angle,Distance,Perp_Meters
+,,,,,,,,2018-07-17T18:32:30.060Z,2018-07-17T10:32:30.060 AKDT,2018,198,61.216562,-149.885998,61.217418,-149.885439,WGS84,,,,20,100,34.202
+0,0,0,0,0,0,0,0,2019-03-18T22:45:07.046Z,2019-03-18T14:45:07.046 AKDT,2019,77,61.216489,-149.886339,61.217332,-149.885698,WGS84,,,,100,100,98.4808

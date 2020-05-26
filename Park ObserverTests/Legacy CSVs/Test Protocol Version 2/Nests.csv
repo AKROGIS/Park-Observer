@@ -1,0 +1,4 @@
+nestid,tree,occupied,chicks,Timestamp_UTC,Timestamp_Local,Year,Day_of_Year,Feature_Latitude,Feature_Longitude,Observer_Latitude,Observer_Longitude,Datum,Map_Name,Map_Author,Map_Date,Angle,Distance,Perp_Meters
+,"Spruce",0,1,2018-04-09T22:17:00.998Z,2018-04-09T14:17:00.998 AKDT,2018,99,61.216647,-149.878927,61.217353,-149.885624,WGS84,MOA2,Unknown,2018-04-05 00:17:37 +0000,,,
+,"Other",1,1,2018-04-09T22:17:18.998Z,2018-04-09T14:17:18.998 AKDT,2018,99,61.217457,-149.875690,61.217353,-149.885624,WGS84,MOA2,Unknown,2018-04-05 00:17:37 +0000,,,
+,,1,0,2019-03-18T22:45:23.043Z,2019-03-18T14:45:23.043 AKDT,2019,77,61.217360,-149.885664,61.217360,-149.885664,WGS84,,,,,,

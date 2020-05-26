@@ -297,10 +297,12 @@ class SurveyTests: XCTestCase {
 
   func testCreateCSV() {
     // Given:
+    let csvFolder = "/Legacy CSVs/Test Protocol Version 2"
     let existingPoz = "/Legacy Archives/Test Protocol Version 2.poz"
     let testBundle = Bundle(for: type(of: self))
     let existingPath = testBundle.resourcePath! + existingPoz
     let existingUrl = URL(fileURLWithPath: existingPath)
+    let csvPath = testBundle.resourcePath! + csvFolder
     // Copy POZ to the App
     guard let archive = try? FileManager.default.addToApp(url: existingUrl) else {
       XCTAssertTrue(false)
@@ -317,16 +319,6 @@ class SurveyTests: XCTestCase {
         XCTAssertTrue(false)
         return
     }
-    // I would like the CSV files from the archive, but I haven't made ZIP available to the test code
-    // I don't want to create a unzip method in the app just for testing
-    // So I'' just use some cached data for now
-    let csvInfo = [
-      ("Birds.csv", 329),
-      ("Cabins.csv", 323),
-      ("Nests.csv", 528),
-      ("TrackLogs.csv", 1238),
-      ("GpsPoints.csv", 3241),
-    ]
 
     // When:
     // survey created, lets try and load it
@@ -346,14 +338,17 @@ class SurveyTests: XCTestCase {
             print(error)
             XCTAssertTrue(false)
           } else {
-            for (name, bytes) in csvInfo {
-              let path = tempURL.appendingPathComponent(name).path
-              XCTAssertTrue(FileManager.default.fileExists(atPath: path))
-              let content = try? String(contentsOfFile: path, encoding: .utf8)
-              XCTAssertNotNil(content)
-              if let content = content {
-                XCTAssertEqual(content.count, bytes)
-              }
+            let csvFiles = (try? FileManager.default.contentsOfDirectory(atPath: csvPath)) ?? []
+            XCTAssertTrue(csvFiles.count > 0)
+            for csvFile in csvFiles {
+              let existCsvUrl = URL(fileURLWithPath: csvPath + "/" + csvFile)
+              let newCsvUrl = tempURL.appendingPathComponent(csvFile)
+              XCTAssertTrue(FileManager.default.fileExists(atPath: newCsvUrl.path))
+              let contentExist = try? String(contentsOf: existCsvUrl, encoding: .utf8)
+              let contentsNew = try? String(contentsOf: newCsvUrl, encoding: .utf8)
+              XCTAssertNotNil(contentExist)
+              XCTAssertNotNil(contentsNew)
+              XCTAssertEqual(contentExist, contentsNew)
             }
           }
           try? FileManager.default.removeItem(at: tempURL)
