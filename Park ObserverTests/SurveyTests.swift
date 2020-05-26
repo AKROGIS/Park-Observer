@@ -22,7 +22,7 @@ class SurveyTests: XCTestCase {
       ("SEAN KIMU Protocol (BIG).poz", 39237),
       ("SEAN KIMU Protocol.poz", 800),  // survey name clash with previous
       ("Sheep Transects Short.poz", 180),
-      ("Test Protocol Version 2.poz", 41),
+      ("Test Protocol Version 2.poz", 79),
       ("Test Protocol.poz", 0),
     ]
     var surveysToDelete = [String]()
