@@ -192,6 +192,16 @@ extension Feature {
 
 }
 
+//MARK: - Feature Calculated Properties
+
+extension Feature {
+
+  var angleDistanceConfig: Location? {
+    return locations.filter { $0.type == .angleDistance }.first
+  }
+
+}
+
 // MARK: - Attribute
 
 /// The attributes (descriptive properties) of a feature; they will be columns in  database

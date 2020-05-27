@@ -59,7 +59,7 @@ class SurveyTests: XCTestCase {
       Survey.load(surveyName) { (result) in
         switch result {
         case .success(let survey):
-          let request: NSFetchRequest<GpsPoint> = GpsPoint.fetchRequest()
+          let request: NSFetchRequest<GpsPoint> = GpsPoints.fetchRequest
           let results = try? survey.viewContext.fetch(request)
           XCTAssertNotNil(results)
           if let gpsPoint = results {
@@ -272,7 +272,7 @@ class SurveyTests: XCTestCase {
     Survey.load(newSurveyName) { (result) in
       switch result {
       case .success(let survey):
-        let request: NSFetchRequest<GpsPoint> = GpsPoint.fetchRequest()
+        let request: NSFetchRequest<GpsPoint> = GpsPoints.fetchRequest
         let results = try? survey.viewContext.fetch(request)
         XCTAssertNotNil(results)
         if let gpsPoint = results {
@@ -315,9 +315,9 @@ class SurveyTests: XCTestCase {
     guard
       let surveyName = try? FileManager.default.importSurvey(
         from: archive.name, conflict: .keepBoth)
-      else {
-        XCTAssertTrue(false)
-        return
+    else {
+      XCTAssertTrue(false)
+      return
     }
 
     // When:

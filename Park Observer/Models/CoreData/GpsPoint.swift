@@ -11,13 +11,7 @@ import CoreData
 import Foundation
 
 @objc(GpsPoint)
-public class GpsPoint: NSManagedObject {}
-
-extension GpsPoint {
-
-  @nonobjc public class func fetchRequest() -> NSFetchRequest<GpsPoint> {
-    return NSFetchRequest<GpsPoint>(entityName: .entityNameGpsPoint)
-  }
+public class GpsPoint: NSManagedObject {
 
   @NSManaged public var altitude: NSNumber?
   @NSManaged public var course: NSNumber?
@@ -30,5 +24,30 @@ extension GpsPoint {
   @NSManaged public var mission: Mission?
   @NSManaged public var missionProperty: MissionProperty?
   @NSManaged public var observation: Observation?
+
+}
+
+extension GpsPoint {
+
+  var location: (latitude: NSNumber?, longitude: NSNumber?) {
+    return (latitude: latitude, longitude: longitude)
+  }
+
+}
+
+typealias GpsPoints = [GpsPoint]
+
+extension GpsPoints {
+
+  static var fetchRequest: NSFetchRequest<GpsPoint> {
+    return NSFetchRequest<GpsPoint>(entityName: .entityNameGpsPoint)
+  }
+
+  static var allOrderByTime: NSFetchRequest<GpsPoint> {
+    let request: NSFetchRequest<GpsPoint> = fetchRequest
+    let sortOrder = NSSortDescriptor(key: "timestamp", ascending: true)
+    request.sortDescriptors = [sortOrder]
+    return request
+  }
 
 }

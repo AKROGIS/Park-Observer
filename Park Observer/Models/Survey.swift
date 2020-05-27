@@ -127,12 +127,32 @@ extension Survey {
 
 //MARK: - Export to CSV
 
-// Grabs all objects in a freshly saved survey, and writes to CSV files
-// Should be done on a background thread with a callback.
-
 extension Survey {
 
-  func exportAsCSV(at url: URL, _ completionHandler: @escaping (Error?) -> ()) {
-    completionHandler(nil)
+  /// Grabs all objects in a survey database and writes the data to CSV files on a background thread.
+  func exportAsCSV(at url: URL, _ completionHandler: @escaping (Error?) -> Void) {
+    let privateContext = NSManagedObjectContext(concurrencyType: .privateQueueConcurrencyType)
+    privateContext.persistentStoreCoordinator = self.viewContext.persistentStoreCoordinator
+    privateContext.perform {
+      // This background context cannot use any managed objects from another context/thread,
+      // and any objects fetched in this context cannot be passed to another context/thread.
+      do {
+        let files = try self.csvFiles()
+        for fileName in files.keys {
+          let fileUrl = url.appendingPathComponent(fileName + ".csv")
+          if let fileText = files[fileName] {
+            try fileText.write(to: fileUrl, atomically: false, encoding: .utf8)
+          }
+        }
+        DispatchQueue.main.async {
+          completionHandler(nil)
+        }
+      } catch {
+        DispatchQueue.main.async {
+          completionHandler(error)
+        }
+      }
+    }
   }
+
 }

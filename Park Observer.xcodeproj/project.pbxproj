@@ -9,7 +9,10 @@
 /* Begin PBXBuildFile section */
 		740D5AC1246DB3420018A684 /* Legacy Archives in Resources */ = {isa = PBXBuildFile; fileRef = 740D5AC0246DB3420018A684 /* Legacy Archives */; };
 		741679942478F1D200FF353C /* Legacy CSVs in Resources */ = {isa = PBXBuildFile; fileRef = 741679932478F1D200FF353C /* Legacy CSVs */; };
+		74167996247DB79D00FF353C /* CSVFormatter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 74167995247DB79D00FF353C /* CSVFormatter.swift */; };
+		74167998247DB86300FF353C /* TrackLogs.swift in Sources */ = {isa = PBXBuildFile; fileRef = 74167997247DB86300FF353C /* TrackLogs.swift */; };
 		744C9B36247482700099D414 /* SurveyTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 744C9B35247482700099D414 /* SurveyTests.swift */; };
+		744C9B3A24760A700099D414 /* Formatters.swift in Sources */ = {isa = PBXBuildFile; fileRef = 744C9B3924760A700099D414 /* Formatters.swift */; };
 		747165EC243C37A800A9C960 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 747165EB243C37A800A9C960 /* AppDelegate.swift */; };
 		747165EE243C37A800A9C960 /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 747165ED243C37A800A9C960 /* SceneDelegate.swift */; };
 		747165F0243C37A800A9C960 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 747165EF243C37A800A9C960 /* ContentView.swift */; };
@@ -103,8 +106,11 @@
 /* Begin PBXFileReference section */
 		740D5AC0246DB3420018A684 /* Legacy Archives */ = {isa = PBXFileReference; lastKnownFileType = folder; path = "Legacy Archives"; sourceTree = "<group>"; };
 		741679932478F1D200FF353C /* Legacy CSVs */ = {isa = PBXFileReference; lastKnownFileType = folder; path = "Legacy CSVs"; sourceTree = "<group>"; };
+		74167995247DB79D00FF353C /* CSVFormatter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CSVFormatter.swift; sourceTree = "<group>"; };
+		74167997247DB86300FF353C /* TrackLogs.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrackLogs.swift; sourceTree = "<group>"; };
 		742B08A2244A477A00A5137C /* Protocol Specification.md */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = net.daringfireball.markdown; path = "Protocol Specification.md"; sourceTree = "<group>"; };
 		744C9B35247482700099D414 /* SurveyTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SurveyTests.swift; sourceTree = "<group>"; };
+		744C9B3924760A700099D414 /* Formatters.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Formatters.swift; sourceTree = "<group>"; };
 		747165E8243C37A800A9C960 /* Park Observer.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Park Observer.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		747165EB243C37A800A9C960 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		747165ED243C37A800A9C960 /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
@@ -276,6 +282,7 @@
 				74A25FC4245232F1006D82CE /* Survey Protocol */,
 				74D85B6A2472EEC30091EA8E /* Survey.swift */,
 				749DE9B9246A3378003D433A /* SurveyInfo.swift */,
+				74167997247DB86300FF353C /* TrackLogs.swift */,
 			);
 			path = Models;
 			sourceTree = "<group>";
@@ -342,10 +349,12 @@
 			isa = PBXGroup;
 			children = (
 				74716636243E854700A9C960 /* Coalescer.swift */,
+				74167995247DB79D00FF353C /* CSVFormatter.swift */,
 				74D0B0D92460C1E100624FE9 /* DecodingError.swift */,
 				7471664D2447917D00A9C960 /* Defaults.swift */,
 				747166512448F66F00A9C960 /* Environment.swift */,
 				749DE9B12469CF41003D433A /* FileManagement.swift */,
+				744C9B3924760A700099D414 /* Formatters.swift */,
 				7471662E243D898A00A9C960 /* LicenseManager.swift */,
 			);
 			path = Utilities;
@@ -574,6 +583,7 @@
 				7471663C243E858700A9C960 /* CompassView.swift in Sources */,
 				7471663E243E859A00A9C960 /* ScalebarView.swift in Sources */,
 				747165EE243C37A800A9C960 /* SceneDelegate.swift in Sources */,
+				74167996247DB79D00FF353C /* CSVFormatter.swift in Sources */,
 				74716640243F933700A9C960 /* MapControlsView.swift in Sources */,
 				74A25FD0245233FF006D82CE /* Symbology.swift in Sources */,
 				74D0B0D4245A1FC600624FE9 /* AnyJSON.swift in Sources */,
@@ -592,8 +602,10 @@
 				74D85B52246F1EB60091EA8E /* Mission.swift in Sources */,
 				74A25FCC245233B8006D82CE /* MissionTotalizer.swift in Sources */,
 				74D0B0DA2460C1E100624FE9 /* DecodingError.swift in Sources */,
+				744C9B3A24760A700099D414 /* Formatters.swift in Sources */,
 				74D85B58246F1EB60091EA8E /* ObserverModel.xcdatamodeld in Sources */,
 				74A25FBB2451F33F006D82CE /* SurveyProtocol.swift in Sources */,
+				74167998247DB86300FF353C /* TrackLogs.swift in Sources */,
 				74D85B66246F3AE90091EA8E /* EntityNames.swift in Sources */,
 				74D85B5A246F1EB60091EA8E /* AngleDistanceLocation.swift in Sources */,
 				74A25FCA24523390006D82CE /* Feature.swift in Sources */,
