@@ -11,17 +11,22 @@ import CoreData
 import Foundation
 
 @objc(MissionProperty)
-public class MissionProperty: NSManagedObject {}
-
-extension MissionProperty {
-
-  @nonobjc public class func fetchRequest() -> NSFetchRequest<MissionProperty> {
-    return NSFetchRequest<MissionProperty>(entityName: .entityNameMissionProperty)
-  }
+public class MissionProperty: NSManagedObject {
 
   @NSManaged public var observing: NSNumber?
   @NSManaged public var adhocLocation: AdhocLocation?
   @NSManaged public var gpsPoint: GpsPoint?
   @NSManaged public var mission: Mission?
+
+}
+
+// MARK: - Creation
+
+extension MissionProperty {
+
+  static func new(in context: NSManagedObjectContext) -> MissionProperty {
+    return NSEntityDescription.insertNewObject(
+      forEntityName: .entityNameMissionProperty, into: context) as! MissionProperty
+  }
 
 }

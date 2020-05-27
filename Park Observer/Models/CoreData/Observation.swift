@@ -20,6 +20,34 @@ public class Observation: NSManagedObject {
 
 }
 
+typealias Observations = [Observation]
+
+// MARK: - Creation
+
+extension Observation {
+
+  static func new(_ feature: Feature, in context: NSManagedObjectContext) -> Observation {
+    let entityName = .observationPrefix + feature.name
+    return NSEntityDescription.insertNewObject(forEntityName: entityName, into: context)
+      as! Observation
+  }
+
+}
+
+// MARK: - Fetching
+
+extension Observations {
+
+  static func fetchAll(for featureName: String) -> NSFetchRequest<Observation> {
+    let entityName = .observationPrefix + featureName
+    let request: NSFetchRequest<Observation> = NSFetchRequest<Observation>(entityName: entityName)
+    return request
+  }
+
+}
+
+// MARK: - Computed Properties
+
 extension Observation {
 
   var timestamp: Date? {
@@ -72,16 +100,4 @@ extension Observation {
     }
     return (latitude: gpsPoint.latitude, longitude: gpsPoint.longitude)
   }
-}
-
-typealias Observations = [Observation]
-
-extension Observations {
-
-  static func fetchAll(for featureName: String) -> NSFetchRequest<Observation> {
-    let entityName = .observationPrefix + featureName
-    let request: NSFetchRequest<Observation> = NSFetchRequest<Observation>(entityName: entityName)
-    return request
-  }
-
 }

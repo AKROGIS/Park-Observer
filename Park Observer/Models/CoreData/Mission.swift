@@ -11,13 +11,7 @@ import CoreData
 import Foundation
 
 @objc(Mission)
-public class Mission: NSManagedObject {}
-
-extension Mission {
-
-  @nonobjc public class func fetchRequest() -> NSFetchRequest<Mission> {
-    return NSFetchRequest<Mission>(entityName: .entityNameMission)
-  }
+public class Mission: NSManagedObject {
 
   @NSManaged public var gpsPoints: NSSet?
   @NSManaged public var missionProperties: NSSet?
@@ -25,7 +19,18 @@ extension Mission {
 
 }
 
-// MARK: Generated accessors for gpsPoints
+// MARK: - Creation
+
+extension Mission {
+
+  static func new(in context: NSManagedObjectContext) -> Mission {
+    return NSEntityDescription.insertNewObject(forEntityName: .entityNameMission, into: context)
+      as! Mission
+  }
+
+}
+
+// MARK: - Generated accessors
 
 extension Mission {
 
@@ -43,8 +48,6 @@ extension Mission {
 
 }
 
-// MARK: Generated accessors for missionProperties
-
 extension Mission {
 
   @objc(addMissionPropertiesObject:)
@@ -60,8 +63,6 @@ extension Mission {
   @NSManaged public func removeFromMissionProperties(_ values: NSSet)
 
 }
-
-// MARK: Generated accessors for observations
 
 extension Mission {
 

@@ -11,13 +11,7 @@ import CoreData
 import Foundation
 
 @objc(AdhocLocation)
-public class AdhocLocation: NSManagedObject {}
-
-extension AdhocLocation {
-
-  @nonobjc public class func fetchRequest() -> NSFetchRequest<AdhocLocation> {
-    return NSFetchRequest<AdhocLocation>(entityName: .entityNameAdhocLocation)
-  }
+public class AdhocLocation: NSManagedObject {
 
   @NSManaged public var latitude: NSNumber?
   @NSManaged public var longitude: NSNumber?
@@ -25,5 +19,16 @@ extension AdhocLocation {
   @NSManaged public var map: MapReference?
   @NSManaged public var missionProperty: MissionProperty?
   @NSManaged public var observation: Observation?
+
+}
+
+// MARK: - Creation
+
+extension AdhocLocation {
+
+  static func new(in context: NSManagedObjectContext) -> AdhocLocation {
+    return NSEntityDescription.insertNewObject(
+      forEntityName: .entityNameAdhocLocation, into: context) as! AdhocLocation
+  }
 
 }

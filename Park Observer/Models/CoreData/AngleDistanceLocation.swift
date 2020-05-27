@@ -20,6 +20,19 @@ public class AngleDistanceLocation: NSManagedObject {
 
 }
 
+// MARK: - Creation
+
+extension AngleDistanceLocation {
+
+  static func new(in context: NSManagedObjectContext) -> AngleDistanceLocation {
+    return NSEntityDescription.insertNewObject(
+      forEntityName: .entityNameAngleDistanceLocation, into: context) as! AngleDistanceLocation
+  }
+
+}
+
+// MARK: - AngleDistanceHelper
+
 /// Converts between a user centric Angle/Distance, and a database Angle/Distance
 /// The database stores two angles in geographic degrees (North = 0, increasing clockwise), and distance in meters.
 /// The user input/output is in degrees to the feature (in a protocol determined reference frame), and the distance in user units.

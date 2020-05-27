@@ -27,15 +27,20 @@ public class GpsPoint: NSManagedObject {
 
 }
 
+typealias GpsPoints = [GpsPoint]
+
+// MARK: - Creation
+
 extension GpsPoint {
 
-  var location: (latitude: NSNumber?, longitude: NSNumber?) {
-    return (latitude: latitude, longitude: longitude)
+  static func new(in context: NSManagedObjectContext) -> GpsPoint {
+    return NSEntityDescription.insertNewObject(forEntityName: .entityNameGpsPoint, into: context)
+      as! GpsPoint
   }
 
 }
 
-typealias GpsPoints = [GpsPoint]
+// MARK: - Fetching
 
 extension GpsPoints {
 
@@ -48,6 +53,16 @@ extension GpsPoints {
     let sortOrder = NSSortDescriptor(key: "timestamp", ascending: true)
     request.sortDescriptors = [sortOrder]
     return request
+  }
+
+}
+
+// MARK: - Computed Properties
+
+extension GpsPoint {
+
+  var location: (latitude: NSNumber?, longitude: NSNumber?) {
+    return (latitude: latitude, longitude: longitude)
   }
 
 }

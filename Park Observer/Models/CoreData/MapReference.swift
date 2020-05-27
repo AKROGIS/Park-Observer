@@ -11,13 +11,7 @@ import CoreData
 import Foundation
 
 @objc(MapReference)
-public class MapReference: NSManagedObject {}
-
-extension MapReference {
-
-  @nonobjc public class func fetchRequest() -> NSFetchRequest<MapReference> {
-    return NSFetchRequest<MapReference>(entityName: .entityNameMap)
-  }
+public class MapReference: NSManagedObject {
 
   @NSManaged public var author: String?
   @NSManaged public var date: Date?
@@ -26,7 +20,18 @@ extension MapReference {
 
 }
 
-// MARK: Generated accessors for adhocLocations
+// MARK: - Creation
+
+extension MapReference {
+
+  static func new(in context: NSManagedObjectContext) -> MapReference {
+    return NSEntityDescription.insertNewObject(forEntityName: .entityNameMap, into: context)
+      as! MapReference
+  }
+
+}
+
+// MARK: - Generated accessors
 
 extension MapReference {
 
