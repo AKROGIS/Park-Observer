@@ -54,19 +54,19 @@ extension Observation {
     return gpsPoint?.timestamp ?? adhocLocation?.timestamp
   }
 
-  var locationOfFeature: (latitude: NSNumber?, longitude: NSNumber?) {
-    if let angleDistance = angleDistanceLocation, let gps = gpsPoint {
+  var locationOfFeature: Location? {
+    if let angleDistance = angleDistanceLocation, let location = gpsPoint?.location {
       let adHelper = AngleDistanceHelper(
         config: nil,
         deadAhead: angleDistance.direction?.doubleValue,
         distanceInMeters: angleDistance.distance?.doubleValue,
         absoluteAngle: angleDistance.angle?.doubleValue)
-      return adHelper.featureLocationFromUserLocation(gps.location)
+      return adHelper.featureLocationFromUserLocation(location)
     } else {
-      if let mapLocation = adhocLocation, gpsPoint == nil {
-        return (latitude: mapLocation.latitude, longitude: mapLocation.longitude)
+      if gpsPoint == nil, let lat = adhocLocation?.latitude?.doubleValue, let lon = adhocLocation?.longitude?.doubleValue  {
+        return Location(latitude: lat, longitude: lon)
       } else {
-        return (latitude: gpsPoint?.latitude, longitude: gpsPoint?.longitude)
+        return gpsPoint?.location
       }
     }
   }

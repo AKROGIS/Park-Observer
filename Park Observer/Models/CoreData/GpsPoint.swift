@@ -8,6 +8,7 @@
 //
 
 import CoreData
+import CoreLocation  // for CLLocationCoordinate2D
 import Foundation
 
 @objc(GpsPoint)
@@ -59,10 +60,15 @@ extension GpsPoints {
 
 // MARK: - Computed Properties
 
+typealias Location = CLLocationCoordinate2D
+
 extension GpsPoint {
 
-  var location: (latitude: NSNumber?, longitude: NSNumber?) {
-    return (latitude: latitude, longitude: longitude)
+  var location: Location? {
+    guard let lat = latitude?.doubleValue, let lon = longitude?.doubleValue else {
+      return nil
+    }
+    return Location(latitude: lat, longitude: lon)
   }
 
 }
