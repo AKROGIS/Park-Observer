@@ -158,14 +158,13 @@ extension Observation {
     // AngleDistanceFields
     var adFields = ["", "", ""]
     if let angleDistance = angleDistanceLocation, let config = feature.angleDistanceConfig {
-      let adHelper = AngleDistanceHelper(
-        config: config,
-        deadAhead: angleDistance.direction?.doubleValue,
-        distanceInMeters: angleDistance.distance?.doubleValue,
-        absoluteAngle: angleDistance.angle?.doubleValue)
+      var adHelper = AngleDistanceHelper(
+        config: config, deadAhead: angleDistance.direction?.doubleValue)
+      adHelper.absoluteAngle = angleDistance.angle?.doubleValue
+      adHelper.distanceInMeters = angleDistance.distance?.doubleValue
       adFields = [
-        adHelper.userAngle == nil ? "" : "\(adHelper.userAngle!)",
-        adHelper.distanceInUserUnits == nil ? "" : "\(adHelper.distanceInUserUnits!)",
+        String.formatOptional(format: "%g", value: adHelper.userAngle),
+        String.formatOptional(format: "%g", value: adHelper.distanceInUserUnits),
         String.formatOptional(format: "%g", value: adHelper.perpendicularMeters),
       ]
     }

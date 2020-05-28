@@ -56,11 +56,10 @@ extension Observation {
 
   var locationOfFeature: Location? {
     if let angleDistance = angleDistanceLocation, let location = gpsPoint?.location {
-      let adHelper = AngleDistanceHelper(
-        config: nil,
-        deadAhead: angleDistance.direction?.doubleValue,
-        distanceInMeters: angleDistance.distance?.doubleValue,
-        absoluteAngle: angleDistance.angle?.doubleValue)
+      var adHelper = AngleDistanceHelper(
+        config: nil, deadAhead: angleDistance.direction?.doubleValue)
+      adHelper.absoluteAngle = angleDistance.angle?.doubleValue
+      adHelper.distanceInMeters = angleDistance.distance?.doubleValue
       return adHelper.featureLocationFromUserLocation(location)
     } else {
       if gpsPoint == nil, let lat = adhocLocation?.latitude?.doubleValue, let lon = adhocLocation?.longitude?.doubleValue  {
