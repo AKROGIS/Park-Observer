@@ -62,7 +62,9 @@ extension Observation {
       adHelper.distanceInMeters = angleDistance.distance?.doubleValue
       return adHelper.featureLocationFromUserLocation(location)
     } else {
-      if gpsPoint == nil, let lat = adhocLocation?.latitude?.doubleValue, let lon = adhocLocation?.longitude?.doubleValue  {
+      if gpsPoint == nil, let lat = adhocLocation?.latitude?.doubleValue,
+        let lon = adhocLocation?.longitude?.doubleValue
+      {
         return Location(latitude: lat, longitude: lon)
       } else {
         return gpsPoint?.location

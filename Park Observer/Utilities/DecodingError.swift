@@ -11,13 +11,13 @@
 extension DecodingError {
   public var errorDescription: String {
     switch self {
-    case .dataCorrupted(_) :
+    case .dataCorrupted(_):
       return "Data Corrupted"
-    case .keyNotFound(_, _) :
+    case .keyNotFound(_, _):
       return "Property Not Found"
-    case .typeMismatch(_, _) :
+    case .typeMismatch(_, _):
       return "Type Mismatch"
-    case .valueNotFound(_, _) :
+    case .valueNotFound(_, _):
       return "Value Not Found"
     @unknown default:
       return "Unknown Decoding Error"
@@ -26,18 +26,18 @@ extension DecodingError {
 
   public var failureReason: String? {
     switch self {
-    case .dataCorrupted(let context) :
+    case .dataCorrupted(let context):
       let location = path(for: context)
       let locationMessage = "\(context.debugDescription) at \(location)."
       return location.isEmpty ? context.debugDescription : locationMessage
-    case .keyNotFound(let key, let context) :
+    case .keyNotFound(let key, let context):
       let location = path(for: context)
       return "\"\(key)\" missing at \(location.isEmpty ? "top of document" : location )."
-    case .typeMismatch(_, let context) :
+    case .typeMismatch(_, let context):
       let location = path(for: context)
       let locationMessage = "\(context.debugDescription) at \(location)."
       return location.isEmpty ? context.debugDescription : locationMessage
-    case .valueNotFound(_, let context) :
+    case .valueNotFound(_, let context):
       let location = path(for: context)
       let locationMessage = "\(context.debugDescription) at \(location)."
       return location.isEmpty ? context.debugDescription : locationMessage

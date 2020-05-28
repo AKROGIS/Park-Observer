@@ -98,7 +98,9 @@ extension SurveyProtocol {
     return nil
   }
 
-  func mergedManagedObjectModel(managedObjectModel mom: NSManagedObjectModel) -> NSManagedObjectModel {
+  func mergedManagedObjectModel(managedObjectModel mom: NSManagedObjectModel)
+    -> NSManagedObjectModel
+  {
 
     // Add mission attributes
     if let missionEntity = mom.entitiesByName[.entityNameMissionProperty] {

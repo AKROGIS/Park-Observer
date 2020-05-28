@@ -145,7 +145,8 @@ class SurveyProtocolTests: XCTestCase {
 
   func testV1Sample() {
     let testBundle = Bundle(for: type(of: self))
-    let fileURL = testBundle.url(forResource: "Sample Protocols/Sample Protocol.v1", withExtension: "obsprot")
+    let fileURL = testBundle.url(
+      forResource: "Sample Protocols/Sample Protocol.v1", withExtension: "obsprot")
     XCTAssertNotNil(fileURL)
     if let url = fileURL {
       let surveyProtocol = try? SurveyProtocol(fromURL: url)
@@ -155,7 +156,8 @@ class SurveyProtocolTests: XCTestCase {
 
   func testV2Sample() {
     let testBundle = Bundle(for: type(of: self))
-    let fileURL = testBundle.url(forResource: "Sample Protocols/Sample Protocol.v2", withExtension: "obsprot")
+    let fileURL = testBundle.url(
+      forResource: "Sample Protocols/Sample Protocol.v2", withExtension: "obsprot")
     XCTAssertNotNil(fileURL)
     if let url = fileURL {
       let surveyProtocol = try? SurveyProtocol(fromURL: url)
@@ -171,7 +173,7 @@ class SurveyProtocolTests: XCTestCase {
     XCTAssertNotNil(docsArray)
     if let docs = docsArray {
       XCTAssertTrue(docs.count > 0)
-      var dict: [String:Bool] = [:]
+      var dict: [String: Bool] = [:]
       for doc in docs {
         if doc.contains(".obsprot") {
           dict[doc] = false
@@ -179,13 +181,13 @@ class SurveyProtocolTests: XCTestCase {
           do {
             _ = try SurveyProtocol(fromURL: url, skipValidation: true)
             dict[doc] = true
-          } catch  {
+          } catch {
             print(doc)
             print(error)
           }
         }
       }
-      let errors = dict.filter { (_,value) in !value }
+      let errors = dict.filter { (_, value) in !value }
       if errors.count > 0 {
         print("Problem Protocols: \(errors.keys)")
       }
@@ -201,7 +203,7 @@ class SurveyProtocolTests: XCTestCase {
     XCTAssertNotNil(docsArray)
     if let docs = docsArray {
       XCTAssertTrue(docs.count > 0)
-      var dict: [String:Bool] = [:]
+      var dict: [String: Bool] = [:]
       for doc in docs {
         if doc.contains(".obsprot") {
           dict[doc] = false
@@ -215,7 +217,7 @@ class SurveyProtocolTests: XCTestCase {
           }
         }
       }
-      let errors = dict.filter { (_,value) in !value }
+      let errors = dict.filter { (_, value) in !value }
       if errors.count > 0 {
         print("Problem Protocols: \(errors.keys)")
       }

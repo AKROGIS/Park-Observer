@@ -8,7 +8,7 @@
 
 import ArcGIS
 
-struct LicenseManager {
+enum LicenseManager {
 
   static func licenseArcGISRuntime() {
     // License key is free for "runtime lite"

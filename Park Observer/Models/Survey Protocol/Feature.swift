@@ -106,7 +106,8 @@ extension Feature {
         // Validate attributes: unique elements (based on type)
         let attributeNames = attributes.map { $0.name.lowercased() }
         if Set(attributeNames).count != attributeNames.count {
-          let message = "Cannot initialize locationMethods with duplicate names in the list \(attributes)"
+          let message =
+            "Cannot initialize locationMethods with duplicate names in the list \(attributes)"
           throw corruptError(message: message)
         }
       }
@@ -118,7 +119,8 @@ extension Feature {
       // Validate locationMethods: unique elements (based on type)
       let locationsTypes = locationMethods.map { $0.type }
       if Set(locationsTypes).count != locationsTypes.count {
-        let message = "Cannot initialize locationMethods with duplicate types in the list \(locationMethods)"
+        let message =
+          "Cannot initialize locationMethods with duplicate types in the list \(locationMethods)"
         throw corruptError(message: message)
       }
       // Validate 1) if we have a label, we must have attributes
@@ -226,6 +228,7 @@ struct Attribute: Codable {
     case int64 = 300
     case decimal = 400  // not supported
     case double = 500
+
     case float = 600
     case string = 700
     case bool = 800
@@ -372,13 +375,19 @@ extension LocationMethod {
 
   init(from decoder: Decoder) throws {
     let container = try decoder.container(keyedBy: CodingKeys.self)
-    let allow = try container.decodeIfPresent(Bool.self, forKey: .allow) ?? LocationMethod.defaultAllow
-    let baseline = try container.decodeIfPresent(Double.self, forKey: .baseline) ?? LocationMethod.defaultDeadAhead
-    let deadAhead = try container.decodeIfPresent(Double.self, forKey: .deadAhead) ?? baseline
-    let defaultLocationMethod = try container.decodeIfPresent(Bool.self, forKey: .defaultLocationMethod)
+    let allow = try container.decodeIfPresent(Bool.self, forKey: .allow)
+      ?? LocationMethod.defaultAllow
+    let baseline = try container.decodeIfPresent(Double.self, forKey: .baseline)
+      ?? LocationMethod.defaultDeadAhead
+    let deadAhead = try container.decodeIfPresent(Double.self, forKey: .deadAhead)
+      ?? baseline
+    let defaultLocationMethod = try container.decodeIfPresent(
+      Bool.self, forKey: .defaultLocationMethod)
       ?? LocationMethod.defaultLocationDefault
-    let direction = try container.decodeIfPresent(Direction.self, forKey: .direction) ?? LocationMethod.defaultDirection
-    let units = try container.decodeIfPresent(LocationUnits.self, forKey: .units) ?? LocationMethod.defaultUnits
+    let direction = try container.decodeIfPresent(Direction.self, forKey: .direction)
+      ?? LocationMethod.defaultDirection
+    let units = try container.decodeIfPresent(LocationUnits.self, forKey: .units)
+      ?? LocationMethod.defaultUnits
     let type = try container.decode(TypeEnum.self, forKey: .type)
     self.init(
       allow: allow,

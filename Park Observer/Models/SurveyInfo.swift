@@ -11,13 +11,15 @@ import Foundation
 /// An object to store Survey Name (not necessarily the file name);
 /// and other info about the survey that may be presented to the user without opening the database
 struct SurveyInfo {
-  let creationDate: Date?      // n/a in legacy, but never nil in new
+  let creationDate: Date?  // n/a in legacy, but never nil in new
   let exportDate: Date?
+
   let modificationDate: Date?  // Legacy is never nil
   let syncDate: Date?
+
   let state: SurveyState
   let title: String
-  let version: Int             // Legacy = 1; new = 2
+  let version: Int  // Legacy = 1; new = 2
 
   //Legacy values; do not change
   enum SurveyState: Int, Codable {
@@ -34,12 +36,13 @@ struct SurveyInfo {
 
 extension SurveyInfo: Codable {
   enum CodingKeys: String, CodingKey {
-    case version = "codingversion"    // Legacy
-    case title = "title"              // Legacy
-    case state = "state"              // Legacy
+    case version = "codingversion"  // Legacy
+    case title = "title"  // Legacy
+    case state = "state"  // Legacy
     case creationDate = "creationdate"
-    case modificationDate = "date"    // Legacy
-    case syncDate = "syncdate"        // Legacy (optional)
+
+    case modificationDate = "date"  // Legacy
+    case syncDate = "syncdate"  // Legacy (optional)
     case exportDate = "exportdate"
   }
 }
