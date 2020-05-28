@@ -37,7 +37,7 @@ class FeatureTests: XCTestCase {
     XCTAssertNotNil(json)  // Failed parsing; JSON is invalid
     if let test = json {
       XCTAssertEqual(test.feature.name, "Bob")
-      XCTAssertEqual(test.feature.locations[0].type, .gps)
+      XCTAssertEqual(test.feature.locationMethods[0].type, .gps)
       XCTAssertFalse(test.feature.allowOffTransectObservations)
       XCTAssertNil(test.feature.attributes)
       XCTAssertNil(test.feature.dialog)
@@ -81,7 +81,7 @@ class FeatureTests: XCTestCase {
       XCTAssertEqual(test.feature.name, "Bob")
       XCTAssertEqual(test.feature.attributes?[0].name, "one")
       XCTAssertEqual(test.feature.dialog?.title, "edit")
-      XCTAssertEqual(test.feature.locations[0].type, .gps)
+      XCTAssertEqual(test.feature.locationMethods[0].type, .gps)
       let renderer = AGSSimpleRenderer(for: .features)
       XCTAssertTrue(test.feature.symbology.isEqual(to: renderer))
     }
@@ -125,7 +125,7 @@ class FeatureTests: XCTestCase {
       XCTAssertEqual(test.feature.name, "Bob")
       XCTAssertEqual(test.feature.attributes?[0].name, "one")
       XCTAssertEqual(test.feature.dialog?.title, "edit")
-      XCTAssertEqual(test.feature.locations[0].type, .gps)
+      XCTAssertEqual(test.feature.locationMethods[0].type, .gps)
       let renderer = AGSSimpleRenderer(for: .features)
       XCTAssertTrue(test.feature.symbology.isEqual(to: renderer))
       XCTAssertTrue(test.feature.allowOffTransectObservations)
@@ -1125,7 +1125,7 @@ class FeatureTests: XCTestCase {
   func testLocationsInvalid() {
     // Given:
     struct TestJson: Codable {
-      let location: Location
+      let location: LocationMethod
     }
     let jsonData = Data(
       """
@@ -1144,7 +1144,7 @@ class FeatureTests: XCTestCase {
   func testLocationsEmpty() {
     // Given:
     struct TestJson: Codable {
-      let location: Location
+      let location: LocationMethod
     }
     let jsonData = Data(
       """
@@ -1163,7 +1163,7 @@ class FeatureTests: XCTestCase {
   func testLocationsMinimal() {
     // Given:
     struct TestJson: Codable {
-      let location: Location
+      let location: LocationMethod
     }
     let jsonData = Data(
       """
@@ -1180,7 +1180,7 @@ class FeatureTests: XCTestCase {
     if let test = json {
       XCTAssertTrue(test.location.allow)
       XCTAssertEqual(test.location.deadAhead, 0.0, accuracy: 0.001)
-      XCTAssertFalse(test.location.locationDefault)
+      XCTAssertFalse(test.location.defaultLocationMethod)
       XCTAssertEqual(test.location.direction, .cw)
       XCTAssertEqual(test.location.type, .gps)
       XCTAssertEqual(test.location.units, .meters)
@@ -1190,7 +1190,7 @@ class FeatureTests: XCTestCase {
   func testLocationsBadAllow() {
     // Given:
     struct TestJson: Codable {
-      let location: Location
+      let location: LocationMethod
     }
     let jsonData = Data(
       """
@@ -1209,7 +1209,7 @@ class FeatureTests: XCTestCase {
   func testLocationsBadDeadAhead() {
     // Given:
     struct TestJson: Codable {
-      let location: Location
+      let location: LocationMethod
     }
     let jsonData = Data(
       """
@@ -1228,7 +1228,7 @@ class FeatureTests: XCTestCase {
   func testLocationsBadDefault() {
     // Given:
     struct TestJson: Codable {
-      let location: Location
+      let location: LocationMethod
     }
     let jsonData = Data(
       """
@@ -1247,7 +1247,7 @@ class FeatureTests: XCTestCase {
   func testLocationsBadDirection() {
     // Given:
     struct TestJson: Codable {
-      let location: Location
+      let location: LocationMethod
     }
     let jsonData = Data(
       """
@@ -1266,7 +1266,7 @@ class FeatureTests: XCTestCase {
   func testLocationsBadType() {
     // Given:
     struct TestJson: Codable {
-      let location: Location
+      let location: LocationMethod
     }
     let jsonData = Data(
       """
@@ -1285,7 +1285,7 @@ class FeatureTests: XCTestCase {
   func testLocationsBadUnits() {
     // Given:
     struct TestJson: Codable {
-      let location: Location
+      let location: LocationMethod
     }
     let jsonData = Data(
       """
@@ -1304,7 +1304,7 @@ class FeatureTests: XCTestCase {
   func testLocationsTypes() {
     // Given:
     struct TestJson: Codable {
-      let locations: [Location]
+      let locations: [LocationMethod]
     }
     let jsonData = Data(
       """
@@ -1341,7 +1341,7 @@ class FeatureTests: XCTestCase {
   func testLocationsBaselineAndDeadAhead() {
     // Given:
     struct TestJson: Codable {
-      let locations: [Location]
+      let locations: [LocationMethod]
     }
     let jsonData = Data(
       """

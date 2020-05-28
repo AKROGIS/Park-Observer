@@ -57,8 +57,8 @@ class SurveyProtocolTests: XCTestCase {
       XCTAssertEqual(sp.minorVersion, 3)
       XCTAssertEqual(sp.features.count, 1)
       XCTAssertEqual(sp.features[0].name, "Birds")
-      XCTAssertEqual(sp.features[0].locations.count, 1)
-      XCTAssertEqual(sp.features[0].locations[0].type, .gps)
+      XCTAssertEqual(sp.features[0].locationMethods.count, 1)
+      XCTAssertEqual(sp.features[0].locationMethods[0].type, .gps)
 
       // defaults
       XCTAssertNil(sp.date)
@@ -78,11 +78,11 @@ class SurveyProtocolTests: XCTestCase {
       let renderer = AGSSimpleRenderer(for: .features)
       XCTAssertTrue(sp.features[0].symbology.isEqual(to: renderer))
 
-      XCTAssertTrue(sp.features[0].locations[0].allow)
-      XCTAssertFalse(sp.features[0].locations[0].locationDefault)
-      XCTAssertEqual(sp.features[0].locations[0].units, .meters)
-      XCTAssertEqual(sp.features[0].locations[0].direction, .cw)
-      XCTAssertEqual(sp.features[0].locations[0].deadAhead, 0.0, accuracy: 0.001)
+      XCTAssertTrue(sp.features[0].locationMethods[0].allow)
+      XCTAssertFalse(sp.features[0].locationMethods[0].defaultLocationMethod)
+      XCTAssertEqual(sp.features[0].locationMethods[0].units, .meters)
+      XCTAssertEqual(sp.features[0].locationMethods[0].direction, .cw)
+      XCTAssertEqual(sp.features[0].locationMethods[0].deadAhead, 0.0, accuracy: 0.001)
     }
   }
 
@@ -114,8 +114,8 @@ class SurveyProtocolTests: XCTestCase {
       XCTAssertEqual(sp.minorVersion, 2)
       XCTAssertEqual(sp.features.count, 1)
       XCTAssertEqual(sp.features[0].name, "Cabins")
-      XCTAssertEqual(sp.features[0].locations.count, 1)
-      XCTAssertEqual(sp.features[0].locations[0].type, .mapTouch)
+      XCTAssertEqual(sp.features[0].locationMethods.count, 1)
+      XCTAssertEqual(sp.features[0].locationMethods[0].type, .mapTouch)
 
       // defaults
       XCTAssertNil(sp.date)
@@ -135,11 +135,11 @@ class SurveyProtocolTests: XCTestCase {
       let renderer = AGSSimpleRenderer(for: .features)
       XCTAssertTrue(sp.features[0].symbology.isEqual(to: renderer))
 
-      XCTAssertTrue(sp.features[0].locations[0].allow)
-      XCTAssertFalse(sp.features[0].locations[0].locationDefault)
-      XCTAssertEqual(sp.features[0].locations[0].units, .meters)
-      XCTAssertEqual(sp.features[0].locations[0].direction, .cw)
-      XCTAssertEqual(sp.features[0].locations[0].deadAhead, 0.0, accuracy: 0.001)
+      XCTAssertTrue(sp.features[0].locationMethods[0].allow)
+      XCTAssertFalse(sp.features[0].locationMethods[0].defaultLocationMethod)
+      XCTAssertEqual(sp.features[0].locationMethods[0].units, .meters)
+      XCTAssertEqual(sp.features[0].locationMethods[0].direction, .cw)
+      XCTAssertEqual(sp.features[0].locationMethods[0].deadAhead, 0.0, accuracy: 0.001)
     }
   }
 

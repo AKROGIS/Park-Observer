@@ -26,7 +26,7 @@ struct Feature: Codable {
   let label: Label?
 
   /// A list of the permitted techniques for specifying the location of an observation.
-  let locations: [Location]
+  let locationMethods: [LocationMethod]
 
   /// A short unique identifier for this feature, i.e. the item being observed.
   let name: String
@@ -39,7 +39,7 @@ struct Feature: Codable {
     case attributes = "attributes"
     case dialog = "dialog"
     case label = "label"
-    case locations = "locations"
+    case locationMethods = "locations"
     case name = "name"
     case symbology = "symbology"
   }
@@ -76,7 +76,7 @@ extension Feature {
     let attributes = try container.decodeIfPresent([Attribute].self, forKey: .attributes)
     let dialog = try container.decodeIfPresent(Dialog.self, forKey: .dialog)
     let label = try container.decodeIfPresent(Label.self, forKey: .label)
-    let locations = try container.decode([Location].self, forKey: .locations)
+    let locationMethods = try container.decode([LocationMethod].self, forKey: .locationMethods)
     let name = try container.decode(String.self, forKey: .name)
 
     var renderer: AGSRenderer? = nil
@@ -106,19 +106,19 @@ extension Feature {
         // Validate attributes: unique elements (based on type)
         let attributeNames = attributes.map { $0.name.lowercased() }
         if Set(attributeNames).count != attributeNames.count {
-          let message = "Cannot initialize locations with duplicate names in the list \(attributes)"
+          let message = "Cannot initialize locationMethods with duplicate names in the list \(attributes)"
           throw corruptError(message: message)
         }
       }
-      // Validate locations: not empty
-      if locations.count == 0 {
-        let message = "Cannot initialize locations with an empty list"
+      // Validate locationMethods: not empty
+      if locationMethods.count == 0 {
+        let message = "Cannot initialize locationMethods with an empty list"
         throw corruptError(message: message)
       }
-      // Validate locations: unique elements (based on type)
-      let locationsTypes = locations.map { $0.type }
+      // Validate locationMethods: unique elements (based on type)
+      let locationsTypes = locationMethods.map { $0.type }
       if Set(locationsTypes).count != locationsTypes.count {
-        let message = "Cannot initialize locations with duplicate types in the list \(locations)"
+        let message = "Cannot initialize locationMethods with duplicate types in the list \(locationMethods)"
         throw corruptError(message: message)
       }
       // Validate 1) if we have a label, we must have attributes
@@ -174,7 +174,7 @@ extension Feature {
       attributes: attributes,
       dialog: dialog,
       label: label,
-      locations: locations,
+      locationMethods: locationMethods,
       name: name,
       symbology: renderer ?? AGSSimpleRenderer(for: .features))
   }
@@ -185,7 +185,7 @@ extension Feature {
     try container.encodeIfPresent(attributes, forKey: .attributes)
     try container.encodeIfPresent(dialog, forKey: .dialog)
     try container.encodeIfPresent(label, forKey: .label)
-    try container.encodeIfPresent(locations, forKey: .locations)
+    try container.encodeIfPresent(locationMethods, forKey: .locationMethods)
     try container.encodeIfPresent(name, forKey: .name)
     try container.encode(AnyJSON(value: symbology.toJSON()), forKey: .symbology)
   }
@@ -196,8 +196,8 @@ extension Feature {
 
 extension Feature {
 
-  var angleDistanceConfig: Location? {
-    return locations.filter { $0.type == .angleDistance }.first
+  var angleDistanceConfig: LocationMethod? {
+    return locationMethods.filter { $0.type == .angleDistance }.first
   }
 
 }
@@ -301,9 +301,9 @@ extension Attribute {
 
 }
 
-// MARK: - Location
+// MARK: - LocationMethod
 
-struct Location: Codable {
+struct LocationMethod: Codable {
 
   /// Defines whether this type of location method is allowed.
   let allow: Bool
@@ -315,7 +315,7 @@ struct Location: Codable {
   let deadAhead: Double
 
   /// Designates this location method as the default method if multiple are allowed.
-  let locationDefault: Bool
+  let defaultLocationMethod: Bool
 
   /// Defines whether angles increase in the clockwise (cw) or counter-clockwise (ccw) direction. Only used with type angleDistance.
   let direction: Direction
@@ -330,7 +330,7 @@ struct Location: Codable {
     case allow = "allow"
     case deadAhead = "deadAhead"
     case baseline = "baseline"
-    case locationDefault = "default"
+    case defaultLocationMethod = "default"
     case direction = "direction"
     case type = "type"
     case units = "units"
@@ -359,25 +359,32 @@ struct Location: Codable {
 
 }
 
-//MARK: - Location Codable
+//MARK: - LocationMethod Codable
 // Custom decoding to support deprecated properties/values
 
-extension Location {
+extension LocationMethod {
+
+  static var defaultAllow: Bool { true }
+  static var defaultDeadAhead: Double { 0.0 }
+  static var defaultLocationDefault: Bool { false }
+  static var defaultDirection: Direction { .cw }
+  static var defaultUnits: LocationUnits { .meters }
+
   init(from decoder: Decoder) throws {
     let container = try decoder.container(keyedBy: CodingKeys.self)
-    let allow = try container.decodeIfPresent(Bool.self, forKey: .allow) ?? true
-    let baseline = try container.decodeIfPresent(Double.self, forKey: .baseline) ?? 0.0
+    let allow = try container.decodeIfPresent(Bool.self, forKey: .allow) ?? LocationMethod.defaultAllow
+    let baseline = try container.decodeIfPresent(Double.self, forKey: .baseline) ?? LocationMethod.defaultDeadAhead
     let deadAhead = try container.decodeIfPresent(Double.self, forKey: .deadAhead) ?? baseline
-    let locationDefault = try container.decodeIfPresent(Bool.self, forKey: .locationDefault)
-      ?? false
-    let direction = try container.decodeIfPresent(Direction.self, forKey: .direction) ?? .cw
-    let units = try container.decodeIfPresent(LocationUnits.self, forKey: .units) ?? .meters
+    let defaultLocationMethod = try container.decodeIfPresent(Bool.self, forKey: .defaultLocationMethod)
+      ?? LocationMethod.defaultLocationDefault
+    let direction = try container.decodeIfPresent(Direction.self, forKey: .direction) ?? LocationMethod.defaultDirection
+    let units = try container.decodeIfPresent(LocationUnits.self, forKey: .units) ?? LocationMethod.defaultUnits
     let type = try container.decode(TypeEnum.self, forKey: .type)
     self.init(
       allow: allow,
       baseline: deadAhead,
       deadAhead: deadAhead,
-      locationDefault: locationDefault,
+      defaultLocationMethod: defaultLocationMethod,
       direction: direction,
       type: type,
       units: units)
@@ -385,7 +392,7 @@ extension Location {
 
 }
 
-extension Location.TypeEnum {
+extension LocationMethod.TypeEnum {
   init(from decoder: Decoder) throws {
     let container = try decoder.singleValueContainer()
     let decoded = try container.decode(String.self)
