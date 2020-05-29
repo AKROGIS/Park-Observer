@@ -8,9 +8,10 @@
 
 import Foundation  // for Date and TimeInterval
 
-// IMPORTANT: The code in these extensions may be called on a CoreData background context.
-// Therefore they cannot use any managed objects from another context.  All CoreData used
-// in these functions should be freshly retrieved from the current context.
+// IMPORTANT: The code in these extensions assumes it is called in a block on a private CoreData
+// context (uses the execute() method on a fetch request). Therefore they cannot use any managed
+// objects from another context (like the UI), and these objects cannot be used on another
+// thread/context.
 
 enum ExportError: Error {
   case noConfig
@@ -184,7 +185,7 @@ extension TrackLogs {
   }
 
   static func csvBody(with format: CSVTrackLogs, attributeNames: [String]) throws -> String {
-    let tracklogs = TrackLogs.fetchAll()
+    let tracklogs = try TrackLogs.fetchAll()
     let trackLogCsv = tracklogs.map { $0.asCsv(format: format, attributeNames: attributeNames) }
     return trackLogCsv.joined(separator: "\n")
   }
@@ -211,12 +212,8 @@ extension TrackLog {
     let start = points.first
     let end = points.last
     let julian = Date.julianDate(timestamp: start?.timestamp)
-    var duration: TimeInterval?
-    if let endTime = end?.timestamp, let startTime = start?.timestamp {
-      duration = endTime.timeIntervalSince(startTime)
-    }
     let standardFields: [String] = [
-      (properties.observing?.boolValue ?? false) ? "No" : "Yes",
+      (properties.observing?.boolValue ?? false) ? "Yes" : "No",
       DateFormattingHelper.shared.formatUtcIso(start?.timestamp) ?? "",
       DateFormattingHelper.shared.formatLocalIso(start?.timestamp) ?? "",
       julian.year == nil ? "" : "\(julian.year!)",
