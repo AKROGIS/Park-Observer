@@ -15,8 +15,9 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     _ application: UIApplication,
     didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?
   ) -> Bool {
-    // Override point for customization after application launch.
-    LicenseManager.licenseArcGISRuntime()
+
+    // Ignore licensing result (Bool). We can run without a license
+    _ = LicenseManager.licenseArcGISRuntime()
     do {
       // Ensure we have a directory for surveys
       // Only really needs to be done once when app is installed.

@@ -11,6 +11,7 @@
 		741679942478F1D200FF353C /* Legacy CSVs in Resources */ = {isa = PBXBuildFile; fileRef = 741679932478F1D200FF353C /* Legacy CSVs */; };
 		74167996247DB79D00FF353C /* CSVFormatter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 74167995247DB79D00FF353C /* CSVFormatter.swift */; };
 		74167998247DB86300FF353C /* TrackLogs.swift in Sources */ = {isa = PBXBuildFile; fileRef = 74167997247DB86300FF353C /* TrackLogs.swift */; };
+		7416799B2482188E00FF353C /* LicenseManagerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7416799A2482188E00FF353C /* LicenseManagerTests.swift */; };
 		744C9B36247482700099D414 /* SurveyTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 744C9B35247482700099D414 /* SurveyTests.swift */; };
 		744C9B3A24760A700099D414 /* Formatters.swift in Sources */ = {isa = PBXBuildFile; fileRef = 744C9B3924760A700099D414 /* Formatters.swift */; };
 		747165EC243C37A800A9C960 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 747165EB243C37A800A9C960 /* AppDelegate.swift */; };
@@ -108,6 +109,7 @@
 		741679932478F1D200FF353C /* Legacy CSVs */ = {isa = PBXFileReference; lastKnownFileType = folder; path = "Legacy CSVs"; sourceTree = "<group>"; };
 		74167995247DB79D00FF353C /* CSVFormatter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CSVFormatter.swift; sourceTree = "<group>"; };
 		74167997247DB86300FF353C /* TrackLogs.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrackLogs.swift; sourceTree = "<group>"; };
+		7416799A2482188E00FF353C /* LicenseManagerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LicenseManagerTests.swift; sourceTree = "<group>"; };
 		742B08A2244A477A00A5137C /* Protocol Specification.md */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = net.daringfireball.markdown; path = "Protocol Specification.md"; sourceTree = "<group>"; };
 		744C9B35247482700099D414 /* SurveyTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SurveyTests.swift; sourceTree = "<group>"; };
 		744C9B3924760A700099D414 /* Formatters.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Formatters.swift; sourceTree = "<group>"; };
@@ -207,6 +209,14 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		741679992482184C00FF353C /* Utilities */ = {
+			isa = PBXGroup;
+			children = (
+				7416799A2482188E00FF353C /* LicenseManagerTests.swift */,
+			);
+			path = Utilities;
+			sourceTree = "<group>";
+		};
 		747165DF243C37A800A9C960 = {
 			isa = PBXGroup;
 			children = (
@@ -262,6 +272,7 @@
 				74A25FD82453B436006D82CE /* Survey Protocol */,
 				749DE9B7246A32A3003D433A /* SurveyInfoTests.swift */,
 				744C9B35247482700099D414 /* SurveyTests.swift */,
+				741679992482184C00FF353C /* Utilities */,
 			);
 			path = "Park ObserverTests";
 			sourceTree = "<group>";
@@ -626,6 +637,7 @@
 				74A25FDA2453B469006D82CE /* TotalizerTests.swift in Sources */,
 				74D85B69246F89730091EA8E /* CoreDataTests.swift in Sources */,
 				74D85B67246F88D20091EA8E /* ObserverModel.xcdatamodeld in Sources */,
+				7416799B2482188E00FF353C /* LicenseManagerTests.swift in Sources */,
 				74A25FDE2453B4FE006D82CE /* DialogTests.swift in Sources */,
 				749DE9B42469D6DC003D433A /* FileManagerTests.swift in Sources */,
 			);
