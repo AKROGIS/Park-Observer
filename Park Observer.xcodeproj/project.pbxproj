@@ -212,9 +212,29 @@
 		741679992482184C00FF353C /* Utilities */ = {
 			isa = PBXGroup;
 			children = (
+				749DE9B32469D6DC003D433A /* FileManagerTests.swift */,
 				7416799A2482188E00FF353C /* LicenseManagerTests.swift */,
 			);
 			path = Utilities;
+			sourceTree = "<group>";
+		};
+		7416799C248220FB00FF353C /* Model */ = {
+			isa = PBXGroup;
+			children = (
+				7416799D2482213B00FF353C /* CoreData */,
+				74A25FD82453B436006D82CE /* Survey Protocol */,
+				749DE9B7246A32A3003D433A /* SurveyInfoTests.swift */,
+				744C9B35247482700099D414 /* SurveyTests.swift */,
+			);
+			path = Model;
+			sourceTree = "<group>";
+		};
+		7416799D2482213B00FF353C /* CoreData */ = {
+			isa = PBXGroup;
+			children = (
+				74D85B68246F89730091EA8E /* CoreDataTests.swift */,
+			);
+			path = CoreData;
 			sourceTree = "<group>";
 		};
 		747165DF243C37A800A9C960 = {
@@ -262,16 +282,12 @@
 		74716601243C37AA00A9C960 /* Park ObserverTests */ = {
 			isa = PBXGroup;
 			children = (
-				74D85B68246F89730091EA8E /* CoreDataTests.swift */,
-				749DE9B32469D6DC003D433A /* FileManagerTests.swift */,
 				74716604243C37AA00A9C960 /* Info.plist */,
 				740D5AC0246DB3420018A684 /* Legacy Archives */,
 				741679932478F1D200FF353C /* Legacy CSVs */,
 				74D0B0D724608DC100624FE9 /* Legacy Protocols */,
+				7416799C248220FB00FF353C /* Model */,
 				74D0B0D5245E18C500624FE9 /* Sample Protocols */,
-				74A25FD82453B436006D82CE /* Survey Protocol */,
-				749DE9B7246A32A3003D433A /* SurveyInfoTests.swift */,
-				744C9B35247482700099D414 /* SurveyTests.swift */,
 				741679992482184C00FF353C /* Utilities */,
 			);
 			path = "Park ObserverTests";
