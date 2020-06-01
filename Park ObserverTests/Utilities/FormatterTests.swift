@@ -26,15 +26,55 @@ class FormatterTests: XCTestCase {
   }
 
   func testIsoUTCDateFormat() {
-    XCTAssertTrue(false)
+    // Given:
+    let input = "1970-01-01T00:00:00.000Z"
+    let date = Date(timeIntervalSince1970: 0)
+
+    // When:
+    let output = DateFormattingHelper().formatUtcIso(date)
+
+    // Then:
+    XCTAssertEqual(input, output)
   }
 
   func testIsoLocalDateFormat() {
-    XCTAssertTrue(false)
+    // Given:
+    let input = "2020-05-11T07:30:26.000 AKDT" // 8 hours from AKDT to UTC
+    let date = ISO8601DateFormatter().date(from: "2020-05-11T15:30:26Z")
+
+    let input2 = "2020-02-11T06:30:26.000 AKST" // 9 hours from AKST to UTC
+    let date2 = ISO8601DateFormatter().date(from: "2020-02-11T15:30:26Z")
+
+    // When:
+    let output = DateFormattingHelper().formatLocalIso(date)
+    let output2 = DateFormattingHelper().formatLocalIso(date2)
+
+    // Then:
+    XCTAssertEqual(input, output)
+    XCTAssertEqual(input2, output2)
   }
 
   func testJulianDate() {
-    XCTAssertTrue(false)
+    // Given:
+    let formatter = ISO8601DateFormatter()
+    formatter.formatOptions =  [.withInternetDateTime, .withFractionalSeconds]
+    let date = formatter.date(from: "2020-05-11T07:30:26.000-08:00")
+    let julianDay = 31 + 29 + 31 + 30 + 11  // Jan + Feb(leap year) + Mar + Apr + May
+    let date2 = formatter.date(from: "2019-03-02T20:30:26.000-09:00")  // next UTC day
+    let julianDay2 = 31 + 28 + 2  // Jan + Feb + Mar
+
+    // When:
+    let (year,day) = Date.julianDate(timestamp: date)
+    let (year2,day2) = Date.julianDate(timestamp: date2)
+    let (year3,day3) = Date.julianDate(timestamp: nil)
+
+    // Then:
+    XCTAssertEqual(year, 2020)
+    XCTAssertEqual(day, julianDay)
+    XCTAssertEqual(year2, 2019)
+    XCTAssertEqual(day2, julianDay2)
+    XCTAssertNil(year3)
+    XCTAssertNil(day3)
   }
 
 }
