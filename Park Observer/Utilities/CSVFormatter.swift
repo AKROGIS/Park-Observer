@@ -160,7 +160,7 @@ extension Observation {
     var adFields = ["", "", ""]
     if let angleDistance = angleDistanceLocation, let config = feature.angleDistanceConfig {
       var adHelper = AngleDistanceHelper(
-        config: config, deadAhead: angleDistance.direction?.doubleValue)
+        config: config, heading: angleDistance.direction?.doubleValue)
       adHelper.absoluteAngle = angleDistance.angle?.doubleValue
       adHelper.distanceInMeters = angleDistance.distance?.doubleValue
       adFields = [

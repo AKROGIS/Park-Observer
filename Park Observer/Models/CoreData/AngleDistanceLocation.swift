@@ -42,11 +42,11 @@ struct AngleDistanceHelper {
   /// Angle-Distance conventions are specified in the part of the Survey Protocol
   let config: LocationMethod?
 
-  /// deadAhead is the current course or heading (typically provided by the course attribute from CoreLocation services)
-  /// It is expressed as an angle in degrees in the  the geographics reference frame (i.e angles increases clockwise with 0º = North)
-  /// deadAhead provides the frame of reference for the angle property.
+  /// heading is the current course (typically provided by the course attribute from CoreLocation services)
+  /// It is expressed as an angle in degrees in the geographics reference frame (i.e angles increases clockwise with 0º = North)
+  /// heading provides the frame of reference for the angle property.
   /// An angle that is deadAhead, from the user's perspective as defined in the the config property, matches this angle.
-  let deadAhead: Double?
+  let heading: Double?
 
   /// The distance from the user to the observed feature in the units provided by the protocol (config.units)
   var distanceInUserUnits: Double? {
@@ -101,13 +101,13 @@ struct AngleDistanceHelper {
   private var inDidSet: Bool = false
 
   // Need an explicit init because the private property make the implicit init private
-  init(config: LocationMethod?, deadAhead: Double?) {
-    self.deadAhead = deadAhead
+  init(config: LocationMethod?, heading: Double?) {
+    self.heading = heading
     self.config = config
   }
 
-  func absoluteAngleFrom(_ angle: Double?) -> Double? {
-    guard let heading = deadAhead, let angle = angle, angle >= 0 else {
+  private func absoluteAngleFrom(_ angle: Double?) -> Double? {
+    guard let heading = heading, let angle = angle else {
       return nil
     }
     let referenceAngle = config?.deadAhead ?? LocationMethod.defaultDeadAhead
@@ -123,8 +123,8 @@ struct AngleDistanceHelper {
     return absoluteAngle
   }
 
-  func userAngleFrom(_ angle: Double?) -> Double? {
-    guard let heading = deadAhead, let angle = angle, angle >= 0 else {
+  private func userAngleFrom(_ angle: Double?) -> Double? {
+    guard let heading = heading, let angle = angle else {
       return nil
     }
     let referenceAngle = config?.deadAhead ?? LocationMethod.defaultDeadAhead
@@ -143,7 +143,7 @@ struct AngleDistanceHelper {
   static let feetPerMeter = 3.28084
   static let yardsPerMeter = 1.0936133333333
 
-  func userDistanceFrom(_ distance: Double?) -> Double? {
+  private func userDistanceFrom(_ distance: Double?) -> Double? {
     guard let distance = distance else {
       return nil
     }
@@ -158,7 +158,7 @@ struct AngleDistanceHelper {
     }
   }
 
-  func metersDistanceFrom(_ distance: Double?) -> Double? {
+  private func metersDistanceFrom(_ distance: Double?) -> Double? {
     guard let distance = distance else {
       return nil
     }
@@ -201,7 +201,7 @@ struct AngleDistanceHelper {
   }
 
   var perpendicularMeters: Double? {
-    guard let geoAngle = absoluteAngle, let heading = deadAhead, let distance = distanceInMeters
+    guard let geoAngle = absoluteAngle, let heading = heading, let distance = distanceInMeters
     else {
       return nil
     }
