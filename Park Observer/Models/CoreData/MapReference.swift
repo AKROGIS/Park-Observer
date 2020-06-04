@@ -30,21 +30,3 @@ extension MapReference {
   }
 
 }
-
-// MARK: - Generated accessors
-
-extension MapReference {
-
-  @objc(addAdhocLocationsObject:)
-  @NSManaged public func addToAdhocLocations(_ value: AdhocLocation)
-
-  @objc(removeAdhocLocationsObject:)
-  @NSManaged public func removeFromAdhocLocations(_ value: AdhocLocation)
-
-  @objc(addAdhocLocations:)
-  @NSManaged public func addToAdhocLocations(_ values: NSSet)
-
-  @objc(removeAdhocLocations:)
-  @NSManaged public func removeFromAdhocLocations(_ values: NSSet)
-
-}
