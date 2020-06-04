@@ -54,7 +54,7 @@ class CoreDataTests: XCTestCase {
 
   // MARK: - Core Data Defaults
 
-  func testCCoreDataModelDefaults() {
+  func testCoreDataModelDefaults() {
     // Given:
     // Create a new survey from a protocol file
     let surveyName = "My Survey"
@@ -87,11 +87,12 @@ class CoreDataTests: XCTestCase {
 
         // Then:
         do {
+          // Create a number of entities in the viewContext
 
           // MapReference
 
           let map = MapReference.new(in: survey.viewContext)
-          // attributes defaults: None
+          // defaults: None
           XCTAssertNil(map.name)
           XCTAssertNil(map.author)
           XCTAssertNil(map.date)
@@ -109,7 +110,7 @@ class CoreDataTests: XCTestCase {
           // AdhocLocation
 
           let loc = AdhocLocation.new(in: survey.viewContext)
-          // attributes defaults: None
+          // defaults: None
           XCTAssertNil(loc.latitude)
           XCTAssertNil(loc.longitude)
           XCTAssertNil(loc.timestamp)
@@ -147,8 +148,8 @@ class CoreDataTests: XCTestCase {
           // Mission
 
           let mission = Mission.new(in: survey.viewContext)
-          // No attributes; No defaults or contstraints to test
-          // Relationships should exist, and be empty
+          // No attributes - ergo no defaults or constraints to test
+          // Relationships should exist and be empty
           XCTAssertNotNil(mission.gpsPoints)
           XCTAssertNotNil(mission.missionProperties)
           XCTAssertNotNil(mission.observations)
@@ -159,7 +160,7 @@ class CoreDataTests: XCTestCase {
           // MissionProperty
 
           let mp = MissionProperty.new(in: survey.viewContext)
-          // attributes defaults: None
+          // defaults: None
           XCTAssertNil(mp.observing)
           // Relationships should be nil
           XCTAssertNil(mp.gpsPoint)
@@ -173,11 +174,11 @@ class CoreDataTests: XCTestCase {
           XCTAssertEqual(mission.missionProperties?.count, 1)
           XCTAssertNoThrow(try mp.validateForInsert())
 
-          // Observation
+          // Observation (Birds)
 
           let feature = survey.config.features[0]
           let obs = Observation.new(feature, in: survey.viewContext)
-          // No attributes; No defaults or contstraints to test
+          // No attributes - ergo no defaults or constraints to test
           // Relationships should be nil
           XCTAssertNil(obs.mission)
           XCTAssertNil(obs.gpsPoint)
@@ -185,7 +186,7 @@ class CoreDataTests: XCTestCase {
           XCTAssertNil(obs.angleDistanceLocation)
           // Constraints
           //   mission is not nil
-          //   An observation should have at least one location method, but it is not enforced
+          //   An observation should have at least one location but this is not enforced
           XCTAssertThrowsError(try obs.validateForInsert())
           XCTAssertEqual(mission.observations?.count, 0)
           obs.mission = mission
@@ -197,7 +198,7 @@ class CoreDataTests: XCTestCase {
           // AngleDistance
 
           let ad = AngleDistanceLocation.new(in: survey.viewContext)
-          // attributes defaults: angle: 0, direction: 0, distance: 0
+          // defaults: angle: 0, direction: 0, distance: 0
           XCTAssertEqual(ad.angle, 0)
           XCTAssertEqual(ad.direction, 0)
           XCTAssertEqual(ad.distance, 0)
@@ -207,7 +208,7 @@ class CoreDataTests: XCTestCase {
           //   angle is not nil
           //   direction is not nil
           //   distance is not nil and is in 0...
-          //   observation is not nil (no default; must be set by user)
+          //   observation is not nil (no default - must be set by user)
           XCTAssertThrowsError(try ad.validateForInsert())
           XCTAssertNil(obs.angleDistanceLocation)
           ad.observation = obs
@@ -231,7 +232,7 @@ class CoreDataTests: XCTestCase {
           // GpsPoint
 
           let point = GpsPoint.new(in: survey.viewContext)
-          // attributes defaults: altitude, course, horizontalAccuracy, speed, verticalAccuracy: -1
+          // defaults: altitude, course, horizontalAccuracy, speed, verticalAccuracy: -1
           XCTAssertEqual(point.altitude, -1)
           XCTAssertEqual(point.course, -1)
           XCTAssertEqual(point.horizontalAccuracy, -1)
@@ -245,7 +246,7 @@ class CoreDataTests: XCTestCase {
           XCTAssertNil(point.missionProperty)
           XCTAssertNil(point.observation)
           // constraints:
-          //   latitude, longitude are not nil (not contraint on range)
+          //   latitude, longitude are not nil (no contraint on range)
           //   timestamp is not nil
           //   mission is not nil
           XCTAssertThrowsError(try point.validateForInsert())
@@ -278,8 +279,8 @@ class CoreDataTests: XCTestCase {
           try survey.save()
           XCTAssertFalse(survey.viewContext.hasChanges)
           survey.viewContext.reset()
-          // The next line does not work: execute() must be called within a block
-          //let points = try? GpsPoints.allOrderByTime.execute()
+          // The next line does not work: execute() must be called within a context block
+          // let points = try? GpsPoints.allOrderByTime.execute()
           let points = try? survey.viewContext.fetch(GpsPoints.allOrderByTime)
           XCTAssertNotNil(points)
           XCTAssertEqual(points?.count, 1)
@@ -300,6 +301,16 @@ class CoreDataTests: XCTestCase {
             XCTAssertEqual(obs.angleDistanceLocation?.direction, 1.0)
             XCTAssertEqual(obs.adhocLocation?.map?.name, "Alaska")
           }
+          // Test fetching all observations
+          var featureRequest = Observations.fetchAll(for: survey.config.features[1].name)
+          let nests = try? survey.viewContext.fetch(featureRequest)
+          XCTAssertNotNil(nests)
+          XCTAssertEqual(nests?.count, 0)
+          featureRequest = Observations.fetchAll(for: feature.name)
+          let birds = try? survey.viewContext.fetch(featureRequest)
+          XCTAssertNotNil(birds)
+          XCTAssertEqual(birds?.count, 1)
+
           // fetch on background thread
           let privateContext = NSManagedObjectContext(concurrencyType: .privateQueueConcurrencyType)
           privateContext.persistentStoreCoordinator = survey.viewContext.persistentStoreCoordinator
@@ -310,6 +321,9 @@ class CoreDataTests: XCTestCase {
             XCTAssertNotNil(points?[0].mission)
             XCTAssertEqual(points?[0].latitude, 12.0)
             XCTAssertEqual(points?[0].longitude, -12.0)
+            let birds = try? featureRequest.execute()
+            XCTAssertNotNil(birds)
+            XCTAssertEqual(birds?.count, 1)
             survey.close()  // So we can delete it without errors
             expectation1.fulfill()
           }
