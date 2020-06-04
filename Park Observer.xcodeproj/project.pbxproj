@@ -56,6 +56,8 @@
 		74A25FD72453B41A006D82CE /* FeatureTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 74A25FD62453B41A006D82CE /* FeatureTests.swift */; };
 		74A25FDA2453B469006D82CE /* TotalizerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 74A25FD92453B469006D82CE /* TotalizerTests.swift */; };
 		74A25FDE2453B4FE006D82CE /* DialogTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 74A25FDD2453B4FE006D82CE /* DialogTests.swift */; };
+		74ABE13E2489747E0047017C /* GpsPointTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 74ABE13D2489747E0047017C /* GpsPointTests.swift */; };
+		74ABE140248975640047017C /* ObservationTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 74ABE13F248975630047017C /* ObservationTests.swift */; };
 		74D0B0D22458DC5A00624FE9 /* ArcGISSymbolDefaultTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 74D0B0D12458DC5A00624FE9 /* ArcGISSymbolDefaultTests.swift */; };
 		74D0B0D4245A1FC600624FE9 /* AnyJSON.swift in Sources */ = {isa = PBXBuildFile; fileRef = 74D0B0D3245A1FC600624FE9 /* AnyJSON.swift */; };
 		74D0B0D6245E18C500624FE9 /* Sample Protocols in Resources */ = {isa = PBXBuildFile; fileRef = 74D0B0D5245E18C500624FE9 /* Sample Protocols */; };
@@ -168,6 +170,8 @@
 		74A25FD62453B41A006D82CE /* FeatureTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FeatureTests.swift; sourceTree = "<group>"; };
 		74A25FD92453B469006D82CE /* TotalizerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TotalizerTests.swift; sourceTree = "<group>"; };
 		74A25FDD2453B4FE006D82CE /* DialogTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DialogTests.swift; sourceTree = "<group>"; };
+		74ABE13D2489747E0047017C /* GpsPointTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GpsPointTests.swift; sourceTree = "<group>"; };
+		74ABE13F248975630047017C /* ObservationTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ObservationTests.swift; sourceTree = "<group>"; };
 		74D0B0D12458DC5A00624FE9 /* ArcGISSymbolDefaultTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ArcGISSymbolDefaultTests.swift; sourceTree = "<group>"; };
 		74D0B0D3245A1FC600624FE9 /* AnyJSON.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AnyJSON.swift; sourceTree = "<group>"; };
 		74D0B0D5245E18C500624FE9 /* Sample Protocols */ = {isa = PBXFileReference; lastKnownFileType = folder; path = "Sample Protocols"; sourceTree = "<group>"; };
@@ -240,8 +244,10 @@
 		7416799D2482213B00FF353C /* CoreData */ = {
 			isa = PBXGroup;
 			children = (
-				74D85B68246F89730091EA8E /* CoreDataTests.swift */,
 				7416799E248223FE00FF353C /* AngleDistanceHelperTests.swift */,
+				74D85B68246F89730091EA8E /* CoreDataTests.swift */,
+				74ABE13D2489747E0047017C /* GpsPointTests.swift */,
+				74ABE13F248975630047017C /* ObservationTests.swift */,
 			);
 			path = CoreData;
 			sourceTree = "<group>";
@@ -655,10 +661,12 @@
 				741679A12482241400FF353C /* TrackLogTests.swift in Sources */,
 				74A25FD72453B41A006D82CE /* FeatureTests.swift in Sources */,
 				749DE9B8246A32A3003D433A /* SurveyInfoTests.swift in Sources */,
+				74ABE13E2489747E0047017C /* GpsPointTests.swift in Sources */,
 				7416799F248223FE00FF353C /* AngleDistanceHelperTests.swift in Sources */,
 				74A25FD52453B3FD006D82CE /* MissionTests.swift in Sources */,
 				74D0B0D22458DC5A00624FE9 /* ArcGISSymbolDefaultTests.swift in Sources */,
 				741679A32482244500FF353C /* FormatterTests.swift in Sources */,
+				74ABE140248975640047017C /* ObservationTests.swift in Sources */,
 				74A25FC324522B48006D82CE /* SurveyProtocolTests.swift in Sources */,
 				744C9B36247482700099D414 /* SurveyTests.swift in Sources */,
 				74A25FD3245360A5006D82CE /* SymbologyTests.swift in Sources */,
