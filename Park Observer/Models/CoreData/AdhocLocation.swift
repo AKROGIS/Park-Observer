@@ -32,3 +32,16 @@ extension AdhocLocation {
   }
 
 }
+
+// MARK: - Computed Properties
+
+extension AdhocLocation {
+
+  var location: Location? {
+    guard let lat = latitude?.doubleValue, let lon = longitude?.doubleValue else {
+      return nil
+    }
+    return Location(latitude: lat, longitude: lon)
+  }
+
+}
