@@ -54,6 +54,9 @@ class TrackLog {
       guard let location = point.location else { return nil }
       return AGSPoint(clLocationCoordinate2D: location)
     }
+    guard agsPoints.count > 0 else {
+      return nil
+    }
     let polyline = AGSPolyline(points: agsPoints)
     guard let geometry = AGSGeometryEngine.simplifyGeometry(polyline) else {
       return nil
