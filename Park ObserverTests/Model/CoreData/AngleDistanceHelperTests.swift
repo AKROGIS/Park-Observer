@@ -83,8 +83,9 @@ class AngleDistanceHelperTests: XCTestCase {
 
   func testLengthMeters2Meters() {
     // Given:
-    let config = try? JSONDecoder().decode(LocationMethod.self,
-                                           from: Data(#"{"type": "angleDistance", "units":"meters"}"#.utf8))
+    let config = try? JSONDecoder().decode(
+      LocationMethod.self,
+      from: Data(#"{"type": "angleDistance", "units":"meters"}"#.utf8))
 
     // When:
     XCTAssertNotNil(config)
@@ -112,8 +113,9 @@ class AngleDistanceHelperTests: XCTestCase {
 
   func testLengthFeet2Meters() {
     // Given:
-    let config = try? JSONDecoder().decode(LocationMethod.self,
-                                           from: Data(#"{"type": "angleDistance", "units":"feet"}"#.utf8))
+    let config = try? JSONDecoder().decode(
+      LocationMethod.self,
+      from: Data(#"{"type": "angleDistance", "units":"feet"}"#.utf8))
 
     // When:
     XCTAssertNotNil(config)
@@ -142,8 +144,9 @@ class AngleDistanceHelperTests: XCTestCase {
 
   func testLengthYards2Meters() {
     // Given:
-    let config = try? JSONDecoder().decode(LocationMethod.self,
-                                           from: Data(#"{"type": "angleDistance", "units":"yards"}"#.utf8))
+    let config = try? JSONDecoder().decode(
+      LocationMethod.self,
+      from: Data(#"{"type": "angleDistance", "units":"yards"}"#.utf8))
 
     // When:
     XCTAssertNotNil(config)
@@ -170,7 +173,7 @@ class AngleDistanceHelperTests: XCTestCase {
     }
   }
 
-// MARK: - Angle Tests
+  // MARK: - Angle Tests
 
   func testHeadingIsNil() {
     // Given:
@@ -275,8 +278,9 @@ class AngleDistanceHelperTests: XCTestCase {
     // absoluteAngles in 0.0 .. 360.0
     // default config.deadAhead is 0.0  => user angles -180..180 CW
     // When config.direction = CCW  => user angles 180..-180 CW
-    let config = try? JSONDecoder().decode(LocationMethod.self,
-                                           from: Data(#"{"type": "angleDistance", "direction": "ccw"}"#.utf8))
+    let config = try? JSONDecoder().decode(
+      LocationMethod.self,
+      from: Data(#"{"type": "angleDistance", "direction": "ccw"}"#.utf8))
     let absAngles = [-75.0, 0.0, 45.0, 135.0, 225.0, 315.0, 360.0, 362.0]
     let testParams = [
       //( heading, [userAngles])
@@ -306,8 +310,9 @@ class AngleDistanceHelperTests: XCTestCase {
     // heading in 0.0 .. 360.0
     // default config.deadAhead is 0.0 => user angles -180..180 CW
     // When config.direction = CCW  => user angles 180..-180 CW
-    let config = try? JSONDecoder().decode(LocationMethod.self,
-                                           from: Data(#"{"type": "angleDistance", "direction": "ccw"}"#.utf8))
+    let config = try? JSONDecoder().decode(
+      LocationMethod.self,
+      from: Data(#"{"type": "angleDistance", "direction": "ccw"}"#.utf8))
     let userAngles = [-181.0, -180.0, -135.0, -45.0, 0.0, 45.0, 135.0, 180, 181.0]
     let testParams = [
       //( heading, [absAngles])
@@ -338,8 +343,9 @@ class AngleDistanceHelperTests: XCTestCase {
     // absoluteAngles in 0.0 .. 360.0
     // default config.deadAhead is 0.0  => user angles -180..180 CW
     // When config.deadAhead is 180.0 => user angles 0..360 CW
-    let config = try? JSONDecoder().decode(LocationMethod.self,
-                                           from: Data(#"{"type": "angleDistance", "deadAhead": 180.0}"#.utf8))
+    let config = try? JSONDecoder().decode(
+      LocationMethod.self,
+      from: Data(#"{"type": "angleDistance", "deadAhead": 180.0}"#.utf8))
     let absAngles = [-75.0, 0.0, 45.0, 135.0, 225.0, 315.0, 360.0, 362.0]
     let testParams = [
       //( heading, [userAngles])
@@ -369,8 +375,9 @@ class AngleDistanceHelperTests: XCTestCase {
     // heading in 0.0 .. 360.0
     // default config.deadAhead is 0.0 => user angles -180..180 CW
     // When config.deadAhead is 180.0 => user angles 0..360 CW
-    let config = try? JSONDecoder().decode(LocationMethod.self,
-                                           from: Data(#"{"type": "angleDistance", "deadAhead": 180.0}"#.utf8))
+    let config = try? JSONDecoder().decode(
+      LocationMethod.self,
+      from: Data(#"{"type": "angleDistance", "deadAhead": 180.0}"#.utf8))
     let userAngles = [-1.0, 0.0, 45.0, 135.0, 180.0, 225.0, 315.0, 360, 361.0]
     let testParams = [
       //( heading, [absAngles])
@@ -395,7 +402,7 @@ class AngleDistanceHelperTests: XCTestCase {
     }
   }
 
-// MARK: - Other Properties
+  // MARK: - Other Properties
 
   func testPerp_Location_Default() {
     // Given:
