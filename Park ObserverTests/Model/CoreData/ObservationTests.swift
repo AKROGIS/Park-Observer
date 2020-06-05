@@ -51,12 +51,12 @@ class ObservationTests: XCTestCase {
         do {
 
           // Then:
-          let lat_g = NSNumber(value: 62.0)  // location of gps/observer for angledistance and gpsLocation
-          let lon_g = NSNumber(value: -153.0)
+          let lat_g = 62.0  // location of gps/observer for angledistance and gpsLocation
+          let lon_g = -153.0
           let lat_m = 87.6543  // touch location
           let lon_m = 45.6789
-          let lat_gm = NSNumber(value: 12.3456)  // Location of GPS when map touch is made
-          let lon_gm = NSNumber(value: -65.4321)
+          let lat_gm = 12.3456  // Location of GPS when map touch is made
+          let lon_gm = -65.4321
           let date_g = Date()
           let date_m = date_g.addingTimeInterval(100.0)
           let lat_ad_o = lat_g
@@ -65,8 +65,8 @@ class ObservationTests: XCTestCase {
           adLoc.angle = 45.0
           adLoc.distance = 100.0
           // See the AngleDistanceHelperTests for a discussion of the angle/distance offset
-          let lat_ad_f = NSNumber(value: lat_ad_o.doubleValue + 0.0006347)
-          let lon_ad_f = NSNumber(value: lon_ad_o.doubleValue + 0.0013500)
+          let lat_ad_f = lat_ad_o + 0.0006347
+          let lon_ad_f = lon_ad_o + 0.0013500
           let point1 = GpsPoint.new(in: survey.viewContext)
           point1.timestamp = date_g
           point1.latitude = lat_g
@@ -95,8 +95,8 @@ class ObservationTests: XCTestCase {
             XCTAssertEqual(date, date_m)
             XCTAssertEqual(loc.latitude, lat_m, accuracy: 0.0001)
             XCTAssertEqual(loc.longitude, lon_m, accuracy: 0.0001)
-            XCTAssertEqual(obsLoc.latitude, lat_gm.doubleValue, accuracy: 0.0001)
-            XCTAssertEqual(obsLoc.longitude, lon_gm.doubleValue, accuracy: 0.0001)
+            XCTAssertEqual(obsLoc.latitude, lat_gm, accuracy: 0.0001)
+            XCTAssertEqual(obsLoc.longitude, lon_gm, accuracy: 0.0001)
           }
 
           // Just a gpsPoint
@@ -111,10 +111,10 @@ class ObservationTests: XCTestCase {
           XCTAssertNotNil(observer)
           if let date = obs.timestamp, let loc = obs.locationOfFeature, let obsLoc = observer {
             XCTAssertEqual(date, date_g)
-            XCTAssertEqual(loc.latitude, lat_g.doubleValue, accuracy: 0.0001)
-            XCTAssertEqual(loc.longitude, lon_g.doubleValue, accuracy: 0.0001)
-            XCTAssertEqual(obsLoc.latitude, lat_g.doubleValue, accuracy: 0.0001)
-            XCTAssertEqual(obsLoc.longitude, lon_g.doubleValue, accuracy: 0.0001)
+            XCTAssertEqual(loc.latitude, lat_g, accuracy: 0.0001)
+            XCTAssertEqual(loc.longitude, lon_g, accuracy: 0.0001)
+            XCTAssertEqual(obsLoc.latitude, lat_g, accuracy: 0.0001)
+            XCTAssertEqual(obsLoc.longitude, lon_g, accuracy: 0.0001)
           }
 
           // When an observation has both a gpsPoint and an adhocLocation
@@ -139,10 +139,10 @@ class ObservationTests: XCTestCase {
           XCTAssertNotNil(observer)
           if let date = obs.timestamp, let loc = obs.locationOfFeature, let obsLoc = observer {
             XCTAssertEqual(date, date_g)
-            XCTAssertEqual(loc.latitude, lat_g.doubleValue, accuracy: 0.0001)
-            XCTAssertEqual(loc.longitude, lon_g.doubleValue, accuracy: 0.0001)
-            XCTAssertEqual(obsLoc.latitude, lat_gm.doubleValue, accuracy: 0.0001)
-            XCTAssertEqual(obsLoc.longitude, lon_gm.doubleValue, accuracy: 0.0001)
+            XCTAssertEqual(loc.latitude, lat_g, accuracy: 0.0001)
+            XCTAssertEqual(loc.longitude, lon_g, accuracy: 0.0001)
+            XCTAssertEqual(obsLoc.latitude, lat_gm, accuracy: 0.0001)
+            XCTAssertEqual(obsLoc.longitude, lon_gm, accuracy: 0.0001)
           }
 
           // An observation could also have an angleDistance property,
@@ -154,12 +154,12 @@ class ObservationTests: XCTestCase {
           observer = obs.requestLocationOfObserver(in: survey.viewContext)
           XCTAssertNotNil(observer)
           if let loc = obs.locationOfFeature, let obsLoc = observer {
-            XCTAssertEqual(loc.latitude, lat_ad_f.doubleValue, accuracy: 0.0001)
-            XCTAssertEqual(loc.longitude, lon_ad_f.doubleValue, accuracy: 0.0001)
+            XCTAssertEqual(loc.latitude, lat_ad_f, accuracy: 0.0001)
+            XCTAssertEqual(loc.longitude, lon_ad_f, accuracy: 0.0001)
             // When an observation has both an angleDistanceLocation and an adhocLocation
             // which should never happen; the observer location is based on the adhocLocation
-            XCTAssertEqual(obsLoc.latitude, lat_gm.doubleValue, accuracy: 0.0001)
-            XCTAssertEqual(obsLoc.longitude, lon_gm.doubleValue, accuracy: 0.0001)
+            XCTAssertEqual(obsLoc.latitude, lat_gm, accuracy: 0.0001)
+            XCTAssertEqual(obsLoc.longitude, lon_gm, accuracy: 0.0001)
           }
           // The adhoc location should have no influence on the angle distance location
           obs.adhocLocation = nil
@@ -167,10 +167,10 @@ class ObservationTests: XCTestCase {
           observer = obs.requestLocationOfObserver(in: survey.viewContext)
           XCTAssertNotNil(observer)
           if let loc = obs.locationOfFeature, let obsLoc = observer {
-            XCTAssertEqual(loc.latitude, lat_ad_f.doubleValue, accuracy: 0.0001)
-            XCTAssertEqual(loc.longitude, lon_ad_f.doubleValue, accuracy: 0.0001)
-            XCTAssertEqual(obsLoc.latitude, lat_g.doubleValue, accuracy: 0.0001)
-            XCTAssertEqual(obsLoc.longitude, lon_g.doubleValue, accuracy: 0.0001)
+            XCTAssertEqual(loc.latitude, lat_ad_f, accuracy: 0.0001)
+            XCTAssertEqual(loc.longitude, lon_ad_f, accuracy: 0.0001)
+            XCTAssertEqual(obsLoc.latitude, lat_g, accuracy: 0.0001)
+            XCTAssertEqual(obsLoc.longitude, lon_g, accuracy: 0.0001)
           }
           // The angle distance location is dependent on the gps location
           obs.gpsPoint = nil

@@ -9,7 +9,7 @@
 
 import ArcGIS  // for AGSSpatialReference, AGSGeometryEngine, AGSPoint
 import CoreData  // for NSManagedObject, NSManagedObjectContext, NSEntityDescription
-import Foundation  // for NSNumber, fabs, sin, cos
+import Foundation  // for fabs, sin, cos
 
 @objc(AngleDistanceLocation)
 public class AngleDistanceLocation: NSManagedObject {

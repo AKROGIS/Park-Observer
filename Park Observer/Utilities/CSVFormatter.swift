@@ -78,8 +78,8 @@ extension GpsPoint {
 
     let fields: [String] = [
       DateFormattingHelper.shared.formatUtcIso(timestamp) ?? "",
-      String.formatOptional(format: "%0.6f", value: latitude?.doubleValue),
-      String.formatOptional(format: "%0.6f", value: longitude?.doubleValue),
+      String.formatOptional(format: "%0.6f", value: latitude),
+      String.formatOptional(format: "%0.6f", value: longitude),
       "WGS84",
       String.formatOptional(format: "%g", value: horizontalAccuracy),
       String.formatOptional(format: "%g", value: course),
@@ -221,10 +221,10 @@ extension TrackLog {
       DateFormattingHelper.shared.formatUtcIso(end?.timestamp) ?? "",
       DateFormattingHelper.shared.formatLocalIso(end?.timestamp) ?? "",
       String.formatOptional(format: "%0.2f", value: duration),
-      String.formatOptional(format: "%0.6f", value: start?.latitude?.doubleValue),
-      String.formatOptional(format: "%0.6f", value: start?.longitude?.doubleValue),
-      String.formatOptional(format: "%0.6f", value: end?.latitude?.doubleValue),
-      String.formatOptional(format: "%0.6f", value: end?.longitude?.doubleValue),
+      String.formatOptional(format: "%0.6f", value: start?.latitude),
+      String.formatOptional(format: "%0.6f", value: start?.longitude),
+      String.formatOptional(format: "%0.6f", value: end?.latitude),
+      String.formatOptional(format: "%0.6f", value: end?.longitude),
       "WGS84",
       String.formatOptional(format: "%0.1f", value: length),
     ]

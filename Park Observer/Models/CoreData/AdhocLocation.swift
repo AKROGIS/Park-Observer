@@ -21,6 +21,7 @@ public class AdhocLocation: NSManagedObject {
   @NSManaged public var observation: Observation?
 
 }
+
 // MARK: - Property Accessors
 // To allow the use of a more intuitive type Double? in lieu of NSNumber?
 // See https://martiancraft.com/blog/2015/12/nsmanaged/ for details

@@ -48,8 +48,8 @@ class GpsPointTests: XCTestCase {
           let point = GpsPoint.new(in: survey.viewContext)
           let lat = 62.1234
           let lon = -154.3210
-          point.latitude = NSNumber(value: lat)
-          point.longitude = NSNumber(value: lon)
+          point.latitude = lat
+          point.longitude = lon
           let loc = point.location
           XCTAssertNotNil(loc)
           if let loc = loc {
