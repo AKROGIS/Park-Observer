@@ -213,7 +213,7 @@ extension TrackLog {
     let end = points.last
     let julian = Date.julianDate(timestamp: start?.timestamp)
     let standardFields: [String] = [
-      (properties.observing?.boolValue ?? false) ? "Yes" : "No",
+      (properties.observing ?? false) ? "Yes" : "No",
       DateFormattingHelper.shared.formatUtcIso(start?.timestamp) ?? "",
       DateFormattingHelper.shared.formatLocalIso(start?.timestamp) ?? "",
       julian.year == nil ? "" : "\(julian.year!)",

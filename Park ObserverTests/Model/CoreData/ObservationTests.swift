@@ -53,8 +53,8 @@ class ObservationTests: XCTestCase {
           // Then:
           let lat_g = NSNumber(value: 62.0)  // location of gps/observer for angledistance and gpsLocation
           let lon_g = NSNumber(value: -153.0)
-          let lat_m = NSNumber(value: 87.6543)  // touch location
-          let lon_m = NSNumber(value: 45.6789)
+          let lat_m = 87.6543  // touch location
+          let lon_m = 45.6789
           let lat_gm = NSNumber(value: 12.3456)  // Location of GPS when map touch is made
           let lon_gm = NSNumber(value: -65.4321)
           let date_g = Date()
@@ -93,8 +93,8 @@ class ObservationTests: XCTestCase {
           XCTAssertNotNil(observer)
           if let date = obs.timestamp, let loc = obs.locationOfFeature, let obsLoc = observer {
             XCTAssertEqual(date, date_m)
-            XCTAssertEqual(loc.latitude, lat_m.doubleValue, accuracy: 0.0001)
-            XCTAssertEqual(loc.longitude, lon_m.doubleValue, accuracy: 0.0001)
+            XCTAssertEqual(loc.latitude, lat_m, accuracy: 0.0001)
+            XCTAssertEqual(loc.longitude, lon_m, accuracy: 0.0001)
             XCTAssertEqual(obsLoc.latitude, lat_gm.doubleValue, accuracy: 0.0001)
             XCTAssertEqual(obsLoc.longitude, lon_gm.doubleValue, accuracy: 0.0001)
           }

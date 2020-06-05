@@ -67,7 +67,7 @@ class TrackLogTests: XCTestCase {
           // Create a number of entities in the viewContext
           let mission = Mission.new(in: survey.viewContext)
           let mp = MissionProperty.new(in: survey.viewContext)
-          mp.observing = NSNumber(booleanLiteral: false)
+          mp.observing = false
           mp.mission = mission
           let point1 = GpsPoint.new(in: survey.viewContext)
           point1.latitude = 62.0
@@ -112,7 +112,7 @@ class TrackLogTests: XCTestCase {
             XCTAssertEqual(trackLogs?.count, 1)
             XCTAssertEqual(trackLogs?[0].points.count, 2)
             XCTAssertNotNil(trackLogs?[0].properties)
-            XCTAssertEqual(trackLogs?[0].properties.observing, NSNumber(booleanLiteral: false))
+            XCTAssertEqual(trackLogs?[0].properties.observing, false)
             XCTAssertNotNil(trackLogs?[0].length)
             XCTAssertNotNil(trackLogs?[0].duration)
             if let length = trackLogs?[0].length, let duration = trackLogs?[0].duration {
