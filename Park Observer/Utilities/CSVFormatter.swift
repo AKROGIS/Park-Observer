@@ -141,8 +141,8 @@ extension Observation {
       julian.day == nil ? "" : "\(julian.day!)",
       String.formatOptional(format: "%0.6f", value: locationOfFeature?.latitude),
       String.formatOptional(format: "%0.6f", value: locationOfFeature?.longitude),
-      String.formatOptional(format: "%0.6f", value: locationOfObserver.latitude?.doubleValue),
-      String.formatOptional(format: "%0.6f", value: locationOfObserver.longitude?.doubleValue),
+      String.formatOptional(format: "%0.6f", value: locationOfObserver?.latitude),
+      String.formatOptional(format: "%0.6f", value: locationOfObserver?.longitude),
       "WGS84",
     ]
 

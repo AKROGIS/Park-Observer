@@ -72,7 +72,7 @@ extension Observation {
     }
   }
 
-  func requestLocationOfObserver() -> (latitude: NSNumber?, longitude: NSNumber?) {
+  func requestLocationOfObserver(in context: NSManagedObjectContext? = nil) -> Location? {
     // an observation should always have a gpsPoint or an adhocLocation (mapLocation)
     // If this observation has an adhocLocation, then the observer is
     //   at the gpsPoint with the same time stamp as the adhocLocation
@@ -87,18 +87,34 @@ extension Observation {
     //   but we will always report the first one.
     // If there is no gpsPoint and no adhocLocation, the the observers location is unknown.
     //   this should be precluded during data input.
+    //
+    // If an observation has both an adhocLocation and an angleDistanceLocation (should never happen)
+    // This function will ignore the angleDistanceLocation
+    //
     guard let timestamp = adhocLocation?.timestamp else {
       if let gps = gpsPoint {
-        return (latitude: gps.latitude, longitude: gps.longitude)
+        return gps.location
       } else {
-        return (latitude: nil, longitude: nil)
+        return nil
       }
     }
+    let start = timestamp.addingTimeInterval(-0.001)
+    let end = timestamp.addingTimeInterval(+0.001)
+    //print(timestamp)
+
     let request: NSFetchRequest<GpsPoint> = GpsPoints.fetchRequest
-    request.predicate = NSPredicate(format: "timestamp == %@", timestamp as CVarArg)
-    guard let gpsPoint = try? request.execute().first else {
-      return (latitude: nil, longitude: nil)
+    request.predicate = NSPredicate(format: "%@ <= timestamp AND timestamp <= %@", start as CVarArg, end as CVarArg)
+    //request.predicate = NSPredicate(format: "timestamp == %@", timestamp as CVarArg)
+    var results: GpsPoints?
+    if let context = context {
+      results = try? context.fetch(request)
+    } else {
+      // only works when executing in a private context block
+      results = try? request.execute()
     }
-    return (latitude: gpsPoint.latitude, longitude: gpsPoint.longitude)
+    guard let gpsPoint = results?.first else {
+      return nil
+    }
+    return gpsPoint.location
   }
 }
