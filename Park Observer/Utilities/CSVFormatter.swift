@@ -81,11 +81,11 @@ extension GpsPoint {
       String.formatOptional(format: "%0.6f", value: latitude?.doubleValue),
       String.formatOptional(format: "%0.6f", value: longitude?.doubleValue),
       "WGS84",
-      String.formatOptional(format: "%g", value: horizontalAccuracy?.doubleValue),
-      String.formatOptional(format: "%g", value: course?.doubleValue),
-      String.formatOptional(format: "%g", value: speed?.doubleValue),
-      String.formatOptional(format: "%g", value: altitude?.doubleValue),
-      String.formatOptional(format: "%g", value: verticalAccuracy?.doubleValue),
+      String.formatOptional(format: "%g", value: horizontalAccuracy),
+      String.formatOptional(format: "%g", value: course),
+      String.formatOptional(format: "%g", value: speed),
+      String.formatOptional(format: "%g", value: altitude),
+      String.formatOptional(format: "%g", value: verticalAccuracy),
     ]
     return fields.joined(separator: ",")
   }
@@ -160,9 +160,9 @@ extension Observation {
     var adFields = ["", "", ""]
     if let angleDistance = angleDistanceLocation, let config = feature.angleDistanceConfig {
       var adHelper = AngleDistanceHelper(
-        config: config, heading: angleDistance.direction?.doubleValue)
-      adHelper.absoluteAngle = angleDistance.angle?.doubleValue
-      adHelper.distanceInMeters = angleDistance.distance?.doubleValue
+        config: config, heading: angleDistance.direction)
+      adHelper.absoluteAngle = angleDistance.angle
+      adHelper.distanceInMeters = angleDistance.distance
       adFields = [
         String.formatOptional(format: "%g", value: adHelper.userAngle),
         String.formatOptional(format: "%g", value: adHelper.distanceInUserUnits),

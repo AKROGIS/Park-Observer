@@ -14,9 +14,9 @@ import Foundation  // for NSNumber, fabs, sin, cos
 @objc(AngleDistanceLocation)
 public class AngleDistanceLocation: NSManagedObject {
 
-  @NSManaged public var angle: NSNumber?  // The geographic angle (degrees) from the user to the feature
-  @NSManaged public var direction: NSNumber?  // The GPS heading (direction of travel) as a geographic angle (degrees)
-  @NSManaged public var distance: NSNumber?  // The distance in meters from the user to the feature
+  @NSManaged public var angle: Double  // The geographic angle (degrees) from the user to the feature; default = 0
+  @NSManaged public var direction: Double  // The GPS heading (direction of travel) as a geographic angle (degrees); default = 0
+  @NSManaged public var distance: Double  // The distance in meters from the user to the feature; default = 0
   @NSManaged public var observation: Observation?
 
 }

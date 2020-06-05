@@ -216,16 +216,10 @@ class CoreDataTests: XCTestCase {
           XCTAssertNoThrow(try ad.validateForInsert())
           ad.distance = -1.0
           XCTAssertThrowsError(try ad.validateForInsert())
-          ad.distance = nil
-          XCTAssertThrowsError(try ad.validateForInsert())
           ad.distance = 10
           XCTAssertNoThrow(try ad.validateForInsert())
-          ad.angle = nil
-          XCTAssertThrowsError(try ad.validateForInsert())
           ad.angle = 100
           XCTAssertNoThrow(try ad.validateForInsert())
-          ad.direction = nil
-          XCTAssertThrowsError(try ad.validateForInsert())
           ad.direction = 1.0
           XCTAssertNoThrow(try ad.validateForInsert())
 
