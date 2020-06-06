@@ -373,4 +373,81 @@ class SurveyTests: XCTestCase {
     try? FileManager.default.deleteSurvey(with: surveyName)
   }
 
+  func testCreateCSVFromMinimalProtocol() {
+    // Given:
+    let csvFolder = "/Legacy CSVs/Minimal V2 Protocol"
+    let existingProtocol = "/Sample Protocols/Sample Protocol.v2minimal.obsprot"
+    let testBundle = Bundle(for: type(of: self))
+    let bundlePath = testBundle.resourcePath! + existingProtocol
+    let bundleUrl = URL(fileURLWithPath: bundlePath)
+    let csvPath = testBundle.resourcePath! + csvFolder
+    // Copy protocol to the App
+    guard let protocolFile = try? FileManager.default.addToApp(url: bundleUrl) else {
+      XCTAssertTrue(false)
+      return
+    }
+    let name = protocolFile.name
+    defer {
+      try? FileManager.default.deleteProtocol(with: name)
+    }
+    // Build a survey from the protocol
+    guard let surveyName = try? Survey.create(name, from: name) else {
+      XCTAssertTrue(false)
+      return
+    }
+    defer {
+      try? FileManager.default.deleteSurvey(with: name)
+    }
+
+    // When:
+    // survey created, lets try and load it
+    let expectation1 = expectation(description: "Survey \(name) was loaded")
+
+    Survey.load(name) { (result) in
+      switch result {
+      case .success(let survey):
+        // Survey Loaded, lets export as CSV to temp directory
+        guard let tempURL = try? FileManager.default.createNewTempDirectory() else {
+          XCTAssertTrue(false)
+          expectation1.fulfill()
+          break
+        }
+        survey.exportAsCSV(at: tempURL) { (error) in
+          if let error = error {
+            print(error)
+            XCTAssertTrue(false)
+          } else {
+            let csvFiles = (try? FileManager.default.contentsOfDirectory(atPath: csvPath)) ?? []
+            XCTAssertTrue(csvFiles.count > 0)
+            for csvFile in csvFiles {
+              let existCsvUrl = URL(fileURLWithPath: csvPath + "/" + csvFile)
+              let newCsvUrl = tempURL.appendingPathComponent(csvFile)
+              XCTAssertTrue(FileManager.default.fileExists(atPath: newCsvUrl.path))
+              let contentExist = try? String(contentsOf: existCsvUrl, encoding: .utf8)
+              let contentsNew = try? String(contentsOf: newCsvUrl, encoding: .utf8)
+              XCTAssertNotNil(contentExist)
+              XCTAssertNotNil(contentsNew)
+              XCTAssertEqual(contentExist, contentsNew)
+            }
+          }
+          //try? FileManager.default.removeItem(at: tempURL)
+          survey.close()
+          expectation1.fulfill()
+        }
+        break
+      case .failure(let error):
+        print(error)
+        XCTAssertTrue(false)
+        expectation1.fulfill()
+        break
+      }
+    }
+
+    waitForExpectations(timeout: 3) { error in
+      if let error = error {
+        XCTFail("Test timed out awaiting unmet expectations: \(error)")
+      }
+    }
+  }
+
 }

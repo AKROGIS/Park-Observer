@@ -1,0 +1,9 @@
+{
+  "meta-name": "NPS-Protocol-Specification",
+  "meta-version": 2,
+  "name": "Minimal Protocol",
+  "version": 1.3,
+  "features": [
+    {"name": "Cabins", "locations": [ {"type": "mapTouch"} ], "symbology": {} }
+  ]
+}
