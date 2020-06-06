@@ -22,8 +22,11 @@ enum ExportError: Error {
 extension Survey {
 
   func csvFiles() throws -> [String: String] {
-    guard let format = self.config.csv else {
-      //TODO: The csvFormat is optional, so provide a default if missing
+    let defaultFormat: CsvFormat? = {
+      // Do not create a defaultFormat (required decoding JSON), unless we need to
+      self.config.csv == nil ? try? CsvFormat.defaultFormat(for: self.info.version) : nil
+    }()
+    guard let format = self.config.csv ?? defaultFormat else {
       throw ExportError.noConfig
     }
 
