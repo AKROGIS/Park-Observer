@@ -62,11 +62,11 @@ extension Survey {
 
 extension GpsPoints {
 
-  static func csvHeader(with format: CSVGpsPoints) -> String {
+  static func csvHeader(with format: CsvFormat.GpsPoints) -> String {
     return format.fieldNames.joined(separator: ",")
   }
 
-  static func csvBody(with format: CSVGpsPoints) throws -> String {
+  static func csvBody(with format: CsvFormat.GpsPoints) throws -> String {
     let gpsPoints = try GpsPoints.allOrderByTime.execute()
     return gpsPoints.map { $0.asCsv(format: format) }.joined(separator: "\n")
   }
@@ -75,7 +75,7 @@ extension GpsPoints {
 
 extension GpsPoint {
 
-  func asCsv(format: CSVGpsPoints) -> String {
+  func asCsv(format: CsvFormat.GpsPoints) -> String {
 
     //TODO: Use the format to structure which fields are returned
 
@@ -99,7 +99,7 @@ extension GpsPoint {
 
 extension Observations {
 
-  static func csvHeader(for feature: Feature, with format: CSVFeatures) -> String {
+  static func csvHeader(for feature: Feature, with format: CsvFormat.Features) -> String {
     guard let attributes = feature.attributes, attributes.count > 0 else {
       return format.header
     }
@@ -107,7 +107,7 @@ extension Observations {
     return header + "," + format.header
   }
 
-  static func csvBody(for feature: Feature, with format: CSVFeatures) throws -> String {
+  static func csvBody(for feature: Feature, with format: CsvFormat.Features) throws -> String {
     let observations = try Observations.fetchAll(for: feature.name).execute()
     return observations.map {
       $0.asCsv(feature: feature, format: format)
@@ -118,7 +118,7 @@ extension Observations {
 
 extension Observation {
 
-  func asCsv(feature: Feature, format: CSVFeatures) -> String {
+  func asCsv(feature: Feature, format: CsvFormat.Features) -> String {
 
     //TODO: Use the format to structure which fields are returned
 
@@ -182,12 +182,12 @@ extension Observation {
 
 extension TrackLogs {
 
-  static func csvHeader(with format: CSVTrackLogs, attributeNames: [String]) -> String {
+  static func csvHeader(with format: CsvFormat.TrackLogs, attributeNames: [String]) -> String {
     let headerNames = attributeNames + format.fieldNames
     return headerNames.joined(separator: ",")
   }
 
-  static func csvBody(with format: CSVTrackLogs, attributeNames: [String]) throws -> String {
+  static func csvBody(with format: CsvFormat.TrackLogs, attributeNames: [String]) throws -> String {
     let tracklogs = try TrackLogs.fetchAll()
     let trackLogCsv = tracklogs.map { $0.asCsv(format: format, attributeNames: attributeNames) }
     return trackLogCsv.joined(separator: "\n")
@@ -197,7 +197,7 @@ extension TrackLogs {
 
 extension TrackLog {
 
-  func asCsv(format: CSVTrackLogs, attributeNames: [String]) -> String {
+  func asCsv(format: CsvFormat.TrackLogs, attributeNames: [String]) -> String {
 
     //TODO: Use the format to structure which fields are returned
 
