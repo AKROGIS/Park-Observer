@@ -75,11 +75,7 @@ class TrackLogTests: XCTestCase {
           point1.timestamp = Date()
           point1.mission = mission
           point1.missionProperty = mp
-          let trackLog = TrackLog(properties: mp)
-          XCTAssertEqual(trackLog.points.count, 0)
-          XCTAssertNil(trackLog.length)
-          XCTAssertNil(trackLog.duration)
-          trackLog.points.append(point1)
+          let trackLog = TrackLog(firstPoint: point1)!
           XCTAssertEqual(trackLog.points.count, 1)
           XCTAssertEqual(trackLog.length, 0)
           XCTAssertEqual(trackLog.duration, 0)
@@ -92,7 +88,7 @@ class TrackLogTests: XCTestCase {
           point2.longitude = -153.0
           point2.timestamp = point1.timestamp?.addingTimeInterval(50)
           point2.mission = mission
-          trackLog.points.append(point2)
+          trackLog.append(point2)
           XCTAssertEqual(trackLog.points.count, 2)
           XCTAssertNotNil(trackLog.length)
           XCTAssertNotNil(trackLog.duration)

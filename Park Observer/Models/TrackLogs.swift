@@ -43,17 +43,27 @@ import Foundation  // for TimeInterval
 // tracklogging in the user interface). The tracklog is segmented whenever the mission
 // properties change (on/off transect, weather changes, etc).  In that sense what we are
 // calling tracklogs could also be considered tracklog or mission segments.
-//
-// IMPORTANT: This object assumes that clients will never remove, edit or replace points, only
-// append new ones in ORDER (chronologically).
 
 class TrackLog {
-  let properties: MissionProperty
-  var points: GpsPoints = []
 
-  init(properties: MissionProperty) {
-    self.properties = properties
+  let properties: MissionProperty
+  private(set) var points: GpsPoints = []
+
+  init?(firstPoint: GpsPoint?) {
+    guard let point = firstPoint, let props = point.missionProperty else {
+      return nil
+    }
+    self.properties = props
+    self.points.append(point)
   }
+
+  // IMPORTANT: points must be added in chronological sequence or the tracklog is bogus
+  func append(_ point: GpsPoint) {
+    // TODO, ignore or throw error if new point is not newer than the last point
+    self.points.append(point)
+  }
+
+  // MARK: - Computed Properties
 
   var duration: TimeInterval? {
     guard let endTime = points.last?.timestamp, let startTime = points.first?.timestamp else {
@@ -99,36 +109,37 @@ extension TrackLogs {
     if gpsPoints.count == 0 {
       return trackLogs
     }
-    guard let point = gpsPoints.first, let properties = point.missionProperty else {
+    guard var currentTrackLog = TrackLog(firstPoint: gpsPoints.first) else {
       throw BuildError.noFirstProperty
     }
-    guard var currentMission = point.mission else {
+    trackLogs.append(currentTrackLog)
+    guard var currentMission = gpsPoints.first?.mission else {
       throw BuildError.noMission
     }
-    // The initial value of currentTrackLog is a throw away tracklog (not added to the array).
-    // Otherwise, currentTrackLog would be an optional with a lot of nil checks.
-    // It will have gpsPoints[0] added to points list only once (closing the tracklog)
-    var currentTrackLog = TrackLog(properties: properties)
-    for point in gpsPoints {
-      if let properties = point.missionProperty {
-        // This is all first/last points, except the start of mission #2+.
-        // The start of mission #2+ does not need to add the current point to the
-        // current tracklog before starting a new one.
-        if currentMission == point.mission {
-          // "Close" the current tracklog
-          currentTrackLog.points.append(point)
-        }
-        // start a new tracklog and put it in the list
+    for point in gpsPoints.dropFirst() {
+      if point.missionProperty == nil {
+        // middle or last point, but not a first point
+        currentTrackLog.append(point)
+      } else {
+        // A first point
         guard let mission = point.mission else {
           throw BuildError.noMission
         }
-        currentMission = mission
-        currentTrackLog = TrackLog(properties: properties)
-        currentTrackLog.points.append(point)
+        if currentMission == mission {
+          // This is not the start of mission #2+.
+          // The start of mission #2+ does not need to add the current point to
+          // the end of the current tracklog before starting a new one.
+          // "Close" the current tracklog
+          currentTrackLog.append(point)
+        } else {
+          currentMission = mission
+        }
+        // start a new tracklog and put it in the list
+        guard let newTrackLog = TrackLog(firstPoint: point) else {
+          throw BuildError.noFirstProperty
+        }
+        currentTrackLog = newTrackLog
         trackLogs.append(currentTrackLog)
-      } else {
-        // middle or last point, but not a first point
-        currentTrackLog.points.append(point)
       }
     }
     return trackLogs
