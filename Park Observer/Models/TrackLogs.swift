@@ -6,6 +6,14 @@
 //  Copyright © 2020 Alaska Region GIS Team. All rights reserved.
 //
 
+/// This class is responsible for representing a tracklog (defined below).  A tracklog is typically built to
+/// provide a polyline for the mapView or summary information for CSV export from the data in coredata.
+/// A tracklog should be created then exported to CSV or the mapview and then discarded.  While the class
+/// cannot be mutated, except while building, it is built from objects owned by the CoreData context, and
+/// they can be changed at anytime after the tracklog is created, thereby making the tracklog incorrect.
+/// The tracklog does not monitor or adjust for changes in the underlying coredata objects, so it is only
+/// guaranteed correct when it is built.
+
 import ArcGIS  // for AGSPolyline and AGSPoint
 import Foundation  // for TimeInterval
 
@@ -30,6 +38,11 @@ import Foundation  // for TimeInterval
 // Note that there are three tracklogs in both missions.  The 3rd tracklog in mission 2
 // has only one point.  This is a valid trackog. It will have 0 length and 0 duration.
 // It is not possible to create a tracklog with no points.
+//
+// For the user's perspective, a mission is a tracklog (begins and ends with start/stop
+// tracklogging in the user interface). The tracklog is segmented whenever the mission
+// properties change (on/off transect, weather changes, etc).  In that sense what we are
+// calling tracklogs could also be considered tracklog or mission segments.
 //
 // IMPORTANT: This object assumes that clients will never remove, edit or replace points, only
 // append new ones in ORDER (chronologically).
@@ -78,7 +91,7 @@ extension TrackLogs {
 
   /// Build a new set of tracklogs by fetching all necessary data from the CoreData Context of the current thread
   /// This may be called on different threads in different situations.
-  /// It must not rely on any previously retrieved managed objects
+  /// It must not rely on any managed objects in a different context.  These object cannot be shared with another thread.
   static func fetchAll() throws -> TrackLogs {
     // The following fetch assumes we are in a private/background context block
     let gpsPoints = try GpsPoints.allOrderByTime.execute()
@@ -92,7 +105,7 @@ extension TrackLogs {
     guard var currentMission = point.mission else {
       throw BuildError.noMission
     }
-    // The initial currentTrackLog is a throw away tracklog (not added to the array).
+    // The initial value of currentTrackLog is a throw away tracklog (not added to the array).
     // Otherwise, currentTrackLog would be an optional with a lot of nil checks.
     // It will have gpsPoints[0] added to points list only once (closing the tracklog)
     var currentTrackLog = TrackLog(properties: properties)

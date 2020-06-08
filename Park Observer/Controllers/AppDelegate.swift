@@ -6,7 +6,7 @@
 //  Copyright © 2020 Alaska Region GIS Team. All rights reserved.
 //
 
-/// This class is responsible for manaing the lifecycle of the application.
+/// This class is responsible for managing the lifecycle of the application.
 /// This app delegate maintains no application state (see the Scene Delegate)
 ///
 /// @UIApplicationMain is expanded to a main() function which is the entry point called by the OS to start the app.

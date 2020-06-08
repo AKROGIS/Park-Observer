@@ -6,14 +6,31 @@
 //  Copyright © 2020 Alaska Region GIS Team. All rights reserved.
 //
 
+/// A Survey is responsible for managing all data associated with a survey.  This includes the configuration
+/// data in the SurveyProtocol, the metadata in SurveyInfo, and the CoreData database.
+/// A survey cannot be created until there is a representation on disk as a bundle of files.  The bundle can
+/// be created by unpacking an archive (FileManager.addToApp(poz_archive), or by the create() class method.
+/// Once a survey exists on disk, an in-memory object can be created by calling the load() class method.
+/// which asynchronously loads all the files in a survey.  A survey object cannot be initialized directly.
+/// The survey object is responsible for persisting saving changes to the metadata and database to disk.
+/// The survey object itself is immutable to callers, but it can mutate the metadata in response to
+/// user actions, i.e. export.  Of course the database is mutable.
+
 import CoreData
 
-/// A Survey is responsible for all interaction with the database
-/// It is imutable (of course the database it manages is not)
 class Survey {
+
+  /// The last path component (without extension) of the folder (bundle) containing the survey files
   let name: String
+
+  /// The in-memory representation of the survey protocol (*.obsprot) file
   let config: SurveyProtocol
+
+  /// The in-memory representation of the survey metadata info.plist file
   private(set) var info: SurveyInfo
+
+  /// The main CoreData context; This context (and the objects it contains) can only be used on the main (UI) thread.
+  /// It is backed by a Sqlite3 database on disk.
   let viewContext: NSManagedObjectContext
 
   private init(name: String, info: SurveyInfo, config: SurveyProtocol, viewContext: NSManagedObjectContext) {
@@ -25,7 +42,7 @@ class Survey {
 
 }
 
-//MARK: - Create a survey
+//MARK: - Create/Load
 
 extension Survey {
 
@@ -62,15 +79,19 @@ extension Survey {
                 configurationName: nil,
                 at: url, options: nil)
               let survey = Survey(name: name, info: info, config: config, viewContext: context)
+              // TODO: update info state and save
               result = .success(survey)
             } catch {
               result = .failure(.noDatabase(error: error))
+              // TODO update info state and save
             }
           } else {
             result = .failure(LoadError.noObjectModel)
+            // TODO update info state and save
           }
         } catch {
           result = .failure(.noProtocol(error: error))
+          // TODO update info state and save
         }
       } catch {
         result = .failure(.noInfo(error: error))
@@ -115,6 +136,7 @@ extension Survey {
     if viewContext.hasChanges {
       try viewContext.save()
     }
+    // TODO: update info and save info
   }
 
   func setTitle(_ title: String) {
@@ -132,19 +154,7 @@ extension Survey {
 
 }
 
-//MARK: - Adding Features
-
-// Called by user actions (UI thread), or CoreLocation updates
-// Assume for now that CoreLocation updates happen on the UI thread as they also update the map.
-
-//MARK: - Refresh Map
-
-// Grabs all objects in a freshly opened survey to update the map.
-// Loading large surveys takes a few seconds, but it is unclear where the bottleneck is.
-// This might work best if called on as a background task to create the UI data structures
-// Then update the map on the UI thread.
-
-//MARK: - Export to CSV
+//MARK: - Export
 
 extension Survey {
 
@@ -162,6 +172,7 @@ extension Survey {
           if let fileText = files[fileName] {
             try fileText.write(to: fileUrl, atomically: false, encoding: .utf8)
           }
+          // TODO: update info and save
         }
         DispatchQueue.main.async {
           completionHandler(nil)
@@ -179,3 +190,18 @@ extension Survey {
   }
 
 }
+
+
+// TODO: Goes to SurveyController
+
+//MARK: - Adding Features
+
+// Called by user actions (UI thread), or CoreLocation updates
+// Assume for now that CoreLocation updates happen on the UI thread as they also update the map.
+
+//MARK: - Refresh Map
+
+// Grabs all objects in a freshly opened survey to update the map.
+// Loading large surveys takes a few seconds, but it is unclear where the bottleneck is.
+// This might work best if called on as a background task to create the UI data structures
+// Then update the map on the UI thread.

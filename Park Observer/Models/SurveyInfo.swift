@@ -6,22 +6,27 @@
 //  Copyright © 2020 Alaska Region GIS Team. All rights reserved.
 //
 
+/// An immutable struct and initializers for encoding/decoding survey metadata
+/// For example information about the survey that may be presented to the user without reading the
+/// configuration file or opening the database.
+/// This struct is typically persisted in an XML property list file.  This struct needs to retain
+/// compatibility with plists created by the original park observer.
+/// Convenience initializers are provided for creating a new struct from an existing one.
+/// For example when the title or save date of a survey changes.
+
 import Foundation
 
-/// An object to store Survey Name (not necessarily the file name);
-/// and other info about the survey that may be presented to the user without opening the database
 struct SurveyInfo {
+
   let creationDate: Date?  // n/a in legacy, but never nil in new
   let exportDate: Date?
-
   let modificationDate: Date?  // Legacy is never nil
   let syncDate: Date?
-
   let state: SurveyState
   let title: String
   let version: Int  // Legacy = 1; new = 2
 
-  //Legacy values; do not change
+  // For compatibility with legacy files; do not change meaning of values 0..4
   enum SurveyState: Int, Codable {
     case unborn = 0
     case corrupt = 1
