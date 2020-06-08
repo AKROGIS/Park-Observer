@@ -6,8 +6,12 @@
 //  Copyright © 2020 Alaska Region GIS Team. All rights reserved.
 //
 
-import ArcGIS
-import Foundation
+/// This file declares an enum that provides a set of well known keys to the NSDefaults system.
+/// It is responsible for reading/writing values (of defined types) in NSDefaults
+/// This file maintains no state.
+
+import ArcGIS  // for AGSLocationDisplayAutoPanMode
+import Foundation  // for UserDefaults
 
 enum Defaults: String {
   case mapAutoPanMode  // AGSLocationDisplayAutoPanMode (enum:Int); default: .off

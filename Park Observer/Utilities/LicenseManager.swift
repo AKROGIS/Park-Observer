@@ -6,8 +6,13 @@
 //  Copyright © 2020 Alaska Region GIS Team. All rights reserved.
 //
 
+/// This is a namespace (enum with no cases) for holding convenience functions related to the ArcGIS License Manager
+/// Responsible for getting a license to the ArcGIS runtime library.
+/// Maintains no state
+
 import ArcGIS
 
+// License key is free for "runtime lite". Available on dashboard of the Esri developer site.
 extension String {
   static let licenseKey = "runtimelite,1000,rud9696418117,none,RP5X0H4AH56JXH46C065"
 }
@@ -15,15 +20,13 @@ extension String {
 enum LicenseManager {
 
   static func licenseArcGISRuntime() -> Bool {
-    // License key is free for "runtime lite"
-    // Available on dashboard of Esri developer site
     do {
       let result = try AGSArcGISRuntimeEnvironment.setLicenseKey(.licenseKey)
       print("ArcGIS Runtime license request result: \(result.licenseStatus)")
       return result.licenseStatus == .valid
     } catch {
       // Do not throw or abort.
-      // Without license app will run with a "Developer Mode" watermark on the map view
+      // Without a license the app will run with a "Developer Mode" watermark on the map view
       let nserror = error as NSError
       print("Error licensing ArcGIS Runtime: \(nserror), \(nserror.userInfo)")
       return false

@@ -6,12 +6,15 @@
 //  Copyright © 2020 Alaska Region GIS Team. All rights reserved.
 //
 
-import Foundation  // for Date and TimeInterval
+/// This file contains extensions on other objects for representing those objects as CSV text
+/// This file maintains no state
 
 // IMPORTANT: The code in these extensions assumes it is called in a block on a private CoreData
 // context (uses the execute() method on a fetch request). Therefore they cannot use any managed
-// objects from another context (like the UI), and these objects cannot be used on another
-// thread/context.
+// objects from another context. Objects fetched in this context cannot be used on another
+// thread/context - do not cache them; let them deallocate when the functions finish.
+
+import Foundation  // for Date and TimeInterval
 
 enum ExportError: Error {
   case noConfig
@@ -23,7 +26,7 @@ extension Survey {
 
   func csvFiles() throws -> [String: String] {
     let defaultFormat: CsvFormat? = {
-      // Do not create a defaultFormat (required decoding JSON), unless we need to
+      // Do not create a defaultFormat unless we need to (it requires decoding JSON),
       self.config.csv == nil ? try? CsvFormat.defaultFormat(for: self.info.version) : nil
     }()
     guard let format = self.config.csv ?? defaultFormat else {
@@ -80,7 +83,7 @@ extension GpsPoint {
     //TODO: Use the format to structure which fields are returned
 
     let fields: [String] = [
-      DateFormattingHelper.shared.formatUtcIso(timestamp) ?? "",
+      timestamp?.asIso8601UTC ?? "",
       String.formatOptional(format: "%0.6f", value: latitude),
       String.formatOptional(format: "%0.6f", value: longitude),
       "WGS84",
@@ -138,8 +141,8 @@ extension Observation {
     let julian = Date.julianDate(timestamp: timestamp)
     let locationOfObserver = requestLocationOfObserver()
     let standardFields: [String] = [
-      DateFormattingHelper.shared.formatUtcIso(timestamp) ?? "",
-      DateFormattingHelper.shared.formatLocalIso(timestamp) ?? "",
+      timestamp?.asIso8601UTC ?? "",
+      timestamp?.asIso8601Local ?? "",
       julian.year == nil ? "" : "\(julian.year!)",
       julian.day == nil ? "" : "\(julian.day!)",
       String.formatOptional(format: "%0.6f", value: locationOfFeature?.latitude),
@@ -159,7 +162,7 @@ extension Observation {
       ]
     }
 
-    // AngleDistanceFields
+    // Angle/Distance Fields
     var adFields = ["", "", ""]
     if let angleDistance = angleDistanceLocation, let config = feature.angleDistanceConfig {
       var adHelper = AngleDistanceHelper(
@@ -217,12 +220,12 @@ extension TrackLog {
     let julian = Date.julianDate(timestamp: start?.timestamp)
     let standardFields: [String] = [
       (properties.observing ?? false) ? "Yes" : "No",
-      DateFormattingHelper.shared.formatUtcIso(start?.timestamp) ?? "",
-      DateFormattingHelper.shared.formatLocalIso(start?.timestamp) ?? "",
+      start?.timestamp?.asIso8601UTC ?? "",
+      start?.timestamp?.asIso8601Local ?? "",
       julian.year == nil ? "" : "\(julian.year!)",
       julian.day == nil ? "" : "\(julian.day!)",
-      DateFormattingHelper.shared.formatUtcIso(end?.timestamp) ?? "",
-      DateFormattingHelper.shared.formatLocalIso(end?.timestamp) ?? "",
+      end?.timestamp?.asIso8601UTC ?? "",
+      end?.timestamp?.asIso8601Local ?? "",
       String.formatOptional(format: "%0.2f", value: duration),
       String.formatOptional(format: "%0.6f", value: start?.latitude),
       String.formatOptional(format: "%0.6f", value: start?.longitude),

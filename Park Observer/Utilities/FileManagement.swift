@@ -6,6 +6,10 @@
 //  Copyright © 2020 Alaska Region GIS Team. All rights reserved.
 //
 
+/// This is a collection of extensions (mostly on FileManager) for interacting with the file system
+/// There are also a few enums, and one data struct for returning the file name and type.
+/// This file declares some public constants, but has no mutating public state.
+
 import Foundation
 import Zip
 
@@ -102,8 +106,8 @@ extension FileManager {
     try removeItem(at: surveyURL(with: name))
   }
 
-  func filenames(in directory: URL, with pathExtension: String) -> [String] {
-    // return empty array if any errors are encountered
+  private func filenames(in directory: URL, with pathExtension: String) -> [String] {
+    // Return an empty array if any errors are encountered
     if let contents = try? contentsOfDirectory(
       at: directory, includingPropertiesForKeys: [], options: [])
     {
@@ -118,7 +122,7 @@ extension FileManager {
 
 //MARK: - Survey Bundles
 
-extension String {
+private extension String {
   // Name of private folder where survey bundles are kept
   static let surveyDirectory = "Surveys"
 
@@ -175,7 +179,7 @@ enum AppFileType {
   case surveyProtocol
   case survey
 
-  init?(from url: URL) {
+  fileprivate init?(from url: URL) {
     switch url.pathExtension.lowercased() {
     case "poz":
       self = .archive
@@ -200,7 +204,7 @@ struct AppFile {
   let name: String
 }
 
-extension AppFile {
+private extension AppFile {
   init?(from url: URL) {
     let maybeType = AppFileType(from: url)
     if maybeType == nil { return nil }
@@ -272,7 +276,7 @@ extension FileManager {
     return appFile.name
   }
 
-  func copyUniqueItem(at url: URL, to destURL: URL) throws -> URL {
+  private func copyUniqueItem(at url: URL, to destURL: URL) throws -> URL {
     // This method assumes that newURL exists
     let ext = destURL.pathExtension
     let name = destURL.deletingPathExtension().lastPathComponent
@@ -285,9 +289,9 @@ extension FileManager {
         try copyItem(at: url, to: newURL)
         break
       } catch CocoaError.fileWriteFileExists {
-        //Do nothing; increase the counter and try again
-        //Any other errors will be thrown
+        // Do nothing; increase the counter and try again
       }
+      // All other errors will be thrown to caller
     }
     return newURL
   }
@@ -334,9 +338,9 @@ extension FileManager {
                 at: potentialUrl, withIntermediateDirectories: false, attributes: nil)
               break
             } catch CocoaError.fileWriteFileExists {
-              //Do nothing; increase the counter and try again
-              //Any other errors will be thrown
+              // Do nothing; increase the counter and try again
             }
+            // All other errors will be thrown to caller
           }
         default:
           throw error

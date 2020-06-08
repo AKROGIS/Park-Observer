@@ -6,7 +6,10 @@
 //  Copyright © 2020 Alaska Region GIS Team. All rights reserved.
 //
 
-// Implement LocalizedError computed properties
+/// An extension on DecodingError (from standard library) to implement the computed properties for
+/// the LocalizedError protocol; DecodingError is already conformant, but the
+/// default properties return empty strings
+/// Extension cannot create new state.
 
 extension DecodingError {
   public var errorDescription: String {
