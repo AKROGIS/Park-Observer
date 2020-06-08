@@ -6,6 +6,14 @@
 //  Copyright © 2020 Alaska Region GIS Team. All rights reserved.
 //
 
+// TODO: Break this up into one controller per view and rename MapControlsController
+
+/// This class is responsible for controlling a MapControlsView
+/// It provides observable state and callbacks to the sub views of the MapControlsView.
+/// This controller maintains a weak reference to an AGSMapView instance which it monitors and modifies.
+/// This class should be created and owned by the owner of the MapControlsView and passed as
+/// as a parameter to that view.
+
 import ArcGIS
 
 class MapViewController: ObservableObject {

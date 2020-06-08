@@ -6,6 +6,13 @@
 //  Copyright © 2020 Alaska Region GIS Team. All rights reserved.
 //
 
+/// This class is responsible for controlling a LocationButtonView.
+/// It provides observable state and callbacks to a LocationButtonView.  This view provides a control
+/// button (and feedback) on the state of the "show my GPS location" feature of the mapView.
+/// This controller maintains a weak reference to an AGSMapView instance which it monitors and modifies.
+/// This class should be created and owned by the owner of the LocationButtonView and passed as
+/// as a parameter to the LocationButtonView.
+
 import ArcGIS
 import CoreLocation
 import Foundation

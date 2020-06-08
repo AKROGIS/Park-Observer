@@ -6,6 +6,16 @@
 //  Copyright © 2020 Alaska Region GIS Team. All rights reserved.
 //
 
+/// This class is responsible for manaing the lifecycle of the application.
+/// This app delegate maintains no application state (see the Scene Delegate)
+///
+/// @UIApplicationMain is expanded to a main() function which is the entry point called by the OS to start the app.
+/// The default main() calls UIApplicationMain(_:_:_:_:)  with default parameters and the name of this class.
+/// UIApplicationMain() instantiates this class and attaches it to the singleton Application() class it also creates.
+/// UIApplicationMain() also creates the application's scenes and scene delegates (based on instructions
+/// from the app delegate) and then starts the run loop and never returns.  The app delegate and any state it owns
+/// will never be deallocated, however scenes may come and go.
+
 import UIKit
 
 @UIApplicationMain
@@ -21,7 +31,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     do {
       // Ensure we have a directory for surveys
       // Only really needs to be done once when app is installed.
-      // This is a silent noop if the directory exists
+      // This will silently do nothing if the directory exists
       try FileManager.default.createSurveyDirectory()
       return true
     } catch {
