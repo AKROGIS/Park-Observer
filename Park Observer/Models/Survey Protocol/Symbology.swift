@@ -6,9 +6,12 @@
 //  Copyright © 2020 Alaska Region GIS Team. All rights reserved.
 //
 
+/// Immutable structs and decoders for representing a portion of the configuration file (see SurveyProtocol.swift)
+/// All related to simple symbology (defined by the config file), or ArcGIS symbology classes.
+
 import ArcGIS
 
-//MARK: - Default Renderers
+//MARK: - Default AGS Renderers
 
 extension AGSSimpleRenderer {
   enum DefaultRenderer {
@@ -21,10 +24,10 @@ extension AGSSimpleRenderer {
     /// gps points
     case gps
 
-    /// line segments while tracklogging but not observing, i.e. off transet
+    /// line segments while tracklogging but not observing, i.e. off transect
     case onTransect
 
-    /// line segments while tracklogging but not observing, i.e. off transet
+    /// line segments while tracklogging but not observing, i.e. off transect
     case offTransect
   }
 

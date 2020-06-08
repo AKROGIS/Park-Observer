@@ -6,6 +6,8 @@
 //  Copyright © 2020 Alaska Region GIS Team. All rights reserved.
 //
 
+/// Immutable structs and decoders for representing a portion of the configuration file (see SurveyProtocol.swift)
+
 import ArcGIS
 
 // MARK: - Feature
@@ -431,7 +433,7 @@ extension LocationMethod.TypeEnum {
 /// Describes how these features should be labeled on the map.
 struct Label {
 
-  /// The color of the text as a hexidecimal triplet of red, green and blue values. `#RRGGBB`;
+  /// The color of the text as a hexadecimal triplet of red, green and blue values. `#RRGGBB`;
   /// 00 = 0 (none), FF = 255 (full).
   let color: UIColor?
 

@@ -7,6 +7,8 @@
 //
 //
 
+/// A swift interface to the objective-c NSManagedObject class in CoreData
+
 import CoreData
 import Foundation
 

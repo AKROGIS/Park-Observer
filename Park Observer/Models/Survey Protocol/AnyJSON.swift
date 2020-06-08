@@ -4,6 +4,9 @@
 //
 //  Derived from https://app.quicktype.io/
 
+/// A default decoder for an element with Any type.
+/// Used to decode the JSON for the ArcGIS types (see Symbology.swift)
+
 import Foundation
 
 struct AnyJSON {

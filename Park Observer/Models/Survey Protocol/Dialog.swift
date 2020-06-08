@@ -6,6 +6,8 @@
 //  Copyright © 2020 Alaska Region GIS Team. All rights reserved.
 //
 
+/// Immutable structs and decoders for representing a portion of the configuration file (see SurveyProtocol.swift)
+
 import Foundation
 import UIKit
 
@@ -136,7 +138,7 @@ struct DialogElement {
   /// The default value for a boolean control (0 = false, 1 = true) only used byQBooleanElement.
   let defaultBool: Bool?
 
-  /// The zero based index of the intially selected item from the list of items.
+  /// The zero based index of the initially selected item from the list of items.
   let defaultIndex: Int?
 
   /// The default number value for a QIntegerElement or QDecimalElement.
@@ -149,7 +151,7 @@ struct DialogElement {
   /// How many digits will be shown after the decimal point (for QDecimalElement only).
   let fractionDigits: Int?
 
-  /// A list of choices for a picklist type element (QRadioElement or QSegmentedElement).
+  /// A list of choices for a pick list type element (QRadioElement or QSegmentedElement).
   let items: [String]?
 
   /// Determines what kind of keyboard will appear when text editing is required.
@@ -190,11 +192,11 @@ struct DialogElement {
     /// A multi line text editor; binds with .text
     case multilineText = "QMultilineElement"
 
-    /// A single selection picklist built from text strings in items; binds to .index or .item
+    /// A single selection pick list built from text strings in items; binds to .index or .item
     /// for long lists that appear as a new tableview
     case defaultPicker = "QRadioElement"
 
-    /// A single selection picklist built from text strings in items; binds to .index or .item
+    /// A single selection pick list built from text strings in items; binds to .index or .item
     /// for short lists that can be displayed on one line in the form
     case segmentedPicker = "QSegmentedElement"
   }

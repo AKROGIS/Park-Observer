@@ -1,8 +1,17 @@
-// This file was originally generated from protocol.v2.schema.json using quicktype (https://app.quicktype.io)
-// It was subsequently refactored to encapsulate functionality and reduce file size.
-
 //
-//   let surveyProtocol = try? JSONDecoder().decode(SurveyProtocol.self, from: jsonData)
+//  SurveyProtocol.swift
+//  Park Observer
+//
+//  Created by Regan E. Sarwas on 4/23/20.
+//  Copyright © 2020 Alaska Region GIS Team. All rights reserved.
+//
+
+/// An immutable struct and decoder for representing the configuration information typically provided as JSON.
+/// This struct is the root of a hierarchy of other immutable structs.  The entire Survey Protocol struct is readonly.
+/// Most of the hierarchy uses custom decoders to provide default values and additional validation.
+///
+/// This file was originally generated from protocol.v2.schema.json using quicktype (https://app.quicktype.io)
+/// It was subsequently refactored to encapsulate functionality and reduce file size.
 
 import Foundation  // for JSONDecoder, Data, URL
 
@@ -46,7 +55,7 @@ struct SurveyProtocol {
   /// An optional message to display on screen when observing (on transect).
   let observingMessage: String?
 
-  /// The font size for the observing/notobserving messages.
+  /// The font size for the observing/not observing messages.
   /// Default: 16.0
   let statusMessageFontsize: Double
 
@@ -100,7 +109,7 @@ extension SurveyProtocol: Codable {
         debugDescription:
           "Cannot initialize SurveyProtocol with \(CodingKeys.metaVersion) \(metaVersion)")
     }
-    // Set metaversion in userInfo for use by children
+    // Set metaVersion in userInfo for use by children
     // and get the validation behavior
     var validationEnabled = true
     if let options = decoder.userInfo[SurveyProtocolCodingOptions.key]

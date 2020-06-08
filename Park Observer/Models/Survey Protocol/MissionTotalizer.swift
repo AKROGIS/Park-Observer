@@ -6,6 +6,8 @@
 //  Copyright © 2020 Alaska Region GIS Team. All rights reserved.
 //
 
+/// Immutable structs and decoders for representing a portion of the configuration file (see SurveyProtocol.swift)
+
 /// An object used to define the text summarizing the mission so far.
 struct MissionTotalizer: Codable {
 

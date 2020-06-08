@@ -6,6 +6,8 @@
 //  Copyright © 2020 Alaska Region GIS Team. All rights reserved.
 //
 
+/// Extensions to CoreData classes and related structs in the SurveyProtocol hierarchy
+
 import CoreData
 
 //MARK: - Attribute extension for CoreData

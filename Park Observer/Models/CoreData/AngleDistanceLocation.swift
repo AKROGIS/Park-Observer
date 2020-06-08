@@ -7,6 +7,8 @@
 //
 //
 
+/// A swift interface to the objective-c NSManagedObject class in CoreData
+
 import ArcGIS  // for AGSSpatialReference, AGSGeometryEngine, AGSPoint
 import CoreData  // for NSManagedObject, NSManagedObjectContext, NSEntityDescription
 import Foundation  // for fabs, sin, cos
@@ -43,7 +45,7 @@ struct AngleDistanceHelper {
   let config: LocationMethod?
 
   /// heading is the current course (typically provided by the course attribute from CoreLocation services)
-  /// It is expressed as an angle in degrees in the geographics reference frame (i.e angles increases clockwise with 0º = North)
+  /// It is expressed as an angle in degrees in the geographic reference frame (i.e angles increases clockwise with 0º = North)
   /// heading provides the frame of reference for the angle property.
   /// An angle that is deadAhead, from the user's perspective as defined in the the config property, matches this angle.
   let heading: Double?

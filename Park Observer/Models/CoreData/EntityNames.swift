@@ -6,6 +6,8 @@
 //  Copyright © 2020 Alaska Region GIS Team. All rights reserved.
 //
 
+/// String constants of the CoreData entities for compile time safety
+
 extension String {
   // Constants used in the code which MUST match the object model (*.xcdatamodeld)
   static let entityNameAdhocLocation = "AdhocLocation"
