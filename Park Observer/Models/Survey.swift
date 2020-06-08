@@ -10,11 +10,19 @@ import CoreData
 
 /// A Survey is responsible for all interaction with the database
 /// It is imutable (of course the database it manages is not)
-struct Survey {
+class Survey {
   let name: String
-  let info: SurveyInfo
   let config: SurveyProtocol
+  private(set) var info: SurveyInfo
   let viewContext: NSManagedObjectContext
+
+  private init(name: String, info: SurveyInfo, config: SurveyProtocol, viewContext: NSManagedObjectContext) {
+    self.name = name
+    self.info = info
+    self.config = config
+    self.viewContext = viewContext
+  }
+
 }
 
 //MARK: - Create a survey
@@ -97,12 +105,23 @@ extension Survey {
     return newName
   }
 
+}
+
+// MARK: - Instance methods
+
+extension Survey {
+
   func save() throws {
     if viewContext.hasChanges {
       try viewContext.save()
     }
   }
 
+  func setTitle(_ title: String) {
+    //TODO udpate info, and save to disk
+  }
+
+  // TODO: make private and call in deinit
   func close() {
     if let psc = viewContext.persistentStoreCoordinator {
       for store in psc.persistentStores {
@@ -153,6 +172,10 @@ extension Survey {
         }
       }
     }
+  }
+
+  func saveToArchive() {
+    //TODO: implement
   }
 
 }
