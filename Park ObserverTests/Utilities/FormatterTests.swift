@@ -31,7 +31,7 @@ class FormatterTests: XCTestCase {
     let date = Date(timeIntervalSince1970: 0)
 
     // When:
-    let output = DateFormattingHelper().formatUtcIso(date)
+    let output = date.asIso8601UTC
 
     // Then:
     XCTAssertEqual(input, output)
@@ -46,8 +46,8 @@ class FormatterTests: XCTestCase {
     let date2 = ISO8601DateFormatter().date(from: "2020-02-11T15:30:26Z")
 
     // When:
-    let output = DateFormattingHelper().formatLocalIso(date)
-    let output2 = DateFormattingHelper().formatLocalIso(date2)
+    let output = date?.asIso8601Local
+    let output2 = date2?.asIso8601Local
 
     // Then:
     XCTAssertEqual(input, output)

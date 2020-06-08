@@ -6,14 +6,25 @@
 //  Copyright © 2020 Alaska Region GIS Team. All rights reserved.
 //
 
+/// A collection of extensions on existing types for formatting them as text in various ways.
+/// Also contains a file private Date Formatting Helper class (described below)
+/// There is no public state in this file
+
 import Foundation  // For Calendar, Date and DateFormatter
 
 //MARK: - DateFormattingHelper
 
-/// A helper class with a shared singleton property for reusing the date formatters
-/// date formatting for CSV creation will be called in a loop thousands of times
-/// and creating a dateformatter is reportedly expensive
-class DateFormattingHelper {
+/// A helper class with a static shared singleton property for reusing the date formatters.
+/// The singleton caches dateformatter objects that are reportedly expensive to create.
+/// These dateformatters will be called thousands of times in a loop during CSV creation
+/// so it makes sense to not create new ones for every date that needs formatting.
+/// The singleton (static property) is lazily initialized (by default), so it will not be created until
+/// the first reference. When the singleton is initialized, it will create the dateformatters.
+/// The singleton and dateformatters will remain alive for the duration of the app's life.
+/// The state is immutable and private (except singleton instance which can only be accessed
+/// by the date extensions in this file)
+
+fileprivate class DateFormattingHelper {
 
   static let shared = DateFormattingHelper()
 
@@ -32,13 +43,11 @@ class DateFormattingHelper {
     return dateFormatter
   }()
 
-  func formatUtcIso(_ date: Date?) -> String? {
-    guard let date = date else { return nil }
+  func formatUtcIso(_ date: Date) -> String {
     return utcIsoDateFormatter.string(from: date)
   }
 
-  func formatLocalIso(_ date: Date?) -> String? {
-    guard let date = date else { return nil }
+  func formatLocalIso(_ date: Date) -> String {
     return localIsoDateFormatter.string(from: date)
   }
 
@@ -69,6 +78,14 @@ extension Date {
     let year = gregorian.component(.year, from: date)
     let day = gregorian.ordinality(of: .day, in: .year, for: date)
     return (year: year, day: day)
+  }
+
+  var asIso8601UTC: String {
+    return DateFormattingHelper.shared.formatUtcIso(self)
+  }
+
+  var asIso8601Local: String {
+    return DateFormattingHelper.shared.formatLocalIso(self)
   }
 
 }
