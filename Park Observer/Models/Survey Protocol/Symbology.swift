@@ -11,74 +11,6 @@
 
 import ArcGIS
 
-//MARK: - Default AGS Renderers
-
-extension AGSSimpleRenderer {
-  enum DefaultRenderer {
-    /// points for observed features
-    case features
-
-    /// points for mission properties, i.e. tracklog observations
-    case mission
-
-    /// gps points
-    case gps
-
-    /// line segments while tracklogging but not observing, i.e. off transect
-    case onTransect
-
-    /// line segments while tracklogging but not observing, i.e. off transect
-    case offTransect
-  }
-
-  convenience init(for style: DefaultRenderer, color: UIColor? = nil, size: Double? = nil) {
-    switch style {
-    case .features:
-      let color = color ?? .red
-      let size = CGFloat(size ?? 14.0)
-      let symbol = AGSSimpleMarkerSymbol(style: .circle, color: color, size: size)
-      self.init(symbol: symbol)
-    case .mission:
-      let color = color ?? .green
-      let size = CGFloat(size ?? 12.0)
-      let symbol = AGSSimpleMarkerSymbol(style: .circle, color: color, size: size)
-      self.init(symbol: symbol)
-    case .gps:
-      let color = color ?? .blue
-      let size = CGFloat(size ?? 6.0)
-      let symbol = AGSSimpleMarkerSymbol(style: .circle, color: color, size: size)
-      self.init(symbol: symbol)
-    case .onTransect:
-      let color = color ?? .red
-      let size = CGFloat(size ?? 3.0)
-      let symbol = AGSSimpleLineSymbol(style: .solid, color: color, width: size)
-      self.init(symbol: symbol)
-    case .offTransect:
-      let color = color ?? .gray
-      let size = CGFloat(size ?? 1.5)
-      let symbol = AGSSimpleLineSymbol(style: .solid, color: color, width: size)
-      self.init(symbol: symbol)
-    }
-  }
-
-}
-
-extension AGSTextSymbol {
-
-  static func label(color: UIColor? = nil, size: Double? = nil) -> AGSTextSymbol {
-    let label = AGSTextSymbol(
-      text: "",
-      color: color ?? .white,
-      size: CGFloat(size ?? 14.0),
-      horizontalAlignment: .left,
-      verticalAlignment: .bottom)
-    label.offsetX = 6.0
-    label.offsetY = 1.0
-    return label
-  }
-
-}
-
 //MARK: - Simple Symbology
 // For support of symbology in version 1 of protocol
 
@@ -184,6 +116,74 @@ extension UIColor {
       // Could not extract RGBA components:
       return "#??????"
     }
+  }
+
+}
+
+//MARK: - Default AGS Renderers
+
+extension AGSSimpleRenderer {
+  enum DefaultRenderer {
+    /// points for observed features
+    case features
+
+    /// points for mission properties, i.e. tracklog observations
+    case mission
+
+    /// gps points
+    case gps
+
+    /// line segments while tracklogging but not observing, i.e. off transect
+    case onTransect
+
+    /// line segments while tracklogging but not observing, i.e. off transect
+    case offTransect
+  }
+
+  convenience init(for style: DefaultRenderer, color: UIColor? = nil, size: Double? = nil) {
+    switch style {
+    case .features:
+      let color = color ?? .red
+      let size = CGFloat(size ?? 14.0)
+      let symbol = AGSSimpleMarkerSymbol(style: .circle, color: color, size: size)
+      self.init(symbol: symbol)
+    case .mission:
+      let color = color ?? .green
+      let size = CGFloat(size ?? 12.0)
+      let symbol = AGSSimpleMarkerSymbol(style: .circle, color: color, size: size)
+      self.init(symbol: symbol)
+    case .gps:
+      let color = color ?? .blue
+      let size = CGFloat(size ?? 6.0)
+      let symbol = AGSSimpleMarkerSymbol(style: .circle, color: color, size: size)
+      self.init(symbol: symbol)
+    case .onTransect:
+      let color = color ?? .red
+      let size = CGFloat(size ?? 3.0)
+      let symbol = AGSSimpleLineSymbol(style: .solid, color: color, width: size)
+      self.init(symbol: symbol)
+    case .offTransect:
+      let color = color ?? .gray
+      let size = CGFloat(size ?? 1.5)
+      let symbol = AGSSimpleLineSymbol(style: .solid, color: color, width: size)
+      self.init(symbol: symbol)
+    }
+  }
+
+}
+
+extension AGSTextSymbol {
+
+  static func label(color: UIColor? = nil, size: Double? = nil) -> AGSTextSymbol {
+    let label = AGSTextSymbol(
+      text: "",
+      color: color ?? .white,
+      size: CGFloat(size ?? 14.0),
+      horizontalAlignment: .left,
+      verticalAlignment: .bottom)
+    label.offsetX = 6.0
+    label.offsetY = 1.0
+    return label
   }
 
 }
