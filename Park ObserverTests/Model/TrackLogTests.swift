@@ -75,26 +75,29 @@ class TrackLogTests: XCTestCase {
           point1.timestamp = Date()
           point1.mission = mission
           point1.missionProperty = mp
-          let trackLog = TrackLog(firstPoint: point1)!
-          XCTAssertEqual(trackLog.points.count, 1)
-          XCTAssertEqual(trackLog.length, 0)
-          XCTAssertEqual(trackLog.duration, 0)
+          if let trackLog = try? TrackLog(point: point1) {
+            XCTAssertEqual(trackLog.points.count, 1)
+            XCTAssertEqual(trackLog.length, 0)
+            XCTAssertEqual(trackLog.duration, 0)
 
-          // Add a second point 100 meters north (see AngleDistanceHelperTests for more info)
-          // The Tracklog length is a shape preserving geodetic (which may be slightly different
-          // than the UTM zone length.
-          let point2 = GpsPoint.new(in: survey.viewContext)
-          point2.latitude = 62.0008973
-          point2.longitude = -153.0
-          point2.timestamp = point1.timestamp?.addingTimeInterval(50)
-          point2.mission = mission
-          trackLog.append(point2)
-          XCTAssertEqual(trackLog.points.count, 2)
-          XCTAssertNotNil(trackLog.length)
-          XCTAssertNotNil(trackLog.duration)
-          if let length = trackLog.length, let duration = trackLog.duration {
-            XCTAssertEqual(length, 100, accuracy: 0.001)
-            XCTAssertEqual(duration, 50, accuracy: 0.001)
+            // Add a second point 100 meters north (see AngleDistanceHelperTests for more info)
+            // The Tracklog length is a shape preserving geodetic (which may be slightly different
+            // than the UTM zone length.
+            let point2 = GpsPoint.new(in: survey.viewContext)
+            point2.latitude = 62.0008973
+            point2.longitude = -153.0
+            point2.timestamp = point1.timestamp?.addingTimeInterval(50)
+            point2.mission = mission
+            XCTAssertNoThrow(try trackLog.append(point2))
+            XCTAssertEqual(trackLog.points.count, 2)
+            XCTAssertNotNil(trackLog.length)
+            XCTAssertNotNil(trackLog.duration)
+            if let length = trackLog.length, let duration = trackLog.duration {
+              XCTAssertEqual(length, 100, accuracy: 0.001)
+              XCTAssertEqual(duration, 50, accuracy: 0.001)
+            }
+          } else {
+            XCTAssertTrue(false)
           }
 
           // Save
@@ -106,14 +109,16 @@ class TrackLogTests: XCTestCase {
             let trackLogs = try? TrackLogs.fetchAll()
             XCTAssertNotNil(trackLogs)
             XCTAssertEqual(trackLogs?.count, 1)
-            XCTAssertEqual(trackLogs?[0].points.count, 2)
-            XCTAssertNotNil(trackLogs?[0].properties)
-            XCTAssertEqual(trackLogs?[0].properties.observing, false)
-            XCTAssertNotNil(trackLogs?[0].length)
-            XCTAssertNotNil(trackLogs?[0].duration)
-            if let length = trackLogs?[0].length, let duration = trackLogs?[0].duration {
-              XCTAssertEqual(length, 100, accuracy: 0.001)
-              XCTAssertEqual(duration, 50, accuracy: 0.001)
+            if let count = trackLogs?.count, count > 0 {
+              XCTAssertEqual(trackLogs?[0].points.count, 2)
+              XCTAssertNotNil(trackLogs?[0].properties)
+              XCTAssertEqual(trackLogs?[0].properties.observing, false)
+              XCTAssertNotNil(trackLogs?[0].length)
+              XCTAssertNotNil(trackLogs?[0].duration)
+              if let length = trackLogs?[0].length, let duration = trackLogs?[0].duration {
+                XCTAssertEqual(length, 100, accuracy: 0.001)
+                XCTAssertEqual(duration, 50, accuracy: 0.001)
+              }
             }
             survey.close()  // So we can delete it without errors
             expectation1.fulfill()

@@ -46,21 +46,53 @@ import Foundation  // for TimeInterval
 
 class TrackLog {
 
+  let mission: Mission
   let properties: MissionProperty
   private(set) var points: GpsPoints = []
+  private var lastDate: Date
 
-  init?(firstPoint: GpsPoint?) {
-    guard let point = firstPoint, let props = point.missionProperty else {
-      return nil
+  init(point: GpsPoint) throws {
+    guard let mission = point.mission else {
+      throw TrackLogBuildError.noMission
     }
+    guard let props = point.missionProperty else {
+      throw TrackLogBuildError.noProperty
+    }
+    guard let date = point.timestamp else {
+      throw TrackLogBuildError.noTimestamp
+    }
+    self.lastDate = date
+    self.mission = mission
     self.properties = props
     self.points.append(point)
   }
 
-  // IMPORTANT: points must be added in chronological sequence or the tracklog is bogus
-  func append(_ point: GpsPoint) {
-    // TODO, ignore or throw error if new point is not newer than the last point
+  func append(_ point: GpsPoint, lastPoint: Bool = false) throws {
+    guard let mission = point.mission else {
+      throw TrackLogBuildError.noMission
+    }
+    guard mission == self.mission else {
+      throw TrackLogBuildError.wrongMission
+    }
+    // Do not add any points that have a missionProperty.
+    // Any point with a missionProperty is the start of a new tracklog.
+    // An exception is made for the last point in a tracklog since it may also
+    // be the first point in the next tracklog.
+    guard lastPoint || point.missionProperty == nil else {
+      throw TrackLogBuildError.extraProperty
+    }
+    guard let date = point.timestamp else {
+      throw TrackLogBuildError.noTimestamp
+    }
+    guard lastDate < date else {
+      throw TrackLogBuildError.pointOutOfOrder
+    }
+    self.lastDate = date
     self.points.append(point)
+  }
+
+  func appendLast(_ point: GpsPoint) throws {
+    try self.append(point, lastPoint: true)
   }
 
   // MARK: - Computed Properties
@@ -90,14 +122,18 @@ class TrackLog {
 
 }
 
+enum TrackLogBuildError: Error {
+  case noMission
+  case noProperty
+  case noTimestamp
+  case extraProperty
+  case pointOutOfOrder
+  case wrongMission
+}
+
 typealias TrackLogs = [TrackLog]
 
 extension TrackLogs {
-
-  enum BuildError: Error {
-    case noFirstProperty
-    case noMission
-  }
 
   /// Build a new set of tracklogs by fetching all necessary data from the CoreData Context of the current thread
   /// This may be called on different threads in different situations.
@@ -109,36 +145,29 @@ extension TrackLogs {
     if gpsPoints.count == 0 {
       return trackLogs
     }
-    guard var currentTrackLog = TrackLog(firstPoint: gpsPoints.first) else {
-      throw BuildError.noFirstProperty
-    }
+    var currentTrackLog = try TrackLog(point: gpsPoints[0])
     trackLogs.append(currentTrackLog)
-    guard var currentMission = gpsPoints.first?.mission else {
-      throw BuildError.noMission
-    }
+    var currentMission = currentTrackLog.mission
     for point in gpsPoints.dropFirst() {
       if point.missionProperty == nil {
         // middle or last point, but not a first point
-        currentTrackLog.append(point)
+        try currentTrackLog.append(point)
       } else {
         // A first point
         guard let mission = point.mission else {
-          throw BuildError.noMission
+          throw TrackLogBuildError.noMission
         }
         if currentMission == mission {
           // This is not the start of mission #2+.
           // The start of mission #2+ does not need to add the current point to
           // the end of the current tracklog before starting a new one.
           // "Close" the current tracklog
-          currentTrackLog.append(point)
+          try currentTrackLog.appendLast(point)
         } else {
           currentMission = mission
         }
         // start a new tracklog and put it in the list
-        guard let newTrackLog = TrackLog(firstPoint: point) else {
-          throw BuildError.noFirstProperty
-        }
-        currentTrackLog = newTrackLog
+        currentTrackLog = try TrackLog(point:point)
         trackLogs.append(currentTrackLog)
       }
     }
