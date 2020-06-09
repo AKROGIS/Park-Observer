@@ -53,14 +53,14 @@ extension Survey {
     case noProtocol(error: Error)
   }
 
-  /// Load a survey async, a results with a survey or error will be returned to the completion handler
+  /// Load a survey async, a Result with a survey or error will be returned to the completion handler
   /// This is the primary (only way in production) to get a survey object
   static func load(_ name: String, completionHandler: @escaping (Result<Survey, LoadError>) -> Void)
   {
     DispatchQueue.global(qos: .userInitiated).async {
       var result: Result<Survey, LoadError>
       do {
-        let info = try SurveyInfo(fromURL: FileManager.default.surveyInfoURL(with: name))
+        var info = try SurveyInfo(fromURL: FileManager.default.surveyInfoURL(with: name))
         do {
           let skipValidation = info.version == 1  // Skip validation on legacy surveys
           let config = try SurveyProtocol(
@@ -78,20 +78,27 @@ extension Survey {
                 ofType: NSSQLiteStoreType,
                 configurationName: nil,
                 at: url, options: nil)
+              if info.state == .unborn {
+                info = info.with(state: .created)
+                // Save is optional; we can try again in the save() method
+                try? info.write(to: FileManager.default.surveyInfoURL(with: name))
+              }
               let survey = Survey(name: name, info: info, config: config, viewContext: context)
-              // TODO: update info state and save
               result = .success(survey)
             } catch {
+              info = info.with(state: .corrupt)
+              try info.write(to: FileManager.default.surveyInfoURL(with: name))
               result = .failure(.noDatabase(error: error))
-              // TODO update info state and save
             }
           } else {
+            info = info.with(state: .corrupt)
+            try info.write(to: FileManager.default.surveyInfoURL(with: name))
             result = .failure(LoadError.noObjectModel)
-            // TODO update info state and save
           }
         } catch {
+          info = info.with(state: .corrupt)
+          try info.write(to: FileManager.default.surveyInfoURL(with: name))
           result = .failure(.noProtocol(error: error))
-          // TODO update info state and save
         }
       } catch {
         result = .failure(.noInfo(error: error))
@@ -136,11 +143,14 @@ extension Survey {
     if viewContext.hasChanges {
       try viewContext.save()
     }
-    // TODO: update info and save info
+    info = info.with(modificationDate: Date(), state: .modified)
+    try info.write(to: FileManager.default.surveyInfoURL(with: name))
   }
 
   func setTitle(_ title: String) {
-    //TODO udpate info, and save to disk
+    info = info.with(title: title)
+    // This save to disk is optional, so don't try to hard
+    try? info.write(to: FileManager.default.surveyInfoURL(with: name))
   }
 
   // TODO: make private and call in deinit
@@ -172,7 +182,6 @@ extension Survey {
           if let fileText = files[fileName] {
             try fileText.write(to: fileUrl, atomically: false, encoding: .utf8)
           }
-          // TODO: update info and save
         }
         DispatchQueue.main.async {
           completionHandler(nil)
@@ -185,7 +194,9 @@ extension Survey {
     }
   }
 
-  func saveToArchive() {
+  func saveToArchive() throws {
+    info = info.with(exportDate: Date(), state: .saved)
+    try info.write(to: FileManager.default.surveyInfoURL(with: name))
     //TODO: implement
   }
 
