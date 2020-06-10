@@ -197,7 +197,15 @@ extension Survey {
   func saveToArchive() throws {
     info = info.with(exportDate: Date(), state: .saved)
     try info.write(to: FileManager.default.surveyInfoURL(with: name))
+
     //TODO: implement
+    // Add parameter for conflict strategy (default is replace) and callback.
+    // create temp URL (based on info.title)
+    // save survey (turn off writing ??)
+    // copy survey to temp URL
+    // export CSV to temp URL
+    // zip up temp URL to temp/title.poz
+    // add temp/title.poz to app with conflict strategy
   }
 
 }
