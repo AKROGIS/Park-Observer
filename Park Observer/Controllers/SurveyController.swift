@@ -34,6 +34,26 @@ class SurveyController: ObservableObject {
 
   private var survey: Survey? = nil
 
+  func drawSurvey(name: String?) {
+    guard let name = name ?? surveyName ?? Defaults.surveyName.readString() else {
+      print("Error in SurveyController.drawSurvey(): No survey given")
+      return
+    }
+    Survey.load(name) { (result) in
+      switch result {
+      case .success(let survey):
+        print("survey loaded")
+        self.surveyName = name
+        self.survey = survey
+        self.mapView.draw(survey)
+        break
+      case .failure(let error):
+        print("Error in Survey.load(): \(error)")
+        break
+      }
+    }
+  }
+
   func startBackgroundLocations() {
     //TODO: Stop updating the UI with CoreLocation Updates,
     // If the survey collects background locations, save them for return to foreground
@@ -41,6 +61,52 @@ class SurveyController: ObservableObject {
 
   func startForegroundLocations() {
     //TODO: Update the UI with CoreLocation Updates received while in the background
+  }
+
+}
+
+
+//TODO: Move to a separate file
+extension AGSMapView {
+
+  func draw(_ survey: Survey) {
+    self.clearLayers()
+    self.drawGpsPoints(survey)
+    self.drawTrackLogs(survey)
+    self.drawMissionProperties(survey)
+    self.drawFeatures(survey)
+  }
+
+  func clearLayers() {
+    self.graphicsOverlays.removeAllObjects()
+  }
+
+  func drawGpsPoints(_ survey: Survey) {
+    let name = "GpsPoints"
+    let overlay = AGSGraphicsOverlay()
+    overlay.overlayID = name
+    overlay.renderer = survey.config.mission?.gpsSymbology
+    if let gpsPoints = try? survey.viewContext.fetch(GpsPoints.allOrderByTime) {
+      overlay.graphics.addObjects(from: gpsPoints.compactMap { gpsPoint in
+        guard let location = gpsPoint.location else { return nil }
+        let agsPoint = AGSPoint(clLocationCoordinate2D: location)
+        //TODO: add attributes?
+        return AGSGraphic(geometry: agsPoint, symbol: nil, attributes: nil)
+      })
+    }
+    self.graphicsOverlays.add(overlay)
+  }
+
+  func drawTrackLogs(_ survey: Survey) {
+
+  }
+
+  func drawMissionProperties(_ survey: Survey) {
+
+  }
+
+  func drawFeatures(_ survey: Survey) {
+
   }
 
 }

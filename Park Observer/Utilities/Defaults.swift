@@ -21,6 +21,7 @@ enum Defaults: String {
   case mapName  // String?; default: nil
   case mapRotation  // Double; default: 0.0
   case mapScale  // Double; default: 0.0
+  case surveyName  // String?; default: nil
 }
 
 extension Defaults {
