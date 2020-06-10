@@ -96,6 +96,8 @@ class TrackLogTests: XCTestCase {
             let dateSame = point1.timestamp
             let dateAfter = point1.timestamp?.addingTimeInterval(50)
             let anotherMission = Mission.new(in: survey.viewContext)
+            let anotherMissionProperty = MissionProperty.new(in: survey.viewContext)
+            anotherMissionProperty.mission = mission
 
             // Add a second point 100 meters north (see AngleDistanceHelperTests for more info)
             // The Tracklog length is a shape preserving geodetic (which may be slightly different
@@ -105,8 +107,13 @@ class TrackLogTests: XCTestCase {
             point2.longitude = -153.0
             point2.timestamp = dateAfter
             point2.mission = mission
-            point2.missionProperty = point1.missionProperty
-            // Cannot add a point with the same mission properties
+            // Note: a missionProperty can have only one gps point, so if I assign mp to point2
+            // it will be removed from point1 (making point1 invalid for starting a tracklog)
+            // This reveals the weakness of building a data structure with mutable data;
+            // I could easily circumvent tracklogs's restrictions by changing the objects
+            // after they have been used to build the tracklog.
+            point2.missionProperty = anotherMissionProperty
+            // Cannot add a point with the a mission property
             XCTAssertThrowsError(try trackLog.append(point2))
             point2.missionProperty = nil
             point2.mission = anotherMission
@@ -137,7 +144,7 @@ class TrackLogTests: XCTestCase {
             point3.longitude = -153.0
             point3.timestamp = point2.timestamp?.addingTimeInterval(50)
             point3.mission = mission
-            point3.missionProperty = mp
+            point3.missionProperty = anotherMissionProperty
             // a valid point can have the same location
             // A valid point can have a mission property if it ends the tracklog
             XCTAssertThrowsError(try trackLog.append(point3))
@@ -158,6 +165,11 @@ class TrackLogTests: XCTestCase {
             XCTAssertThrowsError(try trackLog.append(point4))
             XCTAssertThrowsError(try trackLog.appendLast(point4))
             XCTAssertEqual(trackLog.points.count, 3)
+            // Remove point4 from the context before saving, or else it will
+            // be used when create tracklogs in the next step (which will yield different results)
+            point4.delete()
+            // Remove the mission property from point3 so it does not start a 2nd tracklog.
+            point3.missionProperty = nil
           } else {
             XCTAssertTrue(false)
           }
@@ -172,20 +184,21 @@ class TrackLogTests: XCTestCase {
             XCTAssertNotNil(trackLogs)
             XCTAssertEqual(trackLogs?.count, 1)
             if let count = trackLogs?.count, count > 0 {
-              XCTAssertEqual(trackLogs?[0].points.count, 2)
+              XCTAssertEqual(trackLogs?[0].points.count, 3)
               XCTAssertNotNil(trackLogs?[0].properties)
               XCTAssertEqual(trackLogs?[0].properties.observing, false)
               XCTAssertNotNil(trackLogs?[0].length)
               XCTAssertNotNil(trackLogs?[0].duration)
               if let length = trackLogs?[0].length, let duration = trackLogs?[0].duration {
                 XCTAssertEqual(length, 100, accuracy: 0.001)
-                XCTAssertEqual(duration, 50, accuracy: 0.001)
+                XCTAssertEqual(duration, 100, accuracy: 0.001)
               }
             }
             survey.close()  // So we can delete it without errors
             expectation1.fulfill()
           }
         } catch {
+          print(error)
           XCTAssertFalse(true)
           expectation1.fulfill()
         }

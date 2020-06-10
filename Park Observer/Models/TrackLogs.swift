@@ -50,6 +50,7 @@ class TrackLog {
   let properties: MissionProperty
   private(set) var points: GpsPoints = []
   private var lastDate: Date
+  private var closed = false
 
   init(point: GpsPoint) throws {
     guard let mission = point.mission else {
@@ -68,6 +69,9 @@ class TrackLog {
   }
 
   func append(_ point: GpsPoint, lastPoint: Bool = false) throws {
+    guard !closed else {
+      throw TrackLogBuildError.tracklogClosed
+    }
     guard let mission = point.mission else {
       throw TrackLogBuildError.noMission
     }
@@ -93,6 +97,7 @@ class TrackLog {
 
   func appendLast(_ point: GpsPoint) throws {
     try self.append(point, lastPoint: true)
+    closed = true
   }
 
   // MARK: - Computed Properties
@@ -128,6 +133,7 @@ enum TrackLogBuildError: Error {
   case noTimestamp
   case extraProperty
   case pointOutOfOrder
+  case tracklogClosed
   case wrongMission
 }
 
@@ -167,7 +173,7 @@ extension TrackLogs {
           currentMission = mission
         }
         // start a new tracklog and put it in the list
-        currentTrackLog = try TrackLog(point:point)
+        currentTrackLog = try TrackLog(point: point)
         trackLogs.append(currentTrackLog)
       }
     }

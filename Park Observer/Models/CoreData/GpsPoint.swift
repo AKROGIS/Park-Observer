@@ -66,13 +66,17 @@ extension GpsPoint {
 
 typealias GpsPoints = [GpsPoint]
 
-// MARK: - Creation
+// MARK: - Creation/Deletion
 
 extension GpsPoint {
 
   static func new(in context: NSManagedObjectContext) -> GpsPoint {
     return NSEntityDescription.insertNewObject(forEntityName: .entityNameGpsPoint, into: context)
       as! GpsPoint
+  }
+
+  func delete() {
+    self.managedObjectContext?.delete(self)
   }
 
 }
