@@ -9,11 +9,11 @@
 import SwiftUI
 
 struct MapControlsView: View {
-  @ObservedObject var mapViewController: MapViewController
+  @EnvironmentObject var mapViewController: MapViewController
 
   var body: some View {
     HStack {
-      ScalebarView(mapViewController: mapViewController)
+      ScalebarView()
         .frame(width: 200.0, height: 36)
       Spacer()
       if mapViewController.rotation != 0.0 {
@@ -31,6 +31,6 @@ struct MapControlsView: View {
 
 struct MapDashboardView_Previews: PreviewProvider {
   static var previews: some View {
-    MapControlsView(mapViewController: MapViewController())
+    MapControlsView()
   }
 }

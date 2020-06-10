@@ -59,6 +59,7 @@
 		74ABE13E2489747E0047017C /* GpsPointTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 74ABE13D2489747E0047017C /* GpsPointTests.swift */; };
 		74ABE140248975640047017C /* ObservationTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 74ABE13F248975630047017C /* ObservationTests.swift */; };
 		74ABE144248AB05C0047017C /* AdhocLocationTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 74ABE143248AB05C0047017C /* AdhocLocationTests.swift */; };
+		74ABE146248FF0750047017C /* SurveyController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 74ABE145248FF0750047017C /* SurveyController.swift */; };
 		74D0B0D22458DC5A00624FE9 /* ArcGISSymbolDefaultTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 74D0B0D12458DC5A00624FE9 /* ArcGISSymbolDefaultTests.swift */; };
 		74D0B0D4245A1FC600624FE9 /* AnyJSON.swift in Sources */ = {isa = PBXBuildFile; fileRef = 74D0B0D3245A1FC600624FE9 /* AnyJSON.swift */; };
 		74D0B0D6245E18C500624FE9 /* Sample Protocols in Resources */ = {isa = PBXBuildFile; fileRef = 74D0B0D5245E18C500624FE9 /* Sample Protocols */; };
@@ -174,6 +175,7 @@
 		74ABE13D2489747E0047017C /* GpsPointTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GpsPointTests.swift; sourceTree = "<group>"; };
 		74ABE13F248975630047017C /* ObservationTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ObservationTests.swift; sourceTree = "<group>"; };
 		74ABE143248AB05C0047017C /* AdhocLocationTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AdhocLocationTests.swift; sourceTree = "<group>"; };
+		74ABE145248FF0750047017C /* SurveyController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SurveyController.swift; sourceTree = "<group>"; };
 		74D0B0D12458DC5A00624FE9 /* ArcGISSymbolDefaultTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ArcGISSymbolDefaultTests.swift; sourceTree = "<group>"; };
 		74D0B0D3245A1FC600624FE9 /* AnyJSON.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AnyJSON.swift; sourceTree = "<group>"; };
 		74D0B0D5245E18C500624FE9 /* Sample Protocols */ = {isa = PBXFileReference; lastKnownFileType = folder; path = "Sample Protocols"; sourceTree = "<group>"; };
@@ -353,6 +355,7 @@
 				7471664F2447979400A9C960 /* LocationButtonController.swift */,
 				7471662A243C4AF700A9C960 /* MapViewController.swift */,
 				747165ED243C37A800A9C960 /* SceneDelegate.swift */,
+				74ABE145248FF0750047017C /* SurveyController.swift */,
 			);
 			path = Controllers;
 			sourceTree = "<group>";
@@ -647,6 +650,7 @@
 				74D85B52246F1EB60091EA8E /* Mission.swift in Sources */,
 				74A25FCC245233B8006D82CE /* MissionTotalizer.swift in Sources */,
 				74D0B0DA2460C1E100624FE9 /* DecodingError.swift in Sources */,
+				74ABE146248FF0750047017C /* SurveyController.swift in Sources */,
 				744C9B3A24760A700099D414 /* Formatters.swift in Sources */,
 				74D85B58246F1EB60091EA8E /* ObserverModel.xcdatamodeld in Sources */,
 				74A25FBB2451F33F006D82CE /* SurveyProtocol.swift in Sources */,

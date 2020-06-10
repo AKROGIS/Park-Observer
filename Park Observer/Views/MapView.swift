@@ -10,41 +10,22 @@ import ArcGIS
 import SwiftUI
 import UIKit
 
-final class MapView: UIViewRepresentable {
+struct MapView: UIViewRepresentable {
 
-  @ObservedObject var mapViewController: MapViewController
-
-  // BUG: in UIViewRepresentable? (swift 5.1; iOS 13.3; Xcode 11.3)
-  // updateUIView is not called if either
-  //   1) it is in a struct; only works for final class
-  //   2) if @ObservedObject is only declared in UIViewRepresentable; must be declared in superview
-  // note: @ObservedObject decorator can be used, but is not required
-
-  init(mapViewController: MapViewController) {
-    self.mapViewController = mapViewController
-  }
+  @EnvironmentObject var surveyController: SurveyController
 
   func makeUIView(context: Context) -> AGSMapView {
-    // Set static properties on UIView
-    let view = AGSMapView()
-    view.isAttributionTextVisible = false
-    mapViewController.mapView = view
-    return view
+    surveyController.mapView.isAttributionTextVisible = false
+    return surveyController.mapView
   }
 
   func updateUIView(_ view: AGSMapView, context: Context) {
-    // Set dynamic properties on UIView
-    // Avoid setting properties that didn't change, AGSMapView() does not check for deltas
-    if view.map != mapViewController.map {
-      print("Setting MapView.map")
-      view.map = mapViewController.map
-    }
   }
 
 }
 
 struct MapView_Previews: PreviewProvider {
   static var previews: some View {
-    MapView(mapViewController: MapViewController())
+    MapView()
   }
 }

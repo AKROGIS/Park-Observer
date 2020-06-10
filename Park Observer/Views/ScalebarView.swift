@@ -15,15 +15,14 @@ import SwiftUI
 
 struct ScalebarView: UIViewRepresentable {
 
-  @ObservedObject var mapViewController: MapViewController
-
+  @EnvironmentObject var surveyController: SurveyController
   @Environment(\.darkMap) var darkMap
 
   func makeUIView(context: Context) -> Scalebar {
     print("darkMap in Make scalebar = \(darkMap)")
     // Set static properties on UIView
     let scalebar = Scalebar()
-    scalebar.mapView = mapViewController.mapView
+    scalebar.mapView = surveyController.mapView
     scalebar.style = .dualUnitLine
     scalebar.alignment = .left
     scalebar.font = UIFont.systemFont(ofSize: 11.0, weight: UIFont.Weight.semibold)
@@ -32,9 +31,6 @@ struct ScalebarView: UIViewRepresentable {
 
   func updateUIView(_ view: Scalebar, context: Context) {
     print("darkMap in Update scalebar = \(darkMap)")
-    if view.mapView != mapViewController.mapView {
-      view.mapView = mapViewController.mapView
-    }
     view.textColor = darkMap ? UIColor.white : UIColor.black
     view.textShadowColor = (darkMap ? UIColor.black : UIColor.white).withAlphaComponent(0.80)
     view.lineColor = darkMap ? UIColor.white : UIColor.black
@@ -44,6 +40,6 @@ struct ScalebarView: UIViewRepresentable {
 
 struct ScalebarView_Previews: PreviewProvider {
   static var previews: some View {
-    ScalebarView(mapViewController: MapViewController())
+    ScalebarView()
   }
 }
