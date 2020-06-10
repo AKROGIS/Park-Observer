@@ -64,8 +64,7 @@ extension Observation {
       adHelper.distanceInMeters = angleDistance.distance
       return adHelper.featureLocationFromUserLocation(location)
     } else {
-      if gpsPoint == nil, let location = adhocLocation?.location
-      {
+      if gpsPoint == nil, let location = adhocLocation?.location {
         return location
       } else {
         return gpsPoint?.location
@@ -101,10 +100,10 @@ extension Observation {
     }
     let start = timestamp.addingTimeInterval(-0.001)
     let end = timestamp.addingTimeInterval(+0.001)
-    //print(timestamp)
 
     let request: NSFetchRequest<GpsPoint> = GpsPoints.fetchRequest
-    request.predicate = NSPredicate(format: "%@ <= timestamp AND timestamp <= %@", start as CVarArg, end as CVarArg)
+    request.predicate = NSPredicate(
+      format: "%@ <= timestamp AND timestamp <= %@", start as CVarArg, end as CVarArg)
     //request.predicate = NSPredicate(format: "timestamp == %@", timestamp as CVarArg)
     var results: GpsPoints?
     if let context = context {

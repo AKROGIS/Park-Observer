@@ -37,7 +37,7 @@ extension MissionProperty {
     set {
       willChangeValue(forKey: "observing")
       defer { didChangeValue(forKey: "observing") }
-      primitiveObserving = newValue.map({NSNumber(value: $0)})
+      primitiveObserving = newValue.map({ NSNumber(value: $0) })
     }
   }
 }

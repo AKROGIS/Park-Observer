@@ -39,7 +39,7 @@ extension AdhocLocation {
     set {
       willChangeValue(forKey: "latitude")
       defer { didChangeValue(forKey: "latitude") }
-      primitiveLatitude = newValue.map({NSNumber(value: $0)})
+      primitiveLatitude = newValue.map({ NSNumber(value: $0) })
     }
   }
 
@@ -52,7 +52,7 @@ extension AdhocLocation {
     set {
       willChangeValue(forKey: "longitude")
       defer { didChangeValue(forKey: "longitude") }
-      primitiveLongitude = newValue.map({NSNumber(value: $0)})
+      primitiveLongitude = newValue.map({ NSNumber(value: $0) })
     }
   }
 

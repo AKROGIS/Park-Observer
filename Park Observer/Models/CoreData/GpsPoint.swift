@@ -16,14 +16,14 @@ import Foundation
 @objc(GpsPoint)
 public class GpsPoint: NSManagedObject {
 
-  @NSManaged public var altitude: Double // default = -1
-  @NSManaged public var course: Double // default = -1
-  @NSManaged public var horizontalAccuracy: Double // default = -1
+  @NSManaged public var altitude: Double  // default = -1
+  @NSManaged public var course: Double  // default = -1
+  @NSManaged public var horizontalAccuracy: Double  // default = -1
   @NSManaged private var primitiveLatitude: NSNumber?
   @NSManaged private var primitiveLongitude: NSNumber?
-  @NSManaged public var speed: Double // default = -1
+  @NSManaged public var speed: Double  // default = -1
   @NSManaged public var timestamp: Date?
-  @NSManaged public var verticalAccuracy: Double // default = -1
+  @NSManaged public var verticalAccuracy: Double  // default = -1
   @NSManaged public var mission: Mission?
   @NSManaged public var missionProperty: MissionProperty?
   @NSManaged public var observation: Observation?
@@ -45,7 +45,7 @@ extension GpsPoint {
     set {
       willChangeValue(forKey: "latitude")
       defer { didChangeValue(forKey: "latitude") }
-      primitiveLatitude = newValue.map({NSNumber(value: $0)})
+      primitiveLatitude = newValue.map({ NSNumber(value: $0) })
     }
   }
 
@@ -58,7 +58,7 @@ extension GpsPoint {
     set {
       willChangeValue(forKey: "longitude")
       defer { didChangeValue(forKey: "longitude") }
-      primitiveLongitude = newValue.map({NSNumber(value: $0)})
+      primitiveLongitude = newValue.map({ NSNumber(value: $0) })
     }
   }
 
