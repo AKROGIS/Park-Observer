@@ -74,11 +74,28 @@ class TrackLogTests: XCTestCase {
           point1.longitude = -153.0
           point1.timestamp = Date()
           point1.mission = mission
+          point1.missionProperty = nil
+          // Cannot start a Tracklog without a mission property
+          XCTAssertThrowsError(try TrackLog(point: point1))
           point1.missionProperty = mp
+          point1.mission = nil
+          // Cannot start a Tracklog without a mission
+          XCTAssertThrowsError(try TrackLog(point: point1))
+          point1.mission = mission
+          point1.timestamp = nil
+          // Cannot start a Tracklog with a without a timestamp
+          XCTAssertThrowsError(try TrackLog(point: point1))
+          point1.timestamp = Date()
+          //point has all required properties, should start a tracklog
           if let trackLog = try? TrackLog(point: point1) {
             XCTAssertEqual(trackLog.points.count, 1)
             XCTAssertEqual(trackLog.length, 0)
             XCTAssertEqual(trackLog.duration, 0)
+
+            let dateBefore = point1.timestamp?.addingTimeInterval(-50)
+            let dateSame = point1.timestamp
+            let dateAfter = point1.timestamp?.addingTimeInterval(50)
+            let anotherMission = Mission.new(in: survey.viewContext)
 
             // Add a second point 100 meters north (see AngleDistanceHelperTests for more info)
             // The Tracklog length is a shape preserving geodetic (which may be slightly different
@@ -86,8 +103,27 @@ class TrackLogTests: XCTestCase {
             let point2 = GpsPoint.new(in: survey.viewContext)
             point2.latitude = 62.0008973
             point2.longitude = -153.0
-            point2.timestamp = point1.timestamp?.addingTimeInterval(50)
+            point2.timestamp = dateAfter
             point2.mission = mission
+            point2.missionProperty = point1.missionProperty
+            // Cannot add a point with the same mission properties
+            XCTAssertThrowsError(try trackLog.append(point2))
+            point2.missionProperty = nil
+            point2.mission = anotherMission
+            // Cannot add a point with a different mission
+            XCTAssertThrowsError(try trackLog.append(point2))
+            point2.mission = mission
+            point2.timestamp = nil
+            // Cannot add a point without a date
+            XCTAssertThrowsError(try trackLog.append(point2))
+            point2.timestamp = dateBefore
+            // Cannot add a point with an earlier date
+            XCTAssertThrowsError(try trackLog.append(point2))
+            point2.timestamp = dateSame
+            // Cannot add a point with the same date
+            XCTAssertThrowsError(try trackLog.append(point2))
+            point2.timestamp = dateAfter
+            // Valid point can be added.
             XCTAssertNoThrow(try trackLog.append(point2))
             XCTAssertEqual(trackLog.points.count, 2)
             XCTAssertNotNil(trackLog.length)
@@ -96,6 +132,32 @@ class TrackLogTests: XCTestCase {
               XCTAssertEqual(length, 100, accuracy: 0.001)
               XCTAssertEqual(duration, 50, accuracy: 0.001)
             }
+            let point3 = GpsPoint.new(in: survey.viewContext)
+            point3.latitude = 62.0008973
+            point3.longitude = -153.0
+            point3.timestamp = point2.timestamp?.addingTimeInterval(50)
+            point3.mission = mission
+            point3.missionProperty = mp
+            // a valid point can have the same location
+            // A valid point can have a mission property if it ends the tracklog
+            XCTAssertThrowsError(try trackLog.append(point3))
+            XCTAssertNoThrow(try trackLog.appendLast(point3))
+            XCTAssertEqual(trackLog.points.count, 3)
+            XCTAssertNotNil(trackLog.length)
+            XCTAssertNotNil(trackLog.duration)
+            if let length = trackLog.length, let duration = trackLog.duration {
+              XCTAssertEqual(length, 100, accuracy: 0.001)
+              XCTAssertEqual(duration, 100, accuracy: 0.001)
+            }
+            let point4 = GpsPoint.new(in: survey.viewContext)
+            point4.latitude = 62.0
+            point4.longitude = -153.0
+            point4.timestamp = point3.timestamp?.addingTimeInterval(50)
+            point4.mission = mission
+            // Cannot add a point after the end
+            XCTAssertThrowsError(try trackLog.append(point4))
+            XCTAssertThrowsError(try trackLog.appendLast(point4))
+            XCTAssertEqual(trackLog.points.count, 3)
           } else {
             XCTAssertTrue(false)
           }
