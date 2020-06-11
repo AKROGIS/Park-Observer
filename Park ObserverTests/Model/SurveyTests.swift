@@ -401,9 +401,9 @@ class SurveyTests: XCTestCase {
 
     // When:
     // survey created, lets try and load it
-    let expectation1 = expectation(description: "Survey \(name) was loaded")
+    let expectation1 = expectation(description: "Survey \(surveyName) was loaded")
 
-    Survey.load(name) { (result) in
+    Survey.load(surveyName) { (result) in
       switch result {
       case .success(let survey):
         // Survey Loaded, lets export as CSV to temp directory

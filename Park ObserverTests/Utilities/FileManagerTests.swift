@@ -589,21 +589,21 @@ class FileManagerTests: XCTestCase {
   func testNewSurveyDirectoryConflict() {
     // Given:
     let desiredName = "My New Survey"
-    // Create one that will pre-exist
+    // Create one that will pre-exist, may not have the desired name
     guard let newSurveyName = try? FileManager.default.newSurveyDirectory(desiredName) else {
       XCTAssertTrue(false)
       return
     }
     defer {
-      try? FileManager.default.deleteSurvey(with: desiredName)
+      try? FileManager.default.deleteSurvey(with: newSurveyName)
     }
 
     // When:
-    XCTAssertTrue(FileManager.default.surveyNames.contains(desiredName))
+    XCTAssertTrue(FileManager.default.surveyNames.contains(newSurveyName))
 
     // Then:
-    XCTAssertThrowsError(try FileManager.default.newSurveyDirectory(desiredName, conflict: .fail))
-    XCTAssertThrowsError(try FileManager.default.newSurveyDirectory(desiredName))
+    XCTAssertThrowsError(try FileManager.default.newSurveyDirectory(newSurveyName, conflict: .fail))
+    XCTAssertThrowsError(try FileManager.default.newSurveyDirectory(newSurveyName))
   }
 
   func testNewSurveyDirectoryReplace() {
