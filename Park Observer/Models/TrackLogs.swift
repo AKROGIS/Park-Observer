@@ -124,7 +124,7 @@ class TrackLog {
     }
     return geometry as? AGSPolyline
   }
-  
+
   var length: Double? {
     if let polyline = self.polyline {
       return AGSGeometryEngine.geodeticLength(
@@ -165,13 +165,30 @@ extension TrackLogs {
     if gpsPoints.count == 0 {
       return trackLogs
     }
-    var currentTrackLog = try TrackLog(point: gpsPoints[0])
+    // Skip any invalid points at the begining of the list
+    var pointIndex = 0
+    var currentTrackLog: TrackLog = try {
+      repeat {
+        do {
+          return try TrackLog(point: gpsPoints[pointIndex])
+        } catch {
+          logError(point: gpsPoints[pointIndex], error: error)
+          // Do not abort building all tracklogs, just skip this bad point and try the next
+          pointIndex += 1
+          if pointIndex == gpsPoints.count { throw error }
+        }
+      } while true
+    }()
     trackLogs.append(currentTrackLog)
     var currentMission = currentTrackLog.mission
-    for point in gpsPoints.dropFirst() {
+    for point in gpsPoints.dropFirst(pointIndex + 1) {
       if point.missionProperty == nil {
         // middle or last point, but not a first point
-        try currentTrackLog.append(point)
+        do {
+          try currentTrackLog.append(point)
+        } catch {
+          logError(point: point, error: error)
+        }
       } else {
         // A first point
         guard let mission = point.mission else {
@@ -182,7 +199,11 @@ extension TrackLogs {
           // The start of mission #2+ does not need to add the current point to
           // the end of the current tracklog before starting a new one.
           // "Close" the current tracklog
-          try currentTrackLog.appendLast(point)
+          do {
+            try currentTrackLog.appendLast(point)
+          } catch {
+            logError(point: point, error: error)
+          }
         } else {
           currentMission = mission
         }
@@ -192,6 +213,12 @@ extension TrackLogs {
       }
     }
     return trackLogs
+  }
+
+  private static func logError(point: GpsPoint, error: Error) {
+    let lat = String.formatOptional(format: "%0.6f", value: point.location?.latitude)
+    let lon = String.formatOptional(format: "%0.6f", value: point.location?.longitude)
+    print("Error: unable to add point (\(lat),\(lon)) to tracklog: \(error)")
   }
 
 }
