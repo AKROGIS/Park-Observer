@@ -82,9 +82,8 @@ extension AGSMapView {
   }
 
   func drawGpsPoints(_ survey: Survey) {
-    let name = "GpsPoints"
     let overlay = AGSGraphicsOverlay()
-    overlay.overlayID = name
+    overlay.overlayID = .entityNameGpsPoint
     overlay.renderer = survey.config.mission?.gpsSymbology
     if let gpsPoints = try? survey.viewContext.fetch(GpsPoints.allOrderByTime) {
       overlay.graphics.addObjects(from: gpsPoints.compactMap { gpsPoint in
@@ -98,15 +97,39 @@ extension AGSMapView {
   }
 
   func drawTrackLogs(_ survey: Survey) {
-
+    
   }
 
   func drawMissionProperties(_ survey: Survey) {
-
+    let overlay = AGSGraphicsOverlay()
+    overlay.overlayID = .entityNameMissionProperty
+    overlay.renderer = survey.config.mission?.symbology
+    if let missionProperties = try? survey.viewContext.fetch(MissionProperties.fetchRequest) {
+      overlay.graphics.addObjects(from: missionProperties.compactMap { prop in
+        guard let location = prop.gpsPoint?.location else { return nil }
+        let agsPoint = AGSPoint(clLocationCoordinate2D: location)
+        //TODO: add attributes?
+        return AGSGraphic(geometry: agsPoint, symbol: nil, attributes: nil)
+      })
+    }
+    self.graphicsOverlays.add(overlay)
   }
 
   func drawFeatures(_ survey: Survey) {
-
+    for feature in survey.config.features {
+      let overlay = AGSGraphicsOverlay()
+      overlay.overlayID = feature.name
+      overlay.renderer = feature.symbology
+      if let observations = try? survey.viewContext.fetch(Observations.fetchAll(for: feature.name)) {
+        overlay.graphics.addObjects(from: observations.compactMap { observation in
+          guard let location = observation.locationOfFeature else { return nil }
+          let agsPoint = AGSPoint(clLocationCoordinate2D: location)
+          //TODO: add attributes?
+          return AGSGraphic(geometry: agsPoint, symbol: nil, attributes: nil)
+        })
+      }
+      self.graphicsOverlays.add(overlay)
+    }
   }
 
 }

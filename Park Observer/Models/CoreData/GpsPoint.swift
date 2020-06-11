@@ -30,6 +30,8 @@ public class GpsPoint: NSManagedObject {
 
 }
 
+typealias GpsPoints = [GpsPoint]
+
 // MARK: - Property Accessors
 // To allow the use of a more intuitive type Double? in lieu of NSNumber?
 // See https://martiancraft.com/blog/2015/12/nsmanaged/ for details
@@ -63,8 +65,6 @@ extension GpsPoint {
   }
 
 }
-
-typealias GpsPoints = [GpsPoint]
 
 // MARK: - Creation/Deletion
 

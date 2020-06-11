@@ -22,6 +22,8 @@ public class MissionProperty: NSManagedObject {
 
 }
 
+typealias MissionProperties = [MissionProperty]
+
 // MARK: - Property Accessors
 // To allow the use of a more intuitive type Bool? in lieu of NSNumber?
 // See https://martiancraft.com/blog/2015/12/nsmanaged/ for details
@@ -52,3 +54,14 @@ extension MissionProperty {
   }
 
 }
+
+// MARK: - Fetching
+
+extension MissionProperties {
+
+  static var fetchRequest: NSFetchRequest<MissionProperty> {
+    return NSFetchRequest<MissionProperty>(entityName: .entityNameMissionProperty)
+  }
+
+}
+
