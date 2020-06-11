@@ -89,8 +89,9 @@ class LocationButtonController: ObservableObject {
         if self.autoPanMode == .navigation || self.autoPanMode == .compassNavigation {
           self.previousPanMode = self.autoPanMode
         }
-        //TODO: Call on UI thread
-        self.autoPanMode = autoPanMode
+        DispatchQueue.main.async {
+          self.autoPanMode = autoPanMode
+        }
       }
     }
   }
