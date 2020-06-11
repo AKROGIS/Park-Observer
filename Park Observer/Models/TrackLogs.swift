@@ -15,6 +15,7 @@
 /// guaranteed correct when it is built.
 
 import ArcGIS  // for AGSPolyline and AGSPoint
+import CoreData  // for NSManagedObjectContext
 import Foundation  // for TimeInterval
 
 // A tracklog is an ordered sequence of gpsPoints and a mission property.
@@ -109,7 +110,7 @@ class TrackLog {
     return endTime.timeIntervalSince(startTime)
   }
 
-  var length: Double? {
+  var polyline: AGSPolyline? {
     let agsPoints: [AGSPoint] = points.compactMap { point in
       guard let location = point.location else { return nil }
       return AGSPoint(clLocationCoordinate2D: location)
@@ -121,8 +122,16 @@ class TrackLog {
     guard let geometry = AGSGeometryEngine.simplifyGeometry(polyline) else {
       return nil
     }
-    return AGSGeometryEngine.geodeticLength(
-      of: geometry, lengthUnit: AGSLinearUnit.meters(), curveType: .shapePreserving)
+    return geometry as? AGSPolyline
+  }
+  
+  var length: Double? {
+    if let polyline = self.polyline {
+      return AGSGeometryEngine.geodeticLength(
+        of: polyline, lengthUnit: AGSLinearUnit.meters(), curveType: .shapePreserving)
+    } else {
+      return nil
+    }
   }
 
 }
@@ -144,9 +153,14 @@ extension TrackLogs {
   /// Build a new set of tracklogs by fetching all necessary data from the CoreData Context of the current thread
   /// This may be called on different threads in different situations.
   /// It must not rely on any managed objects in a different context.  These object cannot be shared with another thread.
-  static func fetchAll() throws -> TrackLogs {
+  static func fetchAll(context: NSManagedObjectContext? = nil) throws -> TrackLogs {
     // The following fetch assumes we are in a private/background context block
-    let gpsPoints = try GpsPoints.allOrderByTime.execute()
+    var gpsPoints: GpsPoints
+    if let context = context {
+      gpsPoints = try context.fetch(GpsPoints.allOrderByTime)
+    } else {
+      gpsPoints = try GpsPoints.allOrderByTime.execute()
+    }
     var trackLogs: TrackLogs = []
     if gpsPoints.count == 0 {
       return trackLogs

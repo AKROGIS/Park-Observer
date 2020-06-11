@@ -67,6 +67,12 @@ class SurveyController: ObservableObject {
 
 
 //TODO: Move to a separate file
+extension String {
+  static let layerNameGpsPoints = "GpsPoints"
+  static let layerNameMissionProperties = "MissionProperties"
+  static let layerNameTrackLogs = "TrackLogs"
+}
+
 extension AGSMapView {
 
   func draw(_ survey: Survey) {
@@ -83,7 +89,7 @@ extension AGSMapView {
 
   func drawGpsPoints(_ survey: Survey) {
     let overlay = AGSGraphicsOverlay()
-    overlay.overlayID = .entityNameGpsPoint
+    overlay.overlayID = .layerNameGpsPoints
     overlay.renderer = survey.config.mission?.gpsSymbology
     if let gpsPoints = try? survey.viewContext.fetch(GpsPoints.allOrderByTime) {
       overlay.graphics.addObjects(from: gpsPoints.compactMap { gpsPoint in
@@ -97,12 +103,33 @@ extension AGSMapView {
   }
 
   func drawTrackLogs(_ survey: Survey) {
-    
+    // TODO: Use one layer with a Unique Value Renderer
+    let overlayOn = AGSGraphicsOverlay()
+    overlayOn.overlayID = .layerNameTrackLogs + "On"
+    overlayOn.renderer = survey.config.mission?.onSymbology
+    let overlayOff = AGSGraphicsOverlay()
+    overlayOff.overlayID = .layerNameTrackLogs + "Off"
+    overlayOff.renderer = survey.config.mission?.offSymbology
+    if let trackLogs = try? TrackLogs.fetchAll(context: survey.viewContext) {
+      for trackLog in trackLogs {
+        if let polyline = trackLog.polyline {
+          let graphic = AGSGraphic(geometry: polyline, symbol: nil, attributes: nil)
+          //TODO: add attributes?
+          if let observing = trackLog.properties.observing, observing {
+            overlayOn.graphics.add(graphic)
+          } else {
+            overlayOff.graphics.add(graphic)
+          }
+        }
+      }
+    }
+    self.graphicsOverlays.add(overlayOn)
+    self.graphicsOverlays.add(overlayOff)
   }
 
   func drawMissionProperties(_ survey: Survey) {
     let overlay = AGSGraphicsOverlay()
-    overlay.overlayID = .entityNameMissionProperty
+    overlay.overlayID = .layerNameMissionProperties
     overlay.renderer = survey.config.mission?.symbology
     if let missionProperties = try? survey.viewContext.fetch(MissionProperties.fetchRequest) {
       overlay.graphics.addObjects(from: missionProperties.compactMap { prop in
