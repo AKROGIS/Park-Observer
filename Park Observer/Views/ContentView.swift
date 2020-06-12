@@ -9,11 +9,14 @@
 import SwiftUI
 
 struct ContentView: View {
+  @EnvironmentObject var surveyController: SurveyController
 
   var body: some View {
     return ZStack(alignment: .topTrailing) {
       MapView().edgesIgnoringSafeArea(.all)
-      MapControlsView().padding([.leading, .trailing], 20.0)
+      MapControlsView().padding(20.0)
+        .environmentObject(surveyController.viewPointController)
+        .environmentObject(surveyController.locationButtonController)
     }.environment(\.darkMap, true)
   }
 }

@@ -9,16 +9,14 @@
 import SwiftUI
 
 struct CompassView: View {
-  // I am not using bindings because I need to avoid a race condition with the
-  // rotation being set in the MapView and the CompassView.
-
-  var rotation: Double
-  var action: () -> Void
+  @Binding var rotation: Double
 
   @Environment(\.darkMap) var darkMap
 
+  // TODO: fade out (and remove from view?) after rotation is zero
+
   var body: some View {
-    Button(action: action) {
+    Button(action: { self.rotation = 0.0 }) {
       GeometryReader { geometry in
         ZStack {
           Triangle()
@@ -57,6 +55,6 @@ struct Triangle: Shape {
 
 struct CompassView_Previews: PreviewProvider {
   static var previews: some View {
-    CompassView(rotation: 15.0, action: {})
+    CompassView(rotation: .constant(15.0))
   }
 }

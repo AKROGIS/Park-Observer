@@ -9,22 +9,17 @@
 import SwiftUI
 
 struct MapControlsView: View {
-  @EnvironmentObject var surveyController: SurveyController
+  @EnvironmentObject var locationButtonController: LocationButtonController
+  @EnvironmentObject var viewPointController: ViewPointController
 
   var body: some View {
-    print("MapControlsView: rotation = \(surveyController.viewPointController.rotation)")
+    print("MapControlsView: rotation = \(viewPointController.rotation)")
     return HStack {
       ScalebarView()
         .frame(width: 200.0, height: 36)
       Spacer()
-      if surveyController.viewPointController.rotation != 0.0 {
-        CompassView(
-          rotation: surveyController.viewPointController.rotation,
-          action: {
-            self.surveyController.mapView.setViewpointRotation(0, completion: nil)
-          }).transition(.opacity)
-      }
-      LocationButtonView(controller: surveyController.locationButtonController)
+      CompassView(rotation: $viewPointController.rotation)
+      LocationButtonView(controller: locationButtonController)
     }
   }
 
