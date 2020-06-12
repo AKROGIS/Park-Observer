@@ -39,7 +39,19 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
 
   func sceneDidBecomeActive(_ scene: UIScene) {
     // For developer testing, remove in production.
-    surveyController.drawSurvey(name: "ARCN Bears")
+    //surveyController.loadMap(name: "Anchorage18")
+    //surveyController.drawSurvey(name: "ARCN Bears")
+    //surveyController.drawSurvey(name: "DENA Caribou Survey")
+    surveyController.loadMap { error in
+      NSLog("Finish load map")
+      if let error = error {
+        print(error)
+      } else {
+        self.surveyController.restoreMapViewState()
+      }
+    }
+    surveyController.drawSurvey()
+    surveyController.restoreState()
   }
 
   func sceneWillResignActive(_ scene: UIScene) {
@@ -52,7 +64,9 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
   }
 
   func sceneDidEnterBackground(_ scene: UIScene) {
+    surveyController.saveState()
     surveyController.startBackgroundLocations()
+    print("Ready for Background")
   }
 
 }

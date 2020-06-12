@@ -65,6 +65,6 @@ struct LocationButtonView: View {
 
 struct LocationButtonView_Previews: PreviewProvider {
   static var previews: some View {
-    LocationButtonView(controller: LocationButtonController())
+    LocationButtonView(controller: LocationButtonController(mapView: AGSMapView()))
   }
 }

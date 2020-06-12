@@ -16,6 +16,7 @@ struct MapView: UIViewRepresentable {
 
   func makeUIView(context: Context) -> AGSMapView {
     surveyController.mapView.isAttributionTextVisible = false
+    surveyController.mapView.releaseHardwareResourcesWhenBackgrounded = true
     return surveyController.mapView
   }
 

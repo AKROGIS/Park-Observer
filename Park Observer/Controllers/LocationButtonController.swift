@@ -22,15 +22,18 @@ class LocationButtonController: ObservableObject {
   // We need this UIView to observe for changes, and set it's state
   //   Observing: .locationDisplay.started/autoPanMode
   //   Setting: .locationDisplay.start/stop/autoPanMode
-  // Without it we can't do much, and remain in a default state
-  weak var mapView: AGSMapView? {
-    didSet { hookupMapView() }
+  let mapView: AGSMapView
+
+  init(mapView: AGSMapView) {
+    self.mapView = mapView
+    hookupMapView()
   }
 
   // "Readonly" in LocationButtonView
   @Published var authorized: Authorized = .unknown {
     didSet {
       if oldValue != authorized {
+        print("Changed authorized to \(authorized)")
         if authorized == .no {
           showLocation = false
         }
@@ -41,10 +44,9 @@ class LocationButtonController: ObservableObject {
   // "Readonly" in LocationButtonView
   @Published var autoPanMode: AGSLocationDisplayAutoPanMode = .off {
     didSet {
-      print("Set autoPanMode")
       if oldValue != autoPanMode {
-        Defaults.mapAutoPanMode.write(autoPanMode)
-        mapView?.locationDisplay.autoPanMode = autoPanMode
+        print("Changed autoPanMode to \(autoPanMode.rawValue)")
+        mapView.locationDisplay.autoPanMode = autoPanMode
       }
     }
   }
@@ -52,17 +54,32 @@ class LocationButtonController: ObservableObject {
   // "Readonly" in LocationButtonView
   @Published var showLocation: Bool = false {
     didSet {
-      print("Set showLocation")
       if oldValue != showLocation {
-        print("Changed showLocation")
-        Defaults.mapLocationDisplay.write(showLocation)
+        print("Changed showLocation to \(showLocation)")
         if showLocation {
-          mapView?.locationDisplay.start()
+          mapView.locationDisplay.start()
         } else {
-          mapView?.locationDisplay.stop()
+          mapView.locationDisplay.stop()
         }
       }
     }
+  }
+
+  func restoreState() {
+    print("Restoring showLocation")
+    showLocation = Defaults.mapLocationDisplay.readBool()
+    print("Restoring autoPanMode")
+    autoPanMode = Defaults.mapAutoPanMode.readMapAutoPanMode()
+    print("Restoring authorized")
+    authorized = Authorized(from: CLLocationManager.authorizationStatus())
+  }
+
+  func saveState() {
+    // We don't save authorized; the Settings App is the source of truth for that value
+    print("Saving showLocation: \(showLocation)")
+    Defaults.mapLocationDisplay.write(showLocation)
+    print("Saving autoPanMode: \(autoPanMode.rawValue)")
+    Defaults.mapAutoPanMode.write(autoPanMode)
   }
 
   private var locationDelegate = LocationManagerDelegate()
@@ -70,21 +87,14 @@ class LocationButtonController: ObservableObject {
   private var previousPanMode: AGSLocationDisplayAutoPanMode? = nil
 
   private func hookupMapView() {
-    guard let mapView = mapView else {
-      print("Error: mapView was set to nil; Can't hook it up to the controller")
-      return
-    }
     locationDelegate.controller = self
     locationManager.delegate = locationDelegate
-    showLocation = Defaults.mapLocationDisplay.readBool()
-    autoPanMode = Defaults.mapAutoPanMode.readMapAutoPanMode()
-    // checkLocationStatus after getting defaults; to avoid inapropriate defaults for auth level
-    authorized = Authorized(from: CLLocationManager.authorizationStatus())
-    observeAutoPanMode(from: mapView)
+    observeAutoPanMode()
   }
 
-  private func observeAutoPanMode(from mapView: AGSMapView) {
+  private func observeAutoPanMode() {
     mapView.locationDisplay.autoPanModeChangedHandler = { autoPanMode in
+      print("mapView changed autoPanMode to \(autoPanMode.rawValue)")
       if autoPanMode != self.autoPanMode {
         if self.autoPanMode == .navigation || self.autoPanMode == .compassNavigation {
           self.previousPanMode = self.autoPanMode
@@ -139,7 +149,9 @@ class LocationButtonController: ObservableObject {
     weak var controller: LocationButtonController? = nil
 
     func locationManager(_ manager: CLLocationManager, didFailWithError error: Error) {
-      print("Location Button Location Manager didFailWithError: \(error.localizedDescription)")
+      print(
+        "LocationButtonController: CLLocationManager didFailWithError: \(error.localizedDescription)"
+      )
       if let error = error as? CLError {
         if error.code == .denied {
           controller?.authorized = .no
@@ -151,7 +163,9 @@ class LocationButtonController: ObservableObject {
       _ manager: CLLocationManager,
       didChangeAuthorization status: CLAuthorizationStatus
     ) {
-      print("Location Button Location Manager didChangeAuthorization Status \(status.rawValue)")
+      print(
+        "LocationButtonController: CLLocationManager didChangeAuthorization Status \(status.rawValue)"
+      )
       controller?.authorized = Authorized(from: status)
     }
   }

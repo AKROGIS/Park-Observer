@@ -28,18 +28,46 @@ import Foundation  // For NSObject (for delegates)
 //class SurveyController: NSObject, ObservableObject, CLLocationManagerDelegate, AGSGeoViewTouchDelegate {
 class SurveyController: ObservableObject {
 
-  let mapView = AGSMapView()
+  let mapView: AGSMapView
   var surveyName: String? = nil
   var mapName: String? = nil
 
+  // I'm not sure this controller should own these other controllers, but it works
+  // better than the other options (various views or SceneDelegate.  It also
+  // simplifies the SceneDelegate, the View environment, and the Views.
+  let locationButtonController: LocationButtonController
+
+  let viewPointController: ViewPointController
+
   private var survey: Survey? = nil
 
-  func drawSurvey(name: String?) {
-    guard let name = name ?? surveyName ?? Defaults.surveyName.readString() else {
-      print("Error in SurveyController.drawSurvey(): No survey given")
+  init() {
+    self.mapView = AGSMapView()
+    locationButtonController = LocationButtonController(mapView: self.mapView)
+    viewPointController = ViewPointController(mapView: self.mapView)
+  }
+
+  func loadMap(name: String? = nil, completionHandler: ((Error?) -> Void)? = nil) {
+    guard let name = name ?? mapName ?? Defaults.mapName.readString() else {
+      print("Error in SurveyController.mapName(name:): No name given")
       return
     }
-    NSLog("Start load survey")
+    self.mapName = name
+    NSLog("Start load map \(name)")
+    if name.starts(with: "esri.") {
+      loadEsriBasemap(name)
+    } else {
+      loadLocalTileCache(name)
+    }
+    mapView.map?.load(completion: completionHandler)
+  }
+
+  func drawSurvey(name: String? = nil) {
+    guard let name = name ?? surveyName ?? Defaults.surveyName.readString() else {
+      print("Error in SurveyController.drawSurvey(name:): No name given")
+      return
+    }
+    NSLog("Start load survey \(name)")
     Survey.load(name) { (result) in
       NSLog("Finish load survey")
       switch result {
@@ -68,8 +96,31 @@ class SurveyController: ObservableObject {
     //TODO: Update the UI with CoreLocation Updates received while in the background
   }
 
-}
+  func saveState() {
+    // To be called when the app goes into the background
+    // If the app is terminated this state can be restored when the app becomes active.
+    print("Saving mapName: \(mapName ?? "<nil>")")
+    Defaults.mapName.write(mapName)
+    print("Saving surveyName: \(surveyName ?? "<nil>")")
+    Defaults.surveyName.write(surveyName)
+    locationButtonController.saveState()
+    viewPointController.saveState()
+  }
 
+  func restoreState() {
+    // When the app is launched it should try and restore the conditions before it was terminated
+  }
+
+  func restoreMapViewState() {
+    // Call restore locationButton after viewPoint
+    // the pan/zoom for the viewpoint retore will turn off location button
+    // and user may have moved since last active and location tracking should
+    // take precedence over the previous extents.
+    viewPointController.restoreState()
+    locationButtonController.restoreState()
+  }
+
+}
 
 //TODO: Move to a separate file
 extension String {
@@ -97,12 +148,13 @@ extension AGSMapView {
     overlay.overlayID = .layerNameGpsPoints
     overlay.renderer = survey.config.mission?.gpsSymbology
     if let gpsPoints = try? survey.viewContext.fetch(GpsPoints.allOrderByTime) {
-      overlay.graphics.addObjects(from: gpsPoints.compactMap { gpsPoint in
-        guard let location = gpsPoint.location else { return nil }
-        let agsPoint = AGSPoint(clLocationCoordinate2D: location)
-        //TODO: add attributes?
-        return AGSGraphic(geometry: agsPoint, symbol: nil, attributes: nil)
-      })
+      overlay.graphics.addObjects(
+        from: gpsPoints.compactMap { gpsPoint in
+          guard let location = gpsPoint.location else { return nil }
+          let agsPoint = AGSPoint(clLocationCoordinate2D: location)
+          //TODO: add attributes?
+          return AGSGraphic(geometry: agsPoint, symbol: nil, attributes: nil)
+        })
     }
     self.graphicsOverlays.add(overlay)
   }
@@ -137,12 +189,13 @@ extension AGSMapView {
     overlay.overlayID = .layerNameMissionProperties
     overlay.renderer = survey.config.mission?.symbology
     if let missionProperties = try? survey.viewContext.fetch(MissionProperties.fetchRequest) {
-      overlay.graphics.addObjects(from: missionProperties.compactMap { prop in
-        guard let location = prop.gpsPoint?.location else { return nil }
-        let agsPoint = AGSPoint(clLocationCoordinate2D: location)
-        //TODO: add attributes?
-        return AGSGraphic(geometry: agsPoint, symbol: nil, attributes: nil)
-      })
+      overlay.graphics.addObjects(
+        from: missionProperties.compactMap { prop in
+          guard let location = prop.gpsPoint?.location else { return nil }
+          let agsPoint = AGSPoint(clLocationCoordinate2D: location)
+          //TODO: add attributes?
+          return AGSGraphic(geometry: agsPoint, symbol: nil, attributes: nil)
+        })
     }
     self.graphicsOverlays.add(overlay)
   }
@@ -152,15 +205,63 @@ extension AGSMapView {
       let overlay = AGSGraphicsOverlay()
       overlay.overlayID = feature.name
       overlay.renderer = feature.symbology
-      if let observations = try? survey.viewContext.fetch(Observations.fetchAll(for: feature.name)) {
-        overlay.graphics.addObjects(from: observations.compactMap { observation in
-          guard let location = observation.locationOfFeature else { return nil }
-          let agsPoint = AGSPoint(clLocationCoordinate2D: location)
-          //TODO: add attributes?
-          return AGSGraphic(geometry: agsPoint, symbol: nil, attributes: nil)
-        })
+      if let observations = try? survey.viewContext.fetch(Observations.fetchAll(for: feature.name))
+      {
+        overlay.graphics.addObjects(
+          from: observations.compactMap { observation in
+            guard let location = observation.locationOfFeature else { return nil }
+            let agsPoint = AGSPoint(clLocationCoordinate2D: location)
+            //TODO: add attributes?
+            return AGSGraphic(geometry: agsPoint, symbol: nil, attributes: nil)
+          })
       }
       self.graphicsOverlays.add(overlay)
+    }
+  }
+}
+
+//TODO: Move to a separate file
+
+//MARK: - Map Loading
+
+extension SurveyController {
+
+  private func loadLocalTileCache(_ name: String) {
+    // The tile package needs to exist in the document directory of the device or simulator
+    // For a device use iTunes File Sharing (enable in the info.plist)
+    // For the simulator - breakpoint on the next line, to see what the path is
+    // This function does no I/O, so the name is not checked until mapView tries to load the map.
+    let path = FileManager.default.mapURL(with: name)
+    let cache = AGSTileCache(fileURL: path)
+    let layer = AGSArcGISTiledLayer(tileCache: cache)
+    let basemap = AGSBasemap(baseLayer: layer)
+    mapView.map = AGSMap(basemap: basemap)
+  }
+
+  static let esriBasemaps: [String: () -> AGSBasemap] = [
+    "esri.DarkGrayCanvasVector": AGSBasemap.darkGrayCanvasVector,
+    "esri.Imagery": AGSBasemap.imagery,
+    "esri.ImageryWithLabels": AGSBasemap.imageryWithLabels,
+    "esri.ImageryWithLabelsVector": AGSBasemap.imageryWithLabelsVector,
+    "esri.LightGrayCanvas": AGSBasemap.lightGrayCanvas,
+    "esri.LightGrayCanvasVector": AGSBasemap.lightGrayCanvasVector,
+    "esri.NationalGeographic": AGSBasemap.nationalGeographic,
+    "esri.NavigationVector": AGSBasemap.navigationVector,
+    "esri.Oceans": AGSBasemap.oceans,
+    "esri.OpenStreetMap": AGSBasemap.openStreetMap,
+    "esri.Streets": AGSBasemap.streets,
+    "esri.StreetsNightVector": AGSBasemap.streetsNightVector,
+    "esri.StreetsVector": AGSBasemap.streetsVector,
+    "esri.StreetsWithReliefVector": AGSBasemap.streetsWithReliefVector,
+    "esri.TerrainWithLabels": AGSBasemap.terrainWithLabels,
+    "esri.TerrainWithLabelsVector": AGSBasemap.terrainWithLabelsVector,
+    "esri.Topographic": AGSBasemap.topographic,
+    "esri.TopographicVector": AGSBasemap.topographicVector,
+  ]
+
+  private func loadEsriBasemap(_ name: String) {
+    if let basemap = SurveyController.esriBasemaps[name] {
+      mapView.map = AGSMap(basemap: basemap())
     }
   }
 

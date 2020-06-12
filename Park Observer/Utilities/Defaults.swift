@@ -26,7 +26,7 @@ enum Defaults: String {
 
 extension Defaults {
 
-  func write(_ value: Any) {
+  func write(_ value: Any?) {
     let defaults = UserDefaults.standard
     switch self {
     case .mapAutoPanMode:
@@ -72,7 +72,7 @@ extension Defaults {
 
   func readString() -> String? {
     switch self {
-    case .mapName:
+    case .mapName, .surveyName:
       return UserDefaults.standard.object(forKey: self.rawValue) as? String? ?? nil
     default:
       print("Error: String not a valid type for \(self.rawValue) in defaults; returning nil")
