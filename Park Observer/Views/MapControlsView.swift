@@ -15,7 +15,6 @@ struct MapControlsView: View {
 
 
   var body: some View {
-    print("MapControlsView: rotation = \(viewPointController.rotation)")
     return HStack {
       ScalebarView()
         .frame(width: 200.0, height: 36)

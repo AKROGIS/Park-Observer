@@ -33,7 +33,6 @@ class LocationButtonController: ObservableObject {
   @Published var authorized: Authorized = .unknown {
     didSet {
       if oldValue != authorized {
-        print("Changed authorized to \(authorized)")
         if authorized == .no {
           showLocation = false
         }
@@ -45,7 +44,6 @@ class LocationButtonController: ObservableObject {
   @Published var autoPanMode: AGSLocationDisplayAutoPanMode = .off {
     didSet {
       if oldValue != autoPanMode {
-        print("Changed autoPanMode to \(autoPanMode.rawValue)")
         mapView.locationDisplay.autoPanMode = autoPanMode
       }
     }
@@ -55,7 +53,6 @@ class LocationButtonController: ObservableObject {
   @Published var showLocation: Bool = false {
     didSet {
       if oldValue != showLocation {
-        print("Changed showLocation to \(showLocation)")
         if showLocation {
           mapView.locationDisplay.start()
         } else {
@@ -66,19 +63,14 @@ class LocationButtonController: ObservableObject {
   }
 
   func restoreState() {
-    print("Restoring showLocation")
     showLocation = Defaults.mapLocationDisplay.readBool()
-    print("Restoring autoPanMode")
     autoPanMode = Defaults.mapAutoPanMode.readMapAutoPanMode()
-    print("Restoring authorized")
     authorized = Authorized(from: CLLocationManager.authorizationStatus())
   }
 
   func saveState() {
     // We don't save authorized; the Settings App is the source of truth for that value
-    print("Saving showLocation: \(showLocation)")
     Defaults.mapLocationDisplay.write(showLocation)
-    print("Saving autoPanMode: \(autoPanMode.rawValue)")
     Defaults.mapAutoPanMode.write(autoPanMode)
   }
 
@@ -94,7 +86,6 @@ class LocationButtonController: ObservableObject {
 
   private func observeAutoPanMode() {
     mapView.locationDisplay.autoPanModeChangedHandler = { autoPanMode in
-      print("mapView changed autoPanMode to \(autoPanMode.rawValue)")
       if autoPanMode != self.autoPanMode {
         if self.autoPanMode == .navigation || self.autoPanMode == .compassNavigation {
           self.previousPanMode = self.autoPanMode
@@ -107,14 +98,11 @@ class LocationButtonController: ObservableObject {
   }
 
   func toggle() {
-    print("Toggled button")
     if authorized == .no {
       // Button should do nothing (but show alert) if not authorized
-      print("Specifically not authorized")
       return
     }
     if authorized == .unknown {
-      print("Authorized status is unknown")
       locationManager.requestWhenInUseAuthorization()
     }
     if !showLocation {
@@ -149,9 +137,6 @@ class LocationButtonController: ObservableObject {
     weak var controller: LocationButtonController? = nil
 
     func locationManager(_ manager: CLLocationManager, didFailWithError error: Error) {
-      print(
-        "LocationButtonController: CLLocationManager didFailWithError: \(error.localizedDescription)"
-      )
       if let error = error as? CLError {
         if error.code == .denied {
           controller?.authorized = .no
@@ -163,9 +148,6 @@ class LocationButtonController: ObservableObject {
       _ manager: CLLocationManager,
       didChangeAuthorization status: CLAuthorizationStatus
     ) {
-      print(
-        "LocationButtonController: CLLocationManager didChangeAuthorization Status \(status.rawValue)"
-      )
       controller?.authorized = Authorized(from: status)
     }
   }

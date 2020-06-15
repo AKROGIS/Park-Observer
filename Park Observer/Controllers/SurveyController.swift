@@ -60,9 +60,8 @@ class SurveyController: NSObject, ObservableObject, CLLocationManagerDelegate, A
       loadLocalTileCache(name)
     }
     mapView.map?.load(completion: { error in
-      NSLog("Finish load map")
       if let error = error {
-        print(error)
+        print("Error in mapView.map.load(): \(error)")
       } else {
         if name == defaultMap {
           self.viewPointController.restoreState()
@@ -70,6 +69,7 @@ class SurveyController: NSObject, ObservableObject, CLLocationManagerDelegate, A
         // location tracking should take precedence over the previous extents.
         self.locationButtonController.restoreState()
         self.mapName = name
+        NSLog("Finish load map")
       }
     })
   }
@@ -85,7 +85,6 @@ class SurveyController: NSObject, ObservableObject, CLLocationManagerDelegate, A
       NSLog("Finish load survey")
       switch result {
       case .success(let survey):
-        print("survey loaded")
         self.surveyName = name
         self.survey = survey
         NSLog("Start draw survey")
@@ -112,9 +111,7 @@ class SurveyController: NSObject, ObservableObject, CLLocationManagerDelegate, A
   func saveState() {
     // To be called when the app goes into the background
     // If the app is terminated this state can be restored when the app relaunches.
-    print("Saving mapName: \(mapName ?? "<nil>")")
     Defaults.mapName.write(mapName)
-    print("Saving surveyName: \(surveyName ?? "<nil>")")
     Defaults.surveyName.write(surveyName)
     locationButtonController.saveState()
     viewPointController.saveState()

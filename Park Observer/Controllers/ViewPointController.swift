@@ -22,36 +22,28 @@ class ViewPointController: ObservableObject {
 
   @Published var rotation = 0.0 {
     didSet {
-      print("Rotation set to: \(rotation) from \(oldValue)")
       // Do not update the mapView if it is providing the new rotation value
       if !updateFromMapView {
         mapView.setViewpointRotation(rotation, completion: nil)
-        print("Setting mapView.rotation to: \(rotation)")
       }
     }
   }
 
   @Published var scale = 0.0 {
     didSet {
-      print("Scale set to: \(scale) from \(oldValue)")
       // Do not update the mapView if it is providing the new scale value
       if !updateFromMapView {
         mapView.setViewpointScale(scale, completion: nil)
-        print("Setting mapView.scale to: \(scale)")
       }
     }
   }
 
   @Published var center = CLLocationCoordinate2D() {
     didSet {
-      print(
-        "Center set to: (\(center.latitude),\(center.longitude)) from (\(oldValue.latitude),\(oldValue.longitude))"
-      )
       // Do not update the mapView if it is providing the new center point value
       if !updateFromMapView {
         let centerPoint = AGSPoint(clLocationCoordinate2D: center)
         mapView.setViewpointCenter(centerPoint, completion: nil)
-        print("Setting mapView.center to: (\(center.latitude),\(center.longitude))")
       }
     }
   }
@@ -67,13 +59,10 @@ class ViewPointController: ObservableObject {
     // I pretend these updates are coming from the mapView, because I will update the mapView
     // in one call at the end, instead of updating with each property change
     updateFromMapView = true
-    print("Restoring rotation")
     rotation = Defaults.mapRotation.readDouble()
-    print("Restoring scale")
     scale = Defaults.mapScale.readDouble()
     let latitude = Defaults.mapCenterLat.readDouble()
     let longitude = Defaults.mapCenterLon.readDouble()
-    print("Restoring center")
     center = CLLocationCoordinate2D(latitude: latitude, longitude: longitude)
     let centerPoint = AGSPoint(clLocationCoordinate2D: center)
     mapView.setViewpoint(AGSViewpoint(center: centerPoint, scale: scale, rotation: rotation))
@@ -81,13 +70,9 @@ class ViewPointController: ObservableObject {
   }
 
   func saveState() {
-    print("Saving rotation: \(rotation)")
     Defaults.mapRotation.write(rotation)
-    print("Saving scale: \(scale)")
     Defaults.mapScale.write(scale)
-    print("Saving latitude: \(center.latitude)")
     Defaults.mapCenterLat.write(center.latitude)
-    print("Saving longitude: \(center.longitude)")
     Defaults.mapCenterLon.write(center.longitude)
   }
 
@@ -106,18 +91,15 @@ class ViewPointController: ObservableObject {
     ) {
       self.updateFromMapView = true
       self.scale = mapView.mapScale
-      print("MapView set scale to \(self.scale)")
       let viewpoint = mapView.currentViewpoint(with: .centerAndScale)
       let point = viewpoint?.targetGeometry as? AGSPoint
       if let center = point?.toCLLocationCoordinate2D() {
         self.center = center
-        print("MapView set (lat,lon) to (\(center.latitude),\(center.longitude))")
       }
       self.updateFromMapView = false
     }
     mapView.viewpointChangedHandler = {
       updateCoalescer.ping()
-      print("MapView rotated to \(self.mapView.rotation)")
       DispatchQueue.main.async {
         self.updateFromMapView = true
         self.rotation = self.mapView.rotation

@@ -41,7 +41,6 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
   }
 
   func sceneDidBecomeActive(_ scene: UIScene) {
-    print("sceneDidBecomeActive")
     // For developer testing, remove in production.
     //surveyController.loadMap(name: "Anchorage18")
     //surveyController.drawSurvey(name: "ARCN Bears")
