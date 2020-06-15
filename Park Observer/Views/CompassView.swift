@@ -6,37 +6,40 @@
 //  Copyright © 2020 Alaska Region GIS Team. All rights reserved.
 //
 
+/// This view draws a simple compass rose.
+/// The red half of the needle is north (the south half is white or black).
+/// It is drawn in an semi opaque circle.
+/// The size of the view is determined by the frame the user attaches to it.
+/// It has two required parameters:
+/// 1) A double that is the rotation: 0 = North, 90 = East, ... Values from wrap from -inf. to +inf
+/// 2) A darkMode boolean:
+///   With darkMode = false, the enclosing circle is white and south is black (for use on a dark map)
+///   With darkMode = true, the enclosing circle is black and south is white (for use on a light map)
+
 import SwiftUI
 
 struct CompassView: View {
-  @Binding var rotation: Double
-
-  @Environment(\.darkMap) var darkMap
-
-  // TODO: fade out (and remove from view?) after rotation is zero
+  let rotation: Double
+  let darkMode: Bool
 
   var body: some View {
-    Button(action: { self.rotation = 0.0 }) {
-      GeometryReader { geometry in
-        ZStack {
-          Triangle()
-            .fill(Color(.red))
-            .frame(width: geometry.size.width * 0.2, height: geometry.size.height * 0.34)
-            .offset(x: 0.0, y: -0.17 * geometry.size.height)
-          Triangle()
-            .frame(width: geometry.size.width * 0.2, height: geometry.size.height * 0.34)
-            .offset(x: 0.0, y: -0.17 * geometry.size.height)
-            .rotationEffect(Angle(degrees: 180.0))
-        }
+    GeometryReader { geometry in
+      ZStack {
+        Triangle()
+          .fill(Color(.red))
+          .frame(width: geometry.size.width * 0.2, height: geometry.size.height * 0.34)
+          .offset(x: 0.0, y: -0.17 * geometry.size.height)
+        Triangle()
+          .frame(width: geometry.size.width * 0.2, height: geometry.size.height * 0.34)
+          .offset(x: 0.0, y: -0.17 * geometry.size.height)
+          .rotationEffect(Angle(degrees: 180.0))
       }
-        .frame(width: 44, height: 44)
-        .foregroundColor(Color(darkMap ? .black : .white))
-        .background(Color(darkMap ? .white : .black).opacity(0.65))
-        .clipShape(Circle())
-        .overlay(Circle().stroke(Color(darkMap ? .white : .black), lineWidth: 3))
-        .rotationEffect(Angle(degrees: -rotation))
     }
-      .buttonStyle(PlainButtonStyle())
+    .foregroundColor(Color(darkMode ? .white : .black))
+    .background(Color(darkMode ? .black : .white).opacity(0.65))
+    .clipShape(Circle())
+    .overlay(Circle().stroke(Color(darkMode ? .black : .white), lineWidth: 3))
+    .rotationEffect(Angle(degrees: rotation))
   }
 }
 
@@ -55,6 +58,9 @@ struct Triangle: Shape {
 
 struct CompassView_Previews: PreviewProvider {
   static var previews: some View {
-    CompassView(rotation: .constant(15.0))
+    CompassView(rotation: 25.0, darkMode: false)
+    .frame(width: 44, height: 44)
+    .padding()
+    .background(Color.purple)
   }
 }
