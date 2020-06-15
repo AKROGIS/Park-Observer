@@ -25,7 +25,9 @@ import ArcGIS  // For AGSMapView and AGSGeoViewTouchDelegate
 import CoreLocation  // For CLLocationManagerDelegate
 import Foundation  // For NSObject (for delegates)
 
-class SurveyController: NSObject, ObservableObject, CLLocationManagerDelegate, AGSGeoViewTouchDelegate {
+class SurveyController: NSObject, ObservableObject, CLLocationManagerDelegate,
+  AGSGeoViewTouchDelegate
+{
 
   let mapView: AGSMapView
   var surveyName: String? = nil

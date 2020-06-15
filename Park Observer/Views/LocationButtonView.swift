@@ -22,23 +22,23 @@ struct LocationButtonView: View {
     }) {
       Image(systemName: getImageName())
     }
-      .padding()
-      .background(Color(darkMap ? .white : .black).opacity(0.65))
-      .clipShape(Circle())
-      .overlay(Circle().stroke(Color(darkMap ? .white : .black), lineWidth: 3))
-      .alert(isPresented: $showingAlert) {
-        Alert(
-          title: Text("Location Services Disabled"),
-          message: Text(
-            "Your location cannot be shown. Use Settings to enable location services."),
-          primaryButton: .cancel(Text("OK")),
-          secondaryButton: .default(Text("Settings")) {
-            if let settingsUrl = URL(string: UIApplication.openSettingsURLString) {
-              // URL from string is an optional, but in this case we know it will always be valid
-              UIApplication.shared.open(settingsUrl)
-            }
-          })
-      }
+    .padding()
+    .background(Color(darkMap ? .white : .black).opacity(0.65))
+    .clipShape(Circle())
+    .overlay(Circle().stroke(Color(darkMap ? .white : .black), lineWidth: 3))
+    .alert(isPresented: $showingAlert) {
+      Alert(
+        title: Text("Location Services Disabled"),
+        message: Text(
+          "Your location cannot be shown. Use Settings to enable location services."),
+        primaryButton: .cancel(Text("OK")),
+        secondaryButton: .default(Text("Settings")) {
+          if let settingsUrl = URL(string: UIApplication.openSettingsURLString) {
+            // URL from string is an optional, but in this case we know it will always be valid
+            UIApplication.shared.open(settingsUrl)
+          }
+        })
+    }
   }
 
   private func getImageName() -> String {

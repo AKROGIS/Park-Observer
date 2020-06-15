@@ -59,8 +59,8 @@ struct Triangle: Shape {
 struct CompassView_Previews: PreviewProvider {
   static var previews: some View {
     CompassView(rotation: 25.0, darkMode: false)
-    .frame(width: 44, height: 44)
-    .padding()
-    .background(Color.purple)
+      .frame(width: 44, height: 44)
+      .padding()
+      .background(Color.purple)
   }
 }

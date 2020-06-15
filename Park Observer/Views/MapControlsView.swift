@@ -13,7 +13,6 @@ struct MapControlsView: View {
   @EnvironmentObject var viewPointController: ViewPointController
   @Environment(\.darkMap) var darkMap
 
-
   var body: some View {
     return HStack {
       ScalebarView()
@@ -23,11 +22,12 @@ struct MapControlsView: View {
         Button(
           action: {
             //withAnimation(Animation.easeOut(duration: 0.5).delay(0.5)) {
-              self.viewPointController.rotation = 0.0
+            self.viewPointController.rotation = 0.0
             //}
-        }, label: {
-          CompassView(rotation: -1 * viewPointController.rotation, darkMode: !darkMap)
-        }
+          },
+          label: {
+            CompassView(rotation: -1 * viewPointController.rotation, darkMode: !darkMap)
+          }
         )
         .frame(width: 44, height: 44)
         //.transition(AnyTransition.scale.combined(with:.opacity))
