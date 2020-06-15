@@ -6,12 +6,11 @@
 //  Copyright © 2020 Alaska Region GIS Team. All rights reserved.
 //
 
-/// This class is responsible publishing the mapView viewport state, and updating the
-/// mapview when the properties are updated.
+/// This class is responsible publishing the mapView's viewport state, and updating the
+/// mapview when the state changes.
 /// The AGSMapView is a UIView, not a swiftUI view, it does not subscribe to @Published,
 /// nor does it provide Observable properties.  This class provides the glue between SwiftUI
-/// views that want to Observe/Bind to viewport properties (rotation, scale, centerpoint) of
-/// the AGSMapView
+/// views that want to bind to the AGSMapView viewport properties (rotation, scale, centerpoint)
 
 import ArcGIS  // For AGSMapView, AGSPoint, AGSViewpoint
 import CoreLocation  // For CLLocationCoordinate2D
@@ -24,9 +23,8 @@ class ViewPointController: ObservableObject {
   @Published var rotation = 0.0 {
     didSet {
       print("Rotation set to: \(rotation) from \(oldValue)")
-      // Do not update the mapView, if it is the one setting the rotation
+      // Do not update the mapView if it is providing the new rotation value
       if !updateFromMapView {
-        // Some other subscriber is updating the rotation, so update the mapView
         mapView.setViewpointRotation(rotation, completion: nil)
         print("Setting mapView.rotation to: \(rotation)")
       }
@@ -36,9 +34,8 @@ class ViewPointController: ObservableObject {
   @Published var scale = 0.0 {
     didSet {
       print("Scale set to: \(scale) from \(oldValue)")
-      // If the mapView is providing the new rotation value, do not update the mapView
+      // Do not update the mapView if it is providing the new scale value
       if !updateFromMapView {
-        // Some other subscriber is updating the scale, so update the mapView
         mapView.setViewpointScale(scale, completion: nil)
         print("Setting mapView.scale to: \(scale)")
       }
@@ -50,9 +47,8 @@ class ViewPointController: ObservableObject {
       print(
         "Center set to: (\(center.latitude),\(center.longitude)) from (\(oldValue.latitude),\(oldValue.longitude))"
       )
-      // Do not update the mapView, if it is the one setting the center
+      // Do not update the mapView if it is providing the new center point value
       if !updateFromMapView {
-        // Some other subscriber is updating the center, so update the mapView
         let centerPoint = AGSPoint(clLocationCoordinate2D: center)
         mapView.setViewpointCenter(centerPoint, completion: nil)
         print("Setting mapView.center to: (\(center.latitude),\(center.longitude))")
@@ -69,7 +65,7 @@ class ViewPointController: ObservableObject {
 
   func restoreState() {
     // I pretend these updates are coming from the mapView, because I will update the mapView
-    // in one call at the end, instead of updating it 3 times with each property
+    // in one call at the end, instead of updating with each property change
     updateFromMapView = true
     print("Restoring rotation")
     rotation = Defaults.mapRotation.readDouble()
