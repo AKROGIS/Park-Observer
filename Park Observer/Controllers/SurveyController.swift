@@ -25,46 +25,59 @@ import ArcGIS  // For AGSMapView and AGSGeoViewTouchDelegate
 import CoreLocation  // For CLLocationManagerDelegate
 import Foundation  // For NSObject (for delegates)
 
-//class SurveyController: NSObject, ObservableObject, CLLocationManagerDelegate, AGSGeoViewTouchDelegate {
-class SurveyController: ObservableObject {
+class SurveyController: NSObject, ObservableObject, CLLocationManagerDelegate, AGSGeoViewTouchDelegate {
 
   let mapView: AGSMapView
   var surveyName: String? = nil
   var mapName: String? = nil
 
   // I'm not sure this controller should own these other controllers, but it works
-  // better than the other options (various views or SceneDelegate.  It also
-  // simplifies the SceneDelegate, the View environment, and the Views.
+  // better than the other options (owned by various views or SceneDelegate).
+  // It also simplifies the SceneDelegate, the View environment, and the Views.
   let locationButtonController: LocationButtonController
-
   let viewPointController: ViewPointController
 
   private var survey: Survey? = nil
 
-  init() {
+  override init() {
     self.mapView = AGSMapView()
     locationButtonController = LocationButtonController(mapView: self.mapView)
     viewPointController = ViewPointController(mapView: self.mapView)
+    super.init()
   }
 
-  func loadMap(name: String? = nil, completionHandler: ((Error?) -> Void)? = nil) {
-    guard let name = name ?? mapName ?? Defaults.mapName.readString() else {
-      print("Error in SurveyController.mapName(name:): No name given")
+  func loadMap(name: String? = nil) {
+    let defaultMap = Defaults.mapName.readString()
+    guard let name = name ?? mapName ?? defaultMap else {
+      print("SurveyController.mapName(name:): No name given")
+      // MapView will be empty; user can now choose a map to display
       return
     }
-    self.mapName = name
     NSLog("Start load map \(name)")
     if name.starts(with: "esri.") {
       loadEsriBasemap(name)
     } else {
       loadLocalTileCache(name)
     }
-    mapView.map?.load(completion: completionHandler)
+    mapView.map?.load(completion: { error in
+      NSLog("Finish load map")
+      if let error = error {
+        print(error)
+      } else {
+        if name == defaultMap {
+          self.viewPointController.restoreState()
+        }
+        // location tracking should take precedence over the previous extents.
+        self.locationButtonController.restoreState()
+        self.mapName = name
+      }
+    })
   }
 
-  func drawSurvey(name: String? = nil) {
+  func loadSurvey(name: String? = nil) {
     guard let name = name ?? surveyName ?? Defaults.surveyName.readString() else {
-      print("Error in SurveyController.drawSurvey(name:): No name given")
+      print("SurveyController.drawSurvey(name:): No name given")
+      // No Survey; user can now choose a survey to display/edit
       return
     }
     NSLog("Start load survey \(name)")
@@ -92,13 +105,13 @@ class SurveyController: ObservableObject {
     // If the survey collects background locations, save them for return to foreground
   }
 
-  func startForegroundLocations() {
+  func drawBackgroundLocations() {
     //TODO: Update the UI with CoreLocation Updates received while in the background
   }
 
   func saveState() {
     // To be called when the app goes into the background
-    // If the app is terminated this state can be restored when the app becomes active.
+    // If the app is terminated this state can be restored when the app relaunches.
     print("Saving mapName: \(mapName ?? "<nil>")")
     Defaults.mapName.write(mapName)
     print("Saving surveyName: \(surveyName ?? "<nil>")")
@@ -107,20 +120,9 @@ class SurveyController: ObservableObject {
     viewPointController.saveState()
   }
 
-  func restoreState() {
-    // When the app is launched it should try and restore the conditions before it was terminated
-  }
-
-  func restoreMapViewState() {
-    // Call restore locationButton after viewPoint
-    // the pan/zoom for the viewpoint retore will turn off location button
-    // and user may have moved since last active and location tracking should
-    // take precedence over the previous extents.
-    viewPointController.restoreState()
-    locationButtonController.restoreState()
-  }
-
 }
+
+//MARK: - Survey Drawing
 
 //TODO: Move to a separate file
 extension String {

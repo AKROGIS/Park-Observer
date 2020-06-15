@@ -34,39 +34,27 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
       window.rootViewController = UIHostingController(rootView: contentView)
       self.window = window
       window.makeKeyAndVisible()
+      // Load the map/survey when the scene is created, not every time it becomes active
+      surveyController.loadMap()
+      surveyController.loadSurvey()
     }
   }
 
   func sceneDidBecomeActive(_ scene: UIScene) {
+    print("sceneDidBecomeActive")
     // For developer testing, remove in production.
     //surveyController.loadMap(name: "Anchorage18")
     //surveyController.drawSurvey(name: "ARCN Bears")
     //surveyController.drawSurvey(name: "DENA Caribou Survey")
-    surveyController.loadMap { error in
-      NSLog("Finish load map")
-      if let error = error {
-        print(error)
-      } else {
-        self.surveyController.restoreMapViewState()
-      }
-    }
-    surveyController.drawSurvey()
-    surveyController.restoreState()
-  }
-
-  func sceneWillResignActive(_ scene: UIScene) {
-    // Called when the scene will move from an active state to an inactive state.
-    // This may occur due to temporary interruptions (ex. an incoming phone call).
   }
 
   func sceneWillEnterForeground(_ scene: UIScene) {
-    surveyController.startForegroundLocations()
+    surveyController.drawBackgroundLocations()
   }
 
   func sceneDidEnterBackground(_ scene: UIScene) {
     surveyController.saveState()
     surveyController.startBackgroundLocations()
-    print("Ready for Background")
   }
 
 }
