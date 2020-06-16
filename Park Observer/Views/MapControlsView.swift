@@ -24,12 +24,10 @@ struct MapControlsView: View {
             //withAnimation(Animation.easeOut(duration: 0.5).delay(0.5)) {
             self.viewPointController.rotation = 0.0
             //}
-          },
-          label: {
-            CompassView(rotation: -1 * viewPointController.rotation, darkMode: !darkMap)
-          }
-        )
-        .frame(width: 44, height: 44)
+        }) {
+          CompassView(rotation: -1 * viewPointController.rotation, darkMode: !darkMap)
+        }
+        .mapButton(darkMode: !darkMap)
         //.transition(AnyTransition.scale.combined(with:.opacity))
       }
       LocationButtonView(controller: locationButtonController)

@@ -20,12 +20,9 @@ struct LocationButtonView: View {
       self.showingAlert = self.controller.authorized == .no
       self.controller.toggle()
     }) {
-      Image(systemName: getImageName())
+      Image(systemName: getImageName()).font(.headline)
     }
-    .padding()
-    .background(Color(darkMap ? .white : .black).opacity(0.65))
-    .clipShape(Circle())
-    .overlay(Circle().stroke(Color(darkMap ? .white : .black), lineWidth: 3))
+    .mapButton(darkMode: !darkMap)
     .alert(isPresented: $showingAlert) {
       Alert(
         title: Text("Location Services Disabled"),

@@ -36,9 +36,6 @@ struct CompassView: View {
       }
     }
     .foregroundColor(Color(darkMode ? .white : .black))
-    .background(Color(darkMode ? .black : .white).opacity(0.65))
-    .clipShape(Circle())
-    .overlay(Circle().stroke(Color(darkMode ? .black : .white), lineWidth: 3))
     .rotationEffect(Angle(degrees: rotation))
   }
 }
