@@ -122,16 +122,17 @@ extension FileManager {
 
 //MARK: - Survey Bundles
 
-private extension String {
+extension String {
   // Name of private folder where survey bundles are kept
-  static let surveyDirectory = "Surveys"
+  fileprivate static let surveyDirectory = "Surveys"
 
   // Filenames internal to a survey bundle; maintain for compatibility with legacy surveys
 
-  static let surveyInfoFilename = "properties.plist"
-  static let surveyProtocolFilename = "protocol.obsprot"
-  static let surveyOldDatabaseFilename = "survey.coredata/StoreContent/persistentStore"
-  static let surveyDatabaseFilename = "database.sqlite3"
+  fileprivate static let surveyInfoFilename = "properties.plist"
+
+  fileprivate static let surveyProtocolFilename = "protocol.obsprot"
+  fileprivate static let surveyOldDatabaseFilename = "survey.coredata/StoreContent/persistentStore"
+  fileprivate static let surveyDatabaseFilename = "database.sqlite3"
 }
 
 extension FileManager {
@@ -204,8 +205,8 @@ struct AppFile {
   let name: String
 }
 
-private extension AppFile {
-  init?(from url: URL) {
+extension AppFile {
+  fileprivate init?(from url: URL) {
     let maybeType = AppFileType(from: url)
     if maybeType == nil { return nil }
     type = maybeType!
