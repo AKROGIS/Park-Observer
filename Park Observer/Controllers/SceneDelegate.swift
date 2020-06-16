@@ -43,8 +43,8 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
   func sceneDidBecomeActive(_ scene: UIScene) {
     // For developer testing, remove in production.
     //surveyController.loadMap(name: "Anchorage18")
-    //surveyController.drawSurvey(name: "ARCN Bears")
-    //surveyController.drawSurvey(name: "DENA Caribou Survey")
+    //surveyController.loadSurvey(name: "ARCN Bears")
+    //surveyController.loadSurvey(name: "DENA Caribou Survey")
   }
 
   func sceneWillEnterForeground(_ scene: UIScene) {

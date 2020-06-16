@@ -113,6 +113,12 @@ class SurveyController: NSObject, ObservableObject, CLLocationManagerDelegate,
   func saveState() {
     // To be called when the app goes into the background
     // If the app is terminated this state can be restored when the app relaunches.
+    print("SurveyController.saveState() called on main thread: \(Thread.isMainThread)")
+    do {
+      try survey?.save()
+    } catch {
+      print("Error saving survey: \(error)")
+    }
     Defaults.mapName.write(mapName)
     Defaults.surveyName.write(surveyName)
     locationButtonController.saveState()
