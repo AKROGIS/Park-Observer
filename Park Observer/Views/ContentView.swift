@@ -12,11 +12,14 @@ struct ContentView: View {
   @EnvironmentObject var surveyController: SurveyController
 
   var body: some View {
-    return ZStack(alignment: .topTrailing) {
-      MapView().edgesIgnoringSafeArea(.all)
-      MapControlsView().padding(20.0)
-        .environmentObject(surveyController.viewPointController)
-        .environmentObject(surveyController.locationButtonController)
+    ZStack(alignment: .bottomTrailing) {
+      ZStack(alignment: .topTrailing) {
+        MapView().edgesIgnoringSafeArea(.all)
+        MapControlsView().padding(20.0)
+          .environmentObject(surveyController.viewPointController)
+          .environmentObject(surveyController.locationButtonController)
+      }
+      SurveyControlsView().padding(20.0)
     }.environment(\.darkMap, true)
   }
 }

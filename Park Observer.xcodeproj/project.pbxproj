@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		5989329B24995A0A00A7C346 /* SurveyControlsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5989329A24995A0A00A7C346 /* SurveyControlsView.swift */; };
 		5989329D24995C7100A7C346 /* ViewModifiers.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5989329C24995C7100A7C346 /* ViewModifiers.swift */; };
 		740D5AC1246DB3420018A684 /* Legacy Archives in Resources */ = {isa = PBXBuildFile; fileRef = 740D5AC0246DB3420018A684 /* Legacy Archives */; };
 		741679942478F1D200FF353C /* Legacy CSVs in Resources */ = {isa = PBXBuildFile; fileRef = 741679932478F1D200FF353C /* Legacy CSVs */; };
@@ -113,6 +114,7 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		5989329A24995A0A00A7C346 /* SurveyControlsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SurveyControlsView.swift; sourceTree = "<group>"; };
 		5989329C24995C7100A7C346 /* ViewModifiers.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewModifiers.swift; sourceTree = "<group>"; };
 		740D5AC0246DB3420018A684 /* Legacy Archives */ = {isa = PBXFileReference; lastKnownFileType = folder; path = "Legacy Archives"; sourceTree = "<group>"; };
 		741679932478F1D200FF353C /* Legacy CSVs */ = {isa = PBXFileReference; lastKnownFileType = folder; path = "Legacy CSVs"; sourceTree = "<group>"; };
@@ -346,6 +348,7 @@
 				74716628243C487300A9C960 /* MapView.swift */,
 				74716637243E854800A9C960 /* Scalebar.swift */,
 				7471663D243E859A00A9C960 /* ScalebarView.swift */,
+				5989329A24995A0A00A7C346 /* SurveyControlsView.swift */,
 				5989329C24995C7100A7C346 /* ViewModifiers.swift */,
 			);
 			path = Views;
@@ -620,6 +623,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				5989329B24995A0A00A7C346 /* SurveyControlsView.swift in Sources */,
 				74716633243E5B4300A9C960 /* LocationButtonView.swift in Sources */,
 				7471664E2447917D00A9C960 /* Defaults.swift in Sources */,
 				74D85B50246F1EB60091EA8E /* GpsPoint.swift in Sources */,
