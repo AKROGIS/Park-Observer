@@ -33,7 +33,9 @@ class Survey {
   /// It is backed by a Sqlite3 database on disk.
   let viewContext: NSManagedObjectContext
 
-  private init(name: String, info: SurveyInfo, config: SurveyProtocol, viewContext: NSManagedObjectContext) {
+  private init(
+    name: String, info: SurveyInfo, config: SurveyProtocol, viewContext: NSManagedObjectContext
+  ) {
     self.name = name
     self.info = info
     self.config = config
@@ -142,9 +144,9 @@ extension Survey {
   func save() throws {
     if viewContext.hasChanges {
       try viewContext.save()
+      info = info.with(modificationDate: Date(), state: .modified)
+      try info.write(to: FileManager.default.surveyInfoURL(with: name))
     }
-    info = info.with(modificationDate: Date(), state: .modified)
-    try info.write(to: FileManager.default.surveyInfoURL(with: name))
   }
 
   func setTitle(_ title: String) {
@@ -194,18 +196,79 @@ extension Survey {
     }
   }
 
-  func saveToArchive() throws {
-    info = info.with(exportDate: Date(), state: .saved)
-    try info.write(to: FileManager.default.surveyInfoURL(with: name))
+  func saveToArchive(
+    conflict: ConflictResolution = .replace, _ completionHandler: @escaping (Error?) -> Void
+  ) {
 
-    //TODO: implement
-    // Add parameter for conflict strategy (default is replace) and callback.
-    // create temp URL (based on info.title)
-    // save survey (turn off writing ??)
-    // copy survey to temp URL
-    // export CSV to temp URL
-    // zip up temp URL to temp/title.poz
-    // add temp/title.poz to app with conflict strategy
+    // IMPORTANT:
+    // Note on copying open/active/live database
+    // CoreData only writes to the presistent store when the user calls save on the context.
+    // An sqlite3 database (the persistent store for this app) is safe to copy unless a
+    // transaction (i.e. save) is in progress.
+    // Precondition, only modify the database and save on the main/UI thread.
+    // Therefore it is safe to copy the database
+
+    //TODO: Try to cleanup by chaining Futures<Void, Error>
+
+    // Save the database (on main thread where the context is)
+    do {
+      try self.save()
+    } catch {
+      completionHandler(error)
+    }
+
+    // This work can be done in the a background
+    DispatchQueue.global(qos: .utility).async {
+      do {
+        // Update the metadata
+        self.info = self.info.with(exportDate: Date(), state: .saved)
+        try self.info.write(to: FileManager.default.surveyInfoURL(with: self.name))
+
+        // Create a staging area
+        let tempDirectory = try FileManager.default.createNewTempDirectory()
+        let archiveName = self.info.title.sanitizedFileName
+        let archiveURL = tempDirectory.appendingPathComponent(archiveName).appendingPathExtension(
+          .surveyArchiveExtension)
+        let scratchDir = tempDirectory.appendingPathComponent(archiveName, isDirectory: true)
+        try FileManager.default.createDirectory(
+          at: scratchDir, withIntermediateDirectories: false, attributes: nil)
+
+        // Copy the Survey
+        let surveyURL = FileManager.default.surveyURL(with: self.name)
+        let surveyName = surveyURL.lastPathComponent
+        let newSurveyURL = scratchDir.appendingPathComponent(surveyName, isDirectory: true)
+        try FileManager.default.copyItem(at: surveyURL, to: newSurveyURL)
+
+        // The POZ to FGDB tool expects to find the the protocol file at the root of the archive
+        let protocolURL = FileManager.default.surveyProtocolURL(with: self.name)
+        let protocolName = protocolURL.lastPathComponent
+        let newProtocolURL = scratchDir.appendingPathComponent(protocolName, isDirectory: true)
+        try FileManager.default.copyItem(at: protocolURL, to: newProtocolURL)
+
+        // The POZ to FGDB tool expects for find the CSV files at the root of the archive
+        self.exportAsCSV(at: scratchDir) { error in
+          if let error = error {
+            completionHandler(error)
+          } else {
+            do {
+              // All files are now in scratchDir, so we can archive it.
+              try FileManager.default.archiveContents(of: scratchDir, to: archiveURL)
+
+              // Copy the poz file to the app's directory and cleanup
+              _ = try FileManager.default.addToApp(url: archiveURL, conflict: conflict)
+              try FileManager.default.removeItem(at: tempDirectory)
+
+              // Let the caller know we are done
+              completionHandler(nil)
+            } catch {
+              completionHandler(error)
+            }
+          }
+        }
+      } catch {
+        completionHandler(error)
+      }
+    }
   }
 
 }

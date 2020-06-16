@@ -353,3 +353,15 @@ extension FileManager {
   }
 
 }
+
+extension FileManager {
+  // This zips the contents of the source folder (without the source folder)
+  // While it would be simpler to archive the source folder,
+  // this is done to match the legacy POZ format
+  func archiveContents(of source: URL, to destination: URL) throws {
+    let contents = try FileManager.default.contentsOfDirectory(
+      at: source, includingPropertiesForKeys: [], options: [])
+    Zip.addCustomFileExtension(.surveyArchiveExtension)
+    try Zip.zipFiles(paths: contents, zipFilePath: destination, password: nil, progress: nil)
+  }
+}

@@ -450,4 +450,139 @@ class SurveyTests: XCTestCase {
     }
   }
 
+  func testExportSurvey() {
+    // Trickiest part of this test is the three async callbacks, and not doing cleanup
+    // of resources until they are done being used.  Remember defer runs at the end of the
+    // block it was defined in, not the end of deeper callback, or at the end of the test.
+
+    // Given:
+    let existingPoz = "/Legacy Archives/Test Protocol Version 2.poz"
+    let testBundle = Bundle(for: type(of: self))
+    let existingPath = testBundle.resourcePath! + existingPoz
+    let existingUrl = URL(fileURLWithPath: existingPath)
+    // Copy POZ to the App
+    guard let archive = try? FileManager.default.addToApp(url: existingUrl) else {
+      XCTAssertTrue(false)
+      return
+    }
+    defer {
+      print("deleting source archive: \(archive.name)")
+      try? FileManager.default.deleteArchive(with: archive.name)
+    }
+
+    // Unpack the POZ as a survey
+    guard
+      let surveyName = try? FileManager.default.importSurvey(
+        from: archive.name, conflict: .keepBoth)
+    else {
+      XCTAssertTrue(false)
+      return
+    }
+
+    // When:
+    // survey created, lets try and load it
+    let expectation1 = expectation(description: "Survey \(surveyName) was loaded")
+
+    print("Begin async load of source survey")
+    Survey.load(surveyName) { (result) in
+      print("source survey loaded (or not)")
+      switch result {
+      case .success(let survey):
+        // Do not delete the survey at the end of this block.  It is needed until the end
+        // of the async archive processes
+        // Survey Loaded, lets try to create a new archive
+        let timestampBeforeArchive = Date()
+        print("Begin async save to archive")
+        survey.saveToArchive(conflict: .keepBoth) { (error) in
+          print("source survey saved to archive (or not)")
+          // We are done with the source survey delete at the end of the block
+          defer {
+            print("closing source survey")
+            survey.close()
+            print("deleting source survey: \(surveyName)")
+            try? FileManager.default.deleteSurvey(with: surveyName)
+          }
+          if let error = error {
+            print(error)
+            XCTAssertTrue(false)
+          } else {
+            let archives = FileManager.default.archiveNames
+            XCTAssertEqual(archives.count, 2)
+            if archives.count == 2 {
+              let newArchiveName = archives[0] == archive.name ? archives[1] : archives[0]
+              // We can delete the archive at the end of this block, import is not async
+              defer {
+                print("deleting new archive: \(newArchiveName)")
+                try? FileManager.default.deleteArchive(with: newArchiveName)
+              }
+              // Now the tricky part: Compare archives
+              // The archives will be different - due to the updated state & export date in the
+              // metadata, so I can't compare bytes, also unpacking and comparing file by file
+              // would be tedious.  Instead I will just ensure I can upack it and load the survey
+              // Unpack the POZ as a survey
+              if let surveyName2 = try? FileManager.default.importSurvey(
+                from: newArchiveName, conflict: .keepBoth)
+              {
+                defer {
+                }
+                // New survey created, lets try and load it
+                print("Begin async load of new survey")
+                Survey.load(surveyName2) { (result) in
+                  print("new survey loaded (or not)")
+                  switch result {
+                  case .success(let survey2):
+                    defer {
+                      print("closing new survey")
+                      survey2.close()
+                      print("deleting new survey: \(surveyName2)")
+                      try? FileManager.default.deleteSurvey(with: surveyName2)
+                    }
+                    // Survey Loaded, let check some properties
+                    let gpsPointCount = (try? survey2.viewContext.fetch(GpsPoints.fetchRequest))?
+                      .count
+                    XCTAssertEqual(gpsPointCount, 79)
+                    XCTAssertEqual(survey.info.state, .saved)
+                    XCTAssertNotNil(survey.info.exportDate)
+                    if let timestamp = survey.info.exportDate {
+                      XCTAssertTrue(timestampBeforeArchive < timestamp)
+                    }
+                    // The other part of the functional test is to test the archive with the
+                    // poz2fgdb toolbox tool.
+                    expectation1.fulfill()
+                    break
+                  case .failure(let error):
+                    print(error)
+                    XCTAssertTrue(false)
+                    expectation1.fulfill()
+                    break
+                  }  // end switch
+                }  // end load copy callback
+              } else {
+                // import new archive failed
+                XCTAssertTrue(false)
+                expectation1.fulfill()
+              }
+            } else {
+              // More or less than two archives available
+              XCTAssertTrue(false)
+              expectation1.fulfill()
+            }
+          }  // end if/else error
+        }  // end save to archive callback
+        break
+      case .failure(let error):
+        print(error)
+        XCTAssertTrue(false)
+        expectation1.fulfill()
+        break
+      }  // end switch
+    }  // end load original callback
+
+    waitForExpectations(timeout: 2) { error in
+      if let error = error {
+        XCTFail("Test timed out awaiting unmet expectations: \(error)")
+      }
+    }
+  }
+
 }
