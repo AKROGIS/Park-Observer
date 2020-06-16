@@ -33,6 +33,18 @@ class SurveyController: NSObject, ObservableObject, CLLocationManagerDelegate,
   var surveyName: String? = nil
   var mapName: String? = nil
 
+  @Published var tracklogging = false {
+    didSet {
+      if !tracklogging {
+        observing = false
+      }
+    }
+  }
+  
+  @Published var observing = false
+
+  @Published var featureNames = [String]()
+
   // I'm not sure this controller should own these other controllers, but it works
   // better than the other options (owned by various views or SceneDelegate).
   // It also simplifies the SceneDelegate, the View environment, and the Views.
@@ -96,11 +108,31 @@ class SurveyController: NSObject, ObservableObject, CLLocationManagerDelegate,
           self.mapView.draw(survey)
           NSLog("Finish draw survey")
         }
+        self.setPublishedProperties()
         break
       case .failure(let error):
         print("Error in Survey.load(): \(error)")
         break
       }
+    }
+
+  }
+
+  func setPublishedProperties() {
+    if let survey = survey {
+      self.featureNames = survey.config.features.map { $0.name }
+    }
+  }
+
+  func addMissionPropertyAtGps() {
+    print("addMissionPropertyAtGps")
+  }
+
+  func addObservationAtGps(featureIndex: Int) {
+    print("addObservationAtGps for featureIndex \(featureIndex)")
+    if let features = survey?.config.features, featureIndex < features.count {
+      let feature = features[featureIndex]
+      print("addObservationAtGps for \(feature.name)")
     }
   }
 
