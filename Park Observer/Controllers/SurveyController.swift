@@ -90,9 +90,12 @@ class SurveyController: NSObject, ObservableObject, CLLocationManagerDelegate,
         self.surveyName = name
         self.survey = survey
         NSLog("Start draw survey")
-        // TODO: This can take several seconds for a large survey; Do async
-        self.mapView.draw(survey)
-        NSLog("Finish draw survey")
+        // Map draw can take several seconds for a large survey. Fortunately, the map layers can
+        // be updated on a background thread, and mapView updates the UI appropriately.
+        DispatchQueue.global(qos: .userInitiated).async {
+          self.mapView.draw(survey)
+          NSLog("Finish draw survey")
+        }
         break
       case .failure(let error):
         print("Error in Survey.load(): \(error)")
