@@ -20,6 +20,7 @@ struct ContentView: View {
           .environmentObject(surveyController.locationButtonController)
       }
       SurveyControlsView().padding(20.0)
+      SlideOutView()
     }.environment(\.darkMap, true)
   }
 }

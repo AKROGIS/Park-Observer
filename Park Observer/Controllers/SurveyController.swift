@@ -40,9 +40,10 @@ class SurveyController: NSObject, ObservableObject, CLLocationManagerDelegate,
       }
     }
   }
-  
-  @Published var observing = false
 
+  @Published var observing = false
+  @Published var slideOutMenuVisible = false
+  @Published var slideOutMenuWidth: CGFloat = 300.0
   @Published var featureNames = [String]()
 
   // I'm not sure this controller should own these other controllers, but it works

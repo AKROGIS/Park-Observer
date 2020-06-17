@@ -16,16 +16,26 @@ struct SurveyControlsView: View {
     HStack(alignment: .bottom) {
       HStack {
         Button(action: {
+          self.surveyController.slideOutMenuVisible.toggle()
+        }) {
+          Image(systemName: "line.horizontal.3").font(.headline)
+        }
+        .mapButton(darkMode: !darkMap)
+
+        Spacer()
+
+        Button(action: {
           self.surveyController.tracklogging.toggle()
         }) {
-          Image(systemName: surveyController.tracklogging ? "stop" : "play").font(.headline)
+          Image(systemName: surveyController.tracklogging ? "stop.fill" : "play.fill").font(
+            .headline)
         }
         .mapButton(darkMode: !darkMap)
 
         Button(action: {
           self.surveyController.observing.toggle()
         }) {
-          Image(systemName: surveyController.observing ? "stop" : "play").font(.headline)
+          Image(systemName: surveyController.observing ? "stop.fill" : "play.fill").font(.headline)
         }
         .disabled(!self.surveyController.tracklogging)
         .mapButton(darkMode: !darkMap)
