@@ -19,6 +19,7 @@
 		7416799F248223FE00FF353C /* AngleDistanceHelperTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7416799E248223FE00FF353C /* AngleDistanceHelperTests.swift */; };
 		741679A12482241400FF353C /* TrackLogTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 741679A02482241400FF353C /* TrackLogTests.swift */; };
 		741679A32482244500FF353C /* FormatterTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 741679A22482244500FF353C /* FormatterTests.swift */; };
+		7423E4CB249BE18300195DBB /* MessageView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7423E4CA249BE18300195DBB /* MessageView.swift */; };
 		744C9B36247482700099D414 /* SurveyTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 744C9B35247482700099D414 /* SurveyTests.swift */; };
 		744C9B3A24760A700099D414 /* Formatters.swift in Sources */ = {isa = PBXBuildFile; fileRef = 744C9B3924760A700099D414 /* Formatters.swift */; };
 		747165EC243C37A800A9C960 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 747165EB243C37A800A9C960 /* AppDelegate.swift */; };
@@ -128,6 +129,7 @@
 		7416799E248223FE00FF353C /* AngleDistanceHelperTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AngleDistanceHelperTests.swift; sourceTree = "<group>"; };
 		741679A02482241400FF353C /* TrackLogTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrackLogTests.swift; sourceTree = "<group>"; };
 		741679A22482244500FF353C /* FormatterTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FormatterTests.swift; sourceTree = "<group>"; };
+		7423E4CA249BE18300195DBB /* MessageView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MessageView.swift; sourceTree = "<group>"; };
 		742B08A2244A477A00A5137C /* Protocol Specification.md */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = net.daringfireball.markdown; path = "Protocol Specification.md"; sourceTree = "<group>"; };
 		744C9B35247482700099D414 /* SurveyTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SurveyTests.swift; sourceTree = "<group>"; };
 		744C9B3924760A700099D414 /* Formatters.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Formatters.swift; sourceTree = "<group>"; };
@@ -351,6 +353,7 @@
 				598932A02499DE6900A7C346 /* MainMenuView.swift */,
 				7471663F243F933700A9C960 /* MapControlsView.swift */,
 				74716628243C487300A9C960 /* MapView.swift */,
+				7423E4CA249BE18300195DBB /* MessageView.swift */,
 				74716637243E854800A9C960 /* Scalebar.swift */,
 				7471663D243E859A00A9C960 /* ScalebarView.swift */,
 				5989329E2499A71300A7C346 /* SlideOutView.swift */,
@@ -660,6 +663,7 @@
 				74D85B5C246F1EB60091EA8E /* Observation.swift in Sources */,
 				74716639243E854800A9C960 /* Coalescer.swift in Sources */,
 				598932A12499DE6900A7C346 /* MainMenuView.swift in Sources */,
+				7423E4CB249BE18300195DBB /* MessageView.swift in Sources */,
 				749DE9BA246A3378003D433A /* SurveyInfo.swift in Sources */,
 				74D85B5B246F1EB60091EA8E /* AdhocLocation.swift in Sources */,
 				74D85B52246F1EB60091EA8E /* Mission.swift in Sources */,

@@ -15,12 +15,18 @@ struct ContentView: View {
     ZStack(alignment: .bottomTrailing) {
       ZStack(alignment: .topTrailing) {
         MapView().edgesIgnoringSafeArea(.all)
-        MapControlsView().padding(20.0)
-          .environmentObject(surveyController.viewPointController)
-          .environmentObject(surveyController.locationButtonController)
+        VStack {
+          if surveyController.message != nil {
+            MessageView(message: surveyController.message!)
+          }
+          MapControlsView().padding(20.0)
+            .environmentObject(surveyController.viewPointController)
+            .environmentObject(surveyController.locationButtonController)
+        }
       }
       SurveyControlsView().padding(20.0)
-      SlideOutView()
+      //FIXME: The SlideOUtView is stealing map touches
+      //SlideOutView()
     }.environment(\.darkMap, true)
   }
 }

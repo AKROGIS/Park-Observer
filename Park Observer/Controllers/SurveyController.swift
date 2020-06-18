@@ -44,6 +44,7 @@ class SurveyController: NSObject, ObservableObject, CLLocationManagerDelegate,
   @Published var observing = false
   @Published var slideOutMenuVisible = false
   @Published var slideOutMenuWidth: CGFloat = 300.0
+  @Published var message: Message? = nil
   @Published var featureNames = [String]()
 
   // I'm not sure this controller should own these other controllers, but it works
@@ -85,6 +86,7 @@ class SurveyController: NSObject, ObservableObject, CLLocationManagerDelegate,
         self.locationButtonController.restoreState()
         self.mapName = name
         NSLog("Finish load map")
+        self.message = Message.error("The map has been loaded")
       }
     })
   }

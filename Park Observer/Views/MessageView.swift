@@ -1,0 +1,80 @@
+//
+//  MessageView.swift
+//  Park Observer
+//
+//  Created by Regan E. Sarwas on 6/18/20.
+//  Copyright © 2020 Alaska Region GIS Team. All rights reserved.
+//
+
+import SwiftUI
+
+struct MessageView: View {
+
+  let message: Message
+
+  @Environment(\.darkMap) var darkMap
+  @EnvironmentObject var surveyController: SurveyController
+
+  var body: some View {
+    HStack {
+      Text(message.text)
+        .padding(.vertical, 5)
+        .padding(.leading)
+        .font(.headline)
+        .foregroundColor(!darkMap ? .white : .black)
+        .shadow(color: !darkMap ? .black : .white, radius: 5.0)
+      Spacer()
+      Image(systemName: "xmark.circle.fill")
+        .padding(.trailing)
+    }.overlay(
+      message.color
+        .opacity(0.2).onTapGesture {
+          withAnimation { self.surveyController.message = nil }
+        })
+  }
+
+}
+
+struct Message {
+
+  enum Kind {
+    case error
+    case warning
+    case info
+  }
+
+  let kind: Kind
+  let text: String
+
+  var color: some View {
+    switch self.kind {
+    case .error:
+      return Color(.red)
+    case .warning:
+      return Color(.yellow)
+    case .info:
+      return Color(.green)
+    }
+  }
+
+}
+
+extension Message {
+  static func error(_ text: String) -> Message {
+    return Message(kind: .error, text: text)
+  }
+
+  static func info(_ text: String) -> Message {
+    return Message(kind: .info, text: text)
+  }
+
+  static func warning(_ text: String) -> Message {
+    return Message(kind: .warning, text: text)
+  }
+}
+
+struct MessageView_Previews: PreviewProvider {
+  static var previews: some View {
+    MessageView(message: Message(kind: .error, text: "No GPS Signal"))
+  }
+}
