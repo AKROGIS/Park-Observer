@@ -29,9 +29,8 @@ struct MainMenuView: View {
         }
       }
       .navigationBarTitle("Park Observer")
-      //TODO: Fix NavigationView style for iPad
-      //.navigationViewStyle(StackNavigationViewStyle())
     }
+    .navigationViewStyle(StackNavigationViewStyle())
   }
 }
 
