@@ -31,6 +31,10 @@ struct SlideOutView: View {
           .frame(width: surveyController.slideOutMenuWidth)
           //TODO: set height to screen less keyboard height if keyboard is showing
           .background(Color.white)
+          //TODO: refresh the visible view
+          //hiding the slideout like this is nice because it restores to the same
+          //place in the navigation heirarchy where we left off, but views the file
+          //list do not refresh
           .offset(
             x: surveyController.slideOutMenuVisible ? 0 : -1 * surveyController.slideOutMenuWidth
           )
