@@ -13,13 +13,13 @@ struct SlideOutView: View {
 
   var body: some View {
     ZStack {
-      GeometryReader { _ in
-        EmptyView()
-      }
-      .background(Color.gray.opacity(surveyController.slideOutMenuVisible ? 0.3 : 0.0))
-      .animation(Animation.easeIn.delay(0.25))
-      .onTapGesture {
-        self.surveyController.slideOutMenuVisible.toggle()
+      if self.surveyController.slideOutMenuVisible {
+        Color(.gray).opacity(0.3)
+          .onTapGesture {
+            withAnimation {
+              self.surveyController.slideOutMenuVisible.toggle()
+            }
+          }
       }
       //TODO: Add drag gesture to change width, and swipe to close
 
