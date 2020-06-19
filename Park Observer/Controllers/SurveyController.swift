@@ -161,8 +161,13 @@ class SurveyController: NSObject, ObservableObject, CLLocationManagerDelegate,
     Defaults.surveyName.write(surveyName)
     locationButtonController.saveState()
     viewPointController.saveState()
+    Defaults.slideOutMenuWidth.write(slideOutMenuWidth)
   }
 
+  func restoreState() {
+    slideOutMenuWidth = CGFloat(Defaults.slideOutMenuWidth.readDouble())
+    slideOutMenuWidth = slideOutMenuWidth < 10.0 ? 300.0 : slideOutMenuWidth
+  }
 }
 
 //MARK: - Survey Drawing

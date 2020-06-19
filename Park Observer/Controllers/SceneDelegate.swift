@@ -35,6 +35,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
       self.window = window
       window.makeKeyAndVisible()
       // Load the map/survey when the scene is created, not every time it becomes active
+      surveyController.restoreState()
       surveyController.loadMap()
       surveyController.loadSurvey()
     }

@@ -21,7 +21,6 @@ struct SlideOutView: View {
             }
           }
       }
-      //TODO: Add drag gesture to change width, and swipe to close
 
       HStack {
         //TODO: select one of the views conditionally Show conditionally with Attribute Editing View
@@ -43,6 +42,12 @@ struct SlideOutView: View {
           .animation(.default)
         Spacer()
       }
+      //TODO: Add and swipe to close
+      //TODO: Gesture interferes with other view drags (delete, scroll, ...)
+      // Put Gesture in narrow verticle view with handle
+      .gesture(DragGesture()
+        .onChanged { self.surveyController.slideOutMenuWidth = $0.location.x }
+      )
     }
   }
 }

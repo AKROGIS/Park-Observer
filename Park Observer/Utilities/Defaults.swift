@@ -22,6 +22,7 @@ enum Defaults: String {
   case mapRotation  // Double; default: 0.0
   case mapScale  // Double; default: 0.0
   case surveyName  // String?; default: nil
+  case slideOutMenuWidth // Double; default: 0.0
 }
 
 extension Defaults {
@@ -62,7 +63,7 @@ extension Defaults {
 
   func readDouble() -> Double {
     switch self {
-    case .mapRotation, .mapScale, .mapCenterLat, .mapCenterLon:
+    case .mapRotation, .mapScale, .mapCenterLat, .mapCenterLon, .slideOutMenuWidth:
       return UserDefaults.standard.double(forKey: self.rawValue)
     default:
       print("Error: Double not a valid type for \(self.rawValue) in defaults; returning 0")
