@@ -29,7 +29,7 @@ struct MessageView: View {
         .padding(.trailing)
     }.overlay(
       message.color
-        .opacity(0.2).onTapGesture {
+        .opacity(0.3).onTapGesture {
           withAnimation { self.surveyController.message = nil }
         })
   }
@@ -50,11 +50,11 @@ struct Message {
   var color: some View {
     switch self.kind {
     case .error:
-      return Color(.red)
+      return Color(red: 192.0/255.0, green: 57.0/255.0, blue: 43.0/255.0)
     case .warning:
-      return Color(.yellow)
+      return Color(red: 244.0/255.0, green: 208.0/255.0, blue: 63.0/255.0)
     case .info:
-      return Color(.green)
+      return Color(red: 30.0/255.0, green: 132.0/255.0, blue: 73.0/255.0)
     }
   }
 

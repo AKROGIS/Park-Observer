@@ -87,7 +87,7 @@ class SurveyController: NSObject, ObservableObject, CLLocationManagerDelegate,
         self.locationButtonController.restoreState()
         self.mapName = name
         NSLog("Finish load map")
-        self.message = Message.error("The map has been loaded")
+        self.message = Message.info("The map has been loaded")
       }
     })
   }
