@@ -24,7 +24,7 @@ struct MainMenuView: View {
         NavigationLink(destination: FileListView(fileType: .archive)) {
           Text("Archives")
         }
-        NavigationLink(destination: SettingsView()) {
+        NavigationLink(destination: UserSettingsView()) {
           Text("Settings")
         }
       }
@@ -94,26 +94,6 @@ struct SurveyListView: View {
     }
     self.surveyNames = FileManager.default.surveyNames
   }
-}
-
-struct SettingsView: View {
-
-  var body: some View {
-    List {
-      //TODO: Use form groups/controls; implement save settings
-      Text("Map Dark Mode?")
-      Text("Gps Settings")
-      Text("  Background Tracklogs?")
-      Text("  Warning about batery usage").foregroundColor(.red)
-      Text("  Gps Frequency - time")
-      Text("  Gps Frequency - distance")
-      Text("  Gps Frequency - smart mode?")
-      Text("  Gps Error Threshold?")
-      Text("Info Banner")
-      Text("Totalizer")
-    }
-  }
-  
 }
 
 struct AttributeEditingView: View {

@@ -23,6 +23,7 @@
 		744C9B36247482700099D414 /* SurveyTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 744C9B35247482700099D414 /* SurveyTests.swift */; };
 		744C9B3A24760A700099D414 /* Formatters.swift in Sources */ = {isa = PBXBuildFile; fileRef = 744C9B3924760A700099D414 /* Formatters.swift */; };
 		7466877024A265D500A8FEFA /* MapListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7466876F24A265D500A8FEFA /* MapListView.swift */; };
+		7466877224A274FB00A8FEFA /* UserSettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7466877124A274FB00A8FEFA /* UserSettingsView.swift */; };
 		7466877424A27C4B00A8FEFA /* UserSettings.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7466877324A27C4B00A8FEFA /* UserSettings.swift */; };
 		747165EC243C37A800A9C960 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 747165EB243C37A800A9C960 /* AppDelegate.swift */; };
 		747165EE243C37A800A9C960 /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 747165ED243C37A800A9C960 /* SceneDelegate.swift */; };
@@ -135,6 +136,7 @@
 		744C9B35247482700099D414 /* SurveyTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SurveyTests.swift; sourceTree = "<group>"; };
 		744C9B3924760A700099D414 /* Formatters.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Formatters.swift; sourceTree = "<group>"; };
 		7466876F24A265D500A8FEFA /* MapListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MapListView.swift; sourceTree = "<group>"; };
+		7466877124A274FB00A8FEFA /* UserSettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserSettingsView.swift; sourceTree = "<group>"; };
 		7466877324A27C4B00A8FEFA /* UserSettings.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserSettings.swift; sourceTree = "<group>"; };
 		747165E8243C37A800A9C960 /* Park Observer.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Park Observer.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		747165EB243C37A800A9C960 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
@@ -362,6 +364,7 @@
 				7471663D243E859A00A9C960 /* ScalebarView.swift */,
 				5989329E2499A71300A7C346 /* SlideOutView.swift */,
 				5989329A24995A0A00A7C346 /* SurveyControlsView.swift */,
+				7466877124A274FB00A8FEFA /* UserSettingsView.swift */,
 				5989329C24995C7100A7C346 /* ViewModifiers.swift */,
 			);
 			path = Views;
@@ -644,6 +647,7 @@
 				74D85B64246F354F0091EA8E /* CoreData.swift in Sources */,
 				749DE9B22469CF41003D433A /* FileManagement.swift in Sources */,
 				74A25FC824523381006D82CE /* Dialog.swift in Sources */,
+				7466877224A274FB00A8FEFA /* UserSettingsView.swift in Sources */,
 				7471662F243D898A00A9C960 /* LicenseManager.swift in Sources */,
 				7466877424A27C4B00A8FEFA /* UserSettings.swift in Sources */,
 				74D85B56246F1EB60091EA8E /* MapReference.swift in Sources */,
