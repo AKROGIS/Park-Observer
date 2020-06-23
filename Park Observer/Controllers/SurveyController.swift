@@ -70,7 +70,7 @@ class SurveyController: NSObject, ObservableObject, CLLocationManagerDelegate,
       return
     }
     NSLog("Start load map \(name)")
-    if name.starts(with: "esri.") {
+    if name.starts(with: "Esri ") {
       loadEsriBasemap(name)
     } else {
       loadLocalTileCache(name)
@@ -293,24 +293,24 @@ extension SurveyController {
   }
 
   static let esriBasemaps: [String: () -> AGSBasemap] = [
-    "esri.DarkGrayCanvasVector": AGSBasemap.darkGrayCanvasVector,
-    "esri.Imagery": AGSBasemap.imagery,
-    "esri.ImageryWithLabels": AGSBasemap.imageryWithLabels,
-    "esri.ImageryWithLabelsVector": AGSBasemap.imageryWithLabelsVector,
-    "esri.LightGrayCanvas": AGSBasemap.lightGrayCanvas,
-    "esri.LightGrayCanvasVector": AGSBasemap.lightGrayCanvasVector,
-    "esri.NationalGeographic": AGSBasemap.nationalGeographic,
-    "esri.NavigationVector": AGSBasemap.navigationVector,
-    "esri.Oceans": AGSBasemap.oceans,
-    "esri.OpenStreetMap": AGSBasemap.openStreetMap,
-    "esri.Streets": AGSBasemap.streets,
-    "esri.StreetsNightVector": AGSBasemap.streetsNightVector,
-    "esri.StreetsVector": AGSBasemap.streetsVector,
-    "esri.StreetsWithReliefVector": AGSBasemap.streetsWithReliefVector,
-    "esri.TerrainWithLabels": AGSBasemap.terrainWithLabels,
-    "esri.TerrainWithLabelsVector": AGSBasemap.terrainWithLabelsVector,
-    "esri.Topographic": AGSBasemap.topographic,
-    "esri.TopographicVector": AGSBasemap.topographicVector,
+    "Esri Dark Gray Canvas Vector": AGSBasemap.darkGrayCanvasVector,
+    "Esri Imagery": AGSBasemap.imagery,
+    "Esri Imagery With Labels": AGSBasemap.imageryWithLabels,
+    "Esri Imagery With Labels Vector": AGSBasemap.imageryWithLabelsVector,
+    "Esri Light Gray Canvas": AGSBasemap.lightGrayCanvas,
+    "Esri Light Gray Canvas Vector": AGSBasemap.lightGrayCanvasVector,
+    "Esri National Geographic": AGSBasemap.nationalGeographic,
+    "Esri Navigation Vector": AGSBasemap.navigationVector,
+    "Esri Oceans": AGSBasemap.oceans,
+    "Esri Open Street Map": AGSBasemap.openStreetMap,
+    "Esri Streets": AGSBasemap.streets,
+    "Esri Streets Night Vector": AGSBasemap.streetsNightVector,
+    "Esri Streets Vector": AGSBasemap.streetsVector,
+    "Esri Streets With Relief Vector": AGSBasemap.streetsWithReliefVector,
+    "Esri Terrain With Labels": AGSBasemap.terrainWithLabels,
+    "Esri Terrain With Labels Vector": AGSBasemap.terrainWithLabelsVector,
+    "Esri Topographic": AGSBasemap.topographic,
+    "Esri Topographic Vector": AGSBasemap.topographicVector,
   ]
 
   private func loadEsriBasemap(_ name: String) {
