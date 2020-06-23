@@ -14,7 +14,9 @@ import ArcGIS  // for AGSLocationDisplayAutoPanMode
 import Foundation  // for UserDefaults
 
 enum Defaults: String {
+  case backgroundTracklogging  // Bool; default: false
   case darkMapControls  // Bool; default: false
+  case gpsAccuracy  // Double; default: 0.0
   case mapAutoPanMode  // AGSLocationDisplayAutoPanMode (enum:Int); default: .off
   case mapCenterLat  // Double; default: 0.0
   case mapCenterLon  // Double; default: 0.0
@@ -22,8 +24,11 @@ enum Defaults: String {
   case mapName  // String?; default: nil
   case mapRotation  // Double; default: 0.0
   case mapScale  // Double; default: 0.0
+  case showAlarmClock  // Bool; default: false
+  case showInfoBanner  // Bool; default: false
+  case showTotalizer  // Bool; default: false
+  case slideOutMenuWidth  // Double; default: 0.0
   case surveyName  // String?; default: nil
-  case slideOutMenuWidth // Double; default: 0.0
 }
 
 extension Defaults {
@@ -44,7 +49,8 @@ extension Defaults {
 
   func readBool() -> Bool {
     switch self {
-    case .mapLocationDisplay, .darkMapControls:
+    case .backgroundTracklogging, .darkMapControls, .mapLocationDisplay, .showAlarmClock,
+      .showInfoBanner, .showTotalizer:
       return UserDefaults.standard.bool(forKey: self.rawValue)
     default:
       print("Error: Bool not a valid type for \(self.rawValue) in defaults; returning false")
@@ -64,7 +70,7 @@ extension Defaults {
 
   func readDouble() -> Double {
     switch self {
-    case .mapRotation, .mapScale, .mapCenterLat, .mapCenterLon, .slideOutMenuWidth:
+    case .gpsAccuracy, .mapRotation, .mapScale, .mapCenterLat, .mapCenterLon, .slideOutMenuWidth:
       return UserDefaults.standard.double(forKey: self.rawValue)
     default:
       print("Error: Double not a valid type for \(self.rawValue) in defaults; returning 0")
