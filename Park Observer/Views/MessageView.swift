@@ -12,8 +12,8 @@ struct MessageView: View {
 
   let message: Message
 
-  @Environment(\.darkMap) var darkMap
   @EnvironmentObject var surveyController: SurveyController
+  @EnvironmentObject var userSettings: UserSettings
 
   var body: some View {
     HStack {
@@ -21,8 +21,8 @@ struct MessageView: View {
         .padding(.vertical, 5)
         .padding(.leading)
         .font(.headline)
-        .foregroundColor(!darkMap ? .white : .black)
-        .shadow(color: !darkMap ? .black : .white, radius: 5.0)
+        .foregroundColor(userSettings.darkMapControls ? .black : .white)
+        .shadow(color: userSettings.darkMapControls ? .white : .black, radius: 5.0)
       Spacer()
       Image(systemName: "xmark.circle.fill")
         .padding(.trailing)

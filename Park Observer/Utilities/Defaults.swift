@@ -14,6 +14,7 @@ import ArcGIS  // for AGSLocationDisplayAutoPanMode
 import Foundation  // for UserDefaults
 
 enum Defaults: String {
+  case darkMapControls  // Bool; default: false
   case mapAutoPanMode  // AGSLocationDisplayAutoPanMode (enum:Int); default: .off
   case mapCenterLat  // Double; default: 0.0
   case mapCenterLon  // Double; default: 0.0
@@ -43,7 +44,7 @@ extension Defaults {
 
   func readBool() -> Bool {
     switch self {
-    case .mapLocationDisplay:
+    case .mapLocationDisplay, .darkMapControls:
       return UserDefaults.standard.bool(forKey: self.rawValue)
     default:
       print("Error: Bool not a valid type for \(self.rawValue) in defaults; returning false")

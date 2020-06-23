@@ -16,7 +16,7 @@ import SwiftUI
 struct ScalebarView: UIViewRepresentable {
 
   @EnvironmentObject var surveyController: SurveyController
-  @Environment(\.darkMap) var darkMap
+  @EnvironmentObject var userSettings: UserSettings
 
   func makeUIView(context: Context) -> Scalebar {
     // Set static properties on UIView
@@ -29,10 +29,10 @@ struct ScalebarView: UIViewRepresentable {
   }
 
   func updateUIView(_ view: Scalebar, context: Context) {
-    view.textColor = darkMap ? UIColor.white : UIColor.black
-    view.textShadowColor = (darkMap ? UIColor.black : UIColor.white).withAlphaComponent(0.80)
-    view.lineColor = darkMap ? UIColor.white : UIColor.black
-    view.shadowColor = (darkMap ? UIColor.black : UIColor.white).withAlphaComponent(0.80)
+    view.textColor = userSettings.darkMapControls ? UIColor.black : UIColor.white
+    view.textShadowColor = (userSettings.darkMapControls ? UIColor.white : UIColor.black).withAlphaComponent(0.80)
+    view.lineColor = userSettings.darkMapControls ? UIColor.black : UIColor.white
+    view.shadowColor = (userSettings.darkMapControls ? UIColor.white : UIColor.black).withAlphaComponent(0.80)
   }
 }
 

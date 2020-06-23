@@ -52,6 +52,7 @@ class SurveyController: NSObject, ObservableObject, CLLocationManagerDelegate,
   // It also simplifies the SceneDelegate, the View environment, and the Views.
   let locationButtonController: LocationButtonController
   let viewPointController: ViewPointController
+  let userSettings = UserSettings()
 
   private var survey: Survey? = nil
 
@@ -162,9 +163,11 @@ class SurveyController: NSObject, ObservableObject, CLLocationManagerDelegate,
     locationButtonController.saveState()
     viewPointController.saveState()
     Defaults.slideOutMenuWidth.write(slideOutMenuWidth)
+    userSettings.saveState()
   }
 
   func restoreState() {
+    userSettings.restoreState()
     slideOutMenuWidth = CGFloat(Defaults.slideOutMenuWidth.readDouble())
     slideOutMenuWidth = slideOutMenuWidth < 10.0 ? 300.0 : slideOutMenuWidth
   }

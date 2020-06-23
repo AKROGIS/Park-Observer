@@ -10,7 +10,7 @@ import SwiftUI
 
 struct SurveyControlsView: View {
   @EnvironmentObject var surveyController: SurveyController
-  @Environment(\.darkMap) var darkMap
+  @EnvironmentObject var userSettings: UserSettings
 
   var body: some View {
     HStack(alignment: .bottom) {
@@ -20,7 +20,7 @@ struct SurveyControlsView: View {
         }) {
           Image(systemName: "line.horizontal.3").font(.headline)
         }
-        .mapButton(darkMode: !darkMap)
+        .mapButton(darkMode: userSettings.darkMapControls)
 
         Spacer()
 
@@ -30,7 +30,7 @@ struct SurveyControlsView: View {
           Image(systemName: surveyController.tracklogging ? "stop.fill" : "play.fill").font(
             .headline)
         }
-        .mapButton(darkMode: !darkMap)
+        .mapButton(darkMode: userSettings.darkMapControls)
 
         Button(action: {
           self.surveyController.observing.toggle()
@@ -38,14 +38,14 @@ struct SurveyControlsView: View {
           Image(systemName: surveyController.observing ? "stop.fill" : "play.fill").font(.headline)
         }
         .disabled(!self.surveyController.tracklogging)
-        .mapButton(darkMode: !darkMap)
+        .mapButton(darkMode: userSettings.darkMapControls)
 
         Button(action: {
           self.surveyController.addMissionPropertyAtGps()
         }) {
           Image(systemName: "cloud.sun.rain").font(.headline)
         }
-        .mapButton(darkMode: !darkMap)
+        .mapButton(darkMode: userSettings.darkMapControls)
       }
       VStack {
         ForEach(0..<self.surveyController.featureNames.count, id: \.self) { index in
@@ -61,7 +61,7 @@ struct SurveyControlsView: View {
                 .offset(x: -1, y: 4.0)
             }
           }
-          .mapButton(darkMode: !self.darkMap)
+          .mapButton(darkMode: self.userSettings.darkMapControls)
         }
       }
     }

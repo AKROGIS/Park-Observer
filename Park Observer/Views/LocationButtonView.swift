@@ -11,7 +11,7 @@ import SwiftUI
 
 struct LocationButtonView: View {
   @ObservedObject var controller: LocationButtonController
-  @Environment(\.darkMap) var darkMap
+  @EnvironmentObject var userSettings: UserSettings
 
   @State private var showingAlert = false
 
@@ -22,7 +22,7 @@ struct LocationButtonView: View {
     }) {
       Image(systemName: getImageName()).font(.headline)
     }
-    .mapButton(darkMode: !darkMap)
+    .mapButton(darkMode: userSettings.darkMapControls)
     .alert(isPresented: $showingAlert) {
       Alert(
         title: Text("Location Services Disabled"),

@@ -11,7 +11,7 @@ import SwiftUI
 struct MapControlsView: View {
   @EnvironmentObject var locationButtonController: LocationButtonController
   @EnvironmentObject var viewPointController: ViewPointController
-  @Environment(\.darkMap) var darkMap
+  @EnvironmentObject var userSettings: UserSettings
 
   var body: some View {
     return HStack {
@@ -25,9 +25,9 @@ struct MapControlsView: View {
             self.viewPointController.rotation = 0.0
             //}
         }) {
-          CompassView(rotation: -1 * viewPointController.rotation, darkMode: !darkMap)
+          CompassView(rotation: -1 * viewPointController.rotation, darkMode: userSettings.darkMapControls)
         }
-        .mapButton(darkMode: !darkMap)
+        .mapButton(darkMode: userSettings.darkMapControls)
         //.transition(AnyTransition.scale.combined(with:.opacity))
       }
       LocationButtonView(controller: locationButtonController)
