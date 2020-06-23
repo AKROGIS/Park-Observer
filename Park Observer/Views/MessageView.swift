@@ -25,6 +25,7 @@ struct MessageView: View {
         .shadow(color: userSettings.darkMapControls ? .white : .black, radius: 5.0)
       Spacer()
       Image(systemName: "xmark.circle.fill")
+        .foregroundColor(userSettings.darkMapControls ? .black : .white)
         .padding(.trailing)
     }.overlay(
       message.color
