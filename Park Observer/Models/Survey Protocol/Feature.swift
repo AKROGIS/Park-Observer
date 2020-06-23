@@ -72,8 +72,9 @@ extension Feature {
     }
 
     let container = try decoder.container(keyedBy: CodingKeys.self)
-    let allowOffTransectObservations = try container.decodeIfPresent(
-      Bool.self, forKey: .allowOffTransectObservations)
+    let allowOffTransectObservations =
+      try container.decodeIfPresent(
+        Bool.self, forKey: .allowOffTransectObservations)
       ?? false
     let attributes = try container.decodeIfPresent([Attribute].self, forKey: .attributes)
     let dialog = try container.decodeIfPresent(Dialog.self, forKey: .dialog)
@@ -83,7 +84,7 @@ extension Feature {
 
     var renderer: AGSRenderer? = nil
     // Version 2 Symbology
-    if let agsJSON:AnyJSON = try container.decodeIfPresent(AnyJSON.self, forKey: .symbology) {
+    if let agsJSON: AnyJSON = try container.decodeIfPresent(AnyJSON.self, forKey: .symbology) {
       renderer = try AGSRenderer.fromAnyJSON(agsJSON, codingPath: decoder.codingPath)
     }
     // Version 1 Symbology
@@ -377,18 +378,24 @@ extension LocationMethod {
 
   init(from decoder: Decoder) throws {
     let container = try decoder.container(keyedBy: CodingKeys.self)
-    let allow = try container.decodeIfPresent(Bool.self, forKey: .allow)
+    let allow =
+      try container.decodeIfPresent(Bool.self, forKey: .allow)
       ?? LocationMethod.defaultAllow
-    let baseline = try container.decodeIfPresent(Double.self, forKey: .baseline)
+    let baseline =
+      try container.decodeIfPresent(Double.self, forKey: .baseline)
       ?? LocationMethod.defaultDeadAhead
-    let deadAhead = try container.decodeIfPresent(Double.self, forKey: .deadAhead)
+    let deadAhead =
+      try container.decodeIfPresent(Double.self, forKey: .deadAhead)
       ?? baseline
-    let defaultLocationMethod = try container.decodeIfPresent(
-      Bool.self, forKey: .defaultLocationMethod)
+    let defaultLocationMethod =
+      try container.decodeIfPresent(
+        Bool.self, forKey: .defaultLocationMethod)
       ?? LocationMethod.defaultLocationDefault
-    let direction = try container.decodeIfPresent(Direction.self, forKey: .direction)
+    let direction =
+      try container.decodeIfPresent(Direction.self, forKey: .direction)
       ?? LocationMethod.defaultDirection
-    let units = try container.decodeIfPresent(LocationUnits.self, forKey: .units)
+    let units =
+      try container.decodeIfPresent(LocationUnits.self, forKey: .units)
       ?? LocationMethod.defaultUnits
     let type = try container.decode(TypeEnum.self, forKey: .type)
     self.init(
