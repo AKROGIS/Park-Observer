@@ -540,6 +540,13 @@ extension Label: Codable {
       }
     }
 
+    // in version 1, field is not optional (but not checked) in this case we return
+    // a nil labelDefinition instead of throwing.
+    if let field = field, definition == nil {
+      let symbol = symbol as? AGSTextSymbol ?? AGSTextSymbol.label(color: color, size: size)
+      definition = try AGSLabelDefinition.from(field: field, symbol: symbol)
+    }
+
     self.init(
       color: color,
       field: field,

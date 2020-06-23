@@ -303,4 +303,24 @@ extension AGSLabelDefinition {
     }
     return definition
   }
+
+  enum LabelError: Error {
+    case noDefinition
+  }
+
+  static func from(field: String, symbol: AGSTextSymbol) throws -> AGSLabelDefinition {
+    // See https://developers.arcgis.com/ios/latest/swift/guide/json-label-class-properties.htm
+    let value = "{\(field)}"
+    let symbolJSON = try symbol.toJSON()
+    let labelJSONObject: [String: Any] = [
+      "labelExpressionInfo": ["value": value],
+      "symbol": symbolJSON,
+    ]
+    let labelObject = try AGSLabelDefinition.fromJSON(labelJSONObject)
+    guard let labelDefinition = labelObject as? AGSLabelDefinition else {
+      throw LabelError.noDefinition
+    }
+    return labelDefinition
+  }
+
 }

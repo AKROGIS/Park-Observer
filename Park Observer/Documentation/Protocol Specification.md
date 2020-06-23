@@ -905,6 +905,24 @@ The AGSLabelDefinition object has no properties to inspect.
 There is no way to be sure of which properties are optional except by testing.
 A guess can be made based on the defaults for the other objects above.
 
+See https://developers.arcgis.com/ios/latest/swift/guide/json-label-class-properties.htm
+and https://developers.arcgis.com/web-map-specification/objects/labelingInfo/
+and https://developers.arcgis.com/ios/latest/api-reference/interface_a_g_s_label_definition.html
+//let labelText = "\"You are here\""
+//let labelText = "[\(field)] CONCAT \" Street\""
+//let labelText = "[\(field)]"
+//let value = "{\(field)} Street"
+let value = "{\(field)}"
+//let expression = "return $Feature.\(field);"
+let symbolJSON = try symbol.toJSON()
+let labelJSONObject: [String: Any] = [
+//"labelExpression": labelText,
+"labelExpressionInfo": ["value": value],
+//"labelExpressionInfo": ["expression": expression],
+"symbol": symbolJSON
+]
+
+
 
 TODO: test that field name in label.field and label.definition are case-insensitive with attributes
 TODO: Verify: If an empty object is given to the totalizer, it will display how many kilometers you have been observing, and reset each time to stop/stop observing.

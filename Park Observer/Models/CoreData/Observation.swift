@@ -56,6 +56,16 @@ extension Observation {
     return gpsPoint?.timestamp ?? adhocLocation?.timestamp
   }
 
+  func attributes(for feature: Feature) -> [String: Any] {
+    var values = [String: Any]()
+    if let attribs = feature.attributes {
+      for attrib in attribs {
+        values[attrib.name] = self.value(forKey: .attributePrefix + attrib.name)
+      }
+    }
+    return values
+  }
+
   var locationOfFeature: Location? {
     if let angleDistance = angleDistanceLocation, let location = gpsPoint?.location {
       var adHelper = AngleDistanceHelper(

@@ -183,7 +183,7 @@ extension AGSMapView {
 
   func draw(_ survey: Survey) {
     self.clearLayers()
-    self.drawGpsPoints(survey)
+    //self.drawGpsPoints(survey)
     self.drawTrackLogs(survey)
     self.drawMissionProperties(survey)
     self.drawFeatures(survey)
@@ -255,14 +255,18 @@ extension AGSMapView {
       let overlay = AGSGraphicsOverlay()
       overlay.overlayID = feature.name
       overlay.renderer = feature.symbology
+      if let labelDef = feature.label?.definition {
+        overlay.labelDefinitions.add(labelDef)
+        overlay.labelsEnabled = true
+      }
       if let observations = try? survey.viewContext.fetch(Observations.fetchAll(for: feature.name))
       {
         overlay.graphics.addObjects(
           from: observations.compactMap { observation in
             guard let location = observation.locationOfFeature else { return nil }
             let agsPoint = AGSPoint(clLocationCoordinate2D: location)
-            //TODO: add attributes?
-            return AGSGraphic(geometry: agsPoint, symbol: nil, attributes: nil)
+            let attributes = observation.attributes(for: feature)
+            return AGSGraphic(geometry: agsPoint, symbol: nil, attributes: attributes)
           })
       }
       self.graphicsOverlays.add(overlay)
