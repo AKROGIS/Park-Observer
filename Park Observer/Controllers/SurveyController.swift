@@ -88,6 +88,10 @@ class SurveyController: NSObject, ObservableObject, CLLocationManagerDelegate,
         self.mapName = name
         NSLog("Finish load map")
         self.message = Message.info("The map has been loaded")
+        DispatchQueue.main.asyncAfter(deadline: .now() + 3.0) {
+          //TODO: Needs animation
+          self.message = nil
+        }
       }
     })
   }
