@@ -78,7 +78,7 @@ struct SurveyListView: View {
       }
     }
     .onAppear {
-      self.surveyNames = FileManager.default.surveyNames
+      self.surveyNames = FileManager.default.surveyNames.sorted()
     }
   }
 
@@ -92,7 +92,7 @@ struct SurveyListView: View {
         self.errorMessage = error.localizedDescription
       }
     }
-    self.surveyNames = FileManager.default.surveyNames
+    self.surveyNames = FileManager.default.surveyNames.sorted()
   }
 }
 

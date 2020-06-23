@@ -38,7 +38,7 @@ struct MapListView: View {
       }
     }
     .onAppear {
-      self.mapNames = FileManager.default.mapNames
+      self.mapNames = FileManager.default.mapNames.sorted()
     }
   }
 
@@ -52,7 +52,7 @@ struct MapListView: View {
         self.errorMessage = error.localizedDescription
       }
     }
-    self.mapNames = FileManager.default.mapNames
+    self.mapNames = FileManager.default.mapNames.sorted()
   }
 }
 
@@ -61,7 +61,7 @@ struct OnlineMapListView: View {
 
   var body: some View {
     List {
-      ForEach(Array(SurveyController.esriBasemaps.keys), id: \.self) { mapName in
+      ForEach(Array(SurveyController.esriBasemaps.keys.sorted()), id: \.self) { mapName in
         //TODO: add thumbnail, date and author
         Text(mapName)
           .onTapGesture {
