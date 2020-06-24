@@ -10,6 +10,8 @@ import SwiftUI
 
 struct SlideOutView: View {
   @EnvironmentObject var surveyController: SurveyController
+  @State private var width: CGFloat = 0.0
+  @State private var minWidth: CGFloat = 250
 
   var body: some View {
     ZStack {
@@ -17,37 +19,31 @@ struct SlideOutView: View {
         Color(.gray).opacity(0.3)
           .onTapGesture {
             withAnimation {
+              self.surveyController.slideOutMenuWidth = self.width
               self.surveyController.slideOutMenuVisible.toggle()
             }
           }
       }
-
       HStack {
-        //TODO: select one of the views conditionally Show conditionally with Attribute Editing View
-        // AttributeEditingView
-        // ????View
-        MainMenuView()
-          .frame(width: surveyController.slideOutMenuWidth)
-          //TODO: set height to screen less keyboard height if keyboard is showing
-          .background(Color.white)
-          //TODO: refresh the visible view
-          //hiding the slideout like this is nice because it restores to the same
-          //place in the navigation heirarchy where we left off, but views the file
-          //list do not refresh
-          .offset(
-            x: surveyController.slideOutMenuVisible ? 0 : -1 * surveyController.slideOutMenuWidth
-          )
-          //TODO: offset is not enough in landscape mode on iPhone 11 (with safe area)
-          //TODO:  set y offset if keyboard is showing
-          .animation(.default)
+        HStack(spacing: 0)  {
+          MainMenuView()
+          ZStack {
+            Color(.systemBackground).frame(width: 8).edgesIgnoringSafeArea(.all)
+            RoundedRectangle(cornerRadius: 2.5).frame(width:5, height: 100.0)
+          }
+          .gesture(DragGesture(minimumDistance: 5, coordinateSpace: .global)
+          .onChanged {
+            self.width = max(self.minWidth, $0.location.x)
+          })
+        }
+        .frame(width: width)
+        .offset(x: self.surveyController.slideOutMenuVisible ? 0 : -1 * width)
+        .animation(.default)
         Spacer()
       }
-      //TODO: Add and swipe to close
-      //TODO: Gesture interferes with other view drags (delete, scroll, ...)
-      // Put Gesture in narrow verticle view with handle
-      .gesture(DragGesture()
-        .onChanged { self.surveyController.slideOutMenuWidth = $0.location.x }
-      )
+      .onAppear {
+        self.width = self.surveyController.slideOutMenuWidth
+      }
     }
   }
 }
@@ -57,3 +53,17 @@ struct SlideOutView_Previews: PreviewProvider {
     SlideOutView()
   }
 }
+
+//TODO: conditionally replace MainMenuView with on of the following
+//  AttributeEditingView
+//  OtherView??
+//TODO: set height/lower edge to screen less keyboard height if keyboard is showing
+//TODO: limit to maxWidth as % of screenwidth
+//TODO: on device rotation, recalc maxwidth and adjust width if necessary
+//TODO: Add and swipe to close (but do not adjust width)
+//TODO: Add close button on SlideOutView
+//TODO: Deal with safe area; add to offset
+//TODO: refresh the visible view
+//  hiding the slideout like this is nice because it restores to the same
+//  place in the navigation heirarchy where we left off, but views the file
+//  list do not refresh

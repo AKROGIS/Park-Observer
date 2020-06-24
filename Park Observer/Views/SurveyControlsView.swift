@@ -18,7 +18,7 @@ struct SurveyControlsView: View {
         Button(action: {
           self.surveyController.slideOutMenuVisible.toggle()
         }) {
-          Image(systemName: "line.horizontal.3").font(.headline)
+          Image(systemName: "slider.horizontal.3").font(.title)
         }
         .mapButton(darkMode: userSettings.darkMapControls)
 
