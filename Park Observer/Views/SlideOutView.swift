@@ -46,6 +46,7 @@ struct SlideOutView: View {
         self.width = self.surveyController.slideOutMenuWidth
       }
     }
+    .keyboardAdaptive()
   }
 }
 
@@ -58,7 +59,6 @@ struct SlideOutView_Previews: PreviewProvider {
 //TODO: conditionally replace MainMenuView with on of the following
 //  AttributeEditingView
 //  OtherView??
-//TODO: set height/lower edge to screen less keyboard height if keyboard is showing
 //TODO: limit to maxWidth as % of screenwidth
 //TODO: on device rotation, recalc maxwidth and adjust width if necessary
 //TODO: Add and swipe to close (but do not adjust width)
