@@ -15,6 +15,9 @@ import Zip
 
 //MARK: - Discovering Files
 
+//TODO: Refactor around AppFile
+//TODO: Remove methods with multiple simimlar names, make generic in AppFileType
+//TODO: extensions should be raw value of AppFile.Type
 extension String {
   static let surveyExtension = "obssurv"
   static let surveyArchiveExtension = "poz"
@@ -70,6 +73,15 @@ extension FileManager {
     return filenames(in: surveyDirectory, with: .surveyExtension)
   }
 
+  func names(type: AppFileType) -> [String] {
+    switch type {
+    case .archive: return archiveNames
+    case .map: return mapNames
+    case .survey: return surveyNames
+    case .surveyProtocol: return protocolNames
+    }
+  }
+
   func archiveURL(with name: String) -> URL {
     return archiveDirectory.appendingPathComponent(name).appendingPathExtension(
       .surveyArchiveExtension)
@@ -104,6 +116,15 @@ extension FileManager {
 
   func deleteSurvey(with name: String) throws {
     try removeItem(at: surveyURL(with: name))
+  }
+
+  func delete(file: AppFile) throws {
+    switch file.type {
+    case .archive:  try deleteArchive(with: file.name); break
+    case .map:  try deleteMap(with: file.name); break
+    case .survey: try deleteSurvey(with: file.name); break
+    case .surveyProtocol:  try deleteProtocol(with: file.name); break
+    }
   }
 
   private func filenames(in directory: URL, with pathExtension: String) -> [String] {
@@ -174,7 +195,7 @@ enum ConflictResolution {
   case replace
 }
 
-enum AppFileType {
+enum AppFileType: String {
   case archive
   case map
   case surveyProtocol
