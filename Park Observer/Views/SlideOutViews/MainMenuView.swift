@@ -19,10 +19,16 @@ struct MainMenuView: View {
           Text("Surveys")
         }
         NavigationLink(destination: FileListView(fileType: .surveyProtocol)) {
-          Text("Protocols")
+          VStack(alignment: .leading) {
+            Text("Protocols")
+            Text("Survey configuration files").font(.caption).foregroundColor(.secondary)
+          }
         }
         NavigationLink(destination: FileListView(fileType: .archive)) {
-          Text("Archives")
+          VStack(alignment: .leading) {
+            Text("Archives")
+            Text("Exported and importable surveys").font(.caption).foregroundColor(.secondary)
+          }
         }
         NavigationLink(destination: UserSettingsView()) {
           Text("Settings")

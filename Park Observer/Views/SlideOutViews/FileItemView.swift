@@ -48,29 +48,84 @@ struct MapItemView: View {
 
 struct SurveyItemView: View {
   var name: String
+  @State private var errorMessage: String? = nil
   @EnvironmentObject var surveyController: SurveyController
 
   var body: some View {
-    //TODO: 1) add export button
+    //TODO: 0) implement export survey
+    //TODO: 1) Highlight the currently active survey
     //TODO: 2) replace file name with title from info; add icon, dates and status
     //TODO: 3) navigate to additional info about the survey
-    //TODO: 4) Highlight the currently active survey
-    Text(name)
-      .onTapGesture {
-        self.surveyController.loadSurvey(name: self.name)
-        //self.surveyController.slideOutMenuVisible.toggle()
+    VStack(alignment: .leading) {
+      HStack {
+        VStack(alignment: .leading) {
+          Text(name)
+          Text("Modifed: 6/22/2020").font(.caption).foregroundColor(.secondary)
+          Text("Not exported").font(.caption).foregroundColor(.secondary)
+        }
+        .onTapGesture {
+          self.surveyController.loadSurvey(name: self.name)
+          //self.surveyController.slideOutMenuVisible.toggle()
+        }
+        Spacer()
+        Button(action: {
+          do {
+            // start as progress indicator, and do export in background
+            throw ImportError.exists
+            // If the survey is loaded (name == SurveyController.surveyName) then
+            // we should stop any editing (tracklogging) and save
+            //  we could ask the surveyController to export the current survey
+            // otherwise, we need to load and then export the survey
+            // maybe add a static method on Survey to load and export the survey with name
+            // Survey.export(name, conflict: .fail)
+            //_ = try FileManager.default.importSurvey(from: self.name, conflict: .fail)
+            //self.errorMessage = "Success!"
+          } catch {
+            self.errorMessage = "Unable to export survey"
+          }
+        }) {
+          Image(systemName: "tray.and.arrow.up")
+        }
+        .buttonStyle(BorderlessButtonStyle())
+      }
+      if errorMessage != nil {
+        Text(errorMessage!).font(.caption).foregroundColor(.red)
+      }
     }
   }
 }
 
 struct ArchiveItemView: View {
   var name: String
+  @State private var errorMessage: String? = nil
   @EnvironmentObject var surveyController: SurveyController
 
   var body: some View {
-    //TODO: 1) add import button
+    //TODO: 1) Handle archive errors (replace, keep both)
     //TODO: 2) add file date
-    Text(name)
+    HStack {
+      VStack(alignment: .leading) {
+        Button(action: {
+          do {
+            _ = try FileManager.default.importSurvey(from: self.name, conflict: .fail)
+            self.errorMessage = "Success!"
+          } catch {
+            self.errorMessage = "Unable to import survey"
+          }
+        }) {
+          HStack {
+            Image(systemName: "tray.and.arrow.down")
+            VStack(alignment: .leading) {
+              Text(name)
+              Text("Created: June 12, 2020").font(.caption).foregroundColor(.secondary)
+            }
+          }
+        }
+        if errorMessage != nil {
+          Text(errorMessage!).font(.caption).foregroundColor(.red)
+        }
+      }
+    }
   }
 }
 
