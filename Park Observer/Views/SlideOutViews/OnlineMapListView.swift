@@ -1,5 +1,5 @@
 //
-//  MapListView.swift
+//  OnlineMapListView.swift
 //  Park Observer
 //
 //  Created by Regan E. Sarwas on 6/23/20.
@@ -26,7 +26,7 @@ struct OnlineMapListView: View {
 
 }
 
-struct MapListView_Previews: PreviewProvider {
+struct OnlineMapListView_Previews: PreviewProvider {
     static var previews: some View {
         OnlineMapListView()
     }

@@ -25,7 +25,7 @@
 		7423E4CB249BE18300195DBB /* MessageView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7423E4CA249BE18300195DBB /* MessageView.swift */; };
 		744C9B36247482700099D414 /* SurveyTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 744C9B35247482700099D414 /* SurveyTests.swift */; };
 		744C9B3A24760A700099D414 /* Formatters.swift in Sources */ = {isa = PBXBuildFile; fileRef = 744C9B3924760A700099D414 /* Formatters.swift */; };
-		7466877024A265D500A8FEFA /* MapListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7466876F24A265D500A8FEFA /* MapListView.swift */; };
+		7466877024A265D500A8FEFA /* OnlineMapListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7466876F24A265D500A8FEFA /* OnlineMapListView.swift */; };
 		7466877224A274FB00A8FEFA /* UserSettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7466877124A274FB00A8FEFA /* UserSettingsView.swift */; };
 		7466877424A27C4B00A8FEFA /* UserSettings.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7466877324A27C4B00A8FEFA /* UserSettings.swift */; };
 		747165EC243C37A800A9C960 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 747165EB243C37A800A9C960 /* AppDelegate.swift */; };
@@ -141,7 +141,7 @@
 		742B08A2244A477A00A5137C /* Protocol Specification.md */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = net.daringfireball.markdown; path = "Protocol Specification.md"; sourceTree = "<group>"; };
 		744C9B35247482700099D414 /* SurveyTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SurveyTests.swift; sourceTree = "<group>"; };
 		744C9B3924760A700099D414 /* Formatters.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Formatters.swift; sourceTree = "<group>"; };
-		7466876F24A265D500A8FEFA /* MapListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MapListView.swift; sourceTree = "<group>"; };
+		7466876F24A265D500A8FEFA /* OnlineMapListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnlineMapListView.swift; sourceTree = "<group>"; };
 		7466877124A274FB00A8FEFA /* UserSettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserSettingsView.swift; sourceTree = "<group>"; };
 		7466877324A27C4B00A8FEFA /* UserSettings.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserSettings.swift; sourceTree = "<group>"; };
 		747165E8243C37A800A9C960 /* Park Observer.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Park Observer.app"; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -250,7 +250,7 @@
 				59BA0ECA24A50FC700CA6EF2 /* FileItemView.swift */,
 				59BA0EC824A50F6300CA6EF2 /* FileListView.swift */,
 				598932A02499DE6900A7C346 /* MainMenuView.swift */,
-				7466876F24A265D500A8FEFA /* MapListView.swift */,
+				7466876F24A265D500A8FEFA /* OnlineMapListView.swift */,
 				5989329E2499A71300A7C346 /* SlideOutView.swift */,
 				7466877124A274FB00A8FEFA /* UserSettingsView.swift */,
 			);
@@ -697,7 +697,7 @@
 				74A25FCC245233B8006D82CE /* MissionTotalizer.swift in Sources */,
 				74D0B0DA2460C1E100624FE9 /* DecodingError.swift in Sources */,
 				74ABE146248FF0750047017C /* SurveyController.swift in Sources */,
-				7466877024A265D500A8FEFA /* MapListView.swift in Sources */,
+				7466877024A265D500A8FEFA /* OnlineMapListView.swift in Sources */,
 				744C9B3A24760A700099D414 /* Formatters.swift in Sources */,
 				74D85B58246F1EB60091EA8E /* ObserverModel.xcdatamodeld in Sources */,
 				74A25FBB2451F33F006D82CE /* SurveyProtocol.swift in Sources */,
