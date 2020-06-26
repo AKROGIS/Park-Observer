@@ -170,6 +170,24 @@ extension Survey {
 
 extension Survey {
 
+  /// Exports a survey to an archive file
+  /// The archive name is determined from the survey name
+  /// If archive exists, the conflict parameter decides how to resolve the conflict.
+  static func export(_ name: String, conflict: ConflictResolution = .replace, _ completionHandler: @escaping (Error?) -> Void) {
+    Self.load(name) { result in
+      switch result {
+      case .success(let survey):
+        survey.saveToArchive(conflict: conflict) { error in
+          completionHandler(error)
+        }
+        break
+      case .failure(let error):
+        completionHandler(error)
+        break
+      }
+    }
+  }
+
   /// Grabs all objects in a survey database and writes the data to CSV files on a background thread.
   func exportAsCSV(at url: URL, _ completionHandler: @escaping (Error?) -> Void) {
     let privateContext = NSManagedObjectContext(concurrencyType: .privateQueueConcurrencyType)
