@@ -13,7 +13,7 @@ struct MainMenuView: View {
     NavigationView {
       List {
         NavigationLink(destination: FileListView(fileType: .map)) {
-          Text("Maps")
+          Text("Background Maps")
         }
         NavigationLink(destination: FileListView(fileType: .survey)) {
           Text("Surveys")

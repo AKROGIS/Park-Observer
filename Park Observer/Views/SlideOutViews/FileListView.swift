@@ -13,31 +13,45 @@ struct FileListView: View {
   @EnvironmentObject var surveyController: SurveyController
   @State private var errorMessage: String? = nil
   @State private var fileNames = [String]()
+  @State private var title: String = ""
 
   var body: some View {
-    List {
-      ForEach(fileNames, id: \.self) { name in
-        FileItemView(file: AppFile(type: self.fileType, name: name))
-      }
-      .onDelete(perform: delete)
-      if fileType == .map {
-        NavigationLink(destination: OnlineMapListView()) {
-          Text("Online Maps")
+    VStack { //(alignment: .leading) {
+      Form {
+        ForEach(fileNames, id: \.self) { name in
+          FileItemView(file: AppFile(type: self.fileType, name: name))
+        }
+        .onDelete(perform: delete)
+        if fileType == .map {
+          NavigationLink(destination: OnlineMapListView()) {
+            Text("Online Maps")
+          }
+        }
+        if errorMessage != nil {
+          HStack {
+            Image(systemName: "exclamationmark.square.fill")
+              .foregroundColor(.red)
+              .font(.title)
+            Text(errorMessage!).foregroundColor(.red)
+          }
         }
       }
-      if errorMessage != nil {
-        HStack {
-          Image(systemName: "exclamationmark.square.fill")
-            .foregroundColor(.red)
-            .font(.title)
-          Text(errorMessage!).foregroundColor(.red)
+      .onAppear {
+        self.errorMessage = nil
+        self.fileNames = FileManager.default.names(type: self.fileType).sorted()
+        switch self.fileType {
+        case .map: self.title = "Select a Map"; break
+        case .survey: self.title = "Select a Survey"; break
+        case .archive: self.title = "Survey Archives"; break
+        case .surveyProtocol: self.title = "Configuration Files"; break
         }
       }
+      Spacer()
+      Text((fileType == .surveyProtocol ? "Tap to create a new survey from the configuration. " : "") + "Swipe to the left to delete a file.")
+      .font(.footnote).foregroundColor(.secondary)
+      .padding()
     }
-    .onAppear {
-      self.errorMessage = nil
-      self.fileNames = FileManager.default.names(type: self.fileType).sorted()
-    }
+    .navigationBarTitle(title)
   }
 
   func delete(at offsets: IndexSet) {
