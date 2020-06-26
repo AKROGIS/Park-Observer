@@ -47,7 +47,7 @@ struct FileListView: View {
         }
       }
       Spacer()
-      Text((fileType == .surveyProtocol ? "Tap to create a new survey from the configuration. " : "") + "Swipe to the left to delete a file.")
+      Text((fileType == .surveyProtocol ? "Tap to create a new survey. " : "") + "Swipe left to delete.")
       .font(.footnote).foregroundColor(.secondary)
       .padding()
     }
