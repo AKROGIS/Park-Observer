@@ -53,6 +53,7 @@ struct MapItemView: View {
 
 struct SurveyItemView: View {
   var name: String
+  @State private var infoMessage: String? = nil
   @State private var errorMessage: String? = nil
   @EnvironmentObject var surveyController: SurveyController
 
@@ -101,26 +102,32 @@ struct SurveyItemView: View {
       if errorMessage != nil {
         Text(errorMessage!).font(.caption).foregroundColor(.red)
       }
+      if infoMessage != nil {
+        Text(infoMessage!).font(.caption).foregroundColor(.green)
+      }
     }
   }
 }
 
 struct ArchiveItemView: View {
   var name: String
+  @State private var infoMessage: String? = nil
   @State private var errorMessage: String? = nil
   @EnvironmentObject var surveyController: SurveyController
 
   var body: some View {
-    //TODO: 1) Handle archive errors (replace, keep both)
+    //TODO: 1) Support other conflict resolution strategies
     //TODO: 2) add file date
     HStack {
       VStack(alignment: .leading) {
         Button(action: {
+          self.infoMessage = nil
+          self.errorMessage = nil
           do {
             _ = try FileManager.default.importSurvey(from: self.name, conflict: .fail)
-            self.errorMessage = "Success!"
+            self.infoMessage = "Added to your surveys"
           } catch {
-            self.errorMessage = "Unable to import survey"
+            self.errorMessage = error.localizedDescription
           }
         }) {
           HStack {
@@ -133,6 +140,9 @@ struct ArchiveItemView: View {
         }
         if errorMessage != nil {
           Text(errorMessage!).font(.caption).foregroundColor(.red)
+        }
+        if infoMessage != nil {
+          Text(infoMessage!).font(.caption).foregroundColor(.green)
         }
       }
     }
