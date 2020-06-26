@@ -16,7 +16,7 @@ struct FileListView: View {
   @State private var title: String = ""
 
   var body: some View {
-    VStack { //(alignment: .leading) {
+    VStack {  //(alignment: .leading) {
       Form {
         ForEach(fileNames, id: \.self) { name in
           FileItemView(file: AppFile(type: self.fileType, name: name))
@@ -40,14 +40,25 @@ struct FileListView: View {
         self.errorMessage = nil
         self.fileNames = FileManager.default.names(type: self.fileType).sorted()
         switch self.fileType {
-        case .map: self.title = "Select a Map"; break
-        case .survey: self.title = "Select a Survey"; break
-        case .archive: self.title = "Survey Archives"; break
-        case .surveyProtocol: self.title = "Configuration Files"; break
+        case .map:
+          self.title = "Select a Map"
+          break
+        case .survey:
+          self.title = "Select a Survey"
+          break
+        case .archive:
+          self.title = "Survey Archives"
+          break
+        case .surveyProtocol:
+          self.title = "Configuration Files"
+          break
         }
       }
       Spacer()
-      Text((fileType == .surveyProtocol ? "Tap to create a new survey. " : "") + "Swipe left to delete.")
+      Text(
+        (fileType == .surveyProtocol ? "Tap to create a new survey. " : "")
+          + "Swipe left to delete."
+      )
       .font(.footnote).foregroundColor(.secondary)
       .padding()
     }
@@ -70,7 +81,7 @@ struct FileListView: View {
 }
 
 struct FileListView_Previews: PreviewProvider {
-    static var previews: some View {
-      FileListView(fileType: .map)
-    }
+  static var previews: some View {
+    FileListView(fileType: .map)
+  }
 }

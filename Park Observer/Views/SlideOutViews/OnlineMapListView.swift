@@ -24,7 +24,7 @@ struct OnlineMapListView: View {
             .onTapGesture {
               self.surveyController.loadMap(name: name)
               //self.surveyController.slideOutMenuVisible.toggle()
-          }
+            }
         }
       }
     }
@@ -33,7 +33,7 @@ struct OnlineMapListView: View {
 }
 
 struct OnlineMapListView_Previews: PreviewProvider {
-    static var previews: some View {
-        OnlineMapListView()
-    }
+  static var previews: some View {
+    OnlineMapListView()
+  }
 }

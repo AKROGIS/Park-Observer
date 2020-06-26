@@ -18,11 +18,9 @@ struct FileItemView: View {
       // Use exaustive switch when available in next release of swiftUI
       if file.type == .survey {
         SurveyItemView(name: file.name)
-      }
-      else if file.type == .map {
+      } else if file.type == .map {
         MapItemView(name: file.name)
-      }
-      else if file.type == .archive {
+      } else if file.type == .archive {
         ArchiveItemView(name: file.name)
       } else {
         ProtocolItemView(name: file.name)
@@ -46,7 +44,7 @@ struct MapItemView: View {
         .onTapGesture {
           self.surveyController.loadMap(name: self.name)
           //self.surveyController.slideOutMenuVisible.toggle()
-      }
+        }
     }
   }
 }
@@ -102,7 +100,9 @@ struct SurveyItemView: View {
           }
         }
         .buttonStyle(BorderlessButtonStyle())
-        .disabled(self.isExporting || (surveyController.surveyName == name && surveyController.tracklogging))
+        .disabled(
+          self.isExporting || (surveyController.surveyName == name && surveyController.tracklogging)
+        )
       }
       if errorMessage != nil {
         Text(errorMessage!).font(.caption).foregroundColor(.red)
@@ -165,17 +165,17 @@ struct ProtocolItemView: View {
     //TODO: 2) Replace file name with title, version, date from SurveyProtocol
     //TODO: 3) navigate to additional info about the protocol
     VStack(alignment: .leading) {
-    Text(name)
-      .onTapGesture {
-        self.infoMessage = nil
-        self.errorMessage = nil
-        do {
-          let newName = try Survey.create(self.name, from: self.name, conflict: .fail)
-          self.infoMessage = "Created new survey \(newName)"
-        } catch {
-          self.errorMessage = error.localizedDescription
+      Text(name)
+        .onTapGesture {
+          self.infoMessage = nil
+          self.errorMessage = nil
+          do {
+            let newName = try Survey.create(self.name, from: self.name, conflict: .fail)
+            self.infoMessage = "Created new survey \(newName)"
+          } catch {
+            self.errorMessage = error.localizedDescription
+          }
         }
-      }
       if infoMessage != nil {
         Text(infoMessage!).font(.caption).foregroundColor(.green)
       }
@@ -186,9 +186,8 @@ struct ProtocolItemView: View {
   }
 }
 
-
 struct FileItemView_Previews: PreviewProvider {
-    static var previews: some View {
-      FileItemView(file: AppFile(type: .map, name: "My Map"))
-    }
+  static var previews: some View {
+    FileItemView(file: AppFile(type: .map, name: "My Map"))
+  }
 }
