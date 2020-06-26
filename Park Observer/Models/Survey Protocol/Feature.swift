@@ -460,6 +460,8 @@ struct Label {
 
 }
 
+// MARK: - Label Codable
+
 extension Label: Codable {
 
   enum CodingKeys: String, CodingKey {
@@ -566,6 +568,11 @@ extension Label: Codable {
       try container.encode(AnyJSON(value: definition.toJSON()), forKey: .definition)
     }
   }
+}
+
+//MARK: - Label Definition Synthesis
+
+extension Label {
 
   func labelDefinition() -> AGSLabelDefinition? {
     // We have a verified label definition in a verified version 2 protocol file.
