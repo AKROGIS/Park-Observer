@@ -13,7 +13,7 @@ struct OnlineMapListView: View {
 
   var body: some View {
     List {
-      ForEach(Array(SurveyController.esriBasemaps.keys.sorted()), id: \.self) { name in
+      ForEach(Array(OnlineBaseMaps.esri.keys.sorted()), id: \.self) { name in
         //TODO: add thumbnail, date and author
         HStack {
           if self.surveyController.mapName == name {

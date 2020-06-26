@@ -72,9 +72,9 @@ class SurveyController: NSObject, ObservableObject, CLLocationManagerDelegate,
     }
     NSLog("Start load map \(name)")
     if name.starts(with: "Esri ") {
-      loadEsriBasemap(name)
+      mapView.map = getEsriBasemap(for: name)
     } else {
-      loadLocalTileCache(name)
+      mapView.map = getLocalTileCache(for: name)
     }
     mapView.map?.load(completion: { error in
       if let error = error {
@@ -287,7 +287,7 @@ extension AGSMapView {
 
 extension SurveyController {
 
-  private func loadLocalTileCache(_ name: String) {
+  private func getLocalTileCache(for name: String) -> AGSMap? {
     // The tile package needs to exist in the document directory of the device or simulator
     // For a device use iTunes File Sharing (enable in the info.plist)
     // For the simulator - breakpoint on the next line, to see what the path is
@@ -296,34 +296,15 @@ extension SurveyController {
     let cache = AGSTileCache(fileURL: path)
     let layer = AGSArcGISTiledLayer(tileCache: cache)
     let basemap = AGSBasemap(baseLayer: layer)
-    mapView.map = AGSMap(basemap: basemap)
+    return AGSMap(basemap: basemap)
   }
 
-  static let esriBasemaps: [String: () -> AGSBasemap] = [
-    "Esri Dark Gray Canvas Vector": AGSBasemap.darkGrayCanvasVector,
-    "Esri Imagery": AGSBasemap.imagery,
-    "Esri Imagery With Labels": AGSBasemap.imageryWithLabels,
-    "Esri Imagery With Labels Vector": AGSBasemap.imageryWithLabelsVector,
-    "Esri Light Gray Canvas": AGSBasemap.lightGrayCanvas,
-    "Esri Light Gray Canvas Vector": AGSBasemap.lightGrayCanvasVector,
-    "Esri National Geographic": AGSBasemap.nationalGeographic,
-    "Esri Navigation Vector": AGSBasemap.navigationVector,
-    "Esri Oceans": AGSBasemap.oceans,
-    "Esri Open Street Map": AGSBasemap.openStreetMap,
-    "Esri Streets": AGSBasemap.streets,
-    "Esri Streets Night Vector": AGSBasemap.streetsNightVector,
-    "Esri Streets Vector": AGSBasemap.streetsVector,
-    "Esri Streets With Relief Vector": AGSBasemap.streetsWithReliefVector,
-    "Esri Terrain With Labels": AGSBasemap.terrainWithLabels,
-    "Esri Terrain With Labels Vector": AGSBasemap.terrainWithLabelsVector,
-    "Esri Topographic": AGSBasemap.topographic,
-    "Esri Topographic Vector": AGSBasemap.topographicVector,
-  ]
 
-  private func loadEsriBasemap(_ name: String) {
-    if let basemap = SurveyController.esriBasemaps[name] {
-      mapView.map = AGSMap(basemap: basemap())
+  private func getEsriBasemap(for name: String) -> AGSMap? {
+    guard let basemap = OnlineBaseMaps.esri[name] else {
+      return nil
     }
+    return AGSMap(basemap: basemap())
   }
 
 }

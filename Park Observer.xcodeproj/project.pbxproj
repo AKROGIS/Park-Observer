@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		5935172924A68A8800A4CD45 /* OnlineBaseMaps.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5935172824A68A8800A4CD45 /* OnlineBaseMaps.swift */; };
 		5989329B24995A0A00A7C346 /* SurveyControlsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5989329A24995A0A00A7C346 /* SurveyControlsView.swift */; };
 		5989329D24995C7100A7C346 /* ViewModifiers.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5989329C24995C7100A7C346 /* ViewModifiers.swift */; };
 		5989329F2499A71300A7C346 /* SlideOutView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5989329E2499A71300A7C346 /* SlideOutView.swift */; };
@@ -122,6 +123,7 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		5935172824A68A8800A4CD45 /* OnlineBaseMaps.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnlineBaseMaps.swift; sourceTree = "<group>"; };
 		5989329A24995A0A00A7C346 /* SurveyControlsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SurveyControlsView.swift; sourceTree = "<group>"; };
 		5989329C24995C7100A7C346 /* ViewModifiers.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewModifiers.swift; sourceTree = "<group>"; };
 		5989329E2499A71300A7C346 /* SlideOutView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SlideOutView.swift; sourceTree = "<group>"; };
@@ -360,6 +362,7 @@
 			isa = PBXGroup;
 			children = (
 				74D85B3F246F1E8B0091EA8E /* CoreData */,
+				5935172824A68A8800A4CD45 /* OnlineBaseMaps.swift */,
 				74A25FC4245232F1006D82CE /* Survey Protocol */,
 				74D85B6A2472EEC30091EA8E /* Survey.swift */,
 				749DE9B9246A3378003D433A /* SurveyInfo.swift */,
@@ -683,6 +686,7 @@
 				747165F0243C37A800A9C960 /* ContentView.swift in Sources */,
 				59BA0EC924A50F6300CA6EF2 /* FileListView.swift in Sources */,
 				74A25FCE245233E1006D82CE /* CsvFormat.swift in Sources */,
+				5935172924A68A8800A4CD45 /* OnlineBaseMaps.swift in Sources */,
 				74A25FC624523371006D82CE /* ProtocolMission.swift in Sources */,
 				74D85B6B2472EEC30091EA8E /* Survey.swift in Sources */,
 				74D85B5D246F1EB60091EA8E /* MissionProperty.swift in Sources */,
