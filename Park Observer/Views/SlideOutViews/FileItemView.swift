@@ -36,12 +36,17 @@ struct MapItemView: View {
   @EnvironmentObject var surveyController: SurveyController
 
   var body: some View {
-    //TODO: 1) Highlight the currently active map
     //TODO: 2) add thumbnail, date and author
-    Text(name)
-      .onTapGesture {
-        self.surveyController.loadMap(name: self.name)
-        //self.surveyController.slideOutMenuVisible.toggle()
+    HStack {
+      if surveyController.mapName == name {
+        Image(systemName: "star.fill").foregroundColor(.yellow)
+      }
+      Text(name)
+        .font(surveyController.mapName == name ? .headline : .body)
+        .onTapGesture {
+          self.surveyController.loadMap(name: self.name)
+          //self.surveyController.slideOutMenuVisible.toggle()
+      }
     }
   }
 }
@@ -53,13 +58,18 @@ struct SurveyItemView: View {
 
   var body: some View {
     //TODO: 0) implement export survey
-    //TODO: 1) Highlight the currently active survey
     //TODO: 2) replace file name with title from info; add icon, dates and status
     //TODO: 3) navigate to additional info about the survey
     VStack(alignment: .leading) {
       HStack {
         VStack(alignment: .leading) {
-          Text(name)
+          HStack {
+            if surveyController.surveyName == name {
+              Image(systemName: "star.fill").foregroundColor(.yellow)
+            }
+            Text(name)
+              .font(surveyController.surveyName == name ? .headline : .body)
+          }
           Text("Modifed: 6/22/2020").font(.caption).foregroundColor(.secondary)
           Text("Not exported").font(.caption).foregroundColor(.secondary)
         }

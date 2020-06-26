@@ -13,12 +13,18 @@ struct OnlineMapListView: View {
 
   var body: some View {
     List {
-      ForEach(Array(SurveyController.esriBasemaps.keys.sorted()), id: \.self) { mapName in
+      ForEach(Array(SurveyController.esriBasemaps.keys.sorted()), id: \.self) { name in
         //TODO: add thumbnail, date and author
-        Text(mapName)
-          .onTapGesture {
-            self.surveyController.loadMap(name: mapName)
-            self.surveyController.slideOutMenuVisible.toggle()
+        HStack {
+          if self.surveyController.mapName == name {
+            Image(systemName: "star.fill").foregroundColor(.yellow)
+          }
+          Text(name)
+            .font(self.surveyController.mapName == name ? .headline : .body)
+            .onTapGesture {
+              self.surveyController.loadMap(name: name)
+              //self.surveyController.slideOutMenuVisible.toggle()
+          }
         }
       }
     }
