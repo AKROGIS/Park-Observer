@@ -507,6 +507,8 @@ class SurveyTests: XCTestCase {
             XCTAssertTrue(false)
           } else {
             let archives = FileManager.default.archiveNames
+            // TODO: This test will fail if the device or simulator has existing archives.
+            // until fixed, try deleting the archives and rerunning the test.
             XCTAssertEqual(archives.count, 2)
             if archives.count == 2 {
               let newArchiveName = archives[0] == archive.name ? archives[1] : archives[0]
