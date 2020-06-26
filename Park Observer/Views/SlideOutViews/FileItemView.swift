@@ -141,13 +141,33 @@ struct ArchiveItemView: View {
 
 struct ProtocolItemView: View {
   var name: String
+  @State private var errorMessage: String? = nil
+  @State private var infoMessage: String? = nil
   @EnvironmentObject var surveyController: SurveyController
 
   var body: some View {
-    //TODO: 1) on tap, create a new survey from protocol
+    //TODO: 1) Support other conflict resolution strategies
     //TODO: 2) Replace file name with title, version, date from SurveyProtocol
     //TODO: 3) navigate to additional info about the protocol
+    VStack(alignment: .leading) {
     Text(name)
+      .onTapGesture {
+        self.infoMessage = nil
+        self.errorMessage = nil
+        do {
+          let newName = try Survey.create(self.name, from: self.name, conflict: .fail)
+          self.infoMessage = "Created new survey \(newName)"
+        } catch {
+          self.errorMessage = error.localizedDescription
+        }
+      }
+      if infoMessage != nil {
+        Text(infoMessage!).font(.caption).foregroundColor(.green)
+      }
+      if errorMessage != nil {
+        Text(errorMessage!).font(.caption).foregroundColor(.red)
+      }
+    }
   }
 }
 
