@@ -547,13 +547,6 @@ extension Label: Codable {
       }
     }
 
-    // in version 1, field is not optional (but not checked) in this case we return
-    // a nil labelDefinition instead of throwing.
-    if let field = field, definition == nil {
-      let symbol = symbol as? AGSTextSymbol ?? AGSTextSymbol.label(color: color, size: size)
-      definition = try AGSLabelDefinition.from(field: field, symbol: symbol)
-    }
-
     self.init(
       color: color,
       field: field,
@@ -571,6 +564,29 @@ extension Label: Codable {
     try container.encode(AnyJSON(value: symbol.toJSON()), forKey: .symbol)
     if let definition = definition {
       try container.encode(AnyJSON(value: definition.toJSON()), forKey: .definition)
+    }
+  }
+
+  func labelDefinition() -> AGSLabelDefinition? {
+    // We have a verified label definition in a verified version 2 protocol file.
+    if let definition = definition {
+      return definition
+    }
+    // in version 2 protocols, field or definition is required, so field is defined
+    // in version 1 protocols, verification is skipped, so field may be missing
+    // return no labelDefinition.
+    // symbol is also guaranteed to be a AGSTextSymbol
+    guard let field = field, let symbol = symbol as? AGSTextSymbol else {
+      print("Unable to generate a label definition, field is nil or symbol is not AGSTextSymbol")
+      return nil
+    }
+    // building a labelDefinition involves parsing JSON, so it may fail (It shouldn't
+    // since it is static in this case). Return nil in this case rather than throw an error.
+    do {
+      return try AGSLabelDefinition.from(field: field, symbol: symbol)
+    } catch {
+      print("Unable to create an AGSLabelDefinition.from(\(field) and symbol): \(error)")
+      return nil
     }
   }
 

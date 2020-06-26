@@ -262,7 +262,7 @@ extension AGSMapView {
       let overlay = AGSGraphicsOverlay()
       overlay.overlayID = feature.name
       overlay.renderer = feature.symbology
-      if let labelDef = feature.label?.definition {
+      if let labelDef = feature.label?.labelDefinition() {
         overlay.labelDefinitions.add(labelDef)
         overlay.labelsEnabled = true
       }
