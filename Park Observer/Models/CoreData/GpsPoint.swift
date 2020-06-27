@@ -75,6 +75,18 @@ extension GpsPoint {
       as! GpsPoint
   }
 
+  func initializeWith(mission: Mission, location: CLLocation) {
+    self.altitude = location.altitude
+    self.course = location.course
+    self.horizontalAccuracy = location.horizontalAccuracy
+    self.latitude = location.coordinate.latitude
+    self.longitude = location.coordinate.longitude
+    self.speed = location.speed
+    self.timestamp = location.timestamp
+    self.verticalAccuracy = location.verticalAccuracy
+    self.mission = mission
+  }
+
   func delete() {
     self.managedObjectContext?.delete(self)
   }

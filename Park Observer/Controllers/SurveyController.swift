@@ -29,23 +29,59 @@ class SurveyController: NSObject, ObservableObject, CLLocationManagerDelegate,
   AGSGeoViewTouchDelegate
 {
 
-  let mapView: AGSMapView
+  let mapView = AGSMapView()
   var surveyName: String? = nil
   var mapName: String? = nil
+
+  var isInBackground = false {
+    didSet {
+      if isInBackground {
+        saveState()
+        startBackgroundLocations()
+      } else {
+        drawBackgroundLocations()
+      }
+    }
+  }
 
   @Published var tracklogging = false {
     didSet {
       if !tracklogging {
         observing = false
+        locationManager.stopUpdatingLocation()
+        mission = nil
+        save(survey)
+      } else {
+        if gpsAuthorization == .unknown {
+          locationManager.requestWhenInUseAuthorization()
+          tracklogging = false
+          //User will have to tap start tracklog button again if they allow locations.
+        }
+        if gpsAuthorization == .foreground || gpsAuthorization == .background {
+          if let context = self.survey?.viewContext {
+            mission = Mission.new(in: context)
+            //TODO: Create a new missionProperty; edit attributes (oh no, I need a gpsPoint)
+            locationManager.startUpdatingLocation()
+          } else {
+            message = Message.error("No survey selected, or survey is corrupt")
+          }
+        }
       }
     }
   }
 
-  @Published var observing = false
+  @Published var observing = false {
+    didSet {
+      //TODO: toggle MissionProperty.observing; edit attributes
+    }
+  }
+  
   @Published var slideOutMenuVisible = false
   @Published var slideOutMenuWidth: CGFloat = 300.0
   @Published var message: Message? = nil
   @Published var featureNames = [String]()
+  @Published var gpsAuthorization = GpsAuthorization.unknown
+  @Published var enableSurveyControls = false
 
   // I'm not sure this controller should own these other controllers, but it works
   // better than the other options (owned by various views or SceneDelegate).
@@ -53,15 +89,33 @@ class SurveyController: NSObject, ObservableObject, CLLocationManagerDelegate,
   let locationButtonController: LocationButtonController
   let viewPointController: ViewPointController
   let userSettings = UserSettings()
+  let locationManager = CLLocationManager()
 
-  private var survey: Survey? = nil
+  private var survey: Survey? = nil {
+    didSet {
+      if let survey = oldValue {
+        save(survey)
+      }
+      if let survey = survey {
+        enableSurveyControls = true
+        self.featureNames = survey.config.features.map { $0.name }
+      } else {
+        enableSurveyControls = false
+        self.featureNames.removeAll()
+      }
+    }
+  }
+  private var mission: Mission? = nil
+  private var missionProperty: MissionProperty? = nil
 
   override init() {
-    self.mapView = AGSMapView()
     locationButtonController = LocationButtonController(mapView: self.mapView)
     viewPointController = ViewPointController(mapView: self.mapView)
     super.init()
+    locationManager.delegate = self
   }
+
+  //MARK: - Load Map/Survey
 
   func loadMap(name: String? = nil) {
     let defaultMap = Defaults.mapName.readString()
@@ -87,19 +141,13 @@ class SurveyController: NSObject, ObservableObject, CLLocationManagerDelegate,
         self.locationButtonController.restoreState()
         self.mapName = name
         NSLog("Finish load map")
-        self.message = Message.info("The map has been loaded")
-        DispatchQueue.main.asyncAfter(deadline: .now() + 3.0) {
-          //TODO: Needs animation
-          self.message = nil
-        }
       }
     })
   }
 
   func loadSurvey(name: String? = nil) {
     guard let name = name ?? surveyName ?? Defaults.surveyName.readString() else {
-      print("SurveyController.drawSurvey(name:): No name given")
-      // No Survey; user can now choose a survey to display/edit
+      message = Message.warning("No survey loaded. Use the menu to select a survey.")
       return
     }
     NSLog("Start load survey \(name)")
@@ -109,6 +157,7 @@ class SurveyController: NSObject, ObservableObject, CLLocationManagerDelegate,
       case .success(let survey):
         self.surveyName = name
         self.survey = survey
+        self.featureNames = survey.config.features.map { $0.name }
         NSLog("Start draw survey")
         // Map draw can take several seconds for a large survey. Fortunately, the map layers can
         // be updated on a background thread, and mapView updates the UI appropriately.
@@ -116,42 +165,23 @@ class SurveyController: NSObject, ObservableObject, CLLocationManagerDelegate,
           self.mapView.draw(survey)
           NSLog("Finish draw survey")
         }
-        self.setPublishedProperties()
         break
       case .failure(let error):
-        print("Error in Survey.load(): \(error)")
+        self.message = Message.error("Error loading survey: \(error)")
         break
       }
     }
-
   }
 
-  func setPublishedProperties() {
-    if let survey = survey {
-      self.featureNames = survey.config.features.map { $0.name }
+  func save(_ survey: Survey?) {
+    do {
+      try survey?.save()
+    } catch {
+      message = Message.error("Unable to save survey: \(error.localizedDescription)")
     }
   }
 
-  func addMissionPropertyAtGps() {
-    print("addMissionPropertyAtGps")
-  }
-
-  func addObservationAtGps(featureIndex: Int) {
-    print("addObservationAtGps for featureIndex \(featureIndex)")
-    if let features = survey?.config.features, featureIndex < features.count {
-      let feature = features[featureIndex]
-      print("addObservationAtGps for \(feature.name)")
-    }
-  }
-
-  func startBackgroundLocations() {
-    //TODO: Stop updating the UI with CoreLocation Updates,
-    // If the survey collects background locations, save them for return to foreground
-  }
-
-  func drawBackgroundLocations() {
-    //TODO: Update the UI with CoreLocation Updates received while in the background
-  }
+  //MARK: - Save/Restore State
 
   func saveState() {
     // To be called when the app goes into the background
@@ -175,9 +205,66 @@ class SurveyController: NSObject, ObservableObject, CLLocationManagerDelegate,
     slideOutMenuWidth = CGFloat(Defaults.slideOutMenuWidth.readDouble())
     slideOutMenuWidth = slideOutMenuWidth < 10.0 ? 300.0 : slideOutMenuWidth
   }
+
+  //MARK: - Background Locations
+
+  var savedLocations = [CLLocation]()
+
+  func startBackgroundLocations() {
+    locationManager.allowsBackgroundLocationUpdates = self.userSettings.backgroundTracklogging && gpsAuthorization == .background
+  }
+
+  func drawBackgroundLocations() {
+    for location in savedLocations {
+      addGpsLocation(location)
+    }
+  }
+
+  //MARK: - Add Graphics
+
+  func addGpsLocation(_ location: CLLocation) {
+    //TODO: validate: timestamp is recent but not too recent, meets accuracy criteria
+    if isInBackground {
+      savedLocations.append(location)
+      return
+    }
+    guard let survey = self.survey, let mission = self.mission else {
+      self.message = Message.error("No active survey. Can't add GPS point.")
+      return
+    }
+    let gpsPoint = GpsPoint.new(in: survey.viewContext)
+    gpsPoint.initializeWith(mission: mission, location: location)
+    self.mapView.addGpsPoint(gpsPoint, to: survey.gpsOverlay)
+  }
+
+  func addMissionPropertyAtGps() {
+    // TODO: Implement
+    print("addMissionPropertyAtGps")
+  }
+
+  func addObservationAtGps(featureIndex: Int) {
+    // TODO: Implement
+    print("addObservationAtGps for featureIndex \(featureIndex)")
+    if let features = survey?.config.features, featureIndex < features.count {
+      let feature = features[featureIndex]
+      print("addObservationAtGps for \(feature.name)")
+    }
+  }
+
 }
 
 //MARK: - Survey Drawing
+
+extension AGSMapView {
+
+  func addGpsPoint(_ gpsPoint: GpsPoint, to overlay: AGSGraphicsOverlay) {
+    if let graphic = gpsPoint.asGraphic {
+      overlay.graphics.add(graphic)
+    }
+    //TODO: Draw tracklog
+  }
+
+}
 
 //TODO: Move to a separate file
 extension String {
@@ -186,11 +273,45 @@ extension String {
   static let layerNameTrackLogs = "TrackLogs"
 }
 
+extension GpsPoint {
+
+  var asGraphic: AGSGraphic? {
+    guard let location = self.location else {
+      return nil
+    }
+    let agsPoint = AGSPoint(clLocationCoordinate2D: location)
+    //TODO: add attributes?
+    return AGSGraphic(geometry: agsPoint, symbol: nil, attributes: nil)
+  }
+}
+
+extension Survey {
+
+  var gpsOverlay: AGSGraphicsOverlay {
+    if let overlay = graphicsLayers[.layerNameGpsPoints] {
+      return overlay
+    }
+    let overlay = AGSGraphicsOverlay()
+    overlay.overlayID = .layerNameGpsPoints
+    overlay.renderer = self.config.mission?.gpsSymbology
+    graphicsLayers[.layerNameGpsPoints] = overlay
+    return overlay
+  }
+
+  var gpsGraphics: [AGSGraphic] {
+    guard let gpsPoints = try? self.viewContext.fetch(GpsPoints.allOrderByTime) else {
+      return []
+    }
+    return gpsPoints.compactMap { $0.asGraphic }
+  }
+
+}
+
 extension AGSMapView {
 
   func draw(_ survey: Survey) {
     self.clearLayers()
-    //self.drawGpsPoints(survey)
+    self.drawGpsPoints(survey)
     self.drawTrackLogs(survey)
     self.drawMissionProperties(survey)
     self.drawFeatures(survey)
@@ -201,19 +322,9 @@ extension AGSMapView {
   }
 
   func drawGpsPoints(_ survey: Survey) {
-    let overlay = AGSGraphicsOverlay()
-    overlay.overlayID = .layerNameGpsPoints
-    overlay.renderer = survey.config.mission?.gpsSymbology
-    if let gpsPoints = try? survey.viewContext.fetch(GpsPoints.allOrderByTime) {
-      overlay.graphics.addObjects(
-        from: gpsPoints.compactMap { gpsPoint in
-          guard let location = gpsPoint.location else { return nil }
-          let agsPoint = AGSPoint(clLocationCoordinate2D: location)
-          //TODO: add attributes?
-          return AGSGraphic(geometry: agsPoint, symbol: nil, attributes: nil)
-        })
-    }
-    self.graphicsOverlays.add(overlay)
+    let gpsOverlay = survey.gpsOverlay
+    gpsOverlay.graphics.addObjects(from: survey.gpsGraphics)
+    self.graphicsOverlays.add(gpsOverlay)
   }
 
   func drawTrackLogs(_ survey: Survey) {
@@ -308,3 +419,73 @@ extension SurveyController {
   }
 
 }
+
+
+//MARK: - CoreLocation Manager Delegate
+
+extension SurveyController {
+
+  func locationManager(_ manager: CLLocationManager, didFailWithError error: Error) {
+    message = Message.warning(error.localizedDescription)
+    //TODO: - Clear when GPS is back
+  }
+
+  func locationManager(
+    _ manager: CLLocationManager,
+    didChangeAuthorization status: CLAuthorizationStatus
+  ) {
+    print("Location Manager Did Change Authorization to: \(status.description)")
+    switch status {
+    case .notDetermined:
+      gpsAuthorization = .unknown
+      break
+    case .authorizedAlways:
+      gpsAuthorization = .background
+      break
+    case .authorizedWhenInUse:
+      gpsAuthorization = .foreground
+      self.userSettings.backgroundTracklogging = false
+      break
+    default:
+      gpsAuthorization = .denied
+      self.userSettings.backgroundTracklogging = false
+      tracklogging = false
+      break
+    }
+  }
+
+  func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
+    for location in locations {
+      //TODO: validate: timestamp is recent but not too recent, meets accuracy criteria
+      addGpsLocation(location)
+    }
+  }
+
+}
+
+// MARK: - CLAuthorizationStatus extension
+
+extension CLAuthorizationStatus: CustomStringConvertible {
+  public var description: String {
+    switch self {
+    case .authorizedAlways: return "Authorized Always"
+    case .authorizedWhenInUse: return "Authorized When In Use"
+    case .denied: return "Denied"
+    case .notDetermined: return "Not Determined"
+    case .restricted: return "Restricted"
+    @unknown default: return "**Unexpected Enum Value**"
+    }
+  }
+}
+
+enum GpsAuthorization {
+  /// Don't bother asking, I know the user doesn't allow GPS Locations.  I will get notified if they change thier mind.
+  case denied
+  /// Authorized to get location in the foreground and background
+  case background
+  /// User has not set a location preference,  I should ask.
+  case unknown
+  /// Only authorized to get location in the foreground
+  case foreground
+}
+

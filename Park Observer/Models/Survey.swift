@@ -16,6 +16,7 @@
 /// The survey object itself is immutable to callers, but it can mutate the metadata in response to
 /// user actions, i.e. export.  Of course the database is mutable.
 
+import ArcGIS
 import CoreData
 
 class Survey {
@@ -32,6 +33,9 @@ class Survey {
   /// The main CoreData context; This context (and the objects it contains) can only be used on the main (UI) thread.
   /// It is backed by a Sqlite3 database on disk.
   let viewContext: NSManagedObjectContext
+
+  //TODO: This does not belong here
+  var graphicsLayers = [String:AGSGraphicsOverlay]()
 
   private init(
     name: String, info: SurveyInfo, config: SurveyProtocol, viewContext: NSManagedObjectContext

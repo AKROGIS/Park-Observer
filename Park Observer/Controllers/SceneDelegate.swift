@@ -49,12 +49,11 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
   }
 
   func sceneWillEnterForeground(_ scene: UIScene) {
-    surveyController.drawBackgroundLocations()
+    surveyController.isInBackground = false
   }
 
   func sceneDidEnterBackground(_ scene: UIScene) {
-    surveyController.saveState()
-    surveyController.startBackgroundLocations()
+    surveyController.isInBackground = true
   }
 
 }
