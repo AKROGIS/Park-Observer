@@ -214,6 +214,7 @@ class SurveyController: NSObject, ObservableObject, CLLocationManagerDelegate,
   private var awaitingAuthorizationForFeatureAtIndex = -1
   private var awaitingLocationForMissionProperty = false
   private var awaitingLocationForFeatureAtIndex = -1
+  private var previousGpsPoint: GpsPoint? = nil
 
   func stopTrackLogging() {
     observing = false
@@ -280,6 +281,8 @@ class SurveyController: NSObject, ObservableObject, CLLocationManagerDelegate,
 
   /// Called by the Core Location Delegate whenever a new (or updated) location is available
   func addGpsLocation(_ location: CLLocation) {
+    //TODO: Simplify
+    //TODO: check if timestamp = previous gps and update
     //TODO: validate: timestamp is recent but not too recent, meets accuracy criteria
     if isInBackground {
       savedLocations.append(location)
@@ -287,14 +290,24 @@ class SurveyController: NSObject, ObservableObject, CLLocationManagerDelegate,
     }
     guard let survey = self.survey, let mission = self.mission else {
       var item = "GPS point"
-      if awaitingLocationForFeatureAtIndex >= 0 { item = "Observation" }
-      if awaitingLocationForMissionProperty { item = "Mission Property" }
-      self.message = Message.error("No active survey. Can't add \(item).")
+      if awaitingLocationForFeatureAtIndex >= 0 {
+        item = "Observation"
+        awaitingLocationForFeatureAtIndex = -1
+      }
+      if awaitingLocationForMissionProperty {
+        item = "Mission Property"
+        awaitingLocationForMissionProperty = false
+      }
+      message = Message.error("No active survey. Can't add \(item).")
       return
     }
     let gpsPoint = GpsPoint.new(in: survey.viewContext)
     gpsPoint.initializeWith(mission: mission, location: location)
-    self.mapView.addGpsPoint(gpsPoint)
+    mapView.addGpsPoint(gpsPoint)
+    if let oldPoint = previousGpsPoint {
+      mapView.addTrackLogSegment(from: oldPoint, to: gpsPoint, observing: observing)
+    }
+    self.previousGpsPoint = gpsPoint
     if awaitingLocationForMissionProperty {
       defer {
         awaitingLocationForMissionProperty = false
@@ -304,7 +317,7 @@ class SurveyController: NSObject, ObservableObject, CLLocationManagerDelegate,
       missionProperty.gpsPoint = gpsPoint
       missionProperty.observing = observing
       //TODO: Add default mission attributes (and edit them in slideout panel)
-      self.mapView.addMissionProperty(missionProperty)
+      mapView.addMissionProperty(missionProperty)
       self.missionProperty = missionProperty
     }
     if awaitingLocationForFeatureAtIndex >= 0 {
@@ -319,7 +332,7 @@ class SurveyController: NSObject, ObservableObject, CLLocationManagerDelegate,
         //TODO: support adhoc and angleDistance locations
         observation.gpsPoint = gpsPoint
         //TODO: Add and edit feature attributes in slideout panel)
-        self.mapView.addFeature(observation, feature: feature, index: index)
+        mapView.addFeature(observation, feature: feature, index: index)
       }
     }
   }
@@ -470,6 +483,19 @@ extension AGSMapView {
   func addMissionProperties(from survey: Survey) {
     let overlay = self.missionPropertyOverlay
     overlay.graphics.addObjects(from: survey.missionPropertyGraphics)
+  }
+
+  func addTrackLogSegment(from point1: GpsPoint, to point2: GpsPoint, observing: Bool) {
+    guard let location1 = point1.location, let location2 = point2.location else {
+      return
+    }
+    let agsPoint1 = AGSPoint(clLocationCoordinate2D: location1)
+    let agsPoint2 = AGSPoint(clLocationCoordinate2D: location2)
+    let polyline = AGSPolyline(points: [agsPoint1, agsPoint2])
+    //TODO: add attributes?
+    let graphic = AGSGraphic(geometry: polyline, symbol: nil, attributes: nil)
+    let overlay = observing ? self.observingOverlay : self.notObservingOverlay
+    overlay.graphics.add(graphic)
   }
 
   func addTrackLogs(from survey: Survey) {
