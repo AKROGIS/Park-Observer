@@ -101,7 +101,7 @@ struct SurveyItemView: View {
         }
         .buttonStyle(BorderlessButtonStyle())
         .disabled(
-          self.isExporting || (surveyController.surveyName == name && surveyController.tracklogging)
+          self.isExporting || (surveyController.surveyName == name && surveyController.trackLogging)
         )
       }
       if errorMessage != nil {

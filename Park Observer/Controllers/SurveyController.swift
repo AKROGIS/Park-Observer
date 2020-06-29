@@ -44,38 +44,24 @@ class SurveyController: NSObject, ObservableObject, CLLocationManagerDelegate,
     }
   }
 
-  @Published var tracklogging = false {
+  @Published var trackLogging = false {
     didSet {
-      if !tracklogging {
-        observing = false
-        locationManager.stopUpdatingLocation()
-        mission = nil
-        save(survey)
+      if trackLogging {
+        startTrackLogging()
       } else {
-        if gpsAuthorization == .unknown {
-          locationManager.requestWhenInUseAuthorization()
-          tracklogging = false
-          //User will have to tap start tracklog button again if they allow locations.
-        }
-        if gpsAuthorization == .foreground || gpsAuthorization == .background {
-          if let context = self.survey?.viewContext {
-            mission = Mission.new(in: context)
-            //TODO: Create a new missionProperty; edit attributes (oh no, I need a gpsPoint)
-            locationManager.startUpdatingLocation()
-          } else {
-            message = Message.error("No survey selected, or survey is corrupt")
-          }
-        }
+        stopTrackLogging()
       }
     }
   }
 
   @Published var observing = false {
     didSet {
-      //TODO: toggle MissionProperty.observing; edit attributes
+      if trackLogging {
+        addMissionPropertyAtGps()
+      }
     }
   }
-  
+
   @Published var slideOutMenuVisible = false
   @Published var slideOutMenuWidth: CGFloat = 300.0
   @Published var message: Message? = nil
@@ -211,7 +197,8 @@ class SurveyController: NSObject, ObservableObject, CLLocationManagerDelegate,
   var savedLocations = [CLLocation]()
 
   func startBackgroundLocations() {
-    locationManager.allowsBackgroundLocationUpdates = self.userSettings.backgroundTracklogging && gpsAuthorization == .background
+    locationManager.allowsBackgroundLocationUpdates =
+      self.userSettings.backgroundTracklogging && gpsAuthorization == .background
   }
 
   func drawBackgroundLocations() {
@@ -220,8 +207,78 @@ class SurveyController: NSObject, ObservableObject, CLLocationManagerDelegate,
     }
   }
 
-  //MARK: - Add Graphics
+  //MARK: - Adding GPS Locations
 
+  private var awaitingAuthorizationForTrackLogging = false
+  private var awaitingAuthorizationForMissionProperty = false
+  private var awaitingAuthorizationForFeatureAtIndex = -1
+  private var awaitingLocationForMissionProperty = false
+  private var awaitingLocationForFeatureAtIndex = -1
+
+  func stopTrackLogging() {
+    observing = false
+    locationManager.stopUpdatingLocation()
+    mission = nil
+    save(survey)
+  }
+
+  func startTrackLogging() {
+    if gpsAuthorization == .unknown {
+      locationManager.requestWhenInUseAuthorization()
+      trackLogging = false
+      awaitingAuthorizationForTrackLogging = true
+      return
+    }
+    if gpsAuthorization == .denied {
+      //TODO: raise alert with option to go to settings.  See Location Button
+      message = Message.info("App is not authorized to obtain your location. Enable in setttings.")
+      trackLogging = false
+      return
+    }
+    if let context = self.survey?.viewContext {
+      mission = Mission.new(in: context)
+      locationManager.startUpdatingLocation()
+      addMissionPropertyAtGps()
+    } else {
+      message = Message.error("No survey selected, or survey is corrupt.")
+    }
+  }
+
+  func addMissionPropertyAtGps() {
+    if gpsAuthorization == .denied {
+      message = Message.error("App is not authorized to obtain your location. Enable in setttings.")
+      return
+    }
+    if gpsAuthorization == .unknown {
+      locationManager.requestWhenInUseAuthorization()
+      awaitingAuthorizationForMissionProperty = true
+      return
+    }
+    awaitingLocationForMissionProperty = true
+    // Cycle the Location Manager to get the current location
+    locationManager.stopUpdatingLocation()
+    locationManager.startUpdatingLocation()
+    // mission property will be added when we the next GPS location
+  }
+
+  func addObservationAtGps(featureIndex: Int) {
+    if gpsAuthorization == .denied {
+      message = Message.error("App is not authorized to obtain your location. Enable in setttings.")
+      return
+    }
+    if gpsAuthorization == .unknown {
+      locationManager.requestWhenInUseAuthorization()
+      awaitingAuthorizationForFeatureAtIndex = featureIndex
+      return
+    }
+    awaitingLocationForFeatureAtIndex = featureIndex
+    // Cycle the Location Manager to get the current location
+    locationManager.stopUpdatingLocation()
+    locationManager.startUpdatingLocation()
+    // feature will be added when we the next GPS location
+  }
+
+  /// Called by the Core Location Delegate whenever a new (or updated) location is available
   func addGpsLocation(_ location: CLLocation) {
     //TODO: validate: timestamp is recent but not too recent, meets accuracy criteria
     if isInBackground {
@@ -229,25 +286,41 @@ class SurveyController: NSObject, ObservableObject, CLLocationManagerDelegate,
       return
     }
     guard let survey = self.survey, let mission = self.mission else {
-      self.message = Message.error("No active survey. Can't add GPS point.")
+      var item = "GPS point"
+      if awaitingLocationForFeatureAtIndex >= 0 { item = "Observation" }
+      if awaitingLocationForMissionProperty { item = "Mission Property" }
+      self.message = Message.error("No active survey. Can't add \(item).")
       return
     }
     let gpsPoint = GpsPoint.new(in: survey.viewContext)
     gpsPoint.initializeWith(mission: mission, location: location)
-    self.mapView.addGpsPoint(gpsPoint, to: survey.gpsOverlay)
-  }
-
-  func addMissionPropertyAtGps() {
-    // TODO: Implement
-    print("addMissionPropertyAtGps")
-  }
-
-  func addObservationAtGps(featureIndex: Int) {
-    // TODO: Implement
-    print("addObservationAtGps for featureIndex \(featureIndex)")
-    if let features = survey?.config.features, featureIndex < features.count {
-      let feature = features[featureIndex]
-      print("addObservationAtGps for \(feature.name)")
+    self.mapView.addGpsPoint(gpsPoint)
+    if awaitingLocationForMissionProperty {
+      defer {
+        awaitingLocationForMissionProperty = false
+      }
+      let missionProperty = MissionProperty.new(in: survey.viewContext)
+      missionProperty.mission = mission
+      missionProperty.gpsPoint = gpsPoint
+      missionProperty.observing = observing
+      //TODO: Add default mission attributes (and edit them in slideout panel)
+      self.mapView.addMissionProperty(missionProperty)
+      self.missionProperty = missionProperty
+    }
+    if awaitingLocationForFeatureAtIndex >= 0 {
+      defer {
+        awaitingLocationForFeatureAtIndex = -1
+      }
+      let index = awaitingLocationForFeatureAtIndex
+      if index < survey.config.features.count {
+        let feature = survey.config.features[index]
+        let observation = Observation.new(feature, in: survey.viewContext)
+        observation.mission = mission
+        //TODO: support adhoc and angleDistance locations
+        observation.gpsPoint = gpsPoint
+        //TODO: Add and edit feature attributes in slideout panel)
+        self.mapView.addFeature(observation, feature: feature, index: index)
+      }
     }
   }
 
@@ -255,23 +328,7 @@ class SurveyController: NSObject, ObservableObject, CLLocationManagerDelegate,
 
 //MARK: - Survey Drawing
 
-extension AGSMapView {
-
-  func addGpsPoint(_ gpsPoint: GpsPoint, to overlay: AGSGraphicsOverlay) {
-    if let graphic = gpsPoint.asGraphic {
-      overlay.graphics.add(graphic)
-    }
-    //TODO: Draw tracklog
-  }
-
-}
-
 //TODO: Move to a separate file
-extension String {
-  static let layerNameGpsPoints = "GpsPoints"
-  static let layerNameMissionProperties = "MissionProperties"
-  static let layerNameTrackLogs = "TrackLogs"
-}
 
 extension GpsPoint {
 
@@ -285,18 +342,31 @@ extension GpsPoint {
   }
 }
 
-extension Survey {
+extension MissionProperty {
 
-  var gpsOverlay: AGSGraphicsOverlay {
-    if let overlay = graphicsLayers[.layerNameGpsPoints] {
-      return overlay
+  var asGraphic: AGSGraphic? {
+    guard let location = self.gpsPoint?.location ?? self.adhocLocation?.location else {
+      return nil
     }
-    let overlay = AGSGraphicsOverlay()
-    overlay.overlayID = .layerNameGpsPoints
-    overlay.renderer = self.config.mission?.gpsSymbology
-    graphicsLayers[.layerNameGpsPoints] = overlay
-    return overlay
+    let agsPoint = AGSPoint(clLocationCoordinate2D: location)
+    //TODO: add attributes?
+    return AGSGraphic(geometry: agsPoint, symbol: nil, attributes: nil)
   }
+}
+
+extension Observation {
+
+  func asGraphic(for feature: Feature) -> AGSGraphic? {
+    guard let location = self.locationOfFeature else {
+      return nil
+    }
+    let agsPoint = AGSPoint(clLocationCoordinate2D: location)
+    let attributes = self.attributes(for: feature)
+    return AGSGraphic(geometry: agsPoint, symbol: nil, attributes: attributes)
+  }
+}
+
+extension Survey {
 
   var gpsGraphics: [AGSGraphic] {
     guard let gpsPoints = try? self.viewContext.fetch(GpsPoints.allOrderByTime) else {
@@ -305,36 +375,106 @@ extension Survey {
     return gpsPoints.compactMap { $0.asGraphic }
   }
 
+  var missionPropertyGraphics: [AGSGraphic] {
+    guard let missionProperties = try? self.viewContext.fetch(MissionProperties.fetchRequest) else {
+      return []
+    }
+    return missionProperties.compactMap { $0.asGraphic }
+  }
+
+  func featureGraphics(for feature: Feature) -> [AGSGraphic] {
+    guard let features = try? self.viewContext.fetch(Observations.fetchAll(for: feature.name))
+    else {
+      return []
+    }
+    return features.compactMap { $0.asGraphic(for: feature) }
+  }
 }
 
 extension AGSMapView {
 
   func draw(_ survey: Survey) {
-    self.clearLayers()
-    self.drawGpsPoints(survey)
-    self.drawTrackLogs(survey)
-    self.drawMissionProperties(survey)
-    self.drawFeatures(survey)
+    self.removeLayers()
+    self.addLayers(for: survey)
+    self.addGpsPoints(from: survey)
+    self.addTrackLogs(from: survey)
+    self.addMissionProperties(from: survey)
+    self.addFeatures(from: survey)
   }
 
-  func clearLayers() {
+  func removeLayers() {
     self.graphicsOverlays.removeAllObjects()
   }
 
-  func drawGpsPoints(_ survey: Survey) {
-    let gpsOverlay = survey.gpsOverlay
-    gpsOverlay.graphics.addObjects(from: survey.gpsGraphics)
-    self.graphicsOverlays.add(gpsOverlay)
+  //IMPORTANT - Keep layer indices consistent with the I create them
+  // the mapView owns the layers, but I need to access them by content/function
+  // There is a overlayID is can set on each layer, but that would require searching
+  // the layer list everytime I added a graphic.  Because I control the order that
+  // layers are added to the map, I can hard code the layer index for fast access.
+
+  func addLayers(for survey: Survey) {
+    let missionRenderers: [AGSRenderer?] = [
+      survey.config.mission?.gpsSymbology,
+      // TODO: Use one layer with a Unique Value Renderer
+      survey.config.mission?.onSymbology,
+      survey.config.mission?.offSymbology,
+      survey.config.mission?.symbology,
+    ]
+    let featureRenderers: [AGSRenderer?] = survey.config.features.map { $0.symbology }
+    for renderer in missionRenderers + featureRenderers {
+      let overlay = AGSGraphicsOverlay()
+      overlay.renderer = renderer
+      self.graphicsOverlays.add(overlay)
+    }
   }
 
-  func drawTrackLogs(_ survey: Survey) {
-    // TODO: Use one layer with a Unique Value Renderer
-    let overlayOn = AGSGraphicsOverlay()
-    overlayOn.overlayID = .layerNameTrackLogs + "On"
-    overlayOn.renderer = survey.config.mission?.onSymbology
-    let overlayOff = AGSGraphicsOverlay()
-    overlayOff.overlayID = .layerNameTrackLogs + "Off"
-    overlayOff.renderer = survey.config.mission?.offSymbology
+  var gpsOverlay: AGSGraphicsOverlay {
+    self.graphicsOverlays[0] as! AGSGraphicsOverlay
+  }
+
+  var observingOverlay: AGSGraphicsOverlay {
+    self.graphicsOverlays[1] as! AGSGraphicsOverlay
+  }
+
+  var notObservingOverlay: AGSGraphicsOverlay {
+    self.graphicsOverlays[2] as! AGSGraphicsOverlay
+  }
+
+  var missionPropertyOverlay: AGSGraphicsOverlay {
+    self.graphicsOverlays[3] as! AGSGraphicsOverlay
+  }
+
+  func featureOverlay(at index: Int) -> AGSGraphicsOverlay {
+    self.graphicsOverlays[4 + index] as! AGSGraphicsOverlay
+  }
+
+  func addGpsPoint(_ gpsPoint: GpsPoint) {
+    if let graphic = gpsPoint.asGraphic {
+      let overlay = self.gpsOverlay
+      overlay.graphics.add(graphic)
+    }
+  }
+
+  func addGpsPoints(from survey: Survey) {
+    let overlay = self.gpsOverlay
+    overlay.graphics.addObjects(from: survey.gpsGraphics)
+  }
+
+  func addMissionProperty(_ missionProperty: MissionProperty) {
+    if let graphic = missionProperty.asGraphic {
+      let overlay = self.missionPropertyOverlay
+      overlay.graphics.add(graphic)
+    }
+  }
+
+  func addMissionProperties(from survey: Survey) {
+    let overlay = self.missionPropertyOverlay
+    overlay.graphics.addObjects(from: survey.missionPropertyGraphics)
+  }
+
+  func addTrackLogs(from survey: Survey) {
+    let overlayOn = self.observingOverlay
+    let overlayOff = self.notObservingOverlay
     if let trackLogs = try? TrackLogs.fetchAll(context: survey.viewContext) {
       for trackLog in trackLogs {
         if let polyline = trackLog.polyline {
@@ -348,46 +488,23 @@ extension AGSMapView {
         }
       }
     }
-    self.graphicsOverlays.add(overlayOn)
-    self.graphicsOverlays.add(overlayOff)
   }
 
-  func drawMissionProperties(_ survey: Survey) {
-    let overlay = AGSGraphicsOverlay()
-    overlay.overlayID = .layerNameMissionProperties
-    overlay.renderer = survey.config.mission?.symbology
-    if let missionProperties = try? survey.viewContext.fetch(MissionProperties.fetchRequest) {
-      overlay.graphics.addObjects(
-        from: missionProperties.compactMap { prop in
-          guard let location = prop.gpsPoint?.location else { return nil }
-          let agsPoint = AGSPoint(clLocationCoordinate2D: location)
-          //TODO: add attributes?
-          return AGSGraphic(geometry: agsPoint, symbol: nil, attributes: nil)
-        })
+  func addFeature(_ observation: Observation, feature: Feature, index: Int) {
+    if let graphic = observation.asGraphic(for: feature) {
+      let overlay = self.featureOverlay(at: index)
+      overlay.graphics.add(graphic)
     }
-    self.graphicsOverlays.add(overlay)
   }
 
-  func drawFeatures(_ survey: Survey) {
-    for feature in survey.config.features {
-      let overlay = AGSGraphicsOverlay()
-      overlay.overlayID = feature.name
-      overlay.renderer = feature.symbology
+  func addFeatures(from survey: Survey) {
+    for (index, feature) in survey.config.features.enumerated() {
+      let overlay = self.featureOverlay(at: index)
       if let labelDef = feature.label?.labelDefinition() {
         overlay.labelDefinitions.add(labelDef)
         overlay.labelsEnabled = true
       }
-      if let observations = try? survey.viewContext.fetch(Observations.fetchAll(for: feature.name))
-      {
-        overlay.graphics.addObjects(
-          from: observations.compactMap { observation in
-            guard let location = observation.locationOfFeature else { return nil }
-            let agsPoint = AGSPoint(clLocationCoordinate2D: location)
-            let attributes = observation.attributes(for: feature)
-            return AGSGraphic(geometry: agsPoint, symbol: nil, attributes: attributes)
-          })
-      }
-      self.graphicsOverlays.add(overlay)
+      overlay.graphics.addObjects(from: survey.featureGraphics(for: feature))
     }
   }
 }
@@ -410,7 +527,6 @@ extension SurveyController {
     return AGSMap(basemap: basemap)
   }
 
-
   private func getEsriBasemap(for name: String) -> AGSMap? {
     guard let basemap = OnlineBaseMaps.esri[name] else {
       return nil
@@ -419,7 +535,6 @@ extension SurveyController {
   }
 
 }
-
 
 //MARK: - CoreLocation Manager Delegate
 
@@ -449,8 +564,20 @@ extension SurveyController {
     default:
       gpsAuthorization = .denied
       self.userSettings.backgroundTracklogging = false
-      tracklogging = false
+      trackLogging = false
       break
+    }
+    if awaitingAuthorizationForTrackLogging {
+      trackLogging = true
+      awaitingAuthorizationForTrackLogging = false
+    }
+    if awaitingAuthorizationForMissionProperty {
+      addMissionPropertyAtGps()
+      awaitingAuthorizationForMissionProperty = false
+    }
+    if awaitingAuthorizationForFeatureAtIndex >= 0 {
+      addObservationAtGps(featureIndex: awaitingAuthorizationForFeatureAtIndex)
+      awaitingAuthorizationForFeatureAtIndex = -1
     }
   }
 
@@ -488,4 +615,3 @@ enum GpsAuthorization {
   /// Only authorized to get location in the foreground
   case foreground
 }
-

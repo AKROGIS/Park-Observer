@@ -25,9 +25,9 @@ struct SurveyControlsView: View {
         Spacer()
 
         Button(action: {
-          self.surveyController.tracklogging.toggle()
+          self.surveyController.trackLogging.toggle()
         }) {
-          Image(systemName: surveyController.tracklogging ? "stop.fill" : "play.fill").font(
+          Image(systemName: surveyController.trackLogging ? "stop.fill" : "play.fill").font(
             .headline)
         }
         .mapButton(darkMode: userSettings.darkMapControls)
@@ -37,7 +37,7 @@ struct SurveyControlsView: View {
         }) {
           Image(systemName: surveyController.observing ? "stop.fill" : "play.fill").font(.headline)
         }
-        .disabled(!self.surveyController.tracklogging)
+        .disabled(!self.surveyController.trackLogging)
         .mapButton(darkMode: userSettings.darkMapControls)
 
         Button(action: {

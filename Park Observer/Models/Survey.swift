@@ -34,9 +34,6 @@ class Survey {
   /// It is backed by a Sqlite3 database on disk.
   let viewContext: NSManagedObjectContext
 
-  //TODO: This does not belong here
-  var graphicsLayers = [String:AGSGraphicsOverlay]()
-
   private init(
     name: String, info: SurveyInfo, config: SurveyProtocol, viewContext: NSManagedObjectContext
   ) {
@@ -294,18 +291,3 @@ extension Survey {
   }
 
 }
-
-
-// TODO: Goes to SurveyController
-
-//MARK: - Adding Features
-
-// Called by user actions (UI thread), or CoreLocation updates
-// Assume for now that CoreLocation updates happen on the UI thread as they also update the map.
-
-//MARK: - Refresh Map
-
-// Grabs all objects in a freshly opened survey to update the map.
-// Loading large surveys takes a few seconds, but it is unclear where the bottleneck is.
-// This might work best if called on as a background task to create the UI data structures
-// Then update the map on the UI thread.
