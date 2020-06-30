@@ -10,9 +10,6 @@ import SwiftUI
 
 class UserSettings: ObservableObject {
 
-  /// Should Park Observer continue to gollect tracklog points when app is not active
-  @Published var backgroundTracklogging = false
-
   /// MapControls can be light (for dark colored maps), or dark (for light maps)
   @Published var darkMapControls = false
 
@@ -41,7 +38,6 @@ class UserSettings: ObservableObject {
   @Published var tracklogIntervalUnits = TracklogIntervalUnits.off
 
   func restoreState() {
-    backgroundTracklogging = Defaults.backgroundTracklogging.readBool()
     darkMapControls = Defaults.darkMapControls.readBool()
     gpsAccuracy = Defaults.gpsAccuracy.readDouble()
     showAlarmClock = Defaults.showAlarmClock.readBool()
@@ -50,7 +46,6 @@ class UserSettings: ObservableObject {
   }
 
   func saveState() {
-    Defaults.backgroundTracklogging.write(backgroundTracklogging)
     Defaults.darkMapControls.write(darkMapControls)
     Defaults.gpsAccuracy.write(gpsAccuracy)
     Defaults.showAlarmClock.write(showAlarmClock)

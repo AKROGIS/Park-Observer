@@ -62,6 +62,14 @@ class SurveyController: NSObject, ObservableObject, CLLocationManagerDelegate,
     }
   }
 
+  @Published var enableBackgroundTrackLogging = false {
+    didSet {
+      if enableBackgroundTrackLogging {
+        locationManager.requestAlwaysAuthorization()
+      }
+    }
+  }
+
   @Published var slideOutMenuVisible = false
   @Published var slideOutMenuWidth: CGFloat = 300.0
   @Published var message: Message? = nil
@@ -183,11 +191,13 @@ class SurveyController: NSObject, ObservableObject, CLLocationManagerDelegate,
     locationButtonController.saveState()
     viewPointController.saveState()
     Defaults.slideOutMenuWidth.write(slideOutMenuWidth)
+    Defaults.backgroundTracklogging.write(enableBackgroundTrackLogging)
     userSettings.saveState()
   }
 
   func restoreState() {
     userSettings.restoreState()
+    enableBackgroundTrackLogging = Defaults.backgroundTracklogging.readBool()
     slideOutMenuWidth = CGFloat(Defaults.slideOutMenuWidth.readDouble())
     slideOutMenuWidth = slideOutMenuWidth < 10.0 ? 300.0 : slideOutMenuWidth
   }
@@ -198,13 +208,14 @@ class SurveyController: NSObject, ObservableObject, CLLocationManagerDelegate,
 
   func startBackgroundLocations() {
     locationManager.allowsBackgroundLocationUpdates =
-      self.userSettings.backgroundTracklogging && gpsAuthorization == .background
+      self.enableBackgroundTrackLogging && gpsAuthorization == .background
   }
 
   func drawBackgroundLocations() {
     for location in savedLocations {
       addGpsLocation(location)
     }
+    savedLocations.removeAll()
   }
 
   //MARK: - Adding GPS Locations
@@ -220,6 +231,7 @@ class SurveyController: NSObject, ObservableObject, CLLocationManagerDelegate,
     observing = false
     locationManager.stopUpdatingLocation()
     mission = nil
+    previousGpsPoint = nil
     save(survey)
   }
 
@@ -585,11 +597,11 @@ extension SurveyController {
       break
     case .authorizedWhenInUse:
       gpsAuthorization = .foreground
-      self.userSettings.backgroundTracklogging = false
+      self.enableBackgroundTrackLogging = false
       break
     default:
       gpsAuthorization = .denied
-      self.userSettings.backgroundTracklogging = false
+      self.enableBackgroundTrackLogging = false
       trackLogging = false
       break
     }

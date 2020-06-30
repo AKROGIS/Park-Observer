@@ -9,6 +9,7 @@
 import SwiftUI
 
 struct UserSettingsView: View {
+  @EnvironmentObject var surveyController: SurveyController
   @EnvironmentObject var userSettings: UserSettings
 
   var body: some View {
@@ -17,11 +18,11 @@ struct UserSettingsView: View {
       Toggle(isOn: $userSettings.darkMapControls) {
         Text("Dark Mode Map Controls")
       }
-      Toggle(isOn: $userSettings.backgroundTracklogging) {
+      Toggle(isOn: $surveyController.enableBackgroundTrackLogging) {
         Text("Tracklog When Not Active")
       }
-      if userSettings.backgroundTracklogging {
-        Text("Warning: App will consume extra battery power when not active").foregroundColor(.red)
+      if surveyController.enableBackgroundTrackLogging {
+        Text("Warning: App will consume extra power when not active").foregroundColor(.red)
           .font(.subheadline)
       }
       Toggle(isOn: $userSettings.showAlarmClock) {
