@@ -204,14 +204,16 @@ class SurveyController: NSObject, ObservableObject, CLLocationManagerDelegate,
 
   //MARK: - Background Locations
 
-  var savedLocations = [CLLocation]()
+  private var savedLocations = [CLLocation]()
 
   func startBackgroundLocations() {
     locationManager.allowsBackgroundLocationUpdates =
-      self.enableBackgroundTrackLogging && gpsAuthorization == .background
+      trackLogging && self.enableBackgroundTrackLogging && gpsAuthorization == .background
+    //print("In background. Locations enabled: \(locationManager.allowsBackgroundLocationUpdates)")
   }
 
   func drawBackgroundLocations() {
+    //print("Drawing \(savedLocations.count) locations collected in the background")
     for location in savedLocations {
       addGpsLocation(location)
     }
@@ -236,6 +238,7 @@ class SurveyController: NSObject, ObservableObject, CLLocationManagerDelegate,
   }
 
   func startTrackLogging() {
+    //TODO: set minimum distance and accuracy standard based on user prefs
     if gpsAuthorization == .unknown {
       locationManager.requestWhenInUseAuthorization()
       trackLogging = false
@@ -294,13 +297,12 @@ class SurveyController: NSObject, ObservableObject, CLLocationManagerDelegate,
   /// Called by the Core Location Delegate whenever a new (or updated) location is available
   func addGpsLocation(_ location: CLLocation) {
     //TODO: Simplify
-    //TODO: check if timestamp = previous gps and update
-    //TODO: validate: timestamp is recent but not too recent, meets accuracy criteria
-    if isInBackground {
-      savedLocations.append(location)
+    //TODO: Skip (aka redundant) if timegap from previous GPS point is too small
+    guard let survey = self.survey else {
+      message = Message.error("No active survey.")
       return
     }
-    guard let survey = self.survey, let mission = self.mission else {
+    guard let mission = self.mission else {
       var item = "GPS point"
       if awaitingLocationForFeatureAtIndex >= 0 {
         item = "Observation"
@@ -310,16 +312,38 @@ class SurveyController: NSObject, ObservableObject, CLLocationManagerDelegate,
         item = "Mission Property"
         awaitingLocationForMissionProperty = false
       }
-      message = Message.error("No active survey. Can't add \(item).")
+      message = Message.error("No active tracklog. Can't add \(item).")
       return
     }
-    let gpsPoint = GpsPoint.new(in: survey.viewContext)
-    gpsPoint.initializeWith(mission: mission, location: location)
-    mapView.addGpsPoint(gpsPoint)
+    var redundant = false
     if let oldPoint = previousGpsPoint {
-      mapView.addTrackLogSegment(from: oldPoint, to: gpsPoint, observing: observing)
+      if location.timestamp == oldPoint.timestamp! {
+        print("New location is redundant")
+        redundant = true
+        if location.horizontalAccuracy < oldPoint.horizontalAccuracy {
+          print("New location is better")
+          //TODO: redraw previous location and tracklog segment ?
+          oldPoint.initializeWith(mission: mission, location: location)
+        }
+      }
     }
-    self.previousGpsPoint = gpsPoint
+    var gpsPoint: GpsPoint
+    if redundant {
+      gpsPoint = previousGpsPoint!
+    } else {
+      if isInBackground {
+        //print("Obtained location \(location) in the background")
+        savedLocations.append(location)
+        return
+      }
+      gpsPoint = GpsPoint.new(in: survey.viewContext)
+      gpsPoint.initializeWith(mission: mission, location: location)
+      mapView.addGpsPoint(gpsPoint)
+      if let oldPoint = previousGpsPoint {
+        mapView.addTrackLogSegment(from: oldPoint, to: gpsPoint, observing: observing)
+      }
+      self.previousGpsPoint = gpsPoint
+    }
     if awaitingLocationForMissionProperty {
       defer {
         awaitingLocationForMissionProperty = false
@@ -621,8 +645,13 @@ extension SurveyController {
 
   func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
     for location in locations {
-      //TODO: validate: timestamp is recent but not too recent, meets accuracy criteria
-      addGpsLocation(location)
+      //TODO: validate: meets accuracy criteria
+      let delta = location.timestamp.distance(to: Date())
+      if delta < 1.0 {
+        addGpsLocation(location)
+      } else {
+        print("skipping stale location. Age: \(delta)")
+      }
     }
   }
 
