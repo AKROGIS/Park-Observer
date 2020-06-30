@@ -9,6 +9,7 @@
 /* Begin PBXBuildFile section */
 		5935172924A68A8800A4CD45 /* OnlineBaseMaps.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5935172824A68A8800A4CD45 /* OnlineBaseMaps.swift */; };
 		5935172B24AAFC3700A4CD45 /* SurveyController+MapViewDrawing.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5935172A24AAFC3700A4CD45 /* SurveyController+MapViewDrawing.swift */; };
+		5935172D24ABC99A00A4CD45 /* MapViewTouchDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5935172C24ABC99A00A4CD45 /* MapViewTouchDelegate.swift */; };
 		5989329B24995A0A00A7C346 /* SurveyControlsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5989329A24995A0A00A7C346 /* SurveyControlsView.swift */; };
 		5989329D24995C7100A7C346 /* ViewModifiers.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5989329C24995C7100A7C346 /* ViewModifiers.swift */; };
 		5989329F2499A71300A7C346 /* SlideOutView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5989329E2499A71300A7C346 /* SlideOutView.swift */; };
@@ -126,6 +127,7 @@
 /* Begin PBXFileReference section */
 		5935172824A68A8800A4CD45 /* OnlineBaseMaps.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnlineBaseMaps.swift; sourceTree = "<group>"; };
 		5935172A24AAFC3700A4CD45 /* SurveyController+MapViewDrawing.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "SurveyController+MapViewDrawing.swift"; sourceTree = "<group>"; };
+		5935172C24ABC99A00A4CD45 /* MapViewTouchDelegate.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MapViewTouchDelegate.swift; sourceTree = "<group>"; };
 		5989329A24995A0A00A7C346 /* SurveyControlsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SurveyControlsView.swift; sourceTree = "<group>"; };
 		5989329C24995C7100A7C346 /* ViewModifiers.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewModifiers.swift; sourceTree = "<group>"; };
 		5989329E2499A71300A7C346 /* SlideOutView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SlideOutView.swift; sourceTree = "<group>"; };
@@ -397,6 +399,7 @@
 			children = (
 				747165EB243C37A800A9C960 /* AppDelegate.swift */,
 				7471664F2447979400A9C960 /* LocationButtonController.swift */,
+				5935172C24ABC99A00A4CD45 /* MapViewTouchDelegate.swift */,
 				747165ED243C37A800A9C960 /* SceneDelegate.swift */,
 				74ABE145248FF0750047017C /* SurveyController.swift */,
 				5935172A24AAFC3700A4CD45 /* SurveyController+MapViewDrawing.swift */,
@@ -669,6 +672,7 @@
 				5989329D24995C7100A7C346 /* ViewModifiers.swift in Sources */,
 				747165EC243C37A800A9C960 /* AppDelegate.swift in Sources */,
 				74D85B64246F354F0091EA8E /* CoreData.swift in Sources */,
+				5935172D24ABC99A00A4CD45 /* MapViewTouchDelegate.swift in Sources */,
 				749DE9B22469CF41003D433A /* FileManagement.swift in Sources */,
 				74A25FC824523381006D82CE /* Dialog.swift in Sources */,
 				7466877224A274FB00A8FEFA /* UserSettingsView.swift in Sources */,

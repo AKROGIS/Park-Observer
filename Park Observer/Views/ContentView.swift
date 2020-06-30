@@ -25,9 +25,9 @@ struct ContentView: View {
         }
       }
       SurveyControlsView().padding(20.0)
-      //FIXME: The SlideOUtView is stealing map touches
       SlideOutView()
     }.environmentObject(surveyController.userSettings)
+      .alert(isPresented: $surveyController.showingAlert) { surveyController.alert! }
   }
 }
 

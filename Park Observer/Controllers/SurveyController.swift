@@ -24,10 +24,9 @@
 import ArcGIS  // For AGSMapView and AGSGeoViewTouchDelegate
 import CoreLocation  // For CLLocationManagerDelegate
 import Foundation  // For NSObject (for delegates)
+import SwiftUI  // For Alert
 
-class SurveyController: NSObject, ObservableObject,
-  AGSGeoViewTouchDelegate
-{
+class SurveyController: NSObject, ObservableObject {
 
   let mapView = AGSMapView()
   var surveyName: String? = nil
@@ -77,6 +76,10 @@ class SurveyController: NSObject, ObservableObject,
   @Published var gpsAuthorization = GpsAuthorization.unknown
   @Published var enableSurveyControls = false
 
+  // TouchDelegate properties
+  @Published var showingAlert = false
+  @Published var alert: Alert? = nil
+
   // I'm not sure this controller should own these other controllers, but it works
   // better than the other options (owned by various views or SceneDelegate).
   // It also simplifies the SceneDelegate, the View environment, and the Views.
@@ -84,6 +87,7 @@ class SurveyController: NSObject, ObservableObject,
   let viewPointController: ViewPointController
   let userSettings = UserSettings()
   let locationManager = CLLocationManager()
+  var touchDelegate: MapViewTouchDelegate? = nil
 
   private var survey: Survey? = nil {
     didSet {
@@ -109,6 +113,8 @@ class SurveyController: NSObject, ObservableObject,
     viewPointController = ViewPointController(mapView: self.mapView)
     super.init()
     locationManager.delegate = self
+    touchDelegate = MapViewTouchDelegate(surveyController: self)
+    self.mapView.touchDelegate = touchDelegate
   }
 
   //MARK: - Load Map/Survey
