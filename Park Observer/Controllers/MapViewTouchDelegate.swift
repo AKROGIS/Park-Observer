@@ -34,24 +34,24 @@ class MapViewTouchDelegate: NSObject, AGSGeoViewTouchDelegate {
 
   private let surveyController: SurveyController
 
-  private var movingGraphic: AGSGraphic? = nil
-
   init(surveyController: SurveyController) {
     self.surveyController = surveyController
     super.init()
   }
 
-  func geoView(_ geoView: AGSGeoView, didTapAtScreenPoint screenPoint: CGPoint, mapPoint: AGSPoint) {
+  func geoView(_ geoView: AGSGeoView, didTapAtScreenPoint screenPoint: CGPoint, mapPoint: AGSPoint)
+  {
 
-    if let graphic = movingGraphic {
+    if surveyController.movingGraphic, let graphic = surveyController.selectedGraphic {
       graphic.move(to: mapPoint)
-      movingGraphic = nil
+      surveyController.selectedGraphic = nil
+      surveyController.movingGraphic = false
     }
 
     geoView.hitTest(at: screenPoint) { foundGraphics in
       switch foundGraphics.count {
       case 0:
-        self.addItem(at: mapPoint)
+        self.surveyController.addObservation(at: mapPoint)
         break
       case 1:
         self.displayInfo(for: foundGraphics[0])
@@ -65,16 +65,16 @@ class MapViewTouchDelegate: NSObject, AGSGeoViewTouchDelegate {
     }
   }
 
-  private func addItem(at mapPoint: AGSPoint) {
-    print("MapViewTouchDelegate.addItem not implemented yet")
-  }
-
   private func displayInfo(for graphic: AGSGraphic) {
-    print("MapViewTouchDelegate.displayInfo not implemented yet")
+    surveyController.selectedGraphic = graphic
+    surveyController.showingObservationDetails = true
+    surveyController.slideOutMenuVisible = true
   }
 
   private func displaySelector(for graphics: [AGSGraphic]) {
-    print("MapViewTouchDelegate.displaySelector not implemented yet")
+    surveyController.selectedGraphics = graphics
+    surveyController.showingObservationSelector = true
+    surveyController.slideOutMenuVisible = true
   }
 
   private func alertTooManyGraphics(count: Int) {
@@ -116,96 +116,16 @@ extension AGSGeoView {
         completion([AGSGraphic]())
         return
       } else if let results = results {
-        //TODO: filter the results to exclude gpsPoints
+        let layersToIgnore: [String] = [
+          .layerNameGpsPoints, .layerNameTrackLogsOn, .layerNameTrackLogsOff
+        ]
         //TODO: if a tracklog is selected, return the related mission property graphic
-        let graphics = results.reduce([AGSGraphic]()) { x, y in x + y.graphics }
+        let graphics = results.reduce([AGSGraphic]()) { x, y in
+          layersToIgnore.contains(y.graphicsOverlay.overlayID) ? x : x + y.graphics
+        }
         completion(graphics)
       }
     }
   }
 
 }
-
-//MARK: - Keep??
-
-/*
-extension MapViewTouchDelegate {
-
-  //   private let calloutDelegate = CalloutDelegate()
-
-  func oldStuff(geoView: AGSGeoView, mapPoint: AGSPoint, screenPoint: CGPoint) {
-    // Force dismiss the callout
-    geoView.callout.dismiss()
-
-    // Move the selected graphic
-    if let graphic = selectedGraphic {
-      graphic.geometry = mapPoint
-      selectedGraphic = nil
-      return
-    }
-    // Hit test for graphic at tap location
-    geoView.identifyGraphicsOverlays(
-      atScreenPoint: screenPoint, tolerance: 22, returnPopupsOnly: false,
-      maximumResultsPerOverlay: 20
-    ) { (results, error) in
-      if let error = error {
-        print("GeoView Identify returned an error: \(error)")
-        return
-      }
-      guard let results = results else {
-        print("GeoView identify returned no results")
-        return
-      }
-      if results.count == 0 {
-        print("Adding a graphic at \(mapPoint)")
-        // Add a layer if one does not exist
-        if geoView.graphicsOverlays.count == 0 {
-          let overlay = AGSGraphicsOverlay()
-          geoView.graphicsOverlays.add(overlay)
-        }
-        // Add a graphic with attributes
-        let graphic = AGSSimplegraphicSymbol(style: .circle, color: .red, size: 20)
-        var attributes = [String: Any]()
-        attributes["timestamp"] = Date()
-        let graphic = AGSGraphic(geometry: mapPoint, symbol: graphic, attributes: attributes)
-        let overlay = geoView.graphicsOverlays[0] as! AGSGraphicsOverlay
-        overlay.graphics.add(graphic)
-        return
-      }
-      if results.count == 1 && results[0].graphics.count == 1 {
-        print("Present callout for graphic at \(mapPoint)")
-        //TODO: Get the user to pick the layer/graphic they want to select
-        let selected = results[0].graphics[0]
-        geoView.callout.delegate = self.calloutDelegate
-        geoView.callout.title = "Timestamp"
-        geoView.callout.detail = "\(selected.attributes["timestamp"]!)"
-        geoView.callout.show(for: selected, tapLocation: mapPoint, animated: true)
-        self.selectedGraphic = selected
-      } else {
-        // Present a navigation list of graphics that were hit
-        for i in (0..<results.count) {
-          print("Found \(results[i].graphics.count) graphics in layer \(i)")
-        }
-      }
-    }
-  }
-}
-
-
-class CalloutDelegate: NSObject, AGSCalloutDelegate {
-
-  func callout(_ callout: AGSCallout, willShowAtMapPoint mapPoint: AGSPoint) -> Bool {
-    print("Callout will show at map point \(mapPoint)")
-    return true
-  }
-
-  func didTapAccessoryButton(for callout: AGSCallout) {
-    callout.dismiss()
-  }
-
-  func callout(_ callout: AGSCallout, willShowFor locationDisplay: AGSLocationDisplay) -> Bool {
-    return false
-  }
-
-}
-*/

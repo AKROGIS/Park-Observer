@@ -8,6 +8,17 @@
 
 import ArcGIS  // for AGSGraphic, AGSPoint, AGSMapView, AGSRenderer, AGSGraphicsOverlay, AGSPolyline
 
+/// Well known layer names
+extension String {
+  static let layerNameGpsPoints = "GpsPoints"
+  static let layerNameMissionProperties = "MissionProperties"
+
+  //TODO: Use a single Tracklogs layer
+  static let layerNameTrackLogsOn = "TrackLogsOn"
+
+  static let layerNameTrackLogsOff = "TrackLogsOff"
+}
+
 extension GpsPoint {
 
   var asGraphic: AGSGraphic? {
@@ -95,16 +106,19 @@ extension AGSMapView {
   // layers are added to the map, I can hard code the layer index for fast access.
 
   func addLayers(for survey: Survey) {
-    let missionRenderers: [AGSRenderer?] = [
-      survey.config.mission?.gpsSymbology,
+    let missionRenderers: [(String, AGSRenderer?)] = [
+      (.layerNameGpsPoints, survey.config.mission?.gpsSymbology),
       // TODO: Use one layer with a Unique Value Renderer
-      survey.config.mission?.onSymbology,
-      survey.config.mission?.offSymbology,
-      survey.config.mission?.symbology,
+      (.layerNameTrackLogsOn, survey.config.mission?.onSymbology),
+      (.layerNameTrackLogsOff, survey.config.mission?.offSymbology),
+      (.layerNameMissionProperties, survey.config.mission?.symbology),
     ]
-    let featureRenderers: [AGSRenderer?] = survey.config.features.map { $0.symbology }
-    for renderer in missionRenderers + featureRenderers {
+    let featureRenderers: [(String, AGSRenderer?)] = survey.config.features.map {
+      ($0.name, $0.symbology)
+    }
+    for (id, renderer) in missionRenderers + featureRenderers {
       let overlay = AGSGraphicsOverlay()
+      overlay.overlayID = id
       overlay.renderer = renderer
       self.graphicsOverlays.add(overlay)
     }

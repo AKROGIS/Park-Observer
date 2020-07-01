@@ -69,7 +69,15 @@ class SurveyController: NSObject, ObservableObject {
     }
   }
 
-  @Published var slideOutMenuVisible = false
+  @Published var slideOutMenuVisible = false {
+    didSet {
+      if !slideOutMenuVisible {
+        showingObservationSelector = false
+        showingObservationDetails = false
+      }
+    }
+  }
+
   @Published var slideOutMenuWidth: CGFloat = 300.0
   @Published var message: Message? = nil
   @Published var featureNames = [String]()
@@ -78,12 +86,19 @@ class SurveyController: NSObject, ObservableObject {
 
   // TouchDelegate properties
   @Published var showingAlert = false
+
   @Published var alert: Alert? = nil
+  @Published var selectedGraphic: AGSGraphic? = nil
+  @Published var selectedGraphics: [AGSGraphic]? = nil
+  @Published var showingObservationDetails = false
+  @Published var showingObservationSelector = false
+  @Published var movingGraphic = false
 
   // I'm not sure this controller should own these other controllers, but it works
   // better than the other options (owned by various views or SceneDelegate).
   // It also simplifies the SceneDelegate, the View environment, and the Views.
   let locationButtonController: LocationButtonController
+
   let viewPointController: ViewPointController
   let userSettings = UserSettings()
   let locationManager = CLLocationManager()
@@ -103,6 +118,7 @@ class SurveyController: NSObject, ObservableObject {
       }
     }
   }
+
   private var mission: Mission? = nil
   private var missionProperty: MissionProperty? = nil
 
@@ -209,6 +225,7 @@ class SurveyController: NSObject, ObservableObject {
   //MARK: - Adding GPS Locations
 
   private var awaitingAuthorizationForTrackLogging = false
+
   private var awaitingAuthorizationForMissionProperty = false
   private var awaitingAuthorizationForFeatureAtIndex = -1
   private var awaitingLocationForMissionProperty = false
@@ -376,6 +393,24 @@ class SurveyController: NSObject, ObservableObject {
     savedLocations.removeAll()
   }
 
+  //MARK: - Adding Map Locationns
+  func addObservation(at mapPoint: AGSPoint) {
+    print("SurveyController.addObservation not implemented yet")
+    //TODO: Implement
+    // save current gps point (if available)
+    // create an adhocLocation from mapPoint, gpsPoint.timestamp ?? now, and current mapReference
+    // make list of map touch features and MP if GPS is not authorized
+    // show feature selector if list.count > 1
+    //  -> layer id, feature id
+    // create an observation (feature or missionProperty)
+    // Add adhocLocation and mission to observation
+    // create a graphic at mapPoint
+    // add observation attributes to graphic
+    // add graphic to correct layer
+    //surveyController.selectedGraphic = graphic
+    //surveyController.showingFeatureDetails = true
+  }
+
 }
 
 //TODO: Move to a separate file
@@ -482,10 +517,13 @@ extension CLAuthorizationStatus: CustomStringConvertible {
 enum GpsAuthorization {
   /// Don't bother asking, I know the user doesn't allow GPS Locations.  I will get notified if they change thier mind.
   case denied
+
   /// Authorized to get location in the foreground and background
   case background
+
   /// User has not set a location preference,  I should ask.
   case unknown
+
   /// Only authorized to get location in the foreground
   case foreground
 }
