@@ -34,4 +34,14 @@ struct EditableObservation {
     self.object = object
     self.timestamp = timestamp ?? Date()
   }
+
+  var description: String {
+    if let name = fields.first(where: { $0.type == .id })?.name {
+      if let id = object?.value(forKey: .attributePrefix + name) as? Int {
+        return "\(self.name) #\(id)"
+      }
+    }
+    return name
+  }
+
 }

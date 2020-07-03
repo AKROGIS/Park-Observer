@@ -29,8 +29,14 @@ struct ObservationDetailsView: View {
   @State private var item = EditableObservation()
 
   var body: some View {
-    VStack {
+    VStack(alignment: .leading) {
+      Text(item.description).font(.title)
       Form {
+        VStack(alignment: .leading) {
+          Text("Observed")
+          Text(item.timestamp.shortDateMediumTime)
+            .font(.footnote).foregroundColor(.secondary)
+        }
         ForEach(item.fields, id: \.name) { field in
           //TODO: Format based on field.type and self.item.dialog
           VStack(alignment: .leading) {
@@ -48,7 +54,7 @@ struct ObservationDetailsView: View {
         .font(.footnote).foregroundColor(.secondary)
         .padding()
     }
-    .navigationBarTitle(item.name)
+    .navigationBarTitle(item.description)
   }
 
   func value(_ field: Attribute) -> String {
@@ -78,8 +84,8 @@ struct ObservationSelectorView: View {
         ForEach(surveyController.selectedItems ?? [], id: \.timestamp) { item in
           NavigationLink(destination: ObservationDetailsView(item1: item)) {
             VStack(alignment: .leading) {
-              Text(item.name)
-              Text("at \(item.timestamp)")
+              Text(item.description)
+              Text(item.timestamp.shortDateMediumTime)
                 .font(.footnote).foregroundColor(.secondary)
             }
           }
@@ -89,6 +95,7 @@ struct ObservationSelectorView: View {
     }
     .navigationViewStyle(StackNavigationViewStyle())
   }
+
 }
 
 struct ObservationSelectorView_Previews: PreviewProvider {

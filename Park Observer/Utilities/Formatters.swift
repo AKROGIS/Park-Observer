@@ -43,12 +43,36 @@ fileprivate class DateFormattingHelper {
     return dateFormatter
   }()
 
+  private let shortDateFormatter: DateFormatter = {
+    let dateFormatter = DateFormatter()
+    dateFormatter.locale = Locale.current
+    dateFormatter.dateStyle = .short
+    dateFormatter.timeStyle = .none
+    return dateFormatter
+  }()
+
+  private let mediumTimeFormatter: DateFormatter = {
+    let dateFormatter = DateFormatter()
+    dateFormatter.locale = Locale.current
+    dateFormatter.dateStyle = .none
+    dateFormatter.timeStyle = .medium
+    return dateFormatter
+  }()
+
   func formatUtcIso(_ date: Date) -> String {
     return utcIsoDateFormatter.string(from: date)
   }
 
   func formatLocalIso(_ date: Date) -> String {
     return localIsoDateFormatter.string(from: date)
+  }
+
+  func formatShortDate(_ date: Date) -> String {
+    return shortDateFormatter.string(from: date)
+  }
+
+  func formatMediumTime(_ date: Date) -> String {
+    return mediumTimeFormatter.string(from: date)
   }
 
 }
@@ -88,4 +112,9 @@ extension Date {
     return DateFormattingHelper.shared.formatLocalIso(self)
   }
 
+  var shortDateMediumTime: String {
+    let date = DateFormattingHelper.shared.formatShortDate(self)
+    let time = DateFormattingHelper.shared.formatMediumTime(self)
+    return "At \(time) on \(date)"
+  }
 }
