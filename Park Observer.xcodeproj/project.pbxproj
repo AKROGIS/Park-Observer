@@ -10,6 +10,7 @@
 		5935172924A68A8800A4CD45 /* OnlineBaseMaps.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5935172824A68A8800A4CD45 /* OnlineBaseMaps.swift */; };
 		5935172B24AAFC3700A4CD45 /* SurveyController+MapViewDrawing.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5935172A24AAFC3700A4CD45 /* SurveyController+MapViewDrawing.swift */; };
 		5935172D24ABC99A00A4CD45 /* MapViewTouchDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5935172C24ABC99A00A4CD45 /* MapViewTouchDelegate.swift */; };
+		596638DE24AEC1E8006D2C29 /* EditableObservation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 596638DD24AEC1E8006D2C29 /* EditableObservation.swift */; };
 		5989329B24995A0A00A7C346 /* SurveyControlsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5989329A24995A0A00A7C346 /* SurveyControlsView.swift */; };
 		5989329D24995C7100A7C346 /* ViewModifiers.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5989329C24995C7100A7C346 /* ViewModifiers.swift */; };
 		5989329F2499A71300A7C346 /* SlideOutView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5989329E2499A71300A7C346 /* SlideOutView.swift */; };
@@ -128,6 +129,7 @@
 		5935172824A68A8800A4CD45 /* OnlineBaseMaps.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnlineBaseMaps.swift; sourceTree = "<group>"; };
 		5935172A24AAFC3700A4CD45 /* SurveyController+MapViewDrawing.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "SurveyController+MapViewDrawing.swift"; sourceTree = "<group>"; };
 		5935172C24ABC99A00A4CD45 /* MapViewTouchDelegate.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MapViewTouchDelegate.swift; sourceTree = "<group>"; };
+		596638DD24AEC1E8006D2C29 /* EditableObservation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EditableObservation.swift; sourceTree = "<group>"; };
 		5989329A24995A0A00A7C346 /* SurveyControlsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SurveyControlsView.swift; sourceTree = "<group>"; };
 		5989329C24995C7100A7C346 /* ViewModifiers.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewModifiers.swift; sourceTree = "<group>"; };
 		5989329E2499A71300A7C346 /* SlideOutView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SlideOutView.swift; sourceTree = "<group>"; };
@@ -366,6 +368,7 @@
 			isa = PBXGroup;
 			children = (
 				74D85B3F246F1E8B0091EA8E /* CoreData */,
+				596638DD24AEC1E8006D2C29 /* EditableObservation.swift */,
 				5935172824A68A8800A4CD45 /* OnlineBaseMaps.swift */,
 				74A25FC4245232F1006D82CE /* Survey Protocol */,
 				74D85B6A2472EEC30091EA8E /* Survey.swift */,
@@ -712,6 +715,7 @@
 				7466877024A265D500A8FEFA /* OnlineMapListView.swift in Sources */,
 				744C9B3A24760A700099D414 /* Formatters.swift in Sources */,
 				74D85B58246F1EB60091EA8E /* ObserverModel.xcdatamodeld in Sources */,
+				596638DE24AEC1E8006D2C29 /* EditableObservation.swift in Sources */,
 				74A25FBB2451F33F006D82CE /* SurveyProtocol.swift in Sources */,
 				74167998247DB86300FF353C /* TrackLogs.swift in Sources */,
 				74D85B66246F3AE90091EA8E /* EntityNames.swift in Sources */,

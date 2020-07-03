@@ -62,6 +62,29 @@ extension MissionProperties {
   static var fetchRequest: NSFetchRequest<MissionProperty> {
     return NSFetchRequest<MissionProperty>(entityName: .entityNameMissionProperty)
   }
+}
+
+extension MissionProperty {
+
+  static func fetchFirst(at timestamp: Date, in context: NSManagedObjectContext) -> MissionProperty?
+  {
+    let request = MissionProperties.fetchRequest
+    request.predicate = NSPredicate.observationFilter(timestamp: timestamp)
+    return (try? context.fetch(request))?.first
+  }
 
 }
 
+// MARK: - Computed Properties
+
+extension MissionProperty {
+
+  var timestamp: Date? {
+    return gpsPoint?.timestamp ?? adhocLocation?.timestamp
+  }
+
+  var location: Location? {
+    return gpsPoint?.location ?? adhocLocation?.location
+  }
+
+}

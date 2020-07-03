@@ -11,12 +11,17 @@ import ArcGIS  // for AGSGraphic, AGSPoint, AGSMapView, AGSRenderer, AGSGraphics
 /// Well known layer names
 extension String {
   static let layerNameGpsPoints = "GpsPoints"
-  static let layerNameMissionProperties = "MissionProperties"
-
+  static let layerNameMissionProperties = "Mission Properties"
   //TODO: Use a single Tracklogs layer
   static let layerNameTrackLogsOn = "TrackLogsOn"
-
   static let layerNameTrackLogsOff = "TrackLogsOff"
+}
+
+/// Keys for values in the graphic attributes
+extension String {
+  // Strings must avoid conflicts with user attributes and
+  static let attributeKeyTimestamp = "_timestamp_"  // Avoid conflicts with user attributes
+  static let attributeKeyObserving = "observing"  // Needs to match renderer definition
 }
 
 extension GpsPoint {
@@ -26,7 +31,7 @@ extension GpsPoint {
       return nil
     }
     let agsPoint = AGSPoint(clLocationCoordinate2D: location)
-    //TODO: add attributes?
+    //TODO: if renderer is unique value or class break, then include rendering fields in attributes
     return AGSGraphic(geometry: agsPoint, symbol: nil, attributes: nil)
   }
 
@@ -35,12 +40,18 @@ extension GpsPoint {
 extension MissionProperty {
 
   var asGraphic: AGSGraphic? {
-    guard let location = self.gpsPoint?.location ?? self.adhocLocation?.location else {
+    // Use the timestamp to lookup the MissionProperty on any thread
+    guard let location = self.location else {
+      print("Cannot draw graphic; MissionProperty has no location")
       return nil
     }
     let agsPoint = AGSPoint(clLocationCoordinate2D: location)
-    //TODO: add attributes?
-    return AGSGraphic(geometry: agsPoint, symbol: nil, attributes: nil)
+    //TODO: if renderer is unique value or class break, then include rendering fields in attributes
+    var attributes = [String: Any]()
+    if let timestamp = self.timestamp {
+      attributes[.attributeKeyTimestamp] = timestamp
+    }
+    return AGSGraphic(geometry: agsPoint, symbol: nil, attributes: attributes)
   }
 
 }
@@ -48,11 +59,16 @@ extension MissionProperty {
 extension Observation {
 
   func asGraphic(for feature: Feature) -> AGSGraphic? {
+    // Use the timestamp to lookup the MissionProperty on any thread
     guard let location = self.locationOfFeature else {
+      print("Cannot draw graphic; Observation has no location")
       return nil
     }
     let agsPoint = AGSPoint(clLocationCoordinate2D: location)
-    let attributes = self.attributes(for: feature)
+    var attributes = self.attributes(for: feature)
+    if let timestamp = self.timestamp {
+      attributes[.attributeKeyTimestamp] = timestamp
+    }
     return AGSGraphic(geometry: agsPoint, symbol: nil, attributes: attributes)
   }
 
@@ -99,11 +115,11 @@ extension AGSMapView {
     self.graphicsOverlays.removeAllObjects()
   }
 
-  //IMPORTANT - Keep layer indices consistent with the I create them
-  // the mapView owns the layers, but I need to access them by content/function
-  // There is a overlayID is can set on each layer, but that would require searching
+  //IMPORTANT - Keep layer indices consistent with the order they are added to mapView!
+  // The mapView owns the layers, but I need to access them by content/function
+  // There is a overlayID I can set on each layer, but that would require searching
   // the layer list everytime I added a graphic.  Because I control the order that
-  // layers are added to the map, I can hard code the layer index for fast access.
+  // layers are added to the map, so I can hard code the layer index for fast access.
 
   func addLayers(for survey: Survey) {
     let missionRenderers: [(String, AGSRenderer?)] = [
@@ -175,8 +191,10 @@ extension AGSMapView {
     let agsPoint1 = AGSPoint(clLocationCoordinate2D: location1)
     let agsPoint2 = AGSPoint(clLocationCoordinate2D: location2)
     let polyline = AGSPolyline(points: [agsPoint1, agsPoint2])
-    //TODO: add attributes?
-    let graphic = AGSGraphic(geometry: polyline, symbol: nil, attributes: nil)
+    var attributes = [String: Any]()
+    attributes[.attributeKeyObserving] = observing
+    //TODO: if renderer is unique value or class break, then include rendering fields in attributes
+    let graphic = AGSGraphic(geometry: polyline, symbol: nil, attributes: attributes)
     let overlay = observing ? self.observingOverlay : self.notObservingOverlay
     overlay.graphics.add(graphic)
   }
@@ -187,8 +205,12 @@ extension AGSMapView {
     if let trackLogs = try? TrackLogs.fetchAll(context: survey.viewContext) {
       for trackLog in trackLogs {
         if let polyline = trackLog.polyline {
-          let graphic = AGSGraphic(geometry: polyline, symbol: nil, attributes: nil)
-          //TODO: add attributes?
+          var attributes = [String: Any]()
+          if let observing = trackLog.properties.observing {
+            attributes[.attributeKeyObserving] = observing
+          }
+          //TODO: if renderer is unique value or class break, then include rendering fields in attributes
+          let graphic = AGSGraphic(geometry: polyline, symbol: nil, attributes: attributes)
           if let observing = trackLog.properties.observing, observing {
             overlayOn.graphics.add(graphic)
           } else {

@@ -90,6 +90,9 @@ class SurveyController: NSObject, ObservableObject {
   @Published var alert: Alert? = nil
   @Published var selectedGraphic: AGSGraphic? = nil
   @Published var selectedGraphics: [AGSGraphic]? = nil
+  @Published var selectedItem: EditableObservation? = nil
+  @Published var selectedItems: [EditableObservation]? = nil
+
   @Published var showingObservationDetails = false
   @Published var showingObservationSelector = false
   @Published var movingGraphic = false
@@ -411,6 +414,54 @@ class SurveyController: NSObject, ObservableObject {
     //surveyController.showingFeatureDetails = true
   }
 
+}
+
+//MARK: - Attribute Form Support
+
+extension SurveyController {
+
+  func editableObservation(for graphic: AGSGraphic? = nil) -> EditableObservation {
+
+    guard let graphic = graphic ?? selectedGraphic else {
+      print("No graphic found for SurveyController.editableObservation(for:)")
+      return EditableObservation()
+    }
+    guard let name = graphic.graphicsOverlay?.overlayID else {
+      print("No name found for graphic's layer in SurveyController.editableObservation(for:)")
+      return EditableObservation(graphic: graphic)
+    }
+    var fields: [Attribute]? = nil
+    var dialog: Dialog? = nil
+    if name == .layerNameMissionProperties {
+      fields = survey?.config.mission?.attributes
+      dialog = survey?.config.mission?.dialog
+    } else {
+      for feature in survey?.config.features ?? [Feature]() {
+        if feature.name == name {
+          fields = feature.attributes
+          dialog = feature.dialog
+        }
+      }
+    }
+    guard let timestamp = graphic.attributes[String.attributeKeyTimestamp] as? Date else {
+      print("No timestamp found for graphic in SurveyController.editableObservation(for:)")
+      return EditableObservation(dialog: dialog, fields: fields, graphic: graphic, name: name)
+    }
+
+    var item = EditableObservation(
+      dialog: dialog, fields: fields, graphic: graphic, name: name, timestamp: timestamp)
+
+    guard let context = survey?.viewContext else {
+      print("No coredata context found in SurveyController.editableObservation(for:)")
+      return item
+    }
+    if name == .layerNameMissionProperties {
+      item.object = MissionProperty.fetchFirst(at: timestamp, in: context)
+    } else {
+      item.object = Observation.fetchFirst(name, at: timestamp, in: context)
+    }
+    return item
+  }
 }
 
 //TODO: Move to a separate file

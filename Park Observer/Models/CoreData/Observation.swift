@@ -48,6 +48,31 @@ extension Observations {
 
 }
 
+extension Observation {
+
+  static func fetchFirst(_ name: String, at timestamp: Date, in context: NSManagedObjectContext)
+    -> Observation?
+  {
+    let request = Observations.fetchAll(for: name)
+    request.predicate = NSPredicate.observationFilter(timestamp: timestamp)
+    return (try? context.fetch(request))?.first
+  }
+
+}
+
+extension NSPredicate {
+
+  static func observationFilter(timestamp: Date) -> NSPredicate {
+    let filter =
+      "(%@ <= gpsPoint.timestamp AND gpsPoint.timestamp <= %@) OR (%@ <= adhocLocation.timestamp AND adhocLocation.timestamp <= %@)"
+    let start = timestamp.addingTimeInterval(-0.001)
+    let end = timestamp.addingTimeInterval(+0.001)
+    return NSPredicate(
+      format: filter, start as CVarArg, end as CVarArg, start as CVarArg, end as CVarArg)
+  }
+
+}
+
 // MARK: - Computed Properties
 
 extension Observation {
