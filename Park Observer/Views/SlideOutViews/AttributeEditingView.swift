@@ -22,7 +22,9 @@ struct AttributeEditingView_Previews: PreviewProvider {
 }
 
 struct ObservationDetailsView: View {
-  var graphic: AGSGraphic? = nil
+  //TODO: Figure out a better way ro initialize the view with either
+  //an intialization argument, or a published value on @EnvironmentObject
+  var item1: EditableObservation? = nil
   @EnvironmentObject var surveyController: SurveyController
   @State private var item = EditableObservation()
 
@@ -39,9 +41,7 @@ struct ObservationDetailsView: View {
         }
       }
       .onAppear {
-        //TODO: These calls should be combined to return one struct
-        self.item = self.surveyController.editableObservation(for: self.graphic)
-
+        self.item = self.surveyController.editableObservation(for: self.item1?.graphic)
       }
       Spacer()
       Text("Footer")
@@ -75,9 +75,13 @@ struct ObservationSelectorView: View {
   var body: some View {
     NavigationView {
       List {
-        ForEach(surveyController.selectedGraphics ?? [], id: \.self) { graphic in
-          NavigationLink(destination: ObservationDetailsView(graphic: graphic)) {
-            Text(graphic.graphicsOverlay?.overlayID ?? "Unknown")
+        ForEach(surveyController.selectedItems ?? [], id: \.timestamp) { item in
+          NavigationLink(destination: ObservationDetailsView(item1: item)) {
+            VStack(alignment: .leading) {
+              Text(item.name)
+              Text("at \(item.timestamp)")
+                .font(.footnote).foregroundColor(.secondary)
+            }
           }
         }
       }

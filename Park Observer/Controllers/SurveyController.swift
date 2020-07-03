@@ -88,8 +88,6 @@ class SurveyController: NSObject, ObservableObject {
   @Published var showingAlert = false
 
   @Published var alert: Alert? = nil
-  @Published var selectedGraphic: AGSGraphic? = nil
-  @Published var selectedGraphics: [AGSGraphic]? = nil
   @Published var selectedItem: EditableObservation? = nil
   @Published var selectedItems: [EditableObservation]? = nil
 
@@ -422,9 +420,9 @@ extension SurveyController {
 
   func editableObservation(for graphic: AGSGraphic? = nil) -> EditableObservation {
 
-    guard let graphic = graphic ?? selectedGraphic else {
-      print("No graphic found for SurveyController.editableObservation(for:)")
-      return EditableObservation()
+    guard let graphic = graphic else {
+      print("No graphic provided to SurveyController.editableObservation(for:)")
+      return self.selectedItem ?? EditableObservation()
     }
     guard let name = graphic.graphicsOverlay?.overlayID else {
       print("No name found for graphic's layer in SurveyController.editableObservation(for:)")

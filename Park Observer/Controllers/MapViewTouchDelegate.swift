@@ -42,9 +42,9 @@ class MapViewTouchDelegate: NSObject, AGSGeoViewTouchDelegate {
   func geoView(_ geoView: AGSGeoView, didTapAtScreenPoint screenPoint: CGPoint, mapPoint: AGSPoint)
   {
 
-    if surveyController.movingGraphic, let graphic = surveyController.selectedGraphic {
+    if surveyController.movingGraphic, let graphic = surveyController.selectedItem?.graphic {
       graphic.move(to: mapPoint)
-      surveyController.selectedGraphic = nil
+      surveyController.selectedItem = nil
       surveyController.movingGraphic = false
     }
 
@@ -66,13 +66,15 @@ class MapViewTouchDelegate: NSObject, AGSGeoViewTouchDelegate {
   }
 
   private func displayInfo(for graphic: AGSGraphic) {
-    surveyController.selectedGraphic = graphic
+    surveyController.selectedItem = surveyController.editableObservation(for: graphic)
     surveyController.showingObservationDetails = true
     surveyController.slideOutMenuVisible = true
   }
 
   private func displaySelector(for graphics: [AGSGraphic]) {
-    surveyController.selectedGraphics = graphics
+    surveyController.selectedItems = graphics.map {
+      surveyController.editableObservation(for: $0)
+    }
     surveyController.showingObservationSelector = true
     surveyController.slideOutMenuVisible = true
   }
