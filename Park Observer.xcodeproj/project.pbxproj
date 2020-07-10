@@ -11,6 +11,8 @@
 		5935172B24AAFC3700A4CD45 /* SurveyController+MapViewDrawing.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5935172A24AAFC3700A4CD45 /* SurveyController+MapViewDrawing.swift */; };
 		5935172D24ABC99A00A4CD45 /* MapViewTouchDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5935172C24ABC99A00A4CD45 /* MapViewTouchDelegate.swift */; };
 		596638DE24AEC1E8006D2C29 /* EditableObservation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 596638DD24AEC1E8006D2C29 /* EditableObservation.swift */; };
+		596638E024B7E67B006D2C29 /* FormView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 596638DF24B7E67B006D2C29 /* FormView.swift */; };
+		596638E224B7E6D1006D2C29 /* ObservationForm.swift in Sources */ = {isa = PBXBuildFile; fileRef = 596638E124B7E6D1006D2C29 /* ObservationForm.swift */; };
 		5989329B24995A0A00A7C346 /* SurveyControlsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5989329A24995A0A00A7C346 /* SurveyControlsView.swift */; };
 		5989329D24995C7100A7C346 /* ViewModifiers.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5989329C24995C7100A7C346 /* ViewModifiers.swift */; };
 		5989329F2499A71300A7C346 /* SlideOutView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5989329E2499A71300A7C346 /* SlideOutView.swift */; };
@@ -130,6 +132,8 @@
 		5935172A24AAFC3700A4CD45 /* SurveyController+MapViewDrawing.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "SurveyController+MapViewDrawing.swift"; sourceTree = "<group>"; };
 		5935172C24ABC99A00A4CD45 /* MapViewTouchDelegate.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MapViewTouchDelegate.swift; sourceTree = "<group>"; };
 		596638DD24AEC1E8006D2C29 /* EditableObservation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EditableObservation.swift; sourceTree = "<group>"; };
+		596638DF24B7E67B006D2C29 /* FormView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FormView.swift; sourceTree = "<group>"; };
+		596638E124B7E6D1006D2C29 /* ObservationForm.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ObservationForm.swift; sourceTree = "<group>"; };
 		5989329A24995A0A00A7C346 /* SurveyControlsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SurveyControlsView.swift; sourceTree = "<group>"; };
 		5989329C24995C7100A7C346 /* ViewModifiers.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewModifiers.swift; sourceTree = "<group>"; };
 		5989329E2499A71300A7C346 /* SlideOutView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SlideOutView.swift; sourceTree = "<group>"; };
@@ -257,6 +261,7 @@
 				59BA0ECC24A510B800CA6EF2 /* AttributeEditingView.swift */,
 				59BA0ECA24A50FC700CA6EF2 /* FileItemView.swift */,
 				59BA0EC824A50F6300CA6EF2 /* FileListView.swift */,
+				596638DF24B7E67B006D2C29 /* FormView.swift */,
 				598932A02499DE6900A7C346 /* MainMenuView.swift */,
 				7466876F24A265D500A8FEFA /* OnlineMapListView.swift */,
 				5989329E2499A71300A7C346 /* SlideOutView.swift */,
@@ -369,6 +374,7 @@
 			children = (
 				74D85B3F246F1E8B0091EA8E /* CoreData */,
 				596638DD24AEC1E8006D2C29 /* EditableObservation.swift */,
+				596638E124B7E6D1006D2C29 /* ObservationForm.swift */,
 				5935172824A68A8800A4CD45 /* OnlineBaseMaps.swift */,
 				74A25FC4245232F1006D82CE /* Survey Protocol */,
 				74D85B6A2472EEC30091EA8E /* Survey.swift */,
@@ -667,6 +673,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				596638E224B7E6D1006D2C29 /* ObservationForm.swift in Sources */,
 				5989329B24995A0A00A7C346 /* SurveyControlsView.swift in Sources */,
 				74716633243E5B4300A9C960 /* LocationButtonView.swift in Sources */,
 				7471664E2447917D00A9C960 /* Defaults.swift in Sources */,
@@ -683,6 +690,7 @@
 				7466877424A27C4B00A8FEFA /* UserSettings.swift in Sources */,
 				74D85B56246F1EB60091EA8E /* MapReference.swift in Sources */,
 				74716629243C487300A9C960 /* MapView.swift in Sources */,
+				596638E024B7E67B006D2C29 /* FormView.swift in Sources */,
 				7471663C243E858700A9C960 /* CompassView.swift in Sources */,
 				7471663E243E859A00A9C960 /* ScalebarView.swift in Sources */,
 				747165EE243C37A800A9C960 /* SceneDelegate.swift in Sources */,
