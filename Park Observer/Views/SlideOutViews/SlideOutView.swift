@@ -28,6 +28,8 @@ struct SlideOutView: View {
         HStack(spacing: 0) {
           if self.surveyController.showingObservationDetails {
             ObservationDetailsView()
+          } else if self.surveyController.showingObservationEditor {
+            ObservationEditorView()
           } else if self.surveyController.showingObservationSelector {
             ObservationSelectorView()
           } else {

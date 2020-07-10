@@ -9,72 +9,23 @@
 import SwiftUI
 
 struct FormView: View {
-  let data: FormData
+  let form: ObservationForm
 
   var body: some View {
-    let te1 = ToggleElement(label: "Toggle #1", key: "toggle1", data: data)
-    let te2 = ToggleElement(label: "Toggle #2", key: "toggle2", data: data)
-    let l1 = LabelElement(label: "Label #1")
-    let l2 = LabelElement(label: "Label #2")
-    let i1 = IntElement(
-      label: nil, placeholder: "Quantity 0..5", showStepper: true, range: 0...5, key: "int1",
-      data: data)
-    let i2 = IntElement(
-      label: "Count", placeholder: "ph", showStepper: false, range: Int(Int32.min)...Int(Int32.max),
-      key: "int2", data: data)
-    let d1 = DoubleElement(
-      label: nil, placeholder: "Temp °C: -40.00..+40.00", range: -40.0...40.0, decimals: 2,
-      key: "double1", data: data)
-    let d2 = DoubleElement(
-      label: "Temp", placeholder: "°F",
-      range: -1 * Double.greatestFiniteMagnitude...Double.greatestFiniteMagnitude, decimals: nil,
-      key: "double2", data: data)
-    let tf1 = TextElement(
-      label: nil, placeholder: "Enter Text", keyboard: .emailAddress,
-      autoCapitalization: .allCharacters, disableAutoCorrect: false, lines: 1, key: "text1",
-      data: data)
-    let tf2 = TextElement(
-      label: "Name:", placeholder: "", keyboard: .default, autoCapitalization: .words,
-      disableAutoCorrect: true, lines: 1, key: "text2", data: data)
-    let tf3 = TextElement(
-      label: nil, placeholder: "Comments", keyboard: .default, autoCapitalization: .none,
-      disableAutoCorrect: false, lines: 5, key: "text3", data: data)
-    let tf4 = TextElement(
-      label: "Comments:", placeholder: "", keyboard: .default, autoCapitalization: .sentences,
-      disableAutoCorrect: false, lines: 5, key: "text4", data: data)
-    let p1a = PickerElement(
-      segmentedStyle: false, label: "Size", choices: ["Small", "Medium", "Large"],
-      saveAsText: false, key: "pickerInt1", data: data)
-    let p1b = PickerElement(
-      segmentedStyle: false, label: "Color", choices: ["Red", "Green", "Blue"], saveAsText: true,
-      key: "pickerText1", data: data)
-    let p2a = PickerElement(
-      segmentedStyle: true, label: "Size", choices: ["Small", "Medium", "Large"], saveAsText: false,
-      key: "pickerInt2", data: data)
-    let p2b = PickerElement(
-      segmentedStyle: true, label: "Color", choices: ["Red", "Green", "Blue"], saveAsText: true,
-      key: "pickerText2", data: data)
-    let s1 = FormSection(
-      header: nil, footer: "foot note", elements: [p2a, p2b, l2, te2, tf2, i2, d2, tf4])
-    let s2 = FormSection(
-      header: "HEADER", footer: "another footer", elements: [p1a, p1b, te1, l1, tf1, i1, d1, tf3])
-    let o = ObservationForm(title: "Title", sections: [s2, s1])
-
-    return NavigationView {
-      Form {
-        ForEach(o.sections) { section in
-          Section(
-            header: OptionalTextView(section.header),
-            footer: OptionalTextView(section.footer)
-          ) {
-            ForEach(section.elements, id: \.id) { element in
-              self.build(element)
-            }
+    // Must be embedded in a Navigation view for the picker to work
+    Form {
+      ForEach(form.sections) { section in
+        Section(
+          header: OptionalTextView(section.header),
+          footer: OptionalTextView(section.footer)
+        ) {
+          ForEach(section.elements, id: \.id) { element in
+            self.build(element)
           }
         }
       }
-      .navigationBarTitle(Text(o.title))
     }
+    .navigationBarTitle(Text(form.title))
   }
 
   func build(_ element: FormElement) -> some View {
@@ -210,7 +161,7 @@ struct FormView: View {
 
 struct FormView_Previews: PreviewProvider {
   static var previews: some View {
-    FormView(data: FormData())
+    FormView(form: ObservationForm(title: "Testing", sections: []))
   }
 }
 
