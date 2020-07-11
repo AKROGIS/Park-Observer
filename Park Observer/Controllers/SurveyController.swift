@@ -89,8 +89,6 @@ class SurveyController: NSObject, ObservableObject {
 
   @Published var alert: Alert? = nil
   var observationForm = ObservationForm(title: "", sections: [])
-  // For testing, replace with CoreData
-  let data = FormData()
   @Published var selectedItem: EditableObservation? = nil
   @Published var selectedItems: [EditableObservation]? = nil
 
@@ -423,55 +421,56 @@ class SurveyController: NSObject, ObservableObject {
 extension SurveyController {
 
   func observationForm(for graphic: AGSGraphic? = nil) -> ObservationForm {
-    // TODO: for testing only, replace with struct build from self.survey.dialog and CoreData
-    let te1 = ToggleElement(label: "Toggle #1", key: "toggle1", data: data)
-    let te2 = ToggleElement(label: "Toggle #2", key: "toggle2", data: data)
-    let l1 = LabelElement(label: "Label #1")
-    let l2 = LabelElement(label: "Label #2")
-    let i1 = IntElement(
-    label: nil, placeholder: "Quantity 0..5", showStepper: true, range: 0...5, key: "int1",
-    data: data)
-    let i2 = IntElement(
-    label: "Count", placeholder: "ph", showStepper: false, range: Int(Int32.min)...Int(Int32.max),
-    key: "int2", data: data)
-    let d1 = DoubleElement(
-    label: nil, placeholder: "Temp °C: -40.00..+40.00", range: -40.0...40.0, decimals: 2,
-    key: "double1", data: data)
-    let d2 = DoubleElement(
-    label: "Temp", placeholder: "°F",
-    range: -1 * Double.greatestFiniteMagnitude...Double.greatestFiniteMagnitude, decimals: nil,
-    key: "double2", data: data)
-    let tf1 = TextElement(
-    label: nil, placeholder: "Enter Text", keyboard: .emailAddress,
-    autoCapitalization: .allCharacters, disableAutoCorrect: false, lines: 1, key: "text1",
-    data: data)
-    let tf2 = TextElement(
-    label: "Name:", placeholder: "", keyboard: .default, autoCapitalization: .words,
-    disableAutoCorrect: true, lines: 1, key: "text2", data: data)
-    let tf3 = TextElement(
-    label: nil, placeholder: "Comments", keyboard: .default, autoCapitalization: .none,
-    disableAutoCorrect: false, lines: 5, key: "text3", data: data)
-    let tf4 = TextElement(
-    label: "Comments:", placeholder: "", keyboard: .default, autoCapitalization: .sentences,
-    disableAutoCorrect: false, lines: 5, key: "text4", data: data)
-    let p1a = PickerElement(
-    segmentedStyle: false, label: "Size", choices: ["Small", "Medium", "Large"],
-    saveAsText: false, key: "pickerInt1", data: data)
-    let p1b = PickerElement(
-    segmentedStyle: false, label: "Color", choices: ["Red", "Green", "Blue"], saveAsText: true,
-    key: "pickerText1", data: data)
-    let p2a = PickerElement(
-    segmentedStyle: true, label: "Size", choices: ["Small", "Medium", "Large"], saveAsText: false,
-    key: "pickerInt2", data: data)
-    let p2b = PickerElement(
-    segmentedStyle: true, label: "Color", choices: ["Red", "Green", "Blue"], saveAsText: true,
-    key: "pickerText2", data: data)
-    let s1 = FormSection(
-    header: nil, footer: "foot note", elements: [p2a, p2b, l2, te2, tf2, i2, d2, tf4])
-    let s2 = FormSection(
-    header: "HEADER", footer: "another footer", elements: [p1a, p1b, te1, l1, tf1, i1, d1, tf3])
-    let o = ObservationForm(title: "Title", sections: [s2, s1])
-    return o
+    let defaultObservationForm = ObservationForm(title: "No Observation", sections: [])
+
+    guard let graphic = graphic else {
+      print("No graphic provided to SurveyController.observationForm(for:)")
+      return defaultObservationForm
+    }
+    guard let name = graphic.graphicsOverlay?.overlayID else {
+      print("No name found for graphic's layer in SurveyController.observationForm(for:)")
+      return defaultObservationForm
+    }
+    var maybeFields: [Attribute]? = nil
+    var maybeDialog: Dialog? = nil
+    if name == .layerNameMissionProperties {
+      maybeFields = survey?.config.mission?.attributes
+      maybeDialog = survey?.config.mission?.dialog
+    } else {
+      for feature in survey?.config.features ?? [Feature]() {
+        if feature.name == name {
+          maybeFields = feature.attributes
+          maybeDialog = feature.dialog
+        }
+      }
+    }
+    guard let dialog = maybeDialog else {
+      print("No dialog definition found in SurveyController.observationForm(for:)")
+      return defaultObservationForm
+    }
+    guard let fields = maybeFields else {
+      print("No attribute definition found in SurveyController.observationForm(for:)")
+      return defaultObservationForm
+    }
+    guard let timestamp = graphic.attributes[String.attributeKeyTimestamp] as? Date else {
+      print("No timestamp found for graphic in SurveyController.observationForm(for:)")
+      return defaultObservationForm
+    }
+    guard let context = survey?.viewContext else {
+      print("No coredata context found in SurveyController.observationForm(for:)")
+      return defaultObservationForm
+    }
+    var object: NSObject?
+    if name == .layerNameMissionProperties {
+      object = MissionProperty.fetchFirst(at: timestamp, in: context)
+    } else {
+      object = Observation.fetchFirst(name, at: timestamp, in: context)
+    }
+    guard let data = object else {
+      print("No object found CoreData Context in SurveyController.observationForm(for:)")
+      return defaultObservationForm
+    }
+    return dialog.form(with: data, fields: fields)
   }
 
   func editableObservation(for graphic: AGSGraphic? = nil) -> EditableObservation {

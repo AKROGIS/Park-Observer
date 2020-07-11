@@ -10,23 +10,6 @@ import Foundation  // For NSObject, UUID, NSNumber, @objc
 import SwiftUI  // For Binding
 import UIKit  // For UIKeyboardType, UITextAutocapitalizationType
 
-class FormData: NSObject {
-  @objc dynamic var toggle1: NSNumber? = nil
-  @objc dynamic var toggle2: NSNumber? = nil
-  @objc dynamic var text1: String? = nil
-  @objc dynamic var text2: String? = nil
-  @objc dynamic var text3: String? = nil
-  @objc dynamic var text4: String? = nil
-  @objc dynamic var int1: NSNumber? = nil
-  @objc dynamic var int2: NSNumber? = nil
-  @objc dynamic var double1: NSNumber? = nil
-  @objc dynamic var double2: NSNumber? = nil
-  @objc dynamic var pickerText1: String? = nil
-  @objc dynamic var pickerText2: String? = nil
-  @objc dynamic var pickerInt1: NSNumber? = nil
-  @objc dynamic var pickerInt2: NSNumber? = nil
-}
-
 struct ObservationForm {
   let title: String
   let sections: [FormSection]
@@ -181,6 +164,167 @@ struct ToggleElement: FormElement {
         self.data.setValue(newValue, forKey: self.key)
         print("data[\(self.key)] set to \(self.data.value(forKey: self.key))")
       })
+  }
+
+}
+
+extension Dialog {
+
+  func form(with data: NSObject, fields: [Attribute]) -> ObservationForm {
+    return ObservationForm(
+      title: title, sections: sections.map { $0.formSection(with: data, fields: fields) })
+  }
+
+}
+
+extension DialogSection {
+
+  func formSection(with data: NSObject, fields: [Attribute]) -> FormSection {
+    return FormSection(
+      header: title, footer: nil,
+      elements: elements.map { $0.formElement(with: data, fields: fields) })
+  }
+
+}
+
+extension DialogElement {
+
+  func formElement(with data: NSObject, fields: [Attribute]) -> FormElement {
+    guard let bind = attributeType, let name = attributeName,
+      let attribute = fields.first(where: { $0.name == name })
+    else {
+      if type == .label {
+        return LabelElement(label: title ?? "No Text for Label")
+      } else {
+        return LabelElement(label: (title ?? "") + " - No attribute binding for \(type.rawValue)")
+      }
+    }
+    let key = .attributePrefix + name
+    switch type {
+    case .switch:
+      return ToggleElement(label: title ?? "", key: key, data: data)
+    case .numberEntry:
+      //TODO: Int or Double ?
+      switch attribute.type {
+      case .float, .double:
+        let range = doubleRange(
+          lowerBound: minimumValue, upperBound: maximumValue, isFloat: attribute.type == .float)
+        return DoubleElement(
+          label: title, placeholder: placeholder ?? "", range: range, decimals: fractionDigits,
+          key: key, data: data)
+      case .int16, .int32, .int64:
+        let range = intRange(
+          lowerBound: minimumValue, upperBound: maximumValue, type: attribute.type)
+        return IntElement(
+          label: title, placeholder: placeholder ?? "", showStepper: true, range: range, key: key,
+          data: data)
+      default:
+        return LabelElement(label: (title ?? "") + " - None numeric attribute for \(type.rawValue)")
+      }
+    case .textEntry, .multilineText:
+      return TextElement(
+        label: title, placeholder: placeholder ?? "", keyboard: keyboardType,
+        autoCapitalization: autocapitalizationType, disableAutoCorrect: disableAutocorrection,
+        lines: type == .textEntry ? 1 : 5, key: key, data: data)
+    case .stepper:
+      let range = intRange(lowerBound: minimumValue, upperBound: maximumValue, type: attribute.type)
+      return IntElement(
+        label: title, placeholder: placeholder ?? "", showStepper: true, range: range, key: key,
+        data: data)
+    case .label:
+      return LabelElement(label: title ?? "")
+    case .defaultPicker, .segmentedPicker:
+      return PickerElement(
+        segmentedStyle: type == .segmentedPicker, label: title, choices: items ?? [],
+        saveAsText: bind == .item, key: key, data: data)
+    }
+  }
+
+  //TODO: Simplify: Building ranges is too complicated (only really needed for stepper)
+  //It is very,very unlikely that anyone would put in a limit approaching the extremes
+  //TODO: check lower < upper
+  fileprivate func doubleRange(lowerBound: Double?, upperBound: Double?, isFloat: Bool)
+    -> ClosedRange<Double>?
+  {
+    if let lower = lowerBound, let upper = upperBound {
+      return lower...upper
+    }
+    if let lower = lowerBound {
+      let upper: Double = {
+        if isFloat {
+          return Double(Float.greatestFiniteMagnitude)
+        } else {
+          if lower < 0 {
+            return Double.greatestFiniteMagnitude - abs(lower)
+          } else {
+            return Double.greatestFiniteMagnitude
+          }
+        }
+      }()
+      return lower...upper
+    }
+    if let upper = upperBound {
+      let lower: Double = {
+        if isFloat {
+          return Double(-Float.greatestFiniteMagnitude)
+        } else {
+          if upper > 0 {
+            return -(Double.greatestFiniteMagnitude - upper)
+          } else {
+            return -Double.greatestFiniteMagnitude
+          }
+        }
+      }()
+      return lower...upper
+    }
+    return nil
+  }
+
+  fileprivate func intRange(lowerBound: Double?, upperBound: Double?, type: Attribute.AttributeType)
+    -> ClosedRange<Int?>
+  {
+    switch type {
+    case .int16:
+      let lower = lowerBound?.toInt16() ?? Int16.min
+      let upper = upperBound?.toInt16() ?? Int16.max
+      return Int(lower)...Int(upper)
+    case .int32:
+      let lower = lowerBound?.toInt32() ?? Int32.min
+      let upper = upperBound?.toInt32() ?? Int32.max
+      return Int(lower)...Int(upper)
+    case .int64:
+      let lower = max((lowerBound?.toInt64() ?? Int64.min / 2), Int64.min / 2)
+      let upper = min((upperBound?.toInt64() ?? Int64.max / 2), Int64.max / 2)
+      return Int(lower)...Int(upper)
+    default:
+      return Int(Int64.min / 2)...Int(Int64.max / 2)
+    }
+  }
+}
+
+extension Double {
+  func toInt64() -> Int64? {
+    if self >= Double(Int64.min) && self < Double(Int64.max) {
+      return Int64(self)
+    } else {
+      return nil
+    }
+  }
+
+  func toInt32() -> Int32? {
+    if self >= Double(Int32.min) && self < Double(Int32.max) {
+      return Int32(self)
+    } else {
+      return nil
+    }
+  }
+
+  func toInt16() -> Int16? {
+    if self >= Double(Int16.min) && self < Double(Int16.max) {
+      return Int16(self)
+    } else {
+      return nil
+    }
   }
 
 }

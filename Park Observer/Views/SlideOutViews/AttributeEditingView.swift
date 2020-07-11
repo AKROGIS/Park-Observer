@@ -82,6 +82,7 @@ struct ObservationDetailsView_Previews: PreviewProvider {
   }
 }
 */
+
 struct ObservationSelectorView: View {
   @EnvironmentObject var surveyController: SurveyController
 
@@ -89,7 +90,7 @@ struct ObservationSelectorView: View {
     NavigationView {
       List {
         ForEach(surveyController.selectedItems ?? [], id: \.timestamp) { item in
-          NavigationLink(destination: ObservationDetailsView(item1: item)) {
+          NavigationLink(destination: FormView(form: self.surveyController.observationForm(for: item.graphic))) {
             VStack(alignment: .leading) {
               Text(item.description)
               Text(item.timestamp.shortDateMediumTime)
@@ -104,10 +105,9 @@ struct ObservationSelectorView: View {
   }
 
 }
-/*
+
 struct ObservationSelectorView_Previews: PreviewProvider {
   static var previews: some View {
     ObservationSelectorView()
   }
 }
-*/
