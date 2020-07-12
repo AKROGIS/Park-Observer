@@ -75,8 +75,6 @@ class MapViewTouchDelegate: NSObject, AGSGeoViewTouchDelegate {
     surveyController.selectedItems = graphics.map {
       surveyController.editableObservation(for: $0)
     }
-    surveyController.showingObservationEditor = false
-    surveyController.showingObservationDetails = false
     surveyController.showingObservationSelector = true
     surveyController.slideOutMenuVisible = true
   }

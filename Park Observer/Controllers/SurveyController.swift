@@ -74,6 +74,7 @@ class SurveyController: NSObject, ObservableObject {
       if !slideOutMenuVisible {
         showingObservationSelector = false
         showingObservationDetails = false
+        showingObservationEditor = false
       }
     }
   }
