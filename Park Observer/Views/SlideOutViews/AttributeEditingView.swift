@@ -16,6 +16,7 @@ struct ObservationEditorView: View {
     NavigationView {
       FormView(form: surveyController.observationForm)
     }
+    .navigationViewStyle(StackNavigationViewStyle())
   }
 
 }

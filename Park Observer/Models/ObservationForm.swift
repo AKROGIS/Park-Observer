@@ -49,7 +49,7 @@ struct DoubleElement: FormElement {
         var newValue: NSNumber? = nil
         if let v = value { newValue = NSNumber(value: v) }
         self.data.setValue(newValue, forKey: self.key)
-        print("data[\(self.key)] set to \(self.data.value(forKey: self.key))")
+        //print("data[\(self.key)] set to \(self.data.value(forKey: self.key))")
       })
   }
 
@@ -75,7 +75,7 @@ struct IntElement: FormElement {
         var newValue: NSNumber? = nil
         if let v = value { newValue = NSNumber(value: v) }
         self.data.setValue(newValue, forKey: self.key)
-        print("data[\(self.key)] set to \(self.data.value(forKey: self.key))")
+        //print("data[\(self.key)] set to \(self.data.value(forKey: self.key))")
       })
   }
 
@@ -115,7 +115,7 @@ struct PickerElement: FormElement {
           let newValue = value < 0 ? nil : NSNumber(value: value)
           self.data.setValue(newValue, forKey: self.key)
         }
-        print("data[\(self.key)] set to \(self.data.value(forKey: self.key))")
+        //print("data[\(self.key)] set to \(self.data.value(forKey: self.key))")
       })
   }
 
@@ -140,7 +140,7 @@ struct TextElement: FormElement {
       set: { value in
         let newValue = value == "" ? nil : value
         self.data.setValue(newValue, forKey: self.key)
-        print("data[\(self.key)] set to \(self.data.value(forKey: self.key))")
+        //print("data[\(self.key)] set to \(self.data.value(forKey: self.key))")
       })
   }
 
@@ -162,7 +162,7 @@ struct ToggleElement: FormElement {
         var newValue: NSNumber? = nil
         if let v = value { newValue = NSNumber(booleanLiteral: v) }
         self.data.setValue(newValue, forKey: self.key)
-        print("data[\(self.key)] set to \(self.data.value(forKey: self.key))")
+        //print("data[\(self.key)] set to \(self.data.value(forKey: self.key))")
       })
   }
 
