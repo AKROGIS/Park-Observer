@@ -113,7 +113,6 @@ struct FormView: View {
     return Text(e.label).font(.headline)
   }
 
-  //TODO: make nullable
   func build(_ e: PickerElement) -> some View {
     Group {
       if e.segmentedStyle {

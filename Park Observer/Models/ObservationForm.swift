@@ -204,7 +204,6 @@ extension DialogElement {
     case .switch:
       return ToggleElement(label: title ?? "", key: key, data: data)
     case .numberEntry:
-      //TODO: Int or Double ?
       switch attribute.type {
       case .float, .double:
         let range = doubleRange(
