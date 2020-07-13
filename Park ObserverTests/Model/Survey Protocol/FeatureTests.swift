@@ -367,6 +367,145 @@ class FeatureTests: XCTestCase {
     XCTAssertNil(json)  // Failed parsing; JSON is invalid
   }
 
+  //MARK: - Feature Extensions
+
+  func testFeatureLocations() {
+    // Given:
+    struct TestJson: Codable {
+      let features: [Feature]
+    }
+    let jsonData = Data(
+      """
+      { "features": [
+        { "name": "Alice0",
+          "locations": [
+            {"type": "gps", "allow": false},
+            {"type": "mapTouch", "allow": true},
+            {"type": "mapTarget", "allow": true}
+          ],
+          "allow_off_transect_observations": true
+        },
+        { "name": "Bob1",
+          "locations": [
+            {"type": "gps", "allow": true},
+            {"type": "mapTouch", "allow": true},
+            {"type": "mapTarget", "allow": true},
+            {"type": "angleDistance", "allow": false}
+          ],
+          "allow_off_transect_observations": false
+        },
+        { "name": "Carol2",
+          "locations": [
+            {"type": "gps", "allow": true},
+            {"type": "mapTouch", "allow": false}
+          ],
+          "allow_off_transect_observations": true
+        },
+        { "name": "Carol3", "locations": [
+          {"type": "gps", "allow": false},
+          {"type": "mapTouch", "allow": true}
+        ] },
+        { "name": "Dave4", "locations": [
+          {"type": "gps", "allow": true},
+          {"type": "mapTouch", "allow": true},
+          {"type": "mapTarget", "allow": true},
+          {"type": "angleDistance", "allow": true}
+        ] },
+        { "name": "Eve5", "locations": [
+          {"type": "mapTarget", "allow": true}
+        ] },
+        { "name": "Eve6", "locations": [
+          {"type": "gps", "allow": false},
+          {"type": "mapTouch", "allow": false},
+          {"type": "mapTarget", "allow": false},
+          {"type": "angleDistance", "allow": false}
+        ] }
+      ] }
+      """.utf8)
+
+    // When:
+    let json = try? JSONDecoder().decode(TestJson.self, from: jsonData)
+
+    // Then:
+    XCTAssertNotNil(json)
+    if let test = json {
+      XCTAssertEqual(test.features.count, 7)
+
+      XCTAssertNil(test.features[0].angleDistanceConfig)
+      XCTAssertNotNil(test.features[0].gpsLocationConfig)
+      XCTAssertNotNil(test.features[0].mapLocationConfig)
+      XCTAssertFalse(test.features[0].allowAngleDistance)
+      XCTAssertFalse(test.features[0].allowGps)
+      XCTAssertTrue(test.features[0].allowMapTouch)
+      XCTAssertTrue(test.features[0].allowOffTransectObservations)
+
+      XCTAssertNotNil(test.features[1].angleDistanceConfig)
+      XCTAssertNotNil(test.features[1].gpsLocationConfig)
+      XCTAssertNotNil(test.features[1].mapLocationConfig)
+      XCTAssertFalse(test.features[1].allowAngleDistance)
+      XCTAssertTrue(test.features[1].allowGps)
+      XCTAssertTrue(test.features[1].allowMapTouch)
+      XCTAssertFalse(test.features[1].allowOffTransectObservations)
+
+      XCTAssertNil(test.features[2].angleDistanceConfig)
+      XCTAssertNotNil(test.features[2].gpsLocationConfig)
+      XCTAssertNotNil(test.features[2].mapLocationConfig)
+      XCTAssertFalse(test.features[2].allowAngleDistance)
+      XCTAssertTrue(test.features[2].allowGps)
+      XCTAssertFalse(test.features[2].allowMapTouch)
+      XCTAssertTrue(test.features[2].allowOffTransectObservations)
+
+      XCTAssertNil(test.features[3].angleDistanceConfig)
+      XCTAssertNotNil(test.features[3].gpsLocationConfig)
+      XCTAssertNotNil(test.features[3].mapLocationConfig)
+      XCTAssertFalse(test.features[3].allowAngleDistance)
+      XCTAssertFalse(test.features[3].allowGps)
+      XCTAssertTrue(test.features[3].allowMapTouch)
+      XCTAssertFalse(test.features[3].allowOffTransectObservations)
+
+      XCTAssertNotNil(test.features[4].angleDistanceConfig)
+      XCTAssertNotNil(test.features[4].gpsLocationConfig)
+      XCTAssertNotNil(test.features[4].mapLocationConfig)
+      XCTAssertTrue(test.features[4].allowAngleDistance)
+      XCTAssertFalse(test.features[4].allowGps)  // Gps is not allowed if angleDistance is allowed
+      XCTAssertTrue(test.features[4].allowMapTouch)
+      XCTAssertFalse(test.features[4].allowOffTransectObservations)
+
+      XCTAssertNil(test.features[5].angleDistanceConfig)
+      XCTAssertNil(test.features[5].gpsLocationConfig)
+      XCTAssertNil(test.features[5].mapLocationConfig)
+      XCTAssertFalse(test.features[5].allowAngleDistance)
+      XCTAssertFalse(test.features[5].allowGps)
+      XCTAssertFalse(test.features[5].allowMapTouch)
+      XCTAssertFalse(test.features[5].allowOffTransectObservations)
+
+      XCTAssertNotNil(test.features[6].angleDistanceConfig)
+      XCTAssertNotNil(test.features[6].gpsLocationConfig)
+      XCTAssertNotNil(test.features[6].mapLocationConfig)
+      XCTAssertFalse(test.features[6].allowAngleDistance)
+      XCTAssertFalse(test.features[6].allowGps)
+      XCTAssertFalse(test.features[6].allowMapTouch)
+      XCTAssertFalse(test.features[6].allowOffTransectObservations)
+
+      XCTAssertEqual(test.features.locatableWithMapTouch.count, 4)
+      let mapTouch = test.features.locatableWithMapTouch.map { $0.name }
+      let expectedMapTouch = ["Alice0", "Bob1", "Carol3", "Dave4"]
+      XCTAssertEqual(mapTouch, expectedMapTouch)
+
+      XCTAssertEqual(test.features.locatableWithoutMapTouch.count, 3)
+      let withoutMapTouch = test.features.locatableWithoutMapTouch.map { $0.name }
+      let expectedWithoutMapTouch = ["Bob1", "Carol2", "Dave4"]  //Gps and AngleDistance
+      XCTAssertEqual(withoutMapTouch, expectedWithoutMapTouch)
+
+      XCTAssertEqual(test.features.observableAnyTime.count, 2)
+      let observable = test.features.observableAnyTime.map { $0.name }
+      let expectedObservable = ["Alice0", "Carol2"]
+      XCTAssertEqual(observable, expectedObservable)
+
+    }
+
+  }
+
   //MARK: - Feature Label
 
   func testLabelFailFieldNotInAttributes() {

@@ -202,7 +202,43 @@ extension Feature {
 extension Feature {
 
   var angleDistanceConfig: LocationMethod? {
-    return locationMethods.filter { $0.type == .angleDistance }.first
+    return locationMethods.filter { $0.type == .angleDistance }.last
+  }
+
+  var gpsLocationConfig: LocationMethod? {
+    return locationMethods.filter { $0.type == .gps }.last
+  }
+
+  var mapLocationConfig: LocationMethod? {
+    return locationMethods.filter { $0.type == .mapTouch }.last
+  }
+
+  var allowAngleDistance: Bool {
+    (angleDistanceConfig?.allow ?? false)
+  }
+
+  var allowGps: Bool {
+    (gpsLocationConfig?.allow ?? false) && !allowAngleDistance
+  }
+
+  var allowMapTouch: Bool {
+    mapLocationConfig?.allow ?? false
+  }
+}
+
+//extension [Feature] {
+extension Array where Element == Feature {
+
+  var locatableWithMapTouch: [Feature] {
+    self.filter { $0.allowMapTouch }
+  }
+
+  var locatableWithoutMapTouch: [Feature] {
+    self.filter { $0.allowGps || $0.allowAngleDistance }
+  }
+
+  var observableAnyTime: [Feature] {
+    self.filter { $0.allowOffTransectObservations }
   }
 
 }

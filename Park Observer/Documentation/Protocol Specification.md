@@ -896,6 +896,10 @@ Changes implemented in 2.0 which effect the processing of version 1 and 2 protoc
  * Made label.field optional. It will be ignored and can be omitted if label.definition is provided. Size, color, and symbol will also be ignored if label.definition is provided.
  * some properties of dialog elements are no longer case sensitive: autocapitalizationType, autocorrectionType, and keyboardType
  * Dialog.grouped is ignored (sections are visually distinct, and `grouped` does not render any differently)
+ * feature.locations.type = "mapTarget" is not supported
+ * feature.locations.default is ignored
+ * feature.locations.type = "gps" is ignored if feature.locations.type = "angleDistance" exists and allowed
+ * if feature has multiple location objects with the same locations.type, an error is thrown (new surveys); last one is used (existing surveys)
 
 New root properties:
 * [`tracklogs`](#tracklogs) (o)(v3)
@@ -906,9 +910,9 @@ This property is optional. If provided it must be one of the following stings.  
 This property determines if a track log is desired or required.
 This property is ignored in versions of Park Observer before 2.0.
 
- * `none` - The start/stop track log button is not available, and track logs are never collected
+ * `none` - The start/stop track log button is not available, and track logs are never collected.
  * `optional` - The user can start/stop observing regardless of the state of track logging.
- * `required` - The user must start a track log before they can start observing
+ * `required` - The user must start a track log before they can start observing.
 
 # `transects`
 This property is optional. If provided it must be one of the following stings.  The default is `"per-feature"`.
