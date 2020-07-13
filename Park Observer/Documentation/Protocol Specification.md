@@ -895,6 +895,38 @@ Changes implemented in 2.0 which effect the processing of version 1 and 2 protoc
  * Added an optional `definition` property to feature label to support ESRI label definition JSON.
  * Made label.field optional. It will be ignored and can be omitted if label.definition is provided. Size, color, and symbol will also be ignored if label.definition is provided.
  * some properties of dialog elements are no longer case sensitive: autocapitalizationType, autocorrectionType, and keyboardType
+ * Dialog.grouped is ignored (sections are visually distinct, and `grouped` does not render any differently)
+
+New root properties:
+* [`tracklogs`](#tracklogs) (o)(v3)
+* [`transects`](#transects) (o)(v3)
+
+# `tracklogs`
+This property is optional. If provided it must be one of the following stings.  The default is `"required"`.
+This property determines if a track log is desired or required.
+This property is ignored in versions of Park Observer before 2.0.
+
+ * `none` - The start/stop track log button is not available, and track logs are never collected
+ * `optional` - The user can start/stop observing regardless of the state of track logging.
+ * `required` - The user must start a track log before they can start observing
+
+# `transects`
+This property is optional. If provided it must be one of the following stings.  The default is `"per-feature"`.
+This property determines the requirements for making an observation.
+If `"tracklogs": "required"`, then observations can only be made when track logging despite the state
+of this property.
+This property is ignored in versions of Park Observer before 2.0.
+
+ * `none` - The start/stop survey (observing/transect) button is not available;
+   It is assumed that the user is always observing, and observations can be made any time
+   This sets the `allow_off_transect_observations` property of all features to `true`
+ * `optional` - The user can add an observation at any time, regardless of the state of surveying (observing/transect).
+   This sets the `allow_off_transect_observations` property of all features to `true`
+ * `required` - The user must start a survey (observing/transect) before they can add an observation.
+   This sets the `allow_off_transect_observations` property of all features to `false`
+ * `per-feature` - The user can add an observation of a feature based on the state of the feature's
+   `allow_off_transect_observations` property.
+
 
 label definitions:
 from https://developers.arcgis.com/ios/latest/objective-c/guide/add-labels.htm

@@ -59,6 +59,12 @@ struct SurveyProtocol {
   /// Default: 16.0
   let statusMessageFontsize: Double
 
+  /// Determines if tracklogs are required, optional, or not wanted.
+  let tracklogs: TracklogPreference
+
+  /// Determines if being on-transect (observing) is required to make an observation.
+  let transects: TransectPreference
+
   /// The version of this named protocol.
   private let version: Double
 
@@ -82,6 +88,8 @@ extension SurveyProtocol: Codable {
     case notObservingMessage = "notobserving"
     case observingMessage = "observing"
     case statusMessageFontsize = "status_message_fontsize"
+    case tracklogs = "tracklogs"
+    case transects = "transects"
     case version = "version"
   }
 
@@ -133,6 +141,8 @@ extension SurveyProtocol: Codable {
     let observingMessage = try container.decodeIfPresent(String.self, forKey: .observingMessage)
     let statusMessageFontsize = try container.decodeIfPresent(
       Double.self, forKey: .statusMessageFontsize)
+    let tracklogs = try container.decodeIfPresent(TracklogPreference.self, forKey: .tracklogs)
+    let transects = try container.decodeIfPresent(TransectPreference.self, forKey: .transects)
     let version = try container.decode(Double.self, forKey: .version)
 
     // Parse Date  (note the DateDecoding Strategy does not work when implementing a custom decoder)
@@ -194,6 +204,8 @@ extension SurveyProtocol: Codable {
       notObservingMessage: notObservingMessage,
       observingMessage: observingMessage,
       statusMessageFontsize: statusMessageFontsize ?? 16.0,
+      tracklogs: tracklogs ?? .required,
+      transects: transects ?? .perFeature,
       version: version)
   }
 
@@ -284,4 +296,31 @@ enum SurveyProtocolVersion: Int, Codable {
   case unknown = 0
   case version1 = 1
   case version2 = 2
+}
+
+/// Determines if tracklogs are required, optional, or not wanted.
+enum TracklogPreference: String, Codable {
+  /// The start/stop track log button is not available, and track logs are never collected.
+  case none = "none"
+
+  /// The user can start/stop observing regardless of the state of track logging.
+  case optional = "optional"
+
+  /// The user must start a track log before they can start observing.
+  case required = "required"
+}
+
+/// Determines if being on-transect (observing) is required to make an observation.
+enum TransectPreference: String, Codable {
+  ///The start/stop survey (observing/transect) button is not available; default to always observing unless track logs are required.
+  case none = "none"
+
+  /// The user can add an observation at any time, regardless of the state of surveying (observing/transect).
+  case optional = "optional"
+
+  /// The user must start a survey (observing/transect) before they can add an observation.
+  case required = "required"
+
+  /// The user can add an observation of a feature based on the state of the feature's properties.
+  case perFeature = "per-feature"
 }

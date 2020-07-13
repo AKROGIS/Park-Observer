@@ -34,6 +34,27 @@
             "description": "A description for this protocol.",
             "type": "string"
         },
+        "tracklogs": {
+            "description": "Determines if tracklogs are required, optional, or not wanted.",
+            "type": "string",
+            "enum": [
+                "none",
+                "optional",
+                "required"
+            ],
+            "default": "required"
+        },
+        "transects": {
+            "description": "Determines if being on-transect (observing) is required to make an observation.",
+            "type": "string",
+            "enum": [
+                "none",
+                "optional",
+                "per-feature",
+                "required"
+            ],
+            "default": "per-feature"
+        },
         "observing": {
             "description": "An optional message to display on screen when observing (on transect).",
             "type": "string"
