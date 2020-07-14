@@ -28,6 +28,7 @@ struct OnlineMapListView: View {
         }
       }
     }
+    .navigationBarTitle("Online Maps")
   }
 
 }

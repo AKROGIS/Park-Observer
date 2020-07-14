@@ -89,13 +89,15 @@ struct ObservationSelectorView: View {
 
   var body: some View {
     NavigationView {
-      List {
-        ForEach(surveyController.selectedItems ?? [], id: \.timestamp) { item in
-          NavigationLink(destination: FormView(form: self.surveyController.observationForm(for: item.graphic))) {
-            VStack(alignment: .leading) {
-              Text(item.description)
-              Text(item.timestamp.shortDateMediumTime)
-                .font(.footnote).foregroundColor(.secondary)
+      Form {
+        List {
+          ForEach(surveyController.selectedItems ?? [], id: \.timestamp) { item in
+            NavigationLink(destination: FormView(form: self.surveyController.observationForm(for: item.graphic))) {
+              VStack(alignment: .leading) {
+                Text(item.description)
+                Text(item.timestamp.shortDateMediumTime)
+                  .font(.footnote).foregroundColor(.secondary)
+              }
             }
           }
         }
