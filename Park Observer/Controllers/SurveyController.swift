@@ -125,6 +125,8 @@ class SurveyController: NSObject, ObservableObject {
 
   private var mission: Mission? = nil
   private var missionProperty: MissionProperty? = nil
+  //TODO: This needs to be initialized and updated as appropriate
+  private var mapReference: MapReference? = nil
 
   //MARK: - Initialize
 
@@ -353,6 +355,7 @@ class SurveyController: NSObject, ObservableObject {
       self.previousGpsPoint = gpsPoint
     }
     if awaitingLocationForMissionProperty {
+      //TODO: duplicative of addObservation(at:)
       defer {
         awaitingLocationForMissionProperty = false
       }
@@ -365,6 +368,8 @@ class SurveyController: NSObject, ObservableObject {
       self.missionProperty = missionProperty
     }
     if awaitingLocationForFeatureAtIndex >= 0 {
+      //TODO: duplicative of addObservation(at:)
+      //TODO: switch out index for Feature
       defer {
         awaitingLocationForFeatureAtIndex = -1
       }
@@ -373,11 +378,18 @@ class SurveyController: NSObject, ObservableObject {
         let feature = survey.config.features[index]
         let observation = Observation.new(feature, in: survey.viewContext)
         observation.mission = mission
-        //TODO: support adhoc and angleDistance locations
+        //TODO: support angleDistance locations
+        //TODO: update id if appropriate
+        //TODO: set default values from protocol
         observation.gpsPoint = gpsPoint
         //TODO: Add and edit feature attributes in slideout panel)
         mapView.addFeature(observation, feature: feature, index: index)
       }
+    }
+
+    if let mapPoint = awaitingLocationForMapPoint {
+      //TODO jump to addObservation - wait for feature name having gpsPoint: gpsPoint
+      addObservation(at: mapPoint, gpsPoint: gpsPoint)
     }
   }
 
@@ -397,18 +409,100 @@ class SurveyController: NSObject, ObservableObject {
     savedLocations.removeAll()
   }
 
-  //MARK: - Adding Map Locationns
+  var awaitingAuthorizationForMapPoint: AGSPoint? = nil
+  var awaitingLocationForMapPoint: AGSPoint? = nil
+  var awaitingFeatureSelectionForMapPoint: AGSPoint? = nil
+  var awaitingFeatureSelectionForMapPointAndTimeStamp: (AGSPoint, Date)? = nil
+
+  //MARK: - Adding Map Locations
   func addObservation(at mapPoint: AGSPoint) {
-    print("SurveyController.addObservation not implemented yet")
+    if gpsAuthorization == .unknown {
+      locationManager.requestWhenInUseAuthorization()
+      awaitingAuthorizationForMapPoint = mapPoint
+      return
+      // function will be called again once authorization is determined
+    }
+    var features = survey?.config.features.locatableWithMapTouch.map { $0.name } ?? []
+    if gpsAuthorization == .denied {
+      features.append(.entityNameMissionProperty)
+      awaitingFeatureSelectionForMapPointAndTimeStamp = (mapPoint, Date())
+    } else {
+      if features.count == 0 {
+        print("No features allow locate by map touch in SurveyController.addObservation(at:)")
+        return
+      }
+      awaitingLocationForMapPoint = mapPoint
+      // Cycle the Location Manager to get the current location
+      locationManager.stopUpdatingLocation()
+      locationManager.startUpdatingLocation()
+      // feature will be added after we get the next suitable GPS location
+      awaitingFeatureSelectionForMapPoint = mapPoint
+    }
+    // TODO: if feature.count > 1 then display selector with feattures
+    // else jump to addObservation - wait for gps having name: features[0]
+    // selector callback jumps to addObservation - wait for gps having name: selected feature
+  }
+
+  // TODO: We need to wait until the following concurrent tasks are complete:
+  //  1) we have a GpsPoint or a Date (if GPS is not available)
+  //     GPS may take some time to reach the desired accuracy
+  //  2) the feature name to create (alert for user selection)
+  func addObservation(at mapPoint: AGSPoint, gpsPoint: GpsPoint) {
+  }
+
+  func addObservation(at mapPoint: AGSPoint, feature: String) {
+  }
+
+  func addObservation(at mapPoint: AGSPoint, timestamp: Date) {
+  }
+
+  //TODO: Switch out featureName for Feature
+  func addObservation(at mapPoint: AGSPoint, featureName: String, gpsPoint: GpsPoint?, timestamp: Date?) {
+    guard let context = survey?.viewContext else {
+      print("No view context in SurveyController.addObservation(at:)")
+      return
+    }
+    guard let features = survey?.config.features, let feature = features.first(where: { $0.name == featureName } ) else {
+      print("No feature for featureName in SurveyController.addObservation(at:)")
+      return
+    }
+    let timestamp = gpsPoint?.timestamp ?? timestamp ?? Date()
+
     //TODO: Implement
-    // save current gps point (if available)
-    // create an adhocLocation from mapPoint, gpsPoint.timestamp ?? now, and current mapReference
-    // make list of map touch features and MP if GPS is not authorized
-    // show feature selector if list.count > 1
+    // create an adhocLocation from mapPoint, gpsPoint.timestamp ?? timestamp, and current mapReference
     //  -> layer id, feature id
     // create an observation (feature or missionProperty)
-    // Add adhocLocation and mission to observation
-    // create a graphic at mapPoint
+    let adhocLocation = AdhocLocation.new(in: context)
+    adhocLocation.location = mapPoint.toCLLocationCoordinate2D()
+    adhocLocation.timestamp = timestamp
+    
+    //TODO: mapReference is currently nil which will cause the save to fail.
+    adhocLocation.map = mapReference
+
+    if featureName == .entityNameMissionProperty {
+      //TODO: this duplicative of code in SurveyController.addGpsLocation()
+      let missionProperty = MissionProperty.new(in: context)
+      missionProperty.adhocLocation = adhocLocation
+      missionProperty.mission = self.mission
+      missionProperty.observing = observing
+      //TODO: populate missionProperty with attributes in self.missionProperty
+      //TODO: I need the graphic from this call
+      mapView.addMissionProperty(missionProperty)
+      self.missionProperty = missionProperty
+      //TODO: Add and edit feature attributes in slideout panel)
+    } else {
+      //TODO: this duplicative of code in SurveyController.addGpsLocation()
+      //TODO: replace with try Observation.new(featureName, in: context)
+      let observation = Observation.new(feature, in: context)
+      observation.adhocLocation = adhocLocation
+      observation.mission = mission
+      // get the graphic from this call
+      //TODO: update id if appropriate
+      //TODO: set default values from protocol
+      //TODO: figure out a better solution to index
+      //mapView.addFeature(observation, feature: feature, index: index)
+      //TODO: Add and edit feature attributes in slideout panel)
+    }
     // add observation attributes to graphic
     // add graphic to correct layer
     //surveyController.selectedGraphic = graphic
@@ -587,6 +681,10 @@ extension SurveyController: CLLocationManagerDelegate {
     if awaitingAuthorizationForFeatureAtIndex >= 0 {
       addObservationAtGps(featureIndex: awaitingAuthorizationForFeatureAtIndex)
       awaitingAuthorizationForFeatureAtIndex = -1
+    }
+    if let mapPoint = awaitingAuthorizationForMapPoint {
+      addObservation(at: mapPoint)
+      awaitingAuthorizationForMapPoint = nil
     }
   }
 

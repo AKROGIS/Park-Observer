@@ -28,6 +28,7 @@ typealias Observations = [Observation]
 
 extension Observation {
 
+  //TODO: remove as! replace with throw
   static func new(_ feature: Feature, in context: NSManagedObjectContext) -> Observation {
     let entityName = .observationPrefix + feature.name
     return NSEntityDescription.insertNewObject(forEntityName: entityName, into: context)

@@ -74,10 +74,16 @@ extension AdhocLocation {
 extension AdhocLocation {
 
   var location: Location? {
-    guard let lat = latitude, let lon = longitude else {
-      return nil
+    get {
+      guard let lat = latitude, let lon = longitude else {
+        return nil
+      }
+      return Location(latitude: lat, longitude: lon)
     }
-    return Location(latitude: lat, longitude: lon)
+    set {
+      latitude = newValue?.latitude
+      longitude = newValue?.longitude
+    }
   }
 
 }
