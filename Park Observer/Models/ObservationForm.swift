@@ -231,7 +231,15 @@ extension DialogElement {
         label: title, placeholder: placeholder ?? "", showStepper: true, range: range, key: key,
         data: data)
     case .label:
-      return LabelElement(label: title ?? "")
+      if bind == .id {
+        if let v = data.value(forKey: key) as? NSNumber {
+          return LabelElement(label: "\(title ?? "") \(v.intValue)")
+        } else {
+          return LabelElement(label: title ?? "")
+        }
+      } else {
+        return LabelElement(label: title ?? "")
+      }
     case .defaultPicker, .segmentedPicker:
       return PickerElement(
         segmentedStyle: type == .segmentedPicker, label: title, choices: items ?? [],
