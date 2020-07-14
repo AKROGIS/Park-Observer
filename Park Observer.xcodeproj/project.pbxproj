@@ -13,6 +13,8 @@
 		596638DE24AEC1E8006D2C29 /* EditableObservation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 596638DD24AEC1E8006D2C29 /* EditableObservation.swift */; };
 		596638E024B7E67B006D2C29 /* FormView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 596638DF24B7E67B006D2C29 /* FormView.swift */; };
 		596638E224B7E6D1006D2C29 /* ObservationForm.swift in Sources */ = {isa = PBXBuildFile; fileRef = 596638E124B7E6D1006D2C29 /* ObservationForm.swift */; };
+		596638E424BE6AF9006D2C29 /* ObservationSelectorView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 596638E324BE6AF9006D2C29 /* ObservationSelectorView.swift */; };
+		596638E624BE6B95006D2C29 /* ObservationDetailsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 596638E524BE6B95006D2C29 /* ObservationDetailsView.swift */; };
 		5989329B24995A0A00A7C346 /* SurveyControlsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5989329A24995A0A00A7C346 /* SurveyControlsView.swift */; };
 		5989329D24995C7100A7C346 /* ViewModifiers.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5989329C24995C7100A7C346 /* ViewModifiers.swift */; };
 		5989329F2499A71300A7C346 /* SlideOutView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5989329E2499A71300A7C346 /* SlideOutView.swift */; };
@@ -134,6 +136,8 @@
 		596638DD24AEC1E8006D2C29 /* EditableObservation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EditableObservation.swift; sourceTree = "<group>"; };
 		596638DF24B7E67B006D2C29 /* FormView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FormView.swift; sourceTree = "<group>"; };
 		596638E124B7E6D1006D2C29 /* ObservationForm.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ObservationForm.swift; sourceTree = "<group>"; };
+		596638E324BE6AF9006D2C29 /* ObservationSelectorView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ObservationSelectorView.swift; sourceTree = "<group>"; };
+		596638E524BE6B95006D2C29 /* ObservationDetailsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ObservationDetailsView.swift; sourceTree = "<group>"; };
 		5989329A24995A0A00A7C346 /* SurveyControlsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SurveyControlsView.swift; sourceTree = "<group>"; };
 		5989329C24995C7100A7C346 /* ViewModifiers.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewModifiers.swift; sourceTree = "<group>"; };
 		5989329E2499A71300A7C346 /* SlideOutView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SlideOutView.swift; sourceTree = "<group>"; };
@@ -263,6 +267,8 @@
 				59BA0EC824A50F6300CA6EF2 /* FileListView.swift */,
 				596638DF24B7E67B006D2C29 /* FormView.swift */,
 				598932A02499DE6900A7C346 /* MainMenuView.swift */,
+				596638E524BE6B95006D2C29 /* ObservationDetailsView.swift */,
+				596638E324BE6AF9006D2C29 /* ObservationSelectorView.swift */,
 				7466876F24A265D500A8FEFA /* OnlineMapListView.swift */,
 				5989329E2499A71300A7C346 /* SlideOutView.swift */,
 				7466877124A274FB00A8FEFA /* UserSettingsView.swift */,
@@ -673,6 +679,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				596638E624BE6B95006D2C29 /* ObservationDetailsView.swift in Sources */,
 				596638E224B7E6D1006D2C29 /* ObservationForm.swift in Sources */,
 				5989329B24995A0A00A7C346 /* SurveyControlsView.swift in Sources */,
 				74716633243E5B4300A9C960 /* LocationButtonView.swift in Sources */,
@@ -715,6 +722,7 @@
 				598932A12499DE6900A7C346 /* MainMenuView.swift in Sources */,
 				7423E4CB249BE18300195DBB /* MessageView.swift in Sources */,
 				749DE9BA246A3378003D433A /* SurveyInfo.swift in Sources */,
+				596638E424BE6AF9006D2C29 /* ObservationSelectorView.swift in Sources */,
 				74D85B5B246F1EB60091EA8E /* AdhocLocation.swift in Sources */,
 				74D85B52246F1EB60091EA8E /* Mission.swift in Sources */,
 				74A25FCC245233B8006D82CE /* MissionTotalizer.swift in Sources */,
