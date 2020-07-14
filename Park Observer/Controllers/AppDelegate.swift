@@ -28,16 +28,22 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
     // Ignore licensing result (Bool). We can run without a license
     _ = LicenseManager.licenseArcGISRuntime()
+
+    // Disable shake to undo. Many users are in bouncy vehicles.
+    application.applicationSupportsShakeToEdit = false
+
+    // Create a private folder for the surveys.
+    // Only really needs to be done once when app is installed.
     do {
-      // Ensure we have a directory for surveys
-      // Only really needs to be done once when app is installed.
-      // This will silently do nothing if the directory exists
       try FileManager.default.createSurveyDirectory()
-      return true
+      // This will silently do nothing if the directory exists
     } catch {
       print("Unable to create directory for survey files.\n\(error)")
       return false
     }
+
+    // We are ready to go!
+    return true
   }
 
   // MARK: UISceneSession Lifecycle
