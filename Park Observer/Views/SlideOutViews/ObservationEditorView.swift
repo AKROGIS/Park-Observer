@@ -1,12 +1,11 @@
 //
-//  AttributeEditingView.swift
+//  ObservationEditorView.swift
 //  Park Observer
 //
 //  Created by Regan Sarwas on 6/25/20.
 //  Copyright © 2020 Alaska Region GIS Team. All rights reserved.
 //
 
-import ArcGIS
 import SwiftUI
 
 struct ObservationEditorView: View {
