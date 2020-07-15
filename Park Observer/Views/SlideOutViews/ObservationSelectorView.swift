@@ -16,7 +16,7 @@ struct ObservationSelectorView: View {
       Form {
         List {
           ForEach(surveyController.selectedItems ?? [], id: \.timestamp) { item in
-            NavigationLink(destination: FormView(form: self.surveyController.observationForm(for: item.graphic))) {
+            NavigationLink(destination: ObservationEditorView(item: item)) {
               VStack(alignment: .leading) {
                 Text(item.description)
                 Text(item.timestamp.shortDateMediumTime)

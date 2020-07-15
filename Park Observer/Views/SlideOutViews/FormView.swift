@@ -13,19 +13,19 @@ struct FormView: View {
 
   var body: some View {
     // Must be embedded in a Navigation view for the picker to work
-    Form {
-      ForEach(form.sections) { section in
-        Section(
-          header: OptionalTextView(section.header),
-          footer: OptionalTextView(section.footer)
-        ) {
-          ForEach(section.elements, id: \.id) { element in
-            self.build(element)
-          }
+    // Expects to be embeded in a Form
+    ForEach(form.sections) { section in
+      Section(
+        header: OptionalTextView(section.header),
+        footer: OptionalTextView(section.footer)
+      ) {
+        ForEach(section.elements, id: \.id) { element in
+          self.build(element)
         }
       }
     }
-    .navigationBarTitle(Text(form.title))
+    //TODO:  Reconcile form.title with implicit title (feature #id @ time)
+    //.navigationBarTitle(Text(form.title))
   }
 
   func build(_ element: FormElement) -> some View {

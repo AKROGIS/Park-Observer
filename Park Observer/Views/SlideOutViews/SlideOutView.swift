@@ -29,7 +29,10 @@ struct SlideOutView: View {
           if self.surveyController.showingObservationDetails {
             ObservationDetailsView()
           } else if self.surveyController.showingObservationEditor {
-            ObservationEditorView()
+            NavigationView {
+              ObservationEditorView(item: surveyController.selectedItem ?? EditableObservation() )
+            }
+            .navigationViewStyle(StackNavigationViewStyle())
           } else if self.surveyController.showingObservationSelector {
             ObservationSelectorView()
           } else {

@@ -15,6 +15,13 @@ struct ObservationForm {
   let sections: [FormSection]
 }
 
+extension ObservationForm {
+  init() {
+    self.title = "No Observation"
+    self.sections = []
+  }
+}
+
 struct FormSection: Identifiable {
   let id = UUID()
   let header: String?

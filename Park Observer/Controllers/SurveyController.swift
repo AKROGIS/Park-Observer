@@ -89,7 +89,6 @@ class SurveyController: NSObject, ObservableObject {
   @Published var showingAlert = false
 
   @Published var alert: Alert? = nil
-  var observationForm = ObservationForm(title: "", sections: [])
   @Published var selectedItem: EditableObservation? = nil
   @Published var selectedItems: [EditableObservation]? = nil
 
@@ -516,7 +515,7 @@ class SurveyController: NSObject, ObservableObject {
 extension SurveyController {
 
   func observationForm(for graphic: AGSGraphic? = nil) -> ObservationForm {
-    let defaultObservationForm = ObservationForm(title: "No Observation", sections: [])
+    let defaultObservationForm = ObservationForm()
 
     guard let graphic = graphic else {
       print("No graphic provided to SurveyController.observationForm(for:)")

@@ -66,7 +66,7 @@ class MapViewTouchDelegate: NSObject, AGSGeoViewTouchDelegate {
   }
 
   private func displayInfo(for graphic: AGSGraphic) {
-    surveyController.observationForm = surveyController.observationForm(for: graphic)
+    surveyController.selectedItem = surveyController.editableObservation(for: graphic)
     surveyController.showingObservationEditor = true
     surveyController.slideOutMenuVisible = true
   }
