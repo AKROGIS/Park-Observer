@@ -141,6 +141,26 @@ extension FileManager {
 
 }
 
+//MARK: - File Dates
+
+extension FileManager {
+
+  func modificationDate(url: URL) -> Date? {
+    guard let attrs = try? attributesOfItem(atPath: url.path) else {
+      return nil
+    }
+    return attrs[.modificationDate] as? Date
+  }
+
+  func creationDate(url: URL) -> Date? {
+    guard let attrs = try? attributesOfItem(atPath: url.path) else {
+      return nil
+    }
+    return attrs[.creationDate] as? Date
+  }
+
+}
+
 //MARK: - Survey Bundles
 
 extension String {
@@ -179,6 +199,10 @@ extension FileManager {
     return surveyURL(with: name).appendingPathComponent(.surveyProtocolFilename)
   }
 
+  func mapInfoURL(with name: String) -> URL? {
+    //TODO: Implement folder for MapInfo data
+    return nil
+  }
 }
 
 //MARK: - Adding Files
