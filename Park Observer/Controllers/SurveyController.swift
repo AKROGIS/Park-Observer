@@ -305,7 +305,7 @@ class SurveyController: NSObject, ObservableObject {
 
   func addObservationAtGps(feature: Feature) {
     print("Adding \(feature.name) at \(feature.allowAngleDistance ? "AngleDistance" : "GPS")")
-    if let index = survey?.config.features.firstIndex(where: { $0.name == feature.name}) {
+    if let index = survey?.config.features.firstIndex(where: { $0.name == feature.name }) {
       addObservationAtGps(featureIndex: index)
     }
   }
@@ -484,12 +484,16 @@ class SurveyController: NSObject, ObservableObject {
   }
 
   //TODO: Switch out featureName for Feature
-  func addObservation(at mapPoint: AGSPoint, featureName: String, gpsPoint: GpsPoint?, timestamp: Date?) {
+  func addObservation(
+    at mapPoint: AGSPoint, featureName: String, gpsPoint: GpsPoint?, timestamp: Date?
+  ) {
     guard let context = survey?.viewContext else {
       print("No view context in SurveyController.addObservation(at:)")
       return
     }
-    guard let features = survey?.config.features, let feature = features.first(where: { $0.name == featureName } ) else {
+    guard let features = survey?.config.features,
+      let feature = features.first(where: { $0.name == featureName })
+    else {
       print("No feature for featureName in SurveyController.addObservation(at:)")
       return
     }
