@@ -56,7 +56,7 @@ extension MapReference {
 
   static func mapInfoFilter(info: MapInfo) -> NSPredicate {
     if let date = info.date {
-      let filter = "author == %@ AND date == %@) AND name == %@"
+      let filter = "author == %@ AND date == %@ AND name == %@"
       return NSPredicate(
         format: filter, info.author as CVarArg, date as CVarArg, info.title as CVarArg)
     } else {
