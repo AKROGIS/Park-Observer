@@ -29,8 +29,12 @@ import SwiftUI  // For Alert
 class SurveyController: NSObject, ObservableObject {
 
   let mapView = AGSMapView()
-  var surveyName: String? = nil
-  var mapName: String? = nil
+  private(set) var surveyName: String? = nil
+  private(set) var mapName: String? = nil {
+    didSet {
+      updateMapReference()
+    }
+  }
 
   var isInBackground = false {
     didSet {
@@ -109,13 +113,13 @@ class SurveyController: NSObject, ObservableObject {
 
   private var survey: Survey? = nil {
     didSet {
+      updateMapReference()
       if let survey = oldValue {
         save(survey)
       }
       if let survey = survey {
         enableSurveyControls = true
         featuresLocatableWithoutTouch = survey.config.features.locatableWithoutMapTouch
-        //TODO: set map reference
       } else {
         enableSurveyControls = false
         featuresLocatableWithoutTouch.removeAll()
@@ -126,7 +130,6 @@ class SurveyController: NSObject, ObservableObject {
 
   private var mission: Mission? = nil
   private var missionProperty: MissionProperty? = nil
-  //TODO: This needs to be initialized and updated as appropriate
   private var mapReference: MapReference? = nil
 
   //MARK: - Initialize
@@ -158,6 +161,7 @@ class SurveyController: NSObject, ObservableObject {
     mapView.map?.load(completion: { error in
       if let error = error {
         print("Error in mapView.map.load(): \(error)")
+        self.mapName = nil
       } else {
         if name == defaultMap {
           self.viewPointController.restoreState()
@@ -193,8 +197,19 @@ class SurveyController: NSObject, ObservableObject {
         break
       case .failure(let error):
         self.message = Message.error("Error loading survey: \(error)")
+        self.surveyName = nil
+        self.survey = nil
         break
       }
+    }
+  }
+
+  private func updateMapReference() {
+    if let context = survey?.viewContext, let name = mapName {
+      let mapInfo = MapInfo(mapName: name)
+      mapReference = MapReference.findOrNew(matching: mapInfo, in: context)
+    } else {
+      mapReference = nil
     }
   }
 
@@ -487,8 +502,6 @@ class SurveyController: NSObject, ObservableObject {
     let adhocLocation = AdhocLocation.new(in: context)
     adhocLocation.location = mapPoint.toCLLocationCoordinate2D()
     adhocLocation.timestamp = timestamp
-    
-    //TODO: mapReference is currently nil which will cause the save to fail.
     adhocLocation.map = mapReference
 
     if featureName == .entityNameMissionProperty {
