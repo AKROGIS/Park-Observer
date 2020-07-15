@@ -48,13 +48,13 @@ struct SurveyControlsView: View {
         .mapButton(darkMode: userSettings.darkMapControls)
       }
       VStack {
-        ForEach(0..<self.surveyController.featureNames.count, id: \.self) { index in
+        ForEach(self.surveyController.featuresLocatableWithoutTouch, id: \.name) { feature in
           Button(action: {
-            self.surveyController.addObservationAtGps(featureIndex: index)
+            self.surveyController.addObservationAtGps(feature: feature)
           }) {
             ZStack(alignment: .bottomTrailing) {
               Image(systemName: "plus").font(.largeTitle)
-              Text("\(String(self.surveyController.featureNames[index].prefix(1)))")
+              Text("\(String(feature.name.prefix(1)))")
                 .font(.caption).bold()
                 //TODO: Make sure this offset works in all cases + dynamic font sizes
                 //  maybe best to fix the font size for both "plus" and feature code

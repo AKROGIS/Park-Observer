@@ -80,7 +80,7 @@ class SurveyController: NSObject, ObservableObject {
 
   @Published var slideOutMenuWidth: CGFloat = 300.0
   @Published var message: Message? = nil
-  @Published var featureNames = [String]()
+  @Published var featuresLocatableWithoutTouch = [Feature]()
   @Published var gpsAuthorization = GpsAuthorization.unknown
   @Published var enableSurveyControls = false
 
@@ -88,9 +88,11 @@ class SurveyController: NSObject, ObservableObject {
   @Published var showingAlert = false
 
   @Published var alert: Alert? = nil
+  //TODO: Rename selectedItem(s)
   @Published var selectedItem: EditableObservation? = nil
   @Published var selectedItems: [EditableObservation]? = nil
 
+  //TODO: do these need to be published"  Can they be computed?
   @Published var showingObservationEditor = false
   @Published var showingObservationSelector = false
   @Published var movingGraphic = false
@@ -112,10 +114,12 @@ class SurveyController: NSObject, ObservableObject {
       }
       if let survey = survey {
         enableSurveyControls = true
-        self.featureNames = survey.config.features.map { $0.name }
+        featuresLocatableWithoutTouch = survey.config.features.locatableWithoutMapTouch
+        //TODO: set map reference
       } else {
         enableSurveyControls = false
-        self.featureNames.removeAll()
+        featuresLocatableWithoutTouch.removeAll()
+        //TODO: clear graphics
       }
     }
   }
@@ -161,6 +165,7 @@ class SurveyController: NSObject, ObservableObject {
         // location tracking should take precedence over the previous extents.
         self.locationButtonController.restoreState()
         self.mapName = name
+        //TODO: Set map reference
         NSLog("Finish load map")
       }
     })
@@ -178,7 +183,6 @@ class SurveyController: NSObject, ObservableObject {
       case .success(let survey):
         self.surveyName = name
         self.survey = survey
-        self.featureNames = survey.config.features.map { $0.name }
         NSLog("Start draw survey")
         // Map draw can take several seconds for a large survey. Fortunately, the map layers can
         // be updated on a background thread, and mapView updates the UI appropriately.
@@ -284,6 +288,13 @@ class SurveyController: NSObject, ObservableObject {
     // mission property will be added when we get the next GPS location
   }
 
+  func addObservationAtGps(feature: Feature) {
+    print("Adding \(feature.name) at \(feature.allowAngleDistance ? "AngleDistance" : "GPS")")
+    if let index = survey?.config.features.firstIndex(where: { $0.name == feature.name}) {
+      addObservationAtGps(featureIndex: index)
+    }
+  }
+  //TODO: Move code to addObservationAtGps(feature:) and remove dependence on index
   func addObservationAtGps(featureIndex: Int) {
     if gpsAuthorization == .denied {
       message = Message.error("App is not authorized to obtain your location. Enable in setttings.")
@@ -413,6 +424,7 @@ class SurveyController: NSObject, ObservableObject {
 
   //MARK: - Adding Map Locations
   func addObservation(at mapPoint: AGSPoint) {
+    print("Adding observation at \(mapPoint.toCLLocationCoordinate2D())")
     if gpsAuthorization == .unknown {
       locationManager.requestWhenInUseAuthorization()
       awaitingAuthorizationForMapPoint = mapPoint
@@ -434,6 +446,9 @@ class SurveyController: NSObject, ObservableObject {
       locationManager.startUpdatingLocation()
       // feature will be added after we get the next suitable GPS location
       awaitingFeatureSelectionForMapPoint = mapPoint
+    }
+    for feature in features {
+      print("   Adding \(feature)")
     }
     // TODO: if feature.count > 1 then display selector with feattures
     // else jump to addObservation - wait for gps having name: features[0]
