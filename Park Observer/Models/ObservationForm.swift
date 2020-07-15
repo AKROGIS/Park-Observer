@@ -238,14 +238,10 @@ extension DialogElement {
         label: title, placeholder: placeholder ?? "", showStepper: true, range: range, key: key,
         data: data)
     case .label:
-      if bind == .id {
-        if let v = data.value(forKey: key) as? NSNumber {
-          return LabelElement(label: "\(title ?? "") \(v.intValue)")
-        } else {
-          return LabelElement(label: title ?? "")
-        }
+      if let value = data.value(forKey: key) {
+        return LabelElement(label: "\(title ?? "") \(value)")
       } else {
-        return LabelElement(label: title ?? "")
+        return LabelElement(label: (title ?? "No Text for Label") + " - No value for \(key)")
       }
     case .defaultPicker, .segmentedPicker:
       return PickerElement(
