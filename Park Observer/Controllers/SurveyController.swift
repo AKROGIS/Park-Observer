@@ -73,7 +73,6 @@ class SurveyController: NSObject, ObservableObject {
     didSet {
       if !slideOutMenuVisible {
         showingObservationSelector = false
-        showingObservationDetails = false
         showingObservationEditor = false
       }
     }
@@ -92,7 +91,6 @@ class SurveyController: NSObject, ObservableObject {
   @Published var selectedItem: EditableObservation? = nil
   @Published var selectedItems: [EditableObservation]? = nil
 
-  @Published var showingObservationDetails = false
   @Published var showingObservationEditor = false
   @Published var showingObservationSelector = false
   @Published var movingGraphic = false
