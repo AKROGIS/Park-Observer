@@ -44,6 +44,27 @@ extension Dialog {
     sections.flatMap { $0.elements }
   }
 
+  var defaultValues: [String: Any] {
+    var values = [String: Any]()
+    for element in allElements {
+      if let key = element.attributeName {
+        if let value = element.defaultBool {
+          values[key] = NSNumber(value: value)
+        }
+        if let value = element.defaultIndex {
+          values[key] = NSNumber(value: value)
+        }
+        if let value = element.defaultInt {
+          values[key] = NSNumber(value: value)
+        }
+        if let value = element.defaultNumber {
+          values[key] = NSNumber(value: value)
+        }
+      }
+    }
+    return values
+  }
+
   var allAttributeNames: [String] {
     return allElements.compactMap { $0.attributeName }
   }

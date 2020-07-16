@@ -53,6 +53,31 @@ extension MissionProperty {
       forEntityName: .entityNameMissionProperty, into: context) as! MissionProperty
   }
 
+  static func new(
+    mission: Mission, gpsPoint: GpsPoint? = nil, adhocLocation: AdhocLocation? = nil,
+    observing: Bool?, defaults: [String: Any]?, template: (MissionProperty, [Attribute])? = nil,
+    in context: NSManagedObjectContext
+  ) -> MissionProperty {
+    let missionProperty = MissionProperty.new(in: context)
+    missionProperty.mission = mission
+    missionProperty.gpsPoint = gpsPoint
+    missionProperty.adhocLocation = adhocLocation
+    missionProperty.observing = observing
+    if let defaults = defaults {
+      for key in defaults.keys {
+        missionProperty.setValue(defaults[key], forKey: key)
+      }
+    }
+    if let (template, attributes) = template {
+      for attribute in attributes {
+        let key = .attributePrefix + attribute.name
+        let value = template.value(forKey: key)
+        missionProperty.setValue(value, forKey: key)
+      }
+    }
+    return missionProperty
+  }
+
 }
 
 // MARK: - Fetching
@@ -71,6 +96,14 @@ extension MissionProperty {
     let request = MissionProperties.fetchRequest
     request.predicate = NSPredicate.observationFilter(timestamp: timestamp)
     return (try? context.fetch(request))?.first
+  }
+
+  static func fetchLast(in context: NSManagedObjectContext) -> MissionProperty? {
+    let request = MissionProperties.fetchRequest
+    let sortOrder = NSSortDescriptor(key: "gpsPoint.timestamp", ascending: false)
+    request.sortDescriptors = [sortOrder]
+    return (try? context.fetch(request))?.first
+    //TODO: also sort on adhocLocation.timestamp
   }
 
 }

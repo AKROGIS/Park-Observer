@@ -35,6 +35,24 @@ extension Observation {
       as! Observation
   }
 
+  static func new(
+    _ feature: Feature, mission: Mission, gpsPoint: GpsPoint? = nil,
+    adhocLocation: AdhocLocation? = nil, angleDistanceLocation: AngleDistanceLocation? = nil,
+    defaults: [String: Any]?, in context: NSManagedObjectContext
+  ) -> Observation {
+    let observation = Observation.new(feature, in: context)
+    observation.mission = mission
+    observation.gpsPoint = gpsPoint
+    observation.angleDistanceLocation = angleDistanceLocation
+    observation.adhocLocation = adhocLocation
+    if let defaults = defaults {
+      for key in defaults.keys {
+        observation.setValue(defaults[key], forKey: key)
+      }
+    }
+    return observation
+  }
+
 }
 
 // MARK: - Fetching

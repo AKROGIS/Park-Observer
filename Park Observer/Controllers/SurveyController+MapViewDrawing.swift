@@ -172,11 +172,13 @@ extension AGSMapView {
     overlay.graphics.addObjects(from: survey.gpsGraphics)
   }
 
-  func addMissionProperty(_ missionProperty: MissionProperty) {
-    if let graphic = missionProperty.asGraphic {
-      let overlay = self.missionPropertyOverlay
-      overlay.graphics.add(graphic)
+  func addMissionProperty(_ missionProperty: MissionProperty) -> AGSGraphic? {
+    guard let graphic = missionProperty.asGraphic else {
+      return nil
     }
+    let overlay = self.missionPropertyOverlay
+    overlay.graphics.add(graphic)
+    return graphic
   }
 
   func addMissionProperties(from survey: Survey) {
@@ -221,11 +223,13 @@ extension AGSMapView {
     }
   }
 
-  func addFeature(_ observation: Observation, feature: Feature, index: Int) {
-    if let graphic = observation.asGraphic(for: feature) {
-      let overlay = self.featureOverlay(at: index)
-      overlay.graphics.add(graphic)
+  func addFeature(_ observation: Observation, feature: Feature, index: Int) -> AGSGraphic? {
+    guard let graphic = observation.asGraphic(for: feature) else {
+      return nil
     }
+    let overlay = self.featureOverlay(at: index)
+    overlay.graphics.add(graphic)
+    return graphic
   }
 
   func addFeatures(from survey: Survey) {

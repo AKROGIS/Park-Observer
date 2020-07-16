@@ -120,6 +120,7 @@ class SurveyController: NSObject, ObservableObject {
       if let survey = survey {
         enableSurveyControls = true
         featuresLocatableWithoutTouch = survey.config.features.locatableWithoutMapTouch
+        missionPropertyTemplate = MissionProperty.fetchLast(in: survey.viewContext)
       } else {
         enableSurveyControls = false
         featuresLocatableWithoutTouch.removeAll()
@@ -129,7 +130,7 @@ class SurveyController: NSObject, ObservableObject {
   }
 
   private var mission: Mission? = nil
-  private var missionProperty: MissionProperty? = nil
+  private var missionPropertyTemplate: MissionProperty? = nil
   private var mapReference: MapReference? = nil
 
   //MARK: - Initialize
@@ -327,12 +328,40 @@ class SurveyController: NSObject, ObservableObject {
     // feature will be added when we get the next GPS location
   }
 
+  fileprivate func addMissionProperty(
+    to survey: Survey, atGps gpsPoint: GpsPoint? = nil, atTouch adhocLocation: AdhocLocation? = nil
+  ) {
+    guard let mission = mission else {
+      message = Message.error("No active tracklog (mission). Can't add MissionProperty.")
+      //TODO: Do I need to do any cleanup?
+      return
+    }
+    var defaults: [String: Any]? = nil
+    if missionPropertyTemplate == nil {
+      defaults = survey.config.mission?.dialog?.defaultValues
+    }
+    var template: (MissionProperty, [Attribute])? = nil
+    if let mp = missionPropertyTemplate, let attrs = survey.config.mission?.attributes {
+      template = (mp, attrs)
+    }
+    let missionProperty = MissionProperty.new(
+      mission: mission, gpsPoint: gpsPoint, adhocLocation: adhocLocation, observing: observing,
+      defaults: defaults, template: template, in: survey.viewContext)
+    let graphic = mapView.addMissionProperty(missionProperty)
+    self.missionPropertyTemplate = missionProperty
+    //TODO: selectedItem = editableObservation(for: graphic, missionProperty: missionProperty)
+    selectedItem = editableObservation(for: graphic)
+    showingObservationEditor = true
+    slideOutMenuVisible = true
+  }
+
   /// Called by the Core Location Delegate whenever a new (or updated) location is available
   func addGpsLocation(_ location: CLLocation) {
     //TODO: Simplify
     //TODO: Skip (aka redundant) if timegap from previous GPS point is too small
     guard let survey = self.survey else {
       message = Message.error("No active survey.")
+      //TODO: why are we not doing the same as for mission? below?
       return
     }
     guard let mission = self.mission else {
@@ -382,13 +411,7 @@ class SurveyController: NSObject, ObservableObject {
       defer {
         awaitingLocationForMissionProperty = false
       }
-      let missionProperty = MissionProperty.new(in: survey.viewContext)
-      missionProperty.mission = mission
-      missionProperty.gpsPoint = gpsPoint
-      missionProperty.observing = observing
-      //TODO: Add default mission attributes (and edit them in slideout panel)
-      mapView.addMissionProperty(missionProperty)
-      self.missionProperty = missionProperty
+      addMissionProperty(to: survey, atGps: gpsPoint)
     }
     if awaitingLocationForFeatureAtIndex >= 0 {
       //TODO: duplicative of addObservation(at:)
@@ -399,14 +422,17 @@ class SurveyController: NSObject, ObservableObject {
       let index = awaitingLocationForFeatureAtIndex
       if index < survey.config.features.count {
         let feature = survey.config.features[index]
-        let observation = Observation.new(feature, in: survey.viewContext)
-        observation.mission = mission
+        let defaults = feature.dialog?.defaultValues
+        let observation = Observation.new(
+          feature, mission: mission, gpsPoint: gpsPoint, defaults: defaults, in: survey.viewContext)
         //TODO: support angleDistance locations
         //TODO: update id if appropriate
-        //TODO: set default values from protocol
-        observation.gpsPoint = gpsPoint
         //TODO: Add and edit feature attributes in slideout panel)
-        mapView.addFeature(observation, feature: feature, index: index)
+        let graphic = mapView.addFeature(observation, feature: feature, index: index)
+        //TODO: selectedItem = editableObservation(for: graphic, observation: observation)
+        selectedItem = editableObservation(for: graphic)
+        showingObservationEditor = true
+        slideOutMenuVisible = true
       }
     }
 
@@ -487,42 +513,27 @@ class SurveyController: NSObject, ObservableObject {
   func addObservation(
     at mapPoint: AGSPoint, featureName: String, gpsPoint: GpsPoint?, timestamp: Date?
   ) {
-    guard let context = survey?.viewContext else {
-      print("No view context in SurveyController.addObservation(at:)")
+    guard let survey = survey else {
+      print("No survey in SurveyController.addObservation(at:)")
       return
     }
-    guard let features = survey?.config.features,
-      let feature = features.first(where: { $0.name == featureName })
+    guard let feature = survey.config.features.first(where: { $0.name == featureName })
     else {
       print("No feature for featureName in SurveyController.addObservation(at:)")
       return
     }
-    let timestamp = gpsPoint?.timestamp ?? timestamp ?? Date()
 
-    //TODO: Implement
-    // create an adhocLocation from mapPoint, gpsPoint.timestamp ?? timestamp, and current mapReference
-    //  -> layer id, feature id
-    // create an observation (feature or missionProperty)
-    let adhocLocation = AdhocLocation.new(in: context)
+    let adhocLocation = AdhocLocation.new(in: survey.viewContext)
     adhocLocation.location = mapPoint.toCLLocationCoordinate2D()
-    adhocLocation.timestamp = timestamp
+    adhocLocation.timestamp = gpsPoint?.timestamp ?? timestamp ?? Date()
     adhocLocation.map = mapReference
 
     if featureName == .entityNameMissionProperty {
-      //TODO: this duplicative of code in SurveyController.addGpsLocation()
-      let missionProperty = MissionProperty.new(in: context)
-      missionProperty.adhocLocation = adhocLocation
-      missionProperty.mission = self.mission
-      missionProperty.observing = observing
-      //TODO: populate missionProperty with attributes in self.missionProperty
-      //TODO: I need the graphic from this call
-      mapView.addMissionProperty(missionProperty)
-      self.missionProperty = missionProperty
-      //TODO: Add and edit feature attributes in slideout panel)
+      addMissionProperty(to: survey, atTouch: adhocLocation)
     } else {
       //TODO: this duplicative of code in SurveyController.addGpsLocation()
       //TODO: replace with try Observation.new(featureName, in: context)
-      let observation = Observation.new(feature, in: context)
+      let observation = Observation.new(feature, in: survey.viewContext)
       observation.adhocLocation = adhocLocation
       observation.mission = mission
       // get the graphic from this call
@@ -597,6 +608,9 @@ extension SurveyController {
     return dialog.form(with: data, fields: fields)
   }
 
+  //TODO: Add convenience methods
+  //func editableObservation(for graphic: AGSGraphic? = nil, observation: Observation) -> EditableObservation {
+  //func editableObservation(for graphic: AGSGraphic? = nil, missionProperty: missionProperty) -> EditableObservation {
   func editableObservation(for graphic: AGSGraphic? = nil) -> EditableObservation {
 
     guard let graphic = graphic else {
