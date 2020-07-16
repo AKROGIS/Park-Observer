@@ -124,7 +124,7 @@ class SurveyController: NSObject, ObservableObject {
       } else {
         enableSurveyControls = false
         featuresLocatableWithoutTouch.removeAll()
-        //TODO: clear graphics
+        mapView.removeLayers()
       }
     }
   }
@@ -178,6 +178,7 @@ class SurveyController: NSObject, ObservableObject {
 
   func loadSurvey(name: String? = nil) {
     guard let name = name ?? surveyName ?? Defaults.surveyName.readString() else {
+      survey = nil
       message = Message.warning("No survey loaded. Use the menu to select a survey.")
       return
     }
