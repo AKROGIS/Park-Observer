@@ -91,7 +91,7 @@ extension Survey {
   }
 
   func featureGraphics(for feature: Feature) -> [AGSGraphic] {
-    guard let features = try? self.viewContext.fetch(Observations.fetchAll(for: feature.name))
+    guard let features = try? self.viewContext.fetch(Observations.fetchAll(for: feature))
     else {
       return []
     }

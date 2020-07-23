@@ -111,7 +111,7 @@ extension Observations {
   }
 
   static func csvBody(for feature: Feature, with format: CsvFormat.Features) throws -> String {
-    let observations = try Observations.fetchAll(for: feature.name).execute()
+    let observations = try Observations.fetchAll(for: feature).execute()
     return observations.map {
       $0.asCsv(feature: feature, format: format)
     }.joined(separator: "\n")

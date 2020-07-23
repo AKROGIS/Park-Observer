@@ -296,11 +296,11 @@ class CoreDataTests: XCTestCase {
             XCTAssertEqual(obs.adhocLocation?.map?.name, "Alaska")
           }
           // Test fetching all observations
-          var featureRequest = Observations.fetchAll(for: survey.config.features[1].name)
+          var featureRequest = Observations.fetchAll(for: survey.config.features[1])
           let nests = try? survey.viewContext.fetch(featureRequest)
           XCTAssertNotNil(nests)
           XCTAssertEqual(nests?.count, 0)
-          featureRequest = Observations.fetchAll(for: feature.name)
+          featureRequest = Observations.fetchAll(for: feature)
           let birds = try? survey.viewContext.fetch(featureRequest)
           XCTAssertNotNil(birds)
           XCTAssertEqual(birds?.count, 1)

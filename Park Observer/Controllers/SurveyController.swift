@@ -590,6 +590,7 @@ extension SurveyController {
       print("No name found for graphic's layer in SurveyController.observationForm(for:)")
       return defaultObservationForm
     }
+    var maybeFeature: Feature? = nil
     var maybeFields: [Attribute]? = nil
     var maybeDialog: Dialog? = nil
     if name == .layerNameMissionProperties {
@@ -598,6 +599,7 @@ extension SurveyController {
     } else {
       for feature in survey?.config.features ?? [Feature]() {
         if feature.name == name {
+          maybeFeature = feature
           maybeFields = feature.attributes
           maybeDialog = feature.dialog
         }
@@ -623,7 +625,9 @@ extension SurveyController {
     if name == .layerNameMissionProperties {
       object = MissionProperty.fetchFirst(at: timestamp, in: context)
     } else {
-      object = Observation.fetchFirst(name, at: timestamp, in: context)
+      if let feature = maybeFeature {
+        object = Observation.fetchFirst(feature, at: timestamp, in: context)
+      }
     }
     guard let data = object else {
       print("No object found CoreData Context in SurveyController.observationForm(for:)")
@@ -633,6 +637,7 @@ extension SurveyController {
   }
 
   //TODO: Add convenience methods
+  //TODO: nearly a duplicate of code above in observationForm(for:)
   //func editableObservation(for graphic: AGSGraphic? = nil, observation: Observation) -> EditableObservation {
   //func editableObservation(for graphic: AGSGraphic? = nil, missionProperty: missionProperty) -> EditableObservation {
   func editableObservation(for graphic: AGSGraphic? = nil) -> EditableObservation {
@@ -645,6 +650,7 @@ extension SurveyController {
       print("No name found for graphic's layer in SurveyController.editableObservation(for:)")
       return EditableObservation(graphic: graphic)
     }
+    var maybeFeature: Feature? = nil
     var fields: [Attribute]? = nil
     var dialog: Dialog? = nil
     if name == .layerNameMissionProperties {
@@ -653,6 +659,7 @@ extension SurveyController {
     } else {
       for feature in survey?.config.features ?? [Feature]() {
         if feature.name == name {
+          maybeFeature = feature
           fields = feature.attributes
           dialog = feature.dialog
         }
@@ -673,7 +680,9 @@ extension SurveyController {
     if name == .layerNameMissionProperties {
       item.object = MissionProperty.fetchFirst(at: timestamp, in: context)
     } else {
-      item.object = Observation.fetchFirst(name, at: timestamp, in: context)
+      if let feature = maybeFeature {
+        item.object = Observation.fetchFirst(feature, at: timestamp, in: context)
+      }
     }
     return item
   }

@@ -59,8 +59,8 @@ extension Observation {
 
 extension Observations {
 
-  static func fetchAll(for featureName: String) -> NSFetchRequest<Observation> {
-    let entityName = .observationPrefix + featureName
+  static func fetchAll(for feature: Feature) -> NSFetchRequest<Observation> {
+    let entityName = .observationPrefix + feature.name
     let request: NSFetchRequest<Observation> = NSFetchRequest<Observation>(entityName: entityName)
     return request
   }
@@ -69,10 +69,10 @@ extension Observations {
 
 extension Observation {
 
-  static func fetchFirst(_ name: String, at timestamp: Date, in context: NSManagedObjectContext)
+  static func fetchFirst(_ feature: Feature, at timestamp: Date, in context: NSManagedObjectContext)
     -> Observation?
   {
-    let request = Observations.fetchAll(for: name)
+    let request = Observations.fetchAll(for: feature)
     request.predicate = NSPredicate.observationFilter(timestamp: timestamp)
     return (try? context.fetch(request))?.first
   }
