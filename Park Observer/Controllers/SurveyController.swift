@@ -206,6 +206,17 @@ class SurveyController: NSObject, ObservableObject {
     }
   }
 
+  func willDelete(_ file: AppFile) {
+    if file.type == .survey && file.name == surveyName {
+      survey = nil  // will save and close the old survey
+      self.surveyName = nil
+    }
+    if file.type == .map && file.name == mapName {
+      mapView.map = nil
+      self.mapName = nil
+    }
+  }
+
   private func updateMapReference() {
     if let context = survey?.viewContext, let name = mapName {
       let mapInfo = MapInfo(mapName: name)

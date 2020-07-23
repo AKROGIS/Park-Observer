@@ -43,6 +43,10 @@ class Survey {
     self.viewContext = viewContext
   }
 
+  deinit {
+    close()
+  }
+
 }
 
 //MARK: - Create/Load
@@ -156,7 +160,6 @@ extension Survey {
     try? info.write(to: FileManager.default.surveyInfoURL(with: name))
   }
 
-  // TODO: make private and call in deinit
   func close() {
     if let psc = viewContext.persistentStoreCoordinator {
       for store in psc.persistentStores {

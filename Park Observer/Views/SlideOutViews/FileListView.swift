@@ -73,6 +73,7 @@ struct FileListView: View {
       let name = fileNames[index]
       do {
         let file = AppFile(type: self.fileType, name: name)
+        surveyController.willDelete(file)
         try FileManager.default.delete(file: file)
       } catch {
         self.errorMessage = error.localizedDescription
