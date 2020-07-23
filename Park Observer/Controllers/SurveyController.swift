@@ -29,8 +29,10 @@ import SwiftUI  // For Alert
 class SurveyController: NSObject, ObservableObject {
 
   let mapView = AGSMapView()
-  private(set) var surveyName: String? = nil
-  private(set) var mapName: String? = nil {
+
+  //TODO: surveyName and mapName should be readonly, but views need to see changes
+  @Published var surveyName: String? = nil
+  @Published var mapName: String? = nil {
     didSet {
       updateMapReference()
     }
