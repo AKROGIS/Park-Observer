@@ -86,6 +86,7 @@ class SurveyController: NSObject, ObservableObject {
 
   @Published var slideOutMenuWidth: CGFloat = 300.0
   @Published var message: Message? = nil
+  @Published var featuresLocatableWithTouch = [Feature]()
   @Published var featuresLocatableWithoutTouch = [Feature]()
   @Published var gpsAuthorization = GpsAuthorization.unknown
   @Published var enableSurveyControls = false
@@ -101,6 +102,7 @@ class SurveyController: NSObject, ObservableObject {
   //TODO: do these need to be published"  Can they be computed?
   @Published var showingObservationEditor = false
   @Published var showingObservationSelector = false
+  @Published var showMapTouchSelectionSheet = false
   @Published var movingGraphic = false
 
   // I'm not sure this controller should own these other controllers, but it works
@@ -122,10 +124,12 @@ class SurveyController: NSObject, ObservableObject {
       if let survey = survey {
         enableSurveyControls = true
         featuresLocatableWithoutTouch = survey.config.features.locatableWithoutMapTouch
+        featuresLocatableWithTouch = survey.config.features.locatableWithMapTouch
         missionPropertyTemplate = MissionProperty.fetchLast(in: survey.viewContext)
       } else {
         enableSurveyControls = false
         featuresLocatableWithoutTouch.removeAll()
+        featuresLocatableWithTouch.removeAll()
         mapView.removeLayers()
       }
     }
@@ -501,13 +505,14 @@ class SurveyController: NSObject, ObservableObject {
       locationManager.startUpdatingLocation()
       // feature will be added after we get the next suitable GPS location
       awaitingFeatureSelectionForMapPoint = mapPoint
+      if features.count > 1 {
+        showMapTouchSelectionSheet = true
+        //TODO: monitor the setter for showMapTouchSelectionSheet to know if it was canceled
+      }
     }
     for feature in features {
       print("   Adding \(feature)")
     }
-    // TODO: if feature.count > 1 then display selector with feattures
-    // else jump to addObservation - wait for gps having name: features[0]
-    // selector callback jumps to addObservation - wait for gps having name: selected feature
   }
 
   // TODO: We need to wait until the following concurrent tasks are complete:
@@ -561,6 +566,11 @@ class SurveyController: NSObject, ObservableObject {
     // add graphic to correct layer
     //surveyController.selectedGraphic = graphic
     //surveyController.showingFeatureDetails = true
+  }
+
+  func viewDidSelectFeature(_ feature: Feature) {
+    //TODO: Needs to feed into the addObservation() method
+    print("   Selected \(feature.name)")
   }
 
 }

@@ -36,7 +36,7 @@ struct MapControlsView: View {
 
 }
 
-struct MapDashboardView_Previews: PreviewProvider {
+struct MapControlsView_Previews: PreviewProvider {
   static var previews: some View {
     MapControlsView()
   }

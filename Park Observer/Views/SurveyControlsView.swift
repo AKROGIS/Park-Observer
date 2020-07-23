@@ -65,6 +65,21 @@ struct SurveyControlsView: View {
         }
       }
     }
+    .actionSheet(isPresented: $surveyController.showMapTouchSelectionSheet) {
+      ActionSheet(title: Text("Create new observation"), message: nil, buttons: sheetButtons())
+    }
+  }
+
+  func sheetButtons() -> [ActionSheet.Button] {
+    var buttons = [ActionSheet.Button]()
+    for feature in surveyController.featuresLocatableWithTouch {
+      let button = ActionSheet.Button.default(Text(feature.name)) {
+        self.surveyController.viewDidSelectFeature(feature)
+      }
+      buttons.append(button)
+    }
+    buttons.append(.cancel())
+    return buttons
   }
 
 }
