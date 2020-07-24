@@ -109,6 +109,7 @@ extension AGSMapView {
     self.addTrackLogs(from: survey)
     self.addMissionProperties(from: survey)
     self.addFeatures(from: survey)
+    self.zoomToOverlayExtents()
   }
 
   func removeLayers() {
@@ -241,6 +242,15 @@ extension AGSMapView {
       }
       overlay.graphics.addObjects(from: survey.featureGraphics(for: feature))
     }
+  }
+
+  func zoomToOverlayExtents() {
+    let envelopes = self.graphicsOverlays.compactMap {
+      return ($0 as? AGSGraphicsOverlay)?.extent
+    }
+    guard envelopes.count > 0 else { return }
+    guard let union = AGSGeometryEngine.unionGeometries(envelopes) else { return }
+    self.setViewpointGeometry(union, padding: 44.0, completion: nil)
   }
 
 }

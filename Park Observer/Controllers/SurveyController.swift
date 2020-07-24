@@ -172,11 +172,13 @@ class SurveyController: NSObject, ObservableObject {
       } else {
         if name == defaultMap {
           self.viewPointController.restoreState()
+        } else {
+          // This will do nothing if there is no survey, or the survey is empty
+          self.mapView.zoomToOverlayExtents()
         }
         // location tracking should take precedence over the previous extents.
         self.locationButtonController.restoreState()
         self.mapName = name
-        //TODO: Set map reference
         NSLog("Finish load map")
       }
     })
