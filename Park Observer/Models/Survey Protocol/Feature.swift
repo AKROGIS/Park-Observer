@@ -302,6 +302,15 @@ extension Attribute {
 
 }
 
+//extension [Attribute] {
+extension Array where Element == Attribute {
+
+  var uniqueIdAttribute: Attribute? {
+    self.first { $0.type == .id }
+  }
+
+}
+
 //MARK: - Attribute Codable
 // Custom decoding to have limit name
 // per spec name must match the regex: "([a-z,A-Z])+"

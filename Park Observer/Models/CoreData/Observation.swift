@@ -38,7 +38,8 @@ extension Observation {
   static func new(
     _ feature: Feature, mission: Mission, gpsPoint: GpsPoint? = nil,
     adhocLocation: AdhocLocation? = nil, angleDistanceLocation: AngleDistanceLocation? = nil,
-    defaults: [String: Any]?, in context: NSManagedObjectContext
+    defaults: [String: Any]?, uniqueIdAttribute: Attribute? = nil,
+    in context: NSManagedObjectContext
   ) -> Observation {
     let observation = Observation.new(feature, in: context)
     observation.mission = mission
@@ -47,8 +48,14 @@ extension Observation {
     observation.adhocLocation = adhocLocation
     if let defaults = defaults {
       for key in defaults.keys {
-        observation.setValue(defaults[key], forKey: key)
+        let dbKey = .attributePrefix + key
+        observation.setValue(defaults[key], forKey: dbKey)
       }
+    }
+    if let attribute = uniqueIdAttribute {
+      let key = .attributePrefix + attribute.name
+      let value = Observations.fetchMaxId(for: feature, attribute: attribute, in: context) ?? 0
+      observation.setValue(value + 1, forKey: key)
     }
     return observation
   }
@@ -65,16 +72,38 @@ extension Observations {
     return request
   }
 
-}
-
-extension Observation {
-
   static func fetchFirst(_ feature: Feature, at timestamp: Date, in context: NSManagedObjectContext)
     -> Observation?
   {
     let request = Observations.fetchAll(for: feature)
     request.predicate = NSPredicate.observationFilter(timestamp: timestamp)
     return (try? context.fetch(request))?.first
+  }
+
+  //FIXME: only returns the max of saved entities, not created but unsaved
+  static func fetchMaxId(
+    for feature: Feature, attribute: Attribute, in context: NSManagedObjectContext
+  ) -> Int32? {
+    guard attribute.type == .id else {
+      return nil
+    }
+    let keyPath = .attributePrefix + attribute.name
+    let query = NSExpressionDescription()
+    query.name = "maxID"
+    query.expression = NSExpression(
+      forFunction: "max:", arguments: [NSExpression(forKeyPath: keyPath)])
+    query.expressionResultType = .integer32AttributeType
+    let entityName = .observationPrefix + feature.name
+    let request: NSFetchRequest<NSFetchRequestResult> = NSFetchRequest()
+    request.entity = NSEntityDescription.entity(forEntityName: entityName, in: context)
+    request.resultType = .dictionaryResultType
+    request.propertiesToFetch = [query]
+    guard let results = try? context.fetch(request) as? [[String: Int32]],
+      let result = results.first
+    else {
+      return nil
+    }
+    return result[query.name]
   }
 
 }

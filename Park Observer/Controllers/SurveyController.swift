@@ -125,7 +125,7 @@ class SurveyController: NSObject, ObservableObject {
         enableSurveyControls = true
         featuresLocatableWithoutTouch = survey.config.features.locatableWithoutMapTouch
         featuresLocatableWithTouch = survey.config.features.locatableWithMapTouch
-        missionPropertyTemplate = MissionProperty.fetchLast(in: survey.viewContext)
+        missionPropertyTemplate = MissionProperties.fetchLast(in: survey.viewContext)
       } else {
         enableSurveyControls = false
         featuresLocatableWithoutTouch.removeAll()
@@ -362,9 +362,12 @@ class SurveyController: NSObject, ObservableObject {
     if let mp = missionPropertyTemplate, let attrs = survey.config.mission?.attributes {
       template = (mp, attrs)
     }
+    let uniqueIdAttribute = survey.config.mission?.attributes?.uniqueIdAttribute
+
     let missionProperty = MissionProperty.new(
       mission: mission, gpsPoint: gpsPoint, adhocLocation: adhocLocation, observing: observing,
-      defaults: defaults, template: template, in: survey.viewContext)
+      defaults: defaults, template: template, uniqueIdAttribute: uniqueIdAttribute,
+      in: survey.viewContext)
     let graphic = mapView.addMissionProperty(missionProperty)
     self.missionPropertyTemplate = missionProperty
     //TODO: selectedItem = editableObservation(for: graphic, missionProperty: missionProperty)
@@ -441,11 +444,11 @@ class SurveyController: NSObject, ObservableObject {
       if index < survey.config.features.count {
         let feature = survey.config.features[index]
         let defaults = feature.dialog?.defaultValues
+        let uniqueIdAttribute = feature.attributes?.uniqueIdAttribute
         let observation = Observation.new(
-          feature, mission: mission, gpsPoint: gpsPoint, defaults: defaults, in: survey.viewContext)
+          feature, mission: mission, gpsPoint: gpsPoint, defaults: defaults,
+          uniqueIdAttribute: uniqueIdAttribute, in: survey.viewContext)
         //TODO: support angleDistance locations
-        //TODO: update id if appropriate
-        //TODO: Add and edit feature attributes in slideout panel)
         let graphic = mapView.addFeature(observation, feature: feature, index: index)
         //TODO: selectedItem = editableObservation(for: graphic, observation: observation)
         selectedItem = editableObservation(for: graphic)
@@ -623,10 +626,10 @@ extension SurveyController {
     }
     var object: NSObject?
     if name == .layerNameMissionProperties {
-      object = MissionProperty.fetchFirst(at: timestamp, in: context)
+      object = MissionProperties.fetchFirst(at: timestamp, in: context)
     } else {
       if let feature = maybeFeature {
-        object = Observation.fetchFirst(feature, at: timestamp, in: context)
+        object = Observations.fetchFirst(feature, at: timestamp, in: context)
       }
     }
     guard let data = object else {
@@ -678,10 +681,10 @@ extension SurveyController {
       return item
     }
     if name == .layerNameMissionProperties {
-      item.object = MissionProperty.fetchFirst(at: timestamp, in: context)
+      item.object = MissionProperties.fetchFirst(at: timestamp, in: context)
     } else {
       if let feature = maybeFeature {
-        item.object = Observation.fetchFirst(feature, at: timestamp, in: context)
+        item.object = Observations.fetchFirst(feature, at: timestamp, in: context)
       }
     }
     return item

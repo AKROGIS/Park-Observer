@@ -56,7 +56,7 @@ extension MissionProperty {
   static func new(
     mission: Mission, gpsPoint: GpsPoint? = nil, adhocLocation: AdhocLocation? = nil,
     observing: Bool?, defaults: [String: Any]?, template: (MissionProperty, [Attribute])? = nil,
-    in context: NSManagedObjectContext
+    uniqueIdAttribute: Attribute? = nil, in context: NSManagedObjectContext
   ) -> MissionProperty {
     let missionProperty = MissionProperty.new(in: context)
     missionProperty.mission = mission
@@ -65,7 +65,8 @@ extension MissionProperty {
     missionProperty.observing = observing
     if let defaults = defaults {
       for key in defaults.keys {
-        missionProperty.setValue(defaults[key], forKey: key)
+        let dbKey = .attributePrefix + key
+        missionProperty.setValue(defaults[key], forKey: dbKey)
       }
     }
     if let (template, attributes) = template {
@@ -74,6 +75,11 @@ extension MissionProperty {
         let value = template.value(forKey: key)
         missionProperty.setValue(value, forKey: key)
       }
+    }
+    if let attribute = uniqueIdAttribute {
+      let key = .attributePrefix + attribute.name
+      let value = MissionProperties.fetchMaxId(attribute: attribute, in: context) ?? 0
+      missionProperty.setValue(value + 1, forKey: key)
     }
     return missionProperty
   }
@@ -87,9 +93,6 @@ extension MissionProperties {
   static var fetchRequest: NSFetchRequest<MissionProperty> {
     return NSFetchRequest<MissionProperty>(entityName: .entityNameMissionProperty)
   }
-}
-
-extension MissionProperty {
 
   static func fetchFirst(at timestamp: Date, in context: NSManagedObjectContext) -> MissionProperty?
   {
@@ -104,6 +107,31 @@ extension MissionProperty {
     request.sortDescriptors = [sortOrder]
     return (try? context.fetch(request))?.first
     //TODO: also sort on adhocLocation.timestamp
+  }
+
+  //TODO: compare with Observation.fetchMaxId and refactor common code into one method
+  //FIXME: only returns the max of saved entities, not created but unsaved
+  static func fetchMaxId(attribute: Attribute, in context: NSManagedObjectContext) -> Int32? {
+    guard attribute.type == .id else {
+      return nil
+    }
+    let keyPath = .attributePrefix + attribute.name
+    let query = NSExpressionDescription()
+    query.name = "maxID"
+    query.expression = NSExpression(
+      forFunction: "max:", arguments: [NSExpression(forKeyPath: keyPath)])
+    query.expressionResultType = .integer32AttributeType
+    let entityName = String.entityNameMissionProperty
+    let request: NSFetchRequest<NSFetchRequestResult> = NSFetchRequest()
+    request.entity = NSEntityDescription.entity(forEntityName: entityName, in: context)
+    request.resultType = .dictionaryResultType
+    request.propertiesToFetch = [query]
+    guard let results = try? context.fetch(request) as? [[String: Int32]],
+      let result = results.first
+      else {
+        return nil
+    }
+    return result[query.name]
   }
 
 }
