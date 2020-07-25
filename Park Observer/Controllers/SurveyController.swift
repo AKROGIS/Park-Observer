@@ -293,7 +293,6 @@ class SurveyController: NSObject, ObservableObject {
   private var awaitingFeatureSelectionForMapPoint: AGSPoint? = nil
   private var awaitingFeatureSelectionForMapPointAndTimeStamp: (AGSPoint, Date)? = nil
 
-
   func stopTrackLogging() {
     observing = false
     locationManager.stopUpdatingLocation()
@@ -439,6 +438,11 @@ class SurveyController: NSObject, ObservableObject {
         item = "Mission Property"
         awaitingLocationForMissionProperty = false
       }
+      if awaitingLocationForMapPoint != nil {
+        item = "Observation at touch location"
+        awaitingLocationForMapPoint = nil
+        locationManager.stopUpdatingLocation()
+      }
       message = Message.error("No active tracklog. Can't add \(item).")
       return
     }
@@ -541,10 +545,12 @@ class SurveyController: NSObject, ObservableObject {
         print("No features allow locate by map touch in SurveyController.addObservation(at:)")
         return
       }
+      //TODO: Need a mission, or else we cannot save the gpsPoint we are awaiting
       awaitingLocationForMapPoint = mapPoint
       // Cycle the Location Manager to get the current location
       locationManager.stopUpdatingLocation()
       locationManager.startUpdatingLocation()
+      //TODO: turn off location updates after getting gpsPoint
       // feature will be added after we get the next suitable GPS location
       awaitingFeatureSelectionForMapPoint = mapPoint
       if features.count > 1 {
