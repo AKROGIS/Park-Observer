@@ -16,10 +16,6 @@ class Totalizer: ObservableObject {
   private var definition: MissionTotalizer? = nil
   private var oldMissionProperty: MissionProperty? = nil
   private var oldLocation: CLLocation? = nil
-  private var secondsObserving: TimeInterval = 0.0
-  private var secondsNotObserving: TimeInterval = 0.0
-  private var metersObserving = 0.0
-  private var metersNotObserving = 0.0
   private var totalObserving = 0.0
   private var totalNotObserving = 0.0
 
@@ -58,7 +54,7 @@ class Totalizer: ObservableObject {
           return meters / 1000.0
         case .miles:
           let meters = newLocation.distance(from: oldLocation)
-          return meters / 1000.0
+          return meters / 1609.344
         }
       }()
       let observing = oldMissionProperty?.observing ?? false
@@ -73,10 +69,10 @@ class Totalizer: ObservableObject {
   }
 
   private func resetCounts() {
-    secondsObserving = 0.0
-    secondsNotObserving = 0.0
-    metersObserving = 0.0
-    metersNotObserving = 0.0
+    totalObserving = 0.0
+    totalNotObserving = 0.0
+    oldLocation = nil
+    oldMissionProperty = nil
   }
 
   /// Assumes values come from coredata and are either String or NSNumber
@@ -107,7 +103,17 @@ class Totalizer: ObservableObject {
       let total = totalObserving + totalNotObserving
       textParts.append("\(format(total, definition.units)) tracklogging")
     }
-    text = textParts.joined(separator: "; ")
+    var tempText = textParts.joined(separator: "; ")
+    if let fieldNames = definition.fields {
+      let names = fieldNames.joined(separator: ";")
+      let values = fieldNames.map { name in
+        guard let properties = oldMissionProperty else { return "??" }
+        guard let value = properties.value(forKey: .attributePrefix + name) else { return "??" }
+        return "\(value)"
+      }.joined(separator: ";")
+      tempText += " for \(names) = \(values)"
+    }
+    text = tempText
   }
 
   private func format(_ value: Double, _ units: MissionTotalizer.TotalizerUnits) -> String {
@@ -115,11 +121,13 @@ class Totalizer: ObservableObject {
     case .minutes:
       let minutes = Int(value)
       let seconds = Int((value - Double(minutes)) * 60)
-      return "\(minutes)m:\(seconds)s"
+      return String(format: "%dm:%.2ds", minutes, seconds)
     case .kilometers:
-      return String(format: "%0.1f km", value)
+      let format = value < 10.0 ? "%0.2f km" : "%0.1f km"
+      return String(format: format, value)
     case .miles:
-      return String(format: "%0.1f mi", value)
+      let format = value < 10.0 ? "%0.2f mi" : "%0.1f mi"
+      return String(format: format, value)
     }
   }
 

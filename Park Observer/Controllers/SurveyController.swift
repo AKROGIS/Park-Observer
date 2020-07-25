@@ -402,6 +402,7 @@ class SurveyController: NSObject, ObservableObject {
       //TODO: why are we not doing the same as for mission? below?
       return
     }
+    totalizer.updateLocation(location)
     guard let mission = self.mission else {
       var item = "GPS point"
       if awaitingLocationForFeatureAtIndex >= 0 {
