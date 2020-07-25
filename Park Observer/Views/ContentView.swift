@@ -19,6 +19,9 @@ struct ContentView: View {
           if surveyController.message != nil {
             MessageView(message: surveyController.message!)
           }
+          if surveyController.isShowingTotalizer {
+            TotalizerView().environmentObject(surveyController.totalizer)
+          }
           MapControlsView().padding(20.0)
             .environmentObject(surveyController.viewPointController)
             .environmentObject(surveyController.locationButtonController)

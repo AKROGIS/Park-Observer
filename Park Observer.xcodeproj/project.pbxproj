@@ -22,6 +22,8 @@
 		59BA0EC924A50F6300CA6EF2 /* FileListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 59BA0EC824A50F6300CA6EF2 /* FileListView.swift */; };
 		59BA0ECB24A50FC700CA6EF2 /* FileItemView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 59BA0ECA24A50FC700CA6EF2 /* FileItemView.swift */; };
 		59BA0ECD24A510B800CA6EF2 /* ObservationEditorView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 59BA0ECC24A510B800CA6EF2 /* ObservationEditorView.swift */; };
+		7401743A24CB82010005555E /* TotalizerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7401743924CB82010005555E /* TotalizerView.swift */; };
+		7401743C24CB83850005555E /* Totalizer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7401743B24CB83850005555E /* Totalizer.swift */; };
 		740D5AC1246DB3420018A684 /* Legacy Archives in Resources */ = {isa = PBXBuildFile; fileRef = 740D5AC0246DB3420018A684 /* Legacy Archives */; };
 		741679942478F1D200FF353C /* Legacy CSVs in Resources */ = {isa = PBXBuildFile; fileRef = 741679932478F1D200FF353C /* Legacy CSVs */; };
 		74167996247DB79D00FF353C /* CSVFormatter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 74167995247DB79D00FF353C /* CSVFormatter.swift */; };
@@ -145,6 +147,8 @@
 		59BA0EC824A50F6300CA6EF2 /* FileListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FileListView.swift; sourceTree = "<group>"; };
 		59BA0ECA24A50FC700CA6EF2 /* FileItemView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FileItemView.swift; sourceTree = "<group>"; };
 		59BA0ECC24A510B800CA6EF2 /* ObservationEditorView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ObservationEditorView.swift; sourceTree = "<group>"; };
+		7401743924CB82010005555E /* TotalizerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TotalizerView.swift; sourceTree = "<group>"; };
+		7401743B24CB83850005555E /* Totalizer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Totalizer.swift; sourceTree = "<group>"; };
 		740D5AC0246DB3420018A684 /* Legacy Archives */ = {isa = PBXFileReference; lastKnownFileType = folder; path = "Legacy Archives"; sourceTree = "<group>"; };
 		741679932478F1D200FF353C /* Legacy CSVs */ = {isa = PBXFileReference; lastKnownFileType = folder; path = "Legacy CSVs"; sourceTree = "<group>"; };
 		74167995247DB79D00FF353C /* CSVFormatter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CSVFormatter.swift; sourceTree = "<group>"; };
@@ -385,6 +389,7 @@
 				74A25FC4245232F1006D82CE /* Survey Protocol */,
 				74D85B6A2472EEC30091EA8E /* Survey.swift */,
 				749DE9B9246A3378003D433A /* SurveyInfo.swift */,
+				7401743B24CB83850005555E /* Totalizer.swift */,
 				74167997247DB86300FF353C /* TrackLogs.swift */,
 				7466877324A27C4B00A8FEFA /* UserSettings.swift */,
 			);
@@ -404,6 +409,7 @@
 				7471663D243E859A00A9C960 /* ScalebarView.swift */,
 				59BA0ECE24A511BB00CA6EF2 /* SlideOutViews */,
 				5989329A24995A0A00A7C346 /* SurveyControlsView.swift */,
+				7401743924CB82010005555E /* TotalizerView.swift */,
 				5989329C24995C7100A7C346 /* ViewModifiers.swift */,
 			);
 			path = Views;
@@ -687,6 +693,7 @@
 				74D85B50246F1EB60091EA8E /* GpsPoint.swift in Sources */,
 				5989329D24995C7100A7C346 /* ViewModifiers.swift in Sources */,
 				747165EC243C37A800A9C960 /* AppDelegate.swift in Sources */,
+				7401743C24CB83850005555E /* Totalizer.swift in Sources */,
 				74D85B64246F354F0091EA8E /* CoreData.swift in Sources */,
 				5935172D24ABC99A00A4CD45 /* MapViewTouchDelegate.swift in Sources */,
 				749DE9B22469CF41003D433A /* FileManagement.swift in Sources */,
@@ -714,6 +721,7 @@
 				5935172924A68A8800A4CD45 /* OnlineBaseMaps.swift in Sources */,
 				74A25FC624523371006D82CE /* ProtocolMission.swift in Sources */,
 				74D85B6B2472EEC30091EA8E /* Survey.swift in Sources */,
+				7401743A24CB82010005555E /* TotalizerView.swift in Sources */,
 				74D85B5D246F1EB60091EA8E /* MissionProperty.swift in Sources */,
 				7471663A243E854800A9C960 /* Scalebar.swift in Sources */,
 				74D85B5C246F1EB60091EA8E /* Observation.swift in Sources */,

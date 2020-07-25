@@ -53,8 +53,10 @@ class SurveyController: NSObject, ObservableObject {
     didSet {
       if trackLogging {
         startTrackLogging()
+        resetTotalizer()
       } else {
         stopTrackLogging()
+        isShowingTotalizer = false
       }
     }
   }
@@ -78,8 +80,7 @@ class SurveyController: NSObject, ObservableObject {
   @Published var slideOutMenuVisible = false {
     didSet {
       if !slideOutMenuVisible {
-        showingObservationSelector = false
-        showingObservationEditor = false
+        slideOutClosedActions()
       }
     }
   }
@@ -138,6 +139,10 @@ class SurveyController: NSObject, ObservableObject {
   private var mission: Mission? = nil
   private var missionPropertyTemplate: MissionProperty? = nil
   private var mapReference: MapReference? = nil
+
+  //Totalizer support
+  @Published var isShowingTotalizer = false
+  let totalizer = Totalizer()
 
   //MARK: - Initialize
 
@@ -330,6 +335,7 @@ class SurveyController: NSObject, ObservableObject {
       addObservationAtGps(featureIndex: index)
     }
   }
+
   //TODO: Move code to addObservationAtGps(feature:) and remove dependence on index
   func addObservationAtGps(featureIndex: Int) {
     if gpsAuthorization == .denied {
@@ -371,7 +377,16 @@ class SurveyController: NSObject, ObservableObject {
       defaults: defaults, template: template, uniqueIdAttribute: uniqueIdAttribute,
       in: survey.viewContext)
     let graphic = mapView.addMissionProperty(missionProperty)
+    //TODO: provide an editing context, or a copy of the attributes, in case the user cancels editing
+    //TODO: check survey config to see if we edit the mission properties now
+    //TODO: save to the template _after_ the user has "saved" the edits, if showing the editor
     self.missionPropertyTemplate = missionProperty
+    // Update the totalizer right away so it can get changes to "observing" right away,
+    // and then update again after the user is done editing the attributes for changes in the
+    // monitored fields
+    totalizer.updateProperties(missionProperty)
+    //TODO: update the totalizer _after_ the user has "saved" the edits, if showing the editor
+
     //TODO: selectedItem = editableObservation(for: graphic, missionProperty: missionProperty)
     selectedItem = editableObservation(for: graphic)
     showingObservationEditor = true
@@ -578,6 +593,21 @@ class SurveyController: NSObject, ObservableObject {
     print("   Selected \(feature.name)")
   }
 
+  func slideOutClosedActions() {
+    if showingObservationSelector {
+      showingObservationSelector = false
+    }
+    if showingObservationEditor {
+      showingObservationEditor = false
+      //TODO:
+      // if editing canceled, then delete new objects
+      // if saving edits, then save new objects and update graphics
+      // if using an editing context or a copy of the attributes, then copy to new object
+      // If saving a _new_ missionProperty get missionProperty from ObservationEditor and update totalizer
+      //   totalizer.updateProperties(missionProperty)
+    }
+  }
+
 }
 
 //MARK: - Attribute Form Support
@@ -694,6 +724,20 @@ extension SurveyController {
 }
 
 //TODO: Move to a separate file
+
+//MARK: - Totalizer Support
+extension SurveyController {
+  var totalizerDefinition: MissionTotalizer? {
+    return survey?.config.mission?.totalizer
+  }
+
+  func resetTotalizer() {
+    if let definition = totalizerDefinition {
+      totalizer.reset(with: definition)
+      isShowingTotalizer = true
+    }
+  }
+}
 
 //MARK: - Map Loading
 

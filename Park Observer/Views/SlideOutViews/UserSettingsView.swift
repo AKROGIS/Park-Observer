@@ -31,8 +31,11 @@ struct UserSettingsView: View {
       Toggle(isOn: $userSettings.showInfoBanner) {
         Text("Show Informational Banner")
       }
-      Toggle(isOn: $userSettings.showTotalizer) {
-        Text("Show Totalizer")
+      if surveyController.totalizerDefinition != nil {
+        //TODO: coordinate with or remove userSettings.showTotalizer
+        Toggle(isOn: $surveyController.isShowingTotalizer) {
+          Text("Show Totalizer")
+        }
       }
       //Picker(title: "hi", selection: $userSettings.totalizerUnits) {}
       Text("Gps Settings")
