@@ -19,9 +19,9 @@ class Totalizer: ObservableObject {
   private var totalObserving = 0.0
   private var totalNotObserving = 0.0
 
-  func reset(with definition: MissionTotalizer) {
+  func setup(with definition: MissionTotalizer) {
+    clear()
     self.definition = definition
-    resetCounts()
     updateText()
   }
 
@@ -32,7 +32,7 @@ class Totalizer: ObservableObject {
         let oldValue = oldMissionProperty.value(forKey: key)
         let newValue = newMissionProperty.value(forKey: key)
         if !valuesEqual(oldValue, newValue) {
-          resetCounts()
+          reset()
           break
         }
       }
@@ -68,11 +68,16 @@ class Totalizer: ObservableObject {
     oldLocation = newLocation
   }
 
-  private func resetCounts() {
+  func clear() {
+    definition = nil
+    oldMissionProperty = nil
+    reset()
+  }
+
+  private func reset() {
     totalObserving = 0.0
     totalNotObserving = 0.0
     oldLocation = nil
-    oldMissionProperty = nil
   }
 
   /// Assumes values come from coredata and are either String or NSNumber

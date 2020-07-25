@@ -56,7 +56,7 @@ class SurveyController: NSObject, ObservableObject {
         resetTotalizer()
       } else {
         stopTrackLogging()
-        isShowingTotalizer = false
+        stopTotalizer()
       }
     }
   }
@@ -110,7 +110,6 @@ class SurveyController: NSObject, ObservableObject {
   // better than the other options (owned by various views or SceneDelegate).
   // It also simplifies the SceneDelegate, the View environment, and the Views.
   let locationButtonController: LocationButtonController
-
   let viewPointController: ViewPointController
   let userSettings = UserSettings()
   let locationManager = CLLocationManager()
@@ -119,19 +118,11 @@ class SurveyController: NSObject, ObservableObject {
   private var survey: Survey? = nil {
     didSet {
       updateMapReference()
-      if let survey = oldValue {
-        save(survey)
-      }
       if let survey = survey {
-        enableSurveyControls = true
         featuresLocatableWithoutTouch = survey.config.features.locatableWithoutMapTouch
         featuresLocatableWithTouch = survey.config.features.locatableWithMapTouch
         missionPropertyTemplate = MissionProperties.fetchLast(in: survey.viewContext)
-      } else {
-        enableSurveyControls = false
-        featuresLocatableWithoutTouch.removeAll()
-        featuresLocatableWithTouch.removeAll()
-        mapView.removeLayers()
+        enableSurveyControls = true
       }
     }
   }
@@ -190,8 +181,8 @@ class SurveyController: NSObject, ObservableObject {
   }
 
   func loadSurvey(name: String? = nil) {
+    unloadCurrentSurvey()
     guard let name = name ?? surveyName ?? Defaults.surveyName.readString() else {
-      survey = nil
       message = Message.warning("No survey loaded. Use the menu to select a survey.")
       return
     }
@@ -212,8 +203,6 @@ class SurveyController: NSObject, ObservableObject {
         break
       case .failure(let error):
         self.message = Message.error("Error loading survey: \(error)")
-        self.surveyName = nil
-        self.survey = nil
         break
       }
     }
@@ -221,13 +210,32 @@ class SurveyController: NSObject, ObservableObject {
 
   func willDelete(_ file: AppFile) {
     if file.type == .survey && file.name == surveyName {
-      survey = nil  // will save and close the old survey
-      self.surveyName = nil
+      unloadCurrentSurvey()
     }
     if file.type == .map && file.name == mapName {
       mapView.map = nil
       self.mapName = nil
     }
+  }
+
+  /// Save Survey, Stop TrackLogging, and clear all references to objects owned by the survey
+  func unloadCurrentSurvey() {
+    trackLogging = false
+    enableSurveyControls = false
+    featuresLocatableWithoutTouch.removeAll()
+    featuresLocatableWithTouch.removeAll()
+    mission = nil
+    missionPropertyTemplate = nil
+    mapReference = nil
+    selectedItem = nil
+    selectedItems = nil
+    showingObservationEditor = false
+    showingObservationSelector = false
+    showMapTouchSelectionSheet = false
+    movingGraphic = false
+    mapView.removeLayers()
+    survey = nil
+    surveyName = nil
   }
 
   private func updateMapReference() {
@@ -245,7 +253,7 @@ class SurveyController: NSObject, ObservableObject {
     // To be called when the app goes into the background
     // If the app is terminated this state can be restored when the app relaunches.
     //print("SurveyController.saveState() called on main thread: \(Thread.isMainThread)")
-    save(survey)
+    saveSurvey()
     Defaults.mapName.write(mapName)
     Defaults.surveyName.write(surveyName)
     locationButtonController.saveState()
@@ -262,9 +270,10 @@ class SurveyController: NSObject, ObservableObject {
     slideOutMenuWidth = slideOutMenuWidth < 10.0 ? 300.0 : slideOutMenuWidth
   }
 
-  private func save(_ survey: Survey?) {
+  func saveSurvey() {
+    guard let survey = survey else { return }
     do {
-      try survey?.save()
+      try survey.save()
     } catch {
       message = Message.error("Unable to save survey: \(error.localizedDescription)")
     }
@@ -273,20 +282,37 @@ class SurveyController: NSObject, ObservableObject {
   //MARK: - Adding GPS Locations
 
   private var awaitingAuthorizationForTrackLogging = false
-
   private var awaitingAuthorizationForMissionProperty = false
   private var awaitingAuthorizationForFeatureAtIndex = -1
   private var awaitingLocationForMissionProperty = false
   private var awaitingLocationForFeatureAtIndex = -1
   private var previousGpsPoint: GpsPoint? = nil
   private var savedLocations = [CLLocation]()
+  private var awaitingAuthorizationForMapPoint: AGSPoint? = nil
+  private var awaitingLocationForMapPoint: AGSPoint? = nil
+  private var awaitingFeatureSelectionForMapPoint: AGSPoint? = nil
+  private var awaitingFeatureSelectionForMapPointAndTimeStamp: (AGSPoint, Date)? = nil
+
 
   func stopTrackLogging() {
     observing = false
     locationManager.stopUpdatingLocation()
+    stopWaitingForLocationEvents()
     mission = nil
     previousGpsPoint = nil
-    save(survey)
+    saveSurvey()
+  }
+
+  func stopWaitingForLocationEvents() {
+    awaitingAuthorizationForTrackLogging = false
+    awaitingAuthorizationForMissionProperty = false
+    awaitingAuthorizationForFeatureAtIndex = -1
+    awaitingLocationForMissionProperty = false
+    awaitingLocationForFeatureAtIndex = -1
+    awaitingAuthorizationForMapPoint = nil
+    awaitingLocationForMapPoint = nil
+    awaitingFeatureSelectionForMapPoint = nil
+    awaitingFeatureSelectionForMapPointAndTimeStamp = nil
   }
 
   func startTrackLogging() {
@@ -496,11 +522,6 @@ class SurveyController: NSObject, ObservableObject {
     }
     savedLocations.removeAll()
   }
-
-  var awaitingAuthorizationForMapPoint: AGSPoint? = nil
-  var awaitingLocationForMapPoint: AGSPoint? = nil
-  var awaitingFeatureSelectionForMapPoint: AGSPoint? = nil
-  var awaitingFeatureSelectionForMapPointAndTimeStamp: (AGSPoint, Date)? = nil
 
   //MARK: - Adding Map Locations
   func addObservation(at mapPoint: AGSPoint) {
@@ -734,9 +755,14 @@ extension SurveyController {
 
   func resetTotalizer() {
     if let definition = totalizerDefinition {
-      totalizer.reset(with: definition)
+      totalizer.setup(with: definition)
       isShowingTotalizer = true
     }
+  }
+
+  func stopTotalizer() {
+    totalizer.clear()
+    isShowingTotalizer = false
   }
 }
 
