@@ -130,6 +130,7 @@ class SurveyController: NSObject, ObservableObject {
   private var mission: Mission? = nil
   private var missionPropertyTemplate: MissionProperty? = nil
   private var mapReference: MapReference? = nil
+  private(set) var defaultMapExtentsSet = false
 
   //Totalizer support
   @Published var isShowingTotalizer = false
@@ -149,6 +150,7 @@ class SurveyController: NSObject, ObservableObject {
   //MARK: - Load Map/Survey
 
   func loadMap(name: String? = nil) {
+    defaultMapExtentsSet = false
     let defaultMap = Defaults.mapName.readString()
     guard let name = name ?? mapName ?? defaultMap else {
       print("SurveyController.mapName(name:): No name given")
@@ -168,9 +170,12 @@ class SurveyController: NSObject, ObservableObject {
       } else {
         if name == defaultMap {
           self.viewPointController.restoreState()
+          self.defaultMapExtentsSet = true
         } else {
-          // This will do nothing if there is no survey, or the survey is empty
-          self.mapView.zoomToOverlayExtents()
+          if self.survey != nil {
+            self.mapView.zoomToOverlayExtents()
+            self.defaultMapExtentsSet = false
+          }
         }
         // location tracking should take precedence over the previous extents.
         self.locationButtonController.restoreState()
@@ -197,7 +202,8 @@ class SurveyController: NSObject, ObservableObject {
         // Map draw can take several seconds for a large survey. Fortunately, the map layers can
         // be updated on a background thread, and mapView updates the UI appropriately.
         DispatchQueue.global(qos: .userInitiated).async {
-          self.mapView.draw(survey)
+          self.mapView.draw(survey, zoomToExtents: !self.defaultMapExtentsSet)
+          self.defaultMapExtentsSet = false
           NSLog("Finish draw survey")
         }
         break
