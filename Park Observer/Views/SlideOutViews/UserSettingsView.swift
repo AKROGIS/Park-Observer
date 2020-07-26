@@ -34,8 +34,7 @@ struct UserSettingsView: View {
         }
       }
       if surveyController.totalizerDefinition != nil {
-        //TODO: coordinate with or remove userSettings.showTotalizer
-        Toggle(isOn: $surveyController.isShowingTotalizer) {
+        Toggle(isOn: $userSettings.showTotalizer) {
           Text("Show Totalizer")
         }
       }

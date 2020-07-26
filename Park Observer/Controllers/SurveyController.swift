@@ -22,6 +22,7 @@
 /// - Controls GPS point frequency; explore battery savings
 
 import ArcGIS  // For AGSMapView and AGSGeoViewTouchDelegate
+import Combine  // For Cancellable
 import CoreLocation  // For CLLocationManagerDelegate
 import Foundation  // For NSObject (for delegates)
 import SwiftUI  // For Alert
@@ -53,7 +54,7 @@ class SurveyController: NSObject, ObservableObject {
     didSet {
       if trackLogging {
         startTrackLogging()
-        resetTotalizer()
+        startTotalizer()
       } else {
         stopTrackLogging()
         stopTotalizer()
@@ -142,6 +143,8 @@ class SurveyController: NSObject, ObservableObject {
   @Published var isShowingInfoBanner = false
   @Published var infoBannerText: String = ""
 
+  var cancellables = [AnyCancellable]()
+
   //MARK: - Initialize
 
   override init() {
@@ -151,6 +154,14 @@ class SurveyController: NSObject, ObservableObject {
     locationManager.delegate = self
     touchDelegate = MapViewTouchDelegate(surveyController: self)
     self.mapView.touchDelegate = touchDelegate
+    let cancellable1 = userSettings.$showTotalizer.sink { [weak self] show in
+      self?.isShowingTotalizer = show && (self?.trackLogging ?? false)
+    }
+    cancellables.append(cancellable1)
+    let cancellable2 = userSettings.$showInfoBanner.sink { [weak self] show in
+      self?.isShowingInfoBanner = show && !(self?.infoBannerText.isEmpty ?? true)
+    }
+    cancellables.append(cancellable2)
   }
 
   //MARK: - Load Map/Survey
@@ -771,10 +782,10 @@ extension SurveyController {
     return survey?.config.mission?.totalizer
   }
 
-  func resetTotalizer() {
+  func startTotalizer() {
     if let definition = totalizerDefinition {
       totalizer.setup(with: definition)
-      isShowingTotalizer = true
+      isShowingTotalizer = userSettings.showTotalizer
     }
   }
 
