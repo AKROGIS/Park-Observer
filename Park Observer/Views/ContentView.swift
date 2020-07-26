@@ -22,6 +22,9 @@ struct ContentView: View {
           if surveyController.isShowingTotalizer {
             TotalizerView().environmentObject(surveyController.totalizer)
           }
+          if surveyController.isShowingInfoBanner {
+            InfoBannerView()
+          }
           MapControlsView().padding(20.0)
             .environmentObject(surveyController.viewPointController)
             .environmentObject(surveyController.locationButtonController)

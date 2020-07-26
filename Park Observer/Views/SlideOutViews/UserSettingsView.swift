@@ -28,8 +28,10 @@ struct UserSettingsView: View {
       Toggle(isOn: $userSettings.showAlarmClock) {
         Text("Show Alarm Clock")
       }
-      Toggle(isOn: $userSettings.showInfoBanner) {
-        Text("Show Informational Banner")
+      if surveyController.hasInfoBannerDefinition {
+        Toggle(isOn: $userSettings.showInfoBanner) {
+          Text("Show Informational Banner")
+        }
       }
       if surveyController.totalizerDefinition != nil {
         //TODO: coordinate with or remove userSettings.showTotalizer

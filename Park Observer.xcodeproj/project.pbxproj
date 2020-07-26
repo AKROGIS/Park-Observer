@@ -15,6 +15,7 @@
 		596638E224B7E6D1006D2C29 /* ObservationForm.swift in Sources */ = {isa = PBXBuildFile; fileRef = 596638E124B7E6D1006D2C29 /* ObservationForm.swift */; };
 		596638E424BE6AF9006D2C29 /* ObservationSelectorView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 596638E324BE6AF9006D2C29 /* ObservationSelectorView.swift */; };
 		596638E824BF8BC9006D2C29 /* MapInfo.swift in Sources */ = {isa = PBXBuildFile; fileRef = 596638E724BF8BC9006D2C29 /* MapInfo.swift */; };
+		59717BEA24CCCE8A005F0BDF /* InfoBannerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 59717BE924CCCE8A005F0BDF /* InfoBannerView.swift */; };
 		5989329B24995A0A00A7C346 /* SurveyControlsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5989329A24995A0A00A7C346 /* SurveyControlsView.swift */; };
 		5989329D24995C7100A7C346 /* ViewModifiers.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5989329C24995C7100A7C346 /* ViewModifiers.swift */; };
 		5989329F2499A71300A7C346 /* SlideOutView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5989329E2499A71300A7C346 /* SlideOutView.swift */; };
@@ -140,6 +141,7 @@
 		596638E124B7E6D1006D2C29 /* ObservationForm.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ObservationForm.swift; sourceTree = "<group>"; };
 		596638E324BE6AF9006D2C29 /* ObservationSelectorView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ObservationSelectorView.swift; sourceTree = "<group>"; };
 		596638E724BF8BC9006D2C29 /* MapInfo.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MapInfo.swift; sourceTree = "<group>"; };
+		59717BE924CCCE8A005F0BDF /* InfoBannerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InfoBannerView.swift; sourceTree = "<group>"; };
 		5989329A24995A0A00A7C346 /* SurveyControlsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SurveyControlsView.swift; sourceTree = "<group>"; };
 		5989329C24995C7100A7C346 /* ViewModifiers.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewModifiers.swift; sourceTree = "<group>"; };
 		5989329E2499A71300A7C346 /* SlideOutView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SlideOutView.swift; sourceTree = "<group>"; };
@@ -401,6 +403,7 @@
 			children = (
 				7471663B243E858700A9C960 /* CompassView.swift */,
 				747165EF243C37A800A9C960 /* ContentView.swift */,
+				59717BE924CCCE8A005F0BDF /* InfoBannerView.swift */,
 				74716632243E5B4200A9C960 /* LocationButtonView.swift */,
 				7471663F243F933700A9C960 /* MapControlsView.swift */,
 				74716628243C487300A9C960 /* MapView.swift */,
@@ -695,6 +698,7 @@
 				747165EC243C37A800A9C960 /* AppDelegate.swift in Sources */,
 				7401743C24CB83850005555E /* Totalizer.swift in Sources */,
 				74D85B64246F354F0091EA8E /* CoreData.swift in Sources */,
+				59717BEA24CCCE8A005F0BDF /* InfoBannerView.swift in Sources */,
 				5935172D24ABC99A00A4CD45 /* MapViewTouchDelegate.swift in Sources */,
 				749DE9B22469CF41003D433A /* FileManagement.swift in Sources */,
 				74A25FC824523381006D82CE /* Dialog.swift in Sources */,

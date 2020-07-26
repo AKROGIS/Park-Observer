@@ -58,6 +58,7 @@ class SurveyController: NSObject, ObservableObject {
         stopTrackLogging()
         stopTotalizer()
       }
+      updateInfoBanner()
     }
   }
 
@@ -66,6 +67,7 @@ class SurveyController: NSObject, ObservableObject {
       if trackLogging {
         addMissionPropertyAtGps()
       }
+      updateInfoBanner()
     }
   }
 
@@ -135,6 +137,10 @@ class SurveyController: NSObject, ObservableObject {
   //Totalizer support
   @Published var isShowingTotalizer = false
   let totalizer = Totalizer()
+
+  //Banner support
+  @Published var isShowingInfoBanner = false
+  @Published var infoBannerText: String = ""
 
   //MARK: - Initialize
 
@@ -775,6 +781,28 @@ extension SurveyController {
   func stopTotalizer() {
     totalizer.clear()
     isShowingTotalizer = false
+  }
+}
+
+//MARK: - Banner support
+extension SurveyController {
+  var hasInfoBannerDefinition: Bool {
+    survey?.config.observingMessage != nil || survey?.config.notObservingMessage != nil
+  }
+
+  func updateInfoBanner() {
+    infoBannerText = {
+      if observing {
+        return survey?.config.observingMessage ?? ""
+      } else {
+        if trackLogging {
+          return survey?.config.notObservingMessage ?? ""
+        } else {
+          return ""
+        }
+      }
+    }()
+    isShowingInfoBanner = userSettings.showInfoBanner && !infoBannerText.isEmpty
   }
 }
 
