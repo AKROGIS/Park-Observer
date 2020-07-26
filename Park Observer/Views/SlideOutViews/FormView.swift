@@ -153,7 +153,7 @@ struct FormView: View {
   }
 
   func build(_ e: ToggleElement) -> OptionalToggle {
-    OptionalToggle(label: e.label, isOn: e.binding)
+    OptionalToggle(label: e.label, isOn: e.binding, toggleSet: e.binding.wrappedValue != nil)
   }
 
 }
@@ -278,8 +278,8 @@ struct OptionalToggle: View {
   let label: String
   @Binding var isOn: Bool?
 
+  @State var toggleSet: Bool
   @State private var toggleState = false
-  @State private var toggleSet = false
 
   var body: some View {
     // Intermediate Bindings to manage the view state
