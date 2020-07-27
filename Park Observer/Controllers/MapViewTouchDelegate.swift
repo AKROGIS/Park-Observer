@@ -10,6 +10,13 @@ import ArcGIS  // For AGSGeoView, AGSGeoViewTouchDelegate, AGSGraphic, AGSPoint
 import Foundation  // For NSObject
 import SwiftUI  // For Alert(), Text()
 
+// ArcGIS has suitable default actions for most MapView touch events:
+//  pinch to zoom/rotate
+//  double tap to zoom
+//  drag to pan
+//  long press to magnify
+// There is no default action for tap.  Park Observer will provide that functionality.
+
 // Notes:
 // The _didTouchDown_ event allows the delegate the ability to "steal" subsequent events from the map view, so we
 // can for example use drag events to move a graphic, instead of letting the map view pan the map. There are two
@@ -20,7 +27,7 @@ import SwiftUI  // For Alert(), Text()
 // makes sense. But, I want to display an info callout if the user taps (_didTap, or _didTouchDown_ followed by
 // _didTouchUp_), and drag/move the graphic if I get a _didTouchDown, 1 or more _didTouchDrag_, then a _didTouchUp_.
 // If there is none (or a few, or very small distance) _didTouchDrag_ events, then maybe this was an "accidental"
-// move, and the user was actually trying to tap (this happens easilly in an unstable environment like a vehicle.)
+// move, and the user was actually trying to tap (this happens easily in an unstable environment like a vehicle.)
 // This becomes a difficult problem of guessing the user's intention. 3) I want the system to handle panning,
 // zooming and other touch events, so I need to be careful to not "steal" the events if I'm not going to use them.
 // A solution these problems is to skip the _didTouch*_ events, and just monitor _didTap_ events. On the
@@ -28,7 +35,7 @@ import SwiftUI  // For Alert(), Text()
 // an additional single tap.  I will do a move if there is a "selected" graphic when I get the _didTap_, otherwise
 // will process the _didTap_ as usual to select a graphic and display its info.
 // The only draw back is that there is a 1/2 second delay before I get the tap event, presumably to differentiate
-// a simple tap from other touvh events.
+// a simple tap from other touch events.
 
 class MapViewTouchDelegate: NSObject, AGSGeoViewTouchDelegate {
 
@@ -41,6 +48,10 @@ class MapViewTouchDelegate: NSObject, AGSGeoViewTouchDelegate {
 
   func geoView(_ geoView: AGSGeoView, didTapAtScreenPoint screenPoint: CGPoint, mapPoint: AGSPoint)
   {
+    //Priority:
+    // 1) Move to tap (if requested)
+    // 2) Select feature for review/edit (if tap hits observation(s))
+    // 3) Add Observation
 
     if surveyController.movingGraphic, let graphic = surveyController.selectedItem?.graphic {
       graphic.move(to: mapPoint)
