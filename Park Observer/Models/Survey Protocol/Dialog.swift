@@ -572,6 +572,10 @@ extension DialogElement: Codable {
         }
       }
     }
+    // Make the decimal pad the default keyboard for numbers
+    if keyboardType == nil && (type == .numberEntry || type == .stepper) {
+      keyboardType = .decimalPad
+    }
 
     self.init(
       attributeType: attributeType,

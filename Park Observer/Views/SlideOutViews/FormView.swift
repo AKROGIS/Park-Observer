@@ -73,7 +73,8 @@ struct FormView: View {
         n: e.binding, placeholder: e.placeholder, formatter: formatter, stringFormat: stringFormat
       )
       .textFieldStyle(RoundedBorderTextFieldStyle())
-      .keyboardType(.numbersAndPunctuation)
+      .keyboardType(e.keyboard)
+      .disableAutocorrection(true)
     }
   }
 
@@ -96,13 +97,14 @@ struct FormView: View {
         if e.showStepper {
           StepperView(
             n: e.binding, label: e.label, placeholder: e.placeholder, range: e.range,
-            formatter: formatter)
+            formatter: formatter, keyboard: e.keyboard)
         } else {
           HStack {
             OptionalTextView(e.label)
             IntEditView(n: e.binding, placeholder: e.placeholder, formatter: formatter)
               .textFieldStyle(RoundedBorderTextFieldStyle())
-              .keyboardType(.numbersAndPunctuation)
+            .keyboardType(e.keyboard)
+            .disableAutocorrection(true)
           }
         }
       }
@@ -390,6 +392,7 @@ struct StepperView: View {
   let placeholder: String
   let range: ClosedRange<Int?>
   let formatter: NumberFormatter
+  let keyboard: UIKeyboardType
 
   // rebuild view when state changes
   @State private var changed = false
@@ -408,7 +411,8 @@ struct StepperView: View {
       OptionalTextView(label)
       IntEditView(n: proxy, placeholder: placeholder, formatter: formatter)
         .textFieldStyle(RoundedBorderTextFieldStyle())
-        .keyboardType(.numbersAndPunctuation)
+        .keyboardType(keyboard)
+        .disableAutocorrection(true)
       Stepper("", value: proxy, in: range).labelsHidden()
 
     }

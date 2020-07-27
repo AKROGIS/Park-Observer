@@ -40,6 +40,7 @@ struct DoubleElement: FormElement {
   let id = UUID()
   let label: String?
   var placeholder: String
+  var keyboard: UIKeyboardType
   //Caution, distance (max-min) must fit within Double; therefore 0...Double.max is ok, but -1...Double.max is not
   let range: ClosedRange<Double>?
   let decimals: Int?
@@ -66,6 +67,7 @@ struct IntElement: FormElement {
   let id = UUID()
   let label: String?
   let placeholder: String
+  var keyboard: UIKeyboardType
   let showStepper: Bool
   //Caution, distance (max-min) must fit within Int; therefore 0...Int.max is ok, but -1...Int.max is not
   let range: ClosedRange<Int?>
@@ -216,13 +218,13 @@ extension DialogElement {
         let range = doubleRange(
           lowerBound: minimumValue, upperBound: maximumValue, isFloat: attribute.type == .float)
         return DoubleElement(
-          label: title, placeholder: placeholder ?? "", range: range, decimals: fractionDigits,
+          label: title, placeholder: placeholder ?? "", keyboard: keyboardType, range: range, decimals: fractionDigits,
           key: key, data: data)
       case .int16, .int32, .int64:
         let range = intRange(
           lowerBound: minimumValue, upperBound: maximumValue, type: attribute.type)
         return IntElement(
-          label: title, placeholder: placeholder ?? "", showStepper: true, range: range, key: key,
+          label: title, placeholder: placeholder ?? "", keyboard: keyboardType, showStepper: true, range: range, key: key,
           data: data)
       default:
         return LabelElement(label: (title ?? "") + " - None numeric attribute for \(type.rawValue)")
@@ -235,7 +237,7 @@ extension DialogElement {
     case .stepper:
       let range = intRange(lowerBound: minimumValue, upperBound: maximumValue, type: attribute.type)
       return IntElement(
-        label: title, placeholder: placeholder ?? "", showStepper: true, range: range, key: key,
+        label: title, placeholder: placeholder ?? "", keyboard: keyboardType, showStepper: true, range: range, key: key,
         data: data)
     case .label:
       if let value = data.value(forKey: key) {
