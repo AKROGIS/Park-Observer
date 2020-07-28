@@ -679,8 +679,8 @@ class SurveyController: NSObject, ObservableObject {
 
 extension SurveyController {
 
-  func observationForm(for graphic: AGSGraphic? = nil) -> ObservationForm {
-    let defaultObservationForm = ObservationForm()
+  func observationForm(for graphic: AGSGraphic? = nil) -> AttributeFormDefinition {
+    let defaultObservationForm = AttributeFormDefinition()
 
     guard let graphic = graphic else {
       print("No graphic provided to SurveyController.observationForm(for:)")

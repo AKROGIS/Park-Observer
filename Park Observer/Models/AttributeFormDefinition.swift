@@ -1,5 +1,5 @@
 //
-//  ObservationForm.swift
+//  AttributeFormDefinition.swift
 //  Park Observer
 //
 //  Created by Regan Sarwas on 7/6/20.
@@ -10,12 +10,12 @@ import Foundation  // For NSObject, UUID, NSNumber, @objc
 import SwiftUI  // For Binding
 import UIKit  // For UIKeyboardType, UITextAutocapitalizationType
 
-struct ObservationForm {
+struct AttributeFormDefinition {
   let title: String
   let sections: [FormSection]
 }
 
-extension ObservationForm {
+extension AttributeFormDefinition {
   init() {
     self.title = "No Observation"
     self.sections = []
@@ -179,8 +179,8 @@ struct ToggleElement: FormElement {
 
 extension Dialog {
 
-  func form(with data: NSObject, fields: [Attribute]) -> ObservationForm {
-    return ObservationForm(
+  func form(with data: NSObject, fields: [Attribute]) -> AttributeFormDefinition {
+    return AttributeFormDefinition(
       title: title, sections: sections.map { $0.formSection(with: data, fields: fields) })
   }
 
@@ -218,13 +218,15 @@ extension DialogElement {
         let range = doubleRange(
           lowerBound: minimumValue, upperBound: maximumValue, isFloat: attribute.type == .float)
         return DoubleElement(
-          label: title, placeholder: placeholder ?? "", keyboard: keyboardType, range: range, decimals: fractionDigits,
+          label: title, placeholder: placeholder ?? "", keyboard: keyboardType, range: range,
+          decimals: fractionDigits,
           key: key, data: data)
       case .int16, .int32, .int64:
         let range = intRange(
           lowerBound: minimumValue, upperBound: maximumValue, type: attribute.type)
         return IntElement(
-          label: title, placeholder: placeholder ?? "", keyboard: keyboardType, showStepper: true, range: range, key: key,
+          label: title, placeholder: placeholder ?? "", keyboard: keyboardType, showStepper: true,
+          range: range, key: key,
           data: data)
       default:
         return LabelElement(label: (title ?? "") + " - None numeric attribute for \(type.rawValue)")
@@ -237,7 +239,8 @@ extension DialogElement {
     case .stepper:
       let range = intRange(lowerBound: minimumValue, upperBound: maximumValue, type: attribute.type)
       return IntElement(
-        label: title, placeholder: placeholder ?? "", keyboard: keyboardType, showStepper: true, range: range, key: key,
+        label: title, placeholder: placeholder ?? "", keyboard: keyboardType, showStepper: true,
+        range: range, key: key,
         data: data)
     case .label:
       if let value = data.value(forKey: key) {

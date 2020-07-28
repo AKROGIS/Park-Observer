@@ -9,7 +9,7 @@
 import SwiftUI
 
 struct AttributeFormView: View {
-  let form: ObservationForm
+  let form: AttributeFormDefinition
 
   var body: some View {
     // Must be embedded in a Navigation view for the picker to work
@@ -162,7 +162,7 @@ struct AttributeFormView: View {
 
 struct AttributeFormView_Previews: PreviewProvider {
   static var previews: some View {
-    AttributeFormView(form: ObservationForm(title: "Testing", sections: []))
+    AttributeFormView(form: AttributeFormDefinition(title: "Testing", sections: []))
   }
 }
 
