@@ -1,5 +1,5 @@
 //
-//  FormView.swift
+//  AttributeFormView.swift
 //  Park Observer
 //
 //  Created by Regan Sarwas on 7/7/20.
@@ -8,7 +8,7 @@
 
 import SwiftUI
 
-struct FormView: View {
+struct AttributeFormView: View {
   let form: ObservationForm
 
   var body: some View {
@@ -160,9 +160,9 @@ struct FormView: View {
 
 }
 
-struct FormView_Previews: PreviewProvider {
+struct AttributeFormView_Previews: PreviewProvider {
   static var previews: some View {
-    FormView(form: ObservationForm(title: "Testing", sections: []))
+    AttributeFormView(form: ObservationForm(title: "Testing", sections: []))
   }
 }
 

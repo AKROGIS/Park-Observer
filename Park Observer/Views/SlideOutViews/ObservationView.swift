@@ -1,5 +1,5 @@
 //
-//  ObservationEditorView.swift
+//  ObservationView.swift
 //  Park Observer
 //
 //  Created by Regan Sarwas on 6/25/20.
@@ -8,7 +8,7 @@
 
 import SwiftUI
 
-struct ObservationEditorView: View {
+struct ObservationView: View {
   var item: EditableObservation
   @EnvironmentObject var surveyController: SurveyController
 
@@ -17,7 +17,7 @@ struct ObservationEditorView: View {
     //    .font(.caption).foregroundColor(.secondary)
     //    .padding(.leading)
     Form {
-      FormView(form: self.surveyController.observationForm(for: item.graphic))
+      AttributeFormView(form: self.surveyController.observationForm(for: item.graphic))
         .disabled(item.presentationMode == .review)
       //TODO: Format,options and actions depend on item properties
       // isNew, isEditing, isMovable, ...
@@ -58,8 +58,8 @@ struct ObservationEditorView: View {
 
 }
 
-struct ObservationEditorView_Previews: PreviewProvider {
+struct ObservationView_Previews: PreviewProvider {
   static var previews: some View {
-    ObservationEditorView(item: EditableObservation())
+    ObservationView(item: EditableObservation())
   }
 }

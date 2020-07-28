@@ -28,7 +28,7 @@ struct SlideOutView: View {
         HStack(spacing: 0) {
           if self.surveyController.showingObservationEditor {
             NavigationView {
-              ObservationEditorView(item: surveyController.selectedItem ?? EditableObservation() )
+              ObservationView(item: surveyController.selectedItem ?? EditableObservation() )
             }
             .navigationViewStyle(StackNavigationViewStyle())
           } else if self.surveyController.showingObservationSelector {
