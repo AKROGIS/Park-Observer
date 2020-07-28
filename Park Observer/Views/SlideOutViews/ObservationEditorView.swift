@@ -18,37 +18,39 @@ struct ObservationEditorView: View {
     //    .padding(.leading)
     Form {
       FormView(form: self.surveyController.observationForm(for: item.graphic))
-      //  .disabled(true)
+        .disabled(item.presentationMode == .review)
       //TODO: Format,options and actions depend on item properties
-      // isNew, isEditing, isMovable, ... 
-      Section {
-        HStack {
-          Spacer()
-          Button(action: {}) {
-            HStack {
-              Image(systemName: "trash")
-              Text("Delete")
-            }.foregroundColor(.red)
+      // isNew, isEditing, isMovable, ...
+      if item.presentationMode != .review {
+        Section {
+          HStack {
+            Spacer()
+            Button(action: {}) {
+              HStack {
+                Image(systemName: "trash")
+                Text("Delete")
+              }.foregroundColor(.red)
+            }
+            Spacer()
           }
-          Spacer()
-        }
-        HStack {
-          Spacer()
-          Button(action: {}) {
-            Text("Move")
+          HStack {
+            Spacer()
+            Button(action: {}) {
+              Text("Move")
+            }
+            Spacer()
           }
-          Spacer()
-        }
-        HStack {
-          Spacer()
-          Button(action: {}) {
-            Text("Cancel")
+          HStack {
+            Spacer()
+            Button(action: {}) {
+              Text("Cancel")
+            }
+            Spacer()
+            Button(action: {}) {
+              Text("Save")
+            }
+            Spacer()
           }
-          Spacer()
-          Button(action: {}) {
-            Text("Save")
-          }
-          Spacer()
         }
       }
     }.navigationBarTitle(item.description)

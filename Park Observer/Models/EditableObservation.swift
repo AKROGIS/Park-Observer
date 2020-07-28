@@ -18,6 +18,7 @@ struct EditableObservation {
   let name: String
   var object: NSManagedObject?
   let timestamp: Date
+  let presentationMode: PresentationMode
 
   init(
     dialog: Dialog? = nil,
@@ -25,7 +26,8 @@ struct EditableObservation {
     graphic: AGSGraphic? = nil,
     name: String? = nil,
     object: NSManagedObject? = nil,
-    timestamp: Date? = nil
+    timestamp: Date? = nil,
+    presentationMode: PresentationMode? = nil
   ) {
     self.dialog = dialog
     self.fields = fields ?? [Attribute]()
@@ -33,6 +35,7 @@ struct EditableObservation {
     self.name = name ?? "Unknown"
     self.object = object
     self.timestamp = timestamp ?? Date()
+    self.presentationMode = presentationMode ?? .review
   }
 
   var description: String {
@@ -42,6 +45,12 @@ struct EditableObservation {
       }
     }
     return name
+  }
+
+  enum PresentationMode {
+    case edit
+    case new
+    case review
   }
 
 }
