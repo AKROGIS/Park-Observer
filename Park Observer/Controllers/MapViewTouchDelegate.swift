@@ -77,6 +77,7 @@ class MapViewTouchDelegate: NSObject, AGSGeoViewTouchDelegate {
   }
 
   private func displayInfo(for graphic: AGSGraphic) {
+    //TODO: Set presentation mode to edit as needed (default is review)
     surveyController.selectedItem = surveyController.editableObservation(for: graphic)
     surveyController.showingObservationEditor = true
     surveyController.slideOutMenuVisible = true
@@ -84,6 +85,7 @@ class MapViewTouchDelegate: NSObject, AGSGeoViewTouchDelegate {
 
   private func displaySelector(for graphics: [AGSGraphic]) {
     surveyController.selectedItems = graphics.map {
+      //TODO: Set presentation mode to edit as needed (default is review)
       surveyController.editableObservation(for: $0)
     }
     surveyController.showingObservationSelector = true

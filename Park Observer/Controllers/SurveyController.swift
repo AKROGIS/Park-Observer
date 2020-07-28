@@ -435,8 +435,8 @@ class SurveyController: NSObject, ObservableObject {
     totalizer.updateProperties(missionProperty)
     //TODO: update the totalizer _after_ the user has "saved" the edits, if showing the editor
 
-    //TODO: selectedItem = editableObservation(for: graphic, missionProperty: missionProperty)
-    selectedItem = editableObservation(for: graphic)
+    //TODO: selectedItem = editableObservation(for: graphic, missionProperty: missionProperty, mode: .new)
+    selectedItem = editableObservation(for: graphic, mode: .new)
     showingObservationEditor = true
     slideOutMenuVisible = true
   }
@@ -521,8 +521,8 @@ class SurveyController: NSObject, ObservableObject {
           uniqueIdAttribute: uniqueIdAttribute, in: survey.viewContext)
         //TODO: support angleDistance locations
         let graphic = mapView.addFeature(observation, feature: feature, index: index)
-        //TODO: selectedItem = editableObservation(for: graphic, observation: observation)
-        selectedItem = editableObservation(for: graphic)
+        //TODO: selectedItem = editableObservation(for: graphic, observation: observation, mode: .new)
+        selectedItem = editableObservation(for: graphic, mode: .new)
         showingObservationEditor = true
         slideOutMenuVisible = true
       }
@@ -726,7 +726,9 @@ extension SurveyController {
   //TODO: nearly a duplicate of code above in observationForm(for:)
   //func editableObservation(for graphic: AGSGraphic? = nil, observation: Observation) -> EditableObservation {
   //func editableObservation(for graphic: AGSGraphic? = nil, missionProperty: missionProperty) -> EditableObservation {
-  func editableObservation(for graphic: AGSGraphic? = nil) -> EditableObservation {
+  func editableObservation(
+    for graphic: AGSGraphic? = nil, mode: EditableObservation.PresentationMode = .review
+  ) -> EditableObservation {
 
     guard let graphic = graphic else {
       print("No graphic provided to SurveyController.editableObservation(for:)")
@@ -734,7 +736,7 @@ extension SurveyController {
     }
     guard let name = graphic.graphicsOverlay?.overlayID else {
       print("No name found for graphic's layer in SurveyController.editableObservation(for:)")
-      return EditableObservation(graphic: graphic)
+      return EditableObservation(graphic: graphic, presentationMode: mode)
     }
     var maybeFeature: Feature? = nil
     var fields: [Attribute]? = nil
@@ -753,11 +755,13 @@ extension SurveyController {
     }
     guard let timestamp = graphic.attributes[String.attributeKeyTimestamp] as? Date else {
       print("No timestamp found for graphic in SurveyController.editableObservation(for:)")
-      return EditableObservation(dialog: dialog, fields: fields, graphic: graphic, name: name)
+      return EditableObservation(
+        dialog: dialog, fields: fields, graphic: graphic, name: name, presentationMode: mode)
     }
 
     var item = EditableObservation(
-      dialog: dialog, fields: fields, graphic: graphic, name: name, timestamp: timestamp)
+      dialog: dialog, fields: fields, graphic: graphic, name: name, timestamp: timestamp,
+      presentationMode: mode)
 
     guard let context = survey?.viewContext else {
       print("No coredata context found in SurveyController.editableObservation(for:)")
