@@ -16,6 +16,7 @@
 		596638E424BE6AF9006D2C29 /* ObservationSelectorView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 596638E324BE6AF9006D2C29 /* ObservationSelectorView.swift */; };
 		596638E824BF8BC9006D2C29 /* MapInfo.swift in Sources */ = {isa = PBXBuildFile; fileRef = 596638E724BF8BC9006D2C29 /* MapInfo.swift */; };
 		59717BEA24CCCE8A005F0BDF /* InfoBannerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 59717BE924CCCE8A005F0BDF /* InfoBannerView.swift */; };
+		59717BEC24D0C10B005F0BDF /* ObservationPresenter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 59717BEB24D0C10B005F0BDF /* ObservationPresenter.swift */; };
 		59717BEE24D0C8B4005F0BDF /* AngleDistanceFormView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 59717BED24D0C8B4005F0BDF /* AngleDistanceFormView.swift */; };
 		59717BF024D0C8E9005F0BDF /* AngleDistanceFormDefinition.swift in Sources */ = {isa = PBXBuildFile; fileRef = 59717BEF24D0C8E9005F0BDF /* AngleDistanceFormDefinition.swift */; };
 		5989329B24995A0A00A7C346 /* SurveyControlsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5989329A24995A0A00A7C346 /* SurveyControlsView.swift */; };
@@ -144,6 +145,7 @@
 		596638E324BE6AF9006D2C29 /* ObservationSelectorView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ObservationSelectorView.swift; sourceTree = "<group>"; };
 		596638E724BF8BC9006D2C29 /* MapInfo.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MapInfo.swift; sourceTree = "<group>"; };
 		59717BE924CCCE8A005F0BDF /* InfoBannerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InfoBannerView.swift; sourceTree = "<group>"; };
+		59717BEB24D0C10B005F0BDF /* ObservationPresenter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ObservationPresenter.swift; sourceTree = "<group>"; };
 		59717BED24D0C8B4005F0BDF /* AngleDistanceFormView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AngleDistanceFormView.swift; sourceTree = "<group>"; };
 		59717BEF24D0C8E9005F0BDF /* AngleDistanceFormDefinition.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AngleDistanceFormDefinition.swift; sourceTree = "<group>"; };
 		5989329A24995A0A00A7C346 /* SurveyControlsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SurveyControlsView.swift; sourceTree = "<group>"; };
@@ -393,6 +395,7 @@
 				74D85B3F246F1E8B0091EA8E /* CoreData */,
 				596638DD24AEC1E8006D2C29 /* EditableObservation.swift */,
 				596638E724BF8BC9006D2C29 /* MapInfo.swift */,
+				59717BEB24D0C10B005F0BDF /* ObservationPresenter.swift */,
 				5935172824A68A8800A4CD45 /* OnlineBaseMaps.swift */,
 				74A25FC4245232F1006D82CE /* Survey Protocol */,
 				74D85B6A2472EEC30091EA8E /* Survey.swift */,
@@ -715,6 +718,7 @@
 				74D85B56246F1EB60091EA8E /* MapReference.swift in Sources */,
 				74716629243C487300A9C960 /* MapView.swift in Sources */,
 				596638E024B7E67B006D2C29 /* AttributeFormView.swift in Sources */,
+				59717BEC24D0C10B005F0BDF /* ObservationPresenter.swift in Sources */,
 				7471663C243E858700A9C960 /* CompassView.swift in Sources */,
 				7471663E243E859A00A9C960 /* ScalebarView.swift in Sources */,
 				747165EE243C37A800A9C960 /* SceneDelegate.swift in Sources */,
