@@ -126,6 +126,7 @@ class SurveyController: NSObject, ObservableObject {
         featuresLocatableWithTouch = survey.config.features.locatableWithMapTouch
         missionPropertyTemplate = MissionProperties.fetchLast(in: survey.viewContext)
         enableSurveyControls = true
+        initializeUniqueIds()
       }
     }
   }
@@ -291,6 +292,19 @@ class SurveyController: NSObject, ObservableObject {
     enableBackgroundTrackLogging = Defaults.backgroundTracklogging.readBool()
     slideOutMenuWidth = CGFloat(Defaults.slideOutMenuWidth.readDouble())
     slideOutMenuWidth = slideOutMenuWidth < 10.0 ? 300.0 : slideOutMenuWidth
+  }
+
+  func initializeUniqueIds() {
+    guard let survey = survey else { return }
+    if let attribute = survey.config.mission?.attributes?.uniqueIdAttribute {
+      MissionProperty.initializeUniqueId(attribute: attribute, in: survey.viewContext)
+    }
+    for feature in survey.config.features {
+      if let attribute = feature.attributes?.uniqueIdAttribute {
+        Observation.initializeUniqueId(
+          feature: feature, attribute: attribute, in: survey.viewContext)
+      }
+    }
   }
 
   func saveSurvey() {

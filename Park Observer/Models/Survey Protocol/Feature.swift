@@ -106,11 +106,18 @@ extension Feature {
           let message = "Cannot initialize attributes with an empty list"
           throw corruptError(message: message)
         }
-        // Validate attributes: unique elements (based on type)
+        // Validate attributes: unique elements (based on name)
         let attributeNames = attributes.map { $0.name.lowercased() }
         if Set(attributeNames).count != attributeNames.count {
           let message =
-            "Cannot initialize locationMethods with duplicate names in the list \(attributes)"
+            "Cannot initialize attributes with duplicate names in the list \(attributes)"
+          throw corruptError(message: message)
+        }
+        // Validate attributes: only 0 or 1 attribute with type == .id
+        let idAttribute = attributes.filter { $0.type == .id }
+        if idAttribute.count > 1 {
+          let message =
+            "Cannot initialize attributes with more than one id in \(attributes)"
           throw corruptError(message: message)
         }
       }

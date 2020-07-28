@@ -78,8 +78,7 @@ extension MissionProperty {
     }
     if let attribute = uniqueIdAttribute {
       let key = .attributePrefix + attribute.name
-      let value = MissionProperties.fetchMaxId(attribute: attribute, in: context) ?? 0
-      missionProperty.setValue(value + 1, forKey: key)
+      missionProperty.setValue(MissionProperty.nextId, forKey: key)
     }
     return missionProperty
   }
@@ -109,31 +108,6 @@ extension MissionProperties {
     //TODO: also sort on adhocLocation.timestamp
   }
 
-  //TODO: compare with Observation.fetchMaxId and refactor common code into one method
-  //FIXME: only returns the max of saved entities, not created but unsaved
-  static func fetchMaxId(attribute: Attribute, in context: NSManagedObjectContext) -> Int32? {
-    guard attribute.type == .id else {
-      return nil
-    }
-    let keyPath = .attributePrefix + attribute.name
-    let query = NSExpressionDescription()
-    query.name = "maxID"
-    query.expression = NSExpression(
-      forFunction: "max:", arguments: [NSExpression(forKeyPath: keyPath)])
-    query.expressionResultType = .integer32AttributeType
-    let entityName = String.entityNameMissionProperty
-    let request: NSFetchRequest<NSFetchRequestResult> = NSFetchRequest()
-    request.entity = NSEntityDescription.entity(forEntityName: entityName, in: context)
-    request.resultType = .dictionaryResultType
-    request.propertiesToFetch = [query]
-    guard let results = try? context.fetch(request) as? [[String: Int32]],
-      let result = results.first
-      else {
-        return nil
-    }
-    return result[query.name]
-  }
-
 }
 
 // MARK: - Computed Properties
@@ -146,6 +120,62 @@ extension MissionProperty {
 
   var location: Location? {
     return gpsPoint?.location ?? adhocLocation?.location
+  }
+
+}
+
+//MARK: - Unique ID
+
+// This supports a single mission property attribute that has a unique ID (int32)
+// When a survey is loaded, it must call resetId() to query and cache the maxID from the database.
+// Testing revealed that fetching the maxId from coredata only considered entities that had been
+// saved. It is safer to cache the maxId and increment it whenever a new entity is created
+// (entites are only created by this class).  This means that there may be some holes
+// in the id field.  However if I did not use caching and queried the database everytime a new
+// entity was created, then it is possible that I would assign duplicate IDs if a save
+// was not done before the query.  Since this class does not have control of the saving, and
+// duplicates are much worse than holes, the solution is based on caching.
+
+extension MissionProperty {
+
+  static private var currentId: Int32 = 0
+
+  static var nextId: Int32 {
+    currentId += 1
+    return currentId
+  }
+
+  static func initializeUniqueId(attribute: Attribute, in context: NSManagedObjectContext) {
+    currentId = fetchMaxId(attribute: attribute, in: context) ?? 0
+  }
+
+  static func fetchMaxId(attribute: Attribute, in context: NSManagedObjectContext) -> Int32? {
+    let entityName = String.entityNameMissionProperty
+    return fetchMaxId(for: entityName, attribute: attribute, in: context)
+  }
+
+  static func fetchMaxId(
+    for entityName: String, attribute: Attribute, in context: NSManagedObjectContext
+  ) -> Int32? {
+    guard attribute.type == .id else {
+      return nil
+    }
+    let keyPath = .attributePrefix + attribute.name
+    let query = NSExpressionDescription()
+    query.name = "maxID"
+    query.expression = NSExpression(
+      forFunction: "max:", arguments: [NSExpression(forKeyPath: keyPath)])
+    query.expressionResultType = .integer32AttributeType
+    let request: NSFetchRequest<NSFetchRequestResult> = NSFetchRequest()
+    request.entity = NSEntityDescription.entity(forEntityName: entityName, in: context)
+    request.resultType = .dictionaryResultType
+    request.propertiesToFetch = [query]
+    guard let results = try? context.fetch(request) as? [[String: Int32]],
+      let result = results.first
+    else {
+      return nil
+    }
+    return result[query.name]
   }
 
 }

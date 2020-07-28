@@ -54,8 +54,7 @@ extension Observation {
     }
     if let attribute = uniqueIdAttribute {
       let key = .attributePrefix + attribute.name
-      let value = Observations.fetchMaxId(for: feature, attribute: attribute, in: context) ?? 0
-      observation.setValue(value + 1, forKey: key)
+      observation.setValue(Observation.nextId(for: attribute), forKey: key)
     }
     return observation
   }
@@ -78,32 +77,6 @@ extension Observations {
     let request = Observations.fetchAll(for: feature)
     request.predicate = NSPredicate.observationFilter(timestamp: timestamp)
     return (try? context.fetch(request))?.first
-  }
-
-  //FIXME: only returns the max of saved entities, not created but unsaved
-  static func fetchMaxId(
-    for feature: Feature, attribute: Attribute, in context: NSManagedObjectContext
-  ) -> Int32? {
-    guard attribute.type == .id else {
-      return nil
-    }
-    let keyPath = .attributePrefix + attribute.name
-    let query = NSExpressionDescription()
-    query.name = "maxID"
-    query.expression = NSExpression(
-      forFunction: "max:", arguments: [NSExpression(forKeyPath: keyPath)])
-    query.expressionResultType = .integer32AttributeType
-    let entityName = .observationPrefix + feature.name
-    let request: NSFetchRequest<NSFetchRequestResult> = NSFetchRequest()
-    request.entity = NSEntityDescription.entity(forEntityName: entityName, in: context)
-    request.resultType = .dictionaryResultType
-    request.propertiesToFetch = [query]
-    guard let results = try? context.fetch(request) as? [[String: Int32]],
-      let result = results.first
-    else {
-      return nil
-    }
-    return result[query.name]
   }
 
 }
@@ -200,4 +173,35 @@ extension Observation {
     }
     return gpsPoint.location
   }
+}
+
+//MARK: - Unique ID
+
+// See MissionProperty for a discussion of this solution
+// Note: Each entity class can have only one unique ID field
+
+extension Observation {
+
+  static private var currentIds = [String: Int32]()
+
+  static func nextId(for attribute: Attribute) -> Int32 {
+    let currentId = (currentIds[attribute.name] ?? 0) + 1
+    currentIds[attribute.name] = currentId
+    return currentId
+  }
+
+  static func initializeUniqueId(
+    feature: Feature, attribute: Attribute, in context: NSManagedObjectContext
+  ) {
+    let entityName = .observationPrefix + feature.name
+    currentIds[attribute.name] =
+      fetchMaxId(entityName: entityName, attribute: attribute, in: context) ?? 0
+  }
+
+  static func fetchMaxId(
+    entityName: String, attribute: Attribute, in context: NSManagedObjectContext
+  ) -> Int32? {
+    return MissionProperty.fetchMaxId(for: entityName, attribute: attribute, in: context)
+  }
+
 }
