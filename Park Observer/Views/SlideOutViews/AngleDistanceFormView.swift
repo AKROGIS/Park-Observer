@@ -22,13 +22,19 @@ struct AngleDistanceFormView: View {
         DoubleEditView(
           n: form.angle, placeholder: "", formatter: form.angleFormatter, stringFormat: "%.0f"
         )
+        .textFieldStyle(RoundedBorderTextFieldStyle())
+        .keyboardType(.numbersAndPunctuation)
+        .disableAutocorrection(true)
       }
       HStack {
         Text("Distance:")
         DoubleEditView(
-          n: form.angle, placeholder: "0..1000", formatter: form.distanceFormatter,
+          n: form.distance, placeholder: "0..1000", formatter: form.distanceFormatter,
           stringFormat: "%.0f"
         )
+        .textFieldStyle(RoundedBorderTextFieldStyle())
+        .keyboardType(.numbersAndPunctuation)
+        .disableAutocorrection(true)
       }
     }
   }
