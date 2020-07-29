@@ -32,6 +32,12 @@ struct Dialog: Codable {
   }
 }
 
+extension Dialog {
+  static var defaultDialog: Dialog {
+    return Dialog(groupedOptional: nil, sections: [DialogSection](), title: "")
+  }
+}
+
 // extension for defaults
 extension Dialog {
   var grouped: Bool { groupedOptional ?? false }

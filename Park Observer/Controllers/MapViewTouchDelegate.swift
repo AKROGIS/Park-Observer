@@ -53,9 +53,9 @@ class MapViewTouchDelegate: NSObject, AGSGeoViewTouchDelegate {
     // 2) Select feature for review/edit (if tap hits observation(s))
     // 3) Add Observation
 
-    if surveyController.movingGraphic, let graphic = surveyController.selectedItem?.graphic {
+    if surveyController.movingGraphic, let graphic = surveyController.selectedObservation?.graphic {
       graphic.move(to: mapPoint)
-      surveyController.selectedItem = nil
+      surveyController.selectedObservation = nil
       surveyController.movingGraphic = false
     }
 
@@ -78,15 +78,15 @@ class MapViewTouchDelegate: NSObject, AGSGeoViewTouchDelegate {
 
   private func displayInfo(for graphic: AGSGraphic) {
     //TODO: Set presentation mode to edit as needed (default is review)
-    surveyController.selectedItem = surveyController.editableObservation(for: graphic)
+    surveyController.selectedObservation = surveyController.observationPresenter(for: graphic)
     surveyController.showingObservationEditor = true
     surveyController.slideOutMenuVisible = true
   }
 
   private func displaySelector(for graphics: [AGSGraphic]) {
-    surveyController.selectedItems = graphics.map {
+    surveyController.selectedObservations = graphics.map {
       //TODO: Set presentation mode to edit as needed (default is review)
-      surveyController.editableObservation(for: $0)
+      surveyController.observationPresenter(for: $0)
     }
     surveyController.showingObservationSelector = true
     surveyController.slideOutMenuVisible = true
@@ -132,7 +132,7 @@ extension AGSGeoView {
         return
       } else if let results = results {
         let layersToIgnore: [String] = [
-          .layerNameGpsPoints, .layerNameTrackLogsOn, .layerNameTrackLogsOff
+          .layerNameGpsPoints, .layerNameTrackLogsOn, .layerNameTrackLogsOff,
         ]
         //TODO: if a tracklog is selected, return the related mission property graphic
         let graphics = results.reduce([AGSGraphic]()) { x, y in

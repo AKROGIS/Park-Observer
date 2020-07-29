@@ -99,9 +99,9 @@ class SurveyController: NSObject, ObservableObject {
   @Published var showingAlert = false
 
   @Published var alert: Alert? = nil
-  //TODO: Rename selectedItem(s)
-  @Published var selectedItem: EditableObservation? = nil
-  @Published var selectedItems: [EditableObservation]? = nil
+
+  @Published var selectedObservation: ObservationPresenter? = nil
+  @Published var selectedObservations: [ObservationPresenter]? = nil
 
   //TODO: do these need to be published"  Can they be computed?
   @Published var showingObservationEditor = false
@@ -216,6 +216,7 @@ class SurveyController: NSObject, ObservableObject {
       case .success(let survey):
         self.surveyName = name
         self.survey = survey
+        self.startNewMission()  // We need a mission to add observation w/o a tracklog
         NSLog("Start draw survey")
         // Map draw can take several seconds for a large survey. Fortunately, the map layers can
         // be updated on a background thread, and mapView updates the UI appropriately.
@@ -251,8 +252,8 @@ class SurveyController: NSObject, ObservableObject {
     mission = nil
     missionPropertyTemplate = nil
     mapReference = nil
-    selectedItem = nil
-    selectedItems = nil
+    selectedObservation = nil
+    selectedObservations = nil
     showingObservationEditor = false
     showingObservationSelector = false
     showMapTouchSelectionSheet = false
@@ -330,11 +331,17 @@ class SurveyController: NSObject, ObservableObject {
   private var awaitingFeatureSelectionForMapPoint: AGSPoint? = nil
   private var awaitingFeatureSelectionForMapPointAndTimeStamp: (AGSPoint, Date)? = nil
 
+  func startNewMission() {
+    if let context = self.survey?.viewContext {
+      mission = Mission.new(in: context)
+    }
+  }
+
   func stopTrackLogging() {
     observing = false
     locationManager.stopUpdatingLocation()
     stopWaitingForLocationEvents()
-    mission = nil
+    startNewMission()  // We need a mission outside of tracklogs for adding observation w/o tracklog
     previousGpsPoint = nil
     saveSurvey()
   }
@@ -352,6 +359,11 @@ class SurveyController: NSObject, ObservableObject {
   }
 
   func startTrackLogging() {
+    guard self.survey != nil else {
+      message = Message.error("No survey selected, or survey is corrupt.")
+      return
+    }
+
     //TODO: set minimum distance and accuracy standard based on user prefs
     if gpsAuthorization == .unknown {
       locationManager.requestWhenInUseAuthorization()
@@ -365,13 +377,9 @@ class SurveyController: NSObject, ObservableObject {
       trackLogging = false
       return
     }
-    if let context = self.survey?.viewContext {
-      mission = Mission.new(in: context)
-      locationManager.startUpdatingLocation()
-      addMissionPropertyAtGps()
-    } else {
-      message = Message.error("No survey selected, or survey is corrupt.")
-    }
+    startNewMission()
+    locationManager.startUpdatingLocation()
+    addMissionPropertyAtGps()
   }
 
   func addMissionPropertyAtGps() {
@@ -449,19 +457,21 @@ class SurveyController: NSObject, ObservableObject {
     totalizer.updateProperties(missionProperty)
     //TODO: update the totalizer _after_ the user has "saved" the edits, if showing the editor
 
-    //TODO: selectedItem = editableObservation(for: graphic, missionProperty: missionProperty, mode: .new)
-    selectedItem = editableObservation(for: graphic, mode: .new)
+    //FIXME!!
+    //TODO: selectedObservation = editableObservation(for: graphic, missionProperty: missionProperty, mode: .new)
+    selectedObservation = observationPresenter(for: graphic!)  //, mode: .new)
     showingObservationEditor = true
     slideOutMenuVisible = true
   }
 
   /// Called by the Core Location Delegate whenever a new (or updated) location is available
   func addGpsLocation(_ location: CLLocation) {
-    //TODO: Simplify
-    //TODO: Skip (aka redundant) if timegap from previous GPS point is too small
+    if !trackLogging {
+      // This was a one shot GPS point request, so turn it off before we get more
+      locationManager.stopUpdatingLocation()
+    }
     guard let survey = self.survey else {
       message = Message.error("No active survey.")
-      //TODO: why are we not doing the same as for mission? below?
       return
     }
     totalizer.updateLocation(location)
@@ -512,6 +522,11 @@ class SurveyController: NSObject, ObservableObject {
       }
       self.previousGpsPoint = gpsPoint
     }
+
+    if let observation = selectedObservation, observation.awaitingGps {
+      observation.gpsPoint = gpsPoint
+    }
+    /*
     if awaitingLocationForMissionProperty {
       //TODO: duplicative of addObservation(at:)
       defer {
@@ -535,8 +550,10 @@ class SurveyController: NSObject, ObservableObject {
           uniqueIdAttribute: uniqueIdAttribute, in: survey.viewContext)
         //TODO: support angleDistance locations
         let graphic = mapView.addFeature(observation, feature: feature, index: index)
-        //TODO: selectedItem = editableObservation(for: graphic, observation: observation, mode: .new)
-        selectedItem = editableObservation(for: graphic, mode: .new)
+
+        //FIXME!!
+        //TODO: selectedObservation = editableObservation(for: graphic, observation: observation, mode: .new)
+        selectedObservation = observationPresenter(for: graphic!) //, mode: .new)
         showingObservationEditor = true
         slideOutMenuVisible = true
       }
@@ -546,6 +563,7 @@ class SurveyController: NSObject, ObservableObject {
       //TODO jump to addObservation - wait for feature name having gpsPoint: gpsPoint
       addObservation(at: mapPoint, gpsPoint: gpsPoint)
     }
+ */
   }
 
   //MARK: - Background Locations
@@ -566,6 +584,8 @@ class SurveyController: NSObject, ObservableObject {
 
   //MARK: - Adding Map Locations
   func addObservation(at mapPoint: AGSPoint) {
+
+    //Note: GPS Authorization is not required for map touch, so .denied is ok
     print("Adding observation at \(mapPoint.toCLLocationCoordinate2D())")
     if gpsAuthorization == .unknown {
       locationManager.requestWhenInUseAuthorization()
@@ -573,17 +593,22 @@ class SurveyController: NSObject, ObservableObject {
       return
       // function will be called again once authorization is determined
     }
+
+    //TODO: Need a mission, or else we cannot save the gpsPoint we are awaiting
+    guard let mission = mission else {
+      message = Message.error("No active tracklog (mission). Can't add observation at touch.")
+      return
+    }
+    let observationPresenter = ObservationPresenter(survey: survey, mission: mission)
+    selectedObservation = observationPresenter
+    observationPresenter.initAsMapTouch()
+
     var features = survey?.config.features.locatableWithMapTouch.map { $0.name } ?? []
+
     if gpsAuthorization == .denied {
       features.append(.entityNameMissionProperty)
-      awaitingFeatureSelectionForMapPointAndTimeStamp = (mapPoint, Date())
+      observationPresenter.gpsDisabled()
     } else {
-      if features.count == 0 {
-        print("No features allow locate by map touch in SurveyController.addObservation(at:)")
-        return
-      }
-      //TODO: Need a mission, or else we cannot save the gpsPoint we are awaiting
-      awaitingLocationForMapPoint = mapPoint
       // Cycle the Location Manager to get the current location
       locationManager.stopUpdatingLocation()
       locationManager.startUpdatingLocation()
@@ -595,6 +620,11 @@ class SurveyController: NSObject, ObservableObject {
         //TODO: monitor the setter for showMapTouchSelectionSheet to know if it was canceled
       }
     }
+    if features.count == 0 {
+      print("No features allow locate by map touch in SurveyController.addObservation(at:)")
+      return
+    }
+
     for feature in features {
       print("   Adding \(feature)")
     }
@@ -653,9 +683,14 @@ class SurveyController: NSObject, ObservableObject {
     //surveyController.showingFeatureDetails = true
   }
 
+  //TODO: this could be a mission property
   func viewDidSelectFeature(_ feature: Feature) {
     //TODO: Needs to feed into the addObservation() method
     print("   Selected \(feature.name)")
+    if let observation = selectedObservation, observation.awaitingFeature {
+      observation.observationClass = .feature(feature)
+    }
+
   }
 
   func slideOutClosedActions() {
@@ -679,74 +714,22 @@ class SurveyController: NSObject, ObservableObject {
 
 extension SurveyController {
 
-  func observationForm(for graphic: AGSGraphic? = nil) -> AttributeFormDefinition {
-    let defaultObservationForm = AttributeFormDefinition()
-
-    guard let graphic = graphic else {
-      print("No graphic provided to SurveyController.observationForm(for:)")
-      return defaultObservationForm
-    }
-    guard let name = graphic.graphicsOverlay?.overlayID else {
-      print("No name found for graphic's layer in SurveyController.observationForm(for:)")
-      return defaultObservationForm
-    }
-    var maybeFeature: Feature? = nil
-    var maybeFields: [Attribute]? = nil
-    var maybeDialog: Dialog? = nil
-    if name == .layerNameMissionProperties {
-      maybeFields = survey?.config.mission?.attributes
-      maybeDialog = survey?.config.mission?.dialog
-    } else {
-      for feature in survey?.config.features ?? [Feature]() {
-        if feature.name == name {
-          maybeFeature = feature
-          maybeFields = feature.attributes
-          maybeDialog = feature.dialog
-        }
-      }
-    }
-    guard let dialog = maybeDialog else {
-      print("No dialog definition found in SurveyController.observationForm(for:)")
-      return defaultObservationForm
-    }
-    guard let fields = maybeFields else {
-      print("No attribute definition found in SurveyController.observationForm(for:)")
-      return defaultObservationForm
-    }
-    guard let timestamp = graphic.attributes[String.attributeKeyTimestamp] as? Date else {
-      print("No timestamp found for graphic in SurveyController.observationForm(for:)")
-      return defaultObservationForm
-    }
-    guard let context = survey?.viewContext else {
-      print("No coredata context found in SurveyController.observationForm(for:)")
-      return defaultObservationForm
-    }
-    var object: NSObject?
-    if name == .layerNameMissionProperties {
-      object = MissionProperties.fetchFirst(at: timestamp, in: context)
-    } else {
-      if let feature = maybeFeature {
-        object = Observations.fetchFirst(feature, at: timestamp, in: context)
-      }
-    }
-    guard let data = object else {
-      print("No object found CoreData Context in SurveyController.observationForm(for:)")
-      return defaultObservationForm
-    }
-    return dialog.form(with: data, fields: fields)
+  func observationPresenter(for graphic: AGSGraphic) -> ObservationPresenter {
+    return ObservationPresenter.review(survey: survey, graphic: graphic)
   }
 
   //TODO: Add convenience methods
   //TODO: nearly a duplicate of code above in observationForm(for:)
   //func editableObservation(for graphic: AGSGraphic? = nil, observation: Observation) -> EditableObservation {
   //func editableObservation(for graphic: AGSGraphic? = nil, missionProperty: missionProperty) -> EditableObservation {
+  /*
   func editableObservation(
     for graphic: AGSGraphic? = nil, mode: EditableObservation.PresentationMode = .review
   ) -> EditableObservation {
 
     guard let graphic = graphic else {
       print("No graphic provided to SurveyController.editableObservation(for:)")
-      return self.selectedItem ?? EditableObservation()
+      return self.selectedObservation ?? ObservationPresenter()
     }
     guard let name = graphic.graphicsOverlay?.overlayID else {
       print("No name found for graphic's layer in SurveyController.editableObservation(for:)")
@@ -790,6 +773,8 @@ extension SurveyController {
     }
     return item
   }
+*/
+
 }
 
 //TODO: Move to a separate file

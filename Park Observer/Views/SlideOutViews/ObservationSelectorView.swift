@@ -15,10 +15,10 @@ struct ObservationSelectorView: View {
     NavigationView {
       Form {
         List {
-          ForEach(surveyController.selectedItems ?? [], id: \.timestamp) { item in
-            NavigationLink(destination: ObservationView(item: item)) {
+          ForEach(surveyController.selectedObservations ?? [], id: \.timestamp) { item in
+            NavigationLink(destination: ObservationView(presenter: item)) {
               VStack(alignment: .leading) {
-                Text(item.description)
+                Text(item.title)
                 Text(item.timestamp.shortDateMediumTime)
                   .font(.footnote).foregroundColor(.secondary)
               }

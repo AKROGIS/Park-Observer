@@ -9,57 +9,83 @@
 import SwiftUI
 
 struct ObservationView: View {
-  var item: EditableObservation
+  @ObservedObject var presenter: ObservationPresenter
   @EnvironmentObject var surveyController: SurveyController
 
   var body: some View {
-    //  Text(item.timestamp.shortDateMediumTime)
+    // TODO: find some pleasing way to show the time the observation was collected
+    //  Text(presenter.timestamp.shortDateMediumTime)
     //    .font(.caption).foregroundColor(.secondary)
     //    .padding(.leading)
     Form {
-      AttributeFormView(form: self.surveyController.observationForm(for: item.graphic))
-        .disabled(item.presentationMode == .review)
-      //TODO: Format,options and actions depend on item properties
-      // isNew, isEditing, isMovable, ...
-      if item.presentationMode != .review {
-        Section {
-          HStack {
-            Spacer()
-            Button(action: {}) {
-              HStack {
-                Image(systemName: "trash")
-                Text("Delete")
-              }.foregroundColor(.red)
-            }
-            Spacer()
-          }
-          HStack {
-            Spacer()
-            Button(action: {}) {
-              Text("Move")
-            }
-            Spacer()
-          }
-          HStack {
-            Spacer()
-            Button(action: {}) {
-              Text("Cancel")
-            }
-            Spacer()
-            Button(action: {}) {
-              Text("Save")
-            }
-            Spacer()
-          }
+      if presenter.hasAngleDistanceForm {
+        AngleDistanceFormView(form: presenter.angleDistanceForm!)
+      }
+      if presenter.hasAttributeForm {
+        AttributeFormView(form: presenter.attributeForm!)
+          .disabled(!presenter.isEditing)
+      }
+      if presenter.awaitingGps {
+        HStack {
+          Image(systemName: "exclamationmark.square.fill")
+            .foregroundColor(.red)
+            .font(.title)
+          Text("Waiting for Gps point").foregroundColor(.red)
         }
       }
-    }.navigationBarTitle(item.description)
+      if presenter.awaitingFeature {
+        HStack {
+          Image(systemName: "exclamationmark.square.fill")
+            .foregroundColor(.red)
+            .font(.title)
+          Text("Waiting for feature selection").foregroundColor(.red)
+        }
+      }
+      if !presenter.isEditing {
+        if presenter.isEditable {
+          Button(action: { self.presenter.isEditing = true }) {
+            HStack {
+              Image(systemName: "pencil")
+              Text("Edit")
+            }
+          }
+        }
+      } else {
+        if presenter.isDeletable {
+          Button(action: { self.presenter.delete() }) {
+            HStack {
+              Image(systemName: "trash")
+              Text("Delete")
+            }.foregroundColor(.red)
+          }
+        }
+        if presenter.isMoveableToGps {
+          Button(action: { self.presenter.initiateMoveToGps() }) {
+            Text("Move to GPS Location")
+          }
+        }
+        if presenter.isMoveableToTouch {
+          Button(action: { self.presenter.initiateMoveToTouch() }) {
+            Text("Move to Map Touch")
+          }
+        }
+        Button(action: { self.presenter.initiateMoveToTouch() }) {
+          Text("Move to Map Touch")
+        }
+        Button(action: { self.presenter.cancel() }) {
+          Text("Cancel")
+        }
+        Button(action: { self.presenter.save() }) {
+          Text("Save")
+        }
+      }
+    }.navigationBarTitle(presenter.title)
   }
 
 }
 
 struct ObservationView_Previews: PreviewProvider {
   static var previews: some View {
-    ObservationView(item: EditableObservation())
+    ObservationView(presenter: ObservationPresenter())
   }
 }

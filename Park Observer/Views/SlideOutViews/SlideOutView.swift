@@ -28,7 +28,8 @@ struct SlideOutView: View {
         HStack(spacing: 0) {
           if self.surveyController.showingObservationEditor {
             NavigationView {
-              ObservationView(item: surveyController.selectedItem ?? EditableObservation() )
+              ObservationView(
+                presenter: surveyController.selectedObservation ?? ObservationPresenter())
             }
             .navigationViewStyle(StackNavigationViewStyle())
           } else if self.surveyController.showingObservationSelector {
@@ -40,22 +41,22 @@ struct SlideOutView: View {
             Color(.systemBackground).frame(width: 8).edgesIgnoringSafeArea(.all)
             RoundedRectangle(cornerRadius: 2.5).frame(width: 5, height: 100.0)
           }
-            .gesture(
-              DragGesture(minimumDistance: 5, coordinateSpace: .global)
-                .onChanged {
-                  self.width = max(self.minWidth, $0.location.x)
-                })
+          .gesture(
+            DragGesture(minimumDistance: 5, coordinateSpace: .global)
+              .onChanged {
+                self.width = max(self.minWidth, $0.location.x)
+              })
         }
-          .frame(width: width)
-          .offset(x: self.surveyController.slideOutMenuVisible ? 0 : -1 * width)
-          .animation(.default)
+        .frame(width: width)
+        .offset(x: self.surveyController.slideOutMenuVisible ? 0 : -1 * width)
+        .animation(.default)
         Spacer()
       }
-        .onAppear {
-          self.width = self.surveyController.slideOutMenuWidth
-        }
+      .onAppear {
+        self.width = self.surveyController.slideOutMenuWidth
+      }
     }
-      .keyboardAdaptive()
+    .keyboardAdaptive()
   }
 }
 
