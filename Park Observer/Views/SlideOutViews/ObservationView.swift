@@ -20,6 +20,7 @@ struct ObservationView: View {
     Form {
       if presenter.hasAngleDistanceForm {
         AngleDistanceFormView(form: presenter.angleDistanceForm!)
+          .disabled(!presenter.isEditing)
       }
       if presenter.hasAttributeForm {
         AttributeFormView(form: presenter.attributeForm!)
@@ -51,6 +52,7 @@ struct ObservationView: View {
           }
         }
       } else {
+        //TODO: Support cancel-on-top
         if presenter.isDeletable {
           Button(action: { self.presenter.delete() }) {
             HStack {
@@ -68,9 +70,6 @@ struct ObservationView: View {
           Button(action: { self.presenter.initiateMoveToTouch() }) {
             Text("Move to Map Touch")
           }
-        }
-        Button(action: { self.presenter.initiateMoveToTouch() }) {
-          Text("Move to Map Touch")
         }
         Button(action: { self.presenter.cancel() }) {
           Text("Cancel")

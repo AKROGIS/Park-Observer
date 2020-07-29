@@ -53,8 +53,9 @@ class MapViewTouchDelegate: NSObject, AGSGeoViewTouchDelegate {
     // 2) Select feature for review/edit (if tap hits observation(s))
     // 3) Add Observation
 
-    if surveyController.movingGraphic, let graphic = surveyController.selectedObservation?.graphic {
-      graphic.move(to: mapPoint)
+    if surveyController.movingGraphic {
+
+      surveyController.selectedObservation?.moveGraphic(to: mapPoint)
       surveyController.selectedObservation = nil
       surveyController.movingGraphic = false
     }

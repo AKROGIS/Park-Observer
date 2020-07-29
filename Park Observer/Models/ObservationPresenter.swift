@@ -31,17 +31,37 @@ import Foundation  // For ObservableObject
 //   is saved or discarded based on state of ObservationPresenter
 //   SurveyController deletes the ObservationPresenter
 
+enum CloseAction {
+  case save  // saves changes
+  case discard  // discards any changes made in this presentation
+  case cancel  // aborts and undos a create new feature process
+}
+
+enum ObservationClass {
+  case mission
+  case feature(Feature)
+}
+
+enum PresentationMode {
+  case edit
+  case new
+  case review
+}
+
 final class ObservationPresenter: ObservableObject {
 
   @Published var isEditing = false {
     didSet {
-      isDeletable = true
-      //TODO: is dependent on locationMethod and entity location properties
-      isMoveableToGps = true
-      presentationMode = .edit
+      updateEditing()
     }
   }
 
+  //TODO: Support cancel-on-top
+
+  @Published private(set) var angleDistanceForm: AngleDistanceFormDefinition? = nil
+  @Published private(set) var attributeForm: AttributeFormDefinition? = nil
+  @Published private(set) var awaitingGps = false
+  @Published private(set) var awaitingFeature = false
   @Published private(set) var hasAngleDistanceForm = false
   @Published private(set) var hasAttributeForm = false
   @Published private(set) var isDeletable = false
@@ -49,103 +69,74 @@ final class ObservationPresenter: ObservableObject {
   @Published private(set) var isMoveableToGps = false
   @Published private(set) var isMoveableToTouch = false
   @Published private(set) var presentationMode: PresentationMode = .review
-  @Published private(set) var timestamp = Date()
+  @Published private(set) var timestamp = Date()  //: Date? = nil //ObservationSelectorView needs this to be not nil
   @Published private(set) var title = "Observation"
-  @Published private(set) var angleDistanceForm: AngleDistanceFormDefinition? = nil
-  @Published private(set) var attributeForm: AttributeFormDefinition? = nil
 
-  var gpsPoint: GpsPoint? = nil {
-    didSet {
-      updateState()
-    }
-  }
-  var observationClass: ObservationClass? = nil {
-    didSet {
-      updateState()
-    }
-  }
-  var graphic: AGSGraphic? = nil {
-    didSet {
-      updateState()
-    }
-  }
-
-  //TODO: update published state if these variables change
-  private var survey: Survey? = nil
-  private var mission: Mission? = nil
-  private var locationMethod: LocationMethod.TypeEnum? = .gps
-  private var entity: NSManagedObject? = nil
+  //TODO: Ensure the published state is updated if these variables change
   private var adhocLocation: AdhocLocation? = nil
   private var angleDistanceLocation: AngleDistanceLocation? = nil
+  private var entity: NSManagedObject? = nil
+  private var graphic: AGSGraphic? = nil
+  private var gpsDisabled = false
+  private var gpsPoint: GpsPoint? = nil
+  private var locationMethod: LocationMethod.TypeEnum? = .gps
+  private var mission: Mission? = nil
+  private var name: String?
+  private var observationClass: ObservationClass? = nil
+  private var survey: Survey? = nil
 
-  private func updateState() {
-    updateTitle()
+  //MARK: - Public setters
+
+  //I'm using these public setters so I can differentiate
+  //when the properties are set from outside or inside the class
+  func setObservationClass(observationClass: ObservationClass?) {
+    self.observationClass = observationClass
+    //TODO: - call appropriate updaters
+    updateAwaitingFeature()
   }
 
-  private var fields: [Attribute] {
-    guard let observationClass = observationClass else {
-      return [Attribute]()
-    }
-    switch observationClass {
-    case .mission:
-      return survey?.config.mission?.attributes ?? [Attribute]()
-    case .feature(let feature):
-      return feature.attributes ?? [Attribute]()
-    }
+  func setGpsPoint(gpsPoint: GpsPoint?) {
+    self.gpsPoint = gpsPoint
+    //TODO: - call appropriate updaters
+    updateAwaitingGps()
   }
 
-  private var dialog: Dialog {
-    guard let observationClass = observationClass else {
-      return Dialog.defaultDialog
-    }
-    switch observationClass {
-    case .mission:
-      return survey?.config.mission?.dialog ?? Dialog.defaultDialog
-    case .feature(let feature):
-      return feature.dialog ?? Dialog.defaultDialog
-    }
+  func setGpsDisabled() {
+    gpsDisabled = true
+    awaitingGps = false
   }
 
-  private var name: String? {
-    guard let observationClass = observationClass else {
-      return nil
-    }
-    switch observationClass {
-    case .mission:
-      return .entityNameMissionProperty
-    case .feature(let feature):
-      return feature.name
-    }
+  //MARK: - Published Actions
+
+  func initiateMoveToGps() {
+    print("initiateMoveToGps not implemented.")
   }
 
-  private func updateTitle() {
-    if let name = name {
-      title = name
-      //TODO: If feature has a map label defined, use that (it may be the id)
-      if let idFieldName = fields.first(where: { $0.type == .id })?.name,
-        let id = entity?.value(forKey: .attributePrefix + idFieldName) as? Int
-      {
-        title = "\(name) #\(id)"
-      }
-      //TODO: If feature has no label or id, then use Timestamp
-    }
+  func initiateMoveToTouch() {
+    print("initiateMoveToTouch not implemented.")
+    // set surveyController.movingGraphic = true
+    // set surveyController.isShowingSlideout = false
+    // set surveyController.message.info("Tap on map to move graphic")
+    // tap will callback to self.moveGraphic(to:)
   }
 
-  private func updateTimestamp() {
-    //TODO: Get timestamp from gps if PresentationMode == .new else
-    //  otherwise get timestamp from entity
+  func save() {
+    print("save not implemented.")
+  }
+
+  func cancel() {
+    print("cancel not implemented.")
+  }
+
+  func delete() {
+    print("delete not implemented.")
+  }
+
+  func moveGraphic(to mapPoint: AGSPoint) {
     if let graphic = graphic {
-      if let timestamp = graphic.attributes[String.attributeKeyTimestamp] as? Date {
-        self.timestamp = timestamp
-      }
+      graphic.move(to: mapPoint)
     }
   }
-
-  func initiateMoveToGps() {}
-  func initiateMoveToTouch() {}
-  func save() {}
-  func cancel() {}
-  func delete() {}
 
 }
 
@@ -153,61 +144,96 @@ final class ObservationPresenter: ObservableObject {
 
 extension ObservationPresenter {
 
-  /*
-   mission is optional with graphic,
-   configure all properties (same as editable observation when given graphic
-   set presentation mode
-   */
-  convenience init(survey: Survey?, mission: Mission?) {
-    self.init()
-    self.survey = survey
-    self.mission = mission
-    updateState()
-  }
-
-  static func review(survey: Survey?, graphic: AGSGraphic) -> ObservationPresenter {
-    let op = ObservationPresenter(survey: survey, mission: nil)
-    op.graphic = graphic
-    op.presentationMode = .review
-    op.initWithGraphic()
-    op.attributeForm = op.observationForm
-    op.hasAttributeForm = op.attributeForm != nil
+  static func create(survey: Survey?, mission: Mission?, mapTouch: AGSPoint) -> ObservationPresenter
+  {
+    let op = ObservationPresenter()
+    op.presentationMode = .new
+    op.survey = survey
+    op.mission = mission
+    op.initWith(mapTouch)
     return op
   }
-  //static func edit(survey: Survey, graphic: AGSGraphic) -> ObservationPresenter {}
-  //static func new(survey: Survey, feature: Feature, locationMethod: LocationMethod.TypeEnum) -> ObservationPresenter {}
-  //static func new(survey: Survey, properties: MissionProperty, locationMethod: LocationMethod.TypeEnum) -> ObservationPresenter {}
-  //static func newTouch(survey: Survey) -> ObservationPresenter {}
 
-  func initAsMapTouch() {}
-  func gpsDisabled() {}
+  static func create(survey: Survey?, mission: Mission?, observationClass: ObservationClass)
+    -> ObservationPresenter
+  {
+    let op = ObservationPresenter()
+    op.presentationMode = .new
+    op.survey = survey
+    op.mission = mission
+    op.initWith(observationClass)
+    return op
+  }
 
-  func initWithGraphic() {
-    guard let graphic = graphic else {
-      print("No graphic provided to ObservationPresenter.initWithGraphic()")
-      return
-    }
-    if let name = graphic.graphicsOverlay?.overlayID {
-      if name == .layerNameMissionProperties {
-        observationClass = .mission
-      } else {
-        for feature in survey?.config.features ?? [Feature]() {
-          if feature.name == name {
-            observationClass = .feature(feature)
-          }
-        }
-      }
+  static func show(survey: Survey?, graphic: AGSGraphic) -> ObservationPresenter {
+    let op = ObservationPresenter()
+    op.survey = survey
+    op.initWith(graphic)
+    return op
+  }
+
+  private func initWith(_ mapTouch: AGSPoint) {
+    //TODO: Setup
+  }
+
+  private func initWith(_ observationClass: ObservationClass) {
+    //TODO: Setup
+  }
+
+  private func initWith(_ graphic: AGSGraphic) {
+    self.graphic = graphic
+    self.name = graphic.graphicsOverlay?.overlayID
+    updateObservationClass(with: self.name)
+    updateTimestamp(with: graphic)
+    updateEntityFromTimestamp()
+    updateAttributeForm()
+    updateLocationProperties()
+    updateAngleDistanceForm()
+    updateTitle()
+  }
+
+}
+
+//MARK: - Private Updaters
+
+extension ObservationPresenter {
+
+  private func updateAngleDistanceForm() {
+    angleDistanceForm = angleDistanceFormDefinition
+    hasAngleDistanceForm = angleDistanceForm != nil
+  }
+
+  private func updateAttributeForm() {
+    attributeForm = attributeFormDefinition
+    hasAttributeForm = attributeForm != nil
+  }
+
+  private func updateAwaitingGps() {
+    awaitingGps = !gpsDisabled && gpsPoint == nil && presentationMode == .new
+  }
+
+  private func updateAwaitingFeature() {
+    awaitingFeature = observationClass == nil && presentationMode == .new
+  }
+
+  private func updateEditing() {
+    if isEditing {
+      isDeletable = true
+      //TODO: is dependent on locationMethod and entity location properties
+      isMoveableToTouch = true
+      isMoveableToGps = true
+      presentationMode = .edit
     } else {
-      print("No name found for graphic's layer in ObservationPresenter.initWithGraphic()")
-      observationClass = nil
+      isDeletable = false
+      isMoveableToGps = false
+      isMoveableToTouch = false
+      presentationMode = .review
     }
-    if let timestamp = graphic.attributes[String.attributeKeyTimestamp] as? Date {
-      self.timestamp = timestamp
-    } else {
-      print("No timestamp found for graphic in ObservationPresenter.initWithGraphic()")
-    }
+  }
+
+  private func updateEntityFromTimestamp() {
     guard let context = survey?.viewContext else {
-      print("No coredata context found in ObservationPresenter.initWithGraphic()")
+      entity = nil
       return
     }
     switch observationClass {
@@ -221,92 +247,136 @@ extension ObservationPresenter {
       entity = nil
     }
   }
-}
 
-enum ObservationClass {
-  case mission
-  case feature(Feature)
-}
-
-enum CloseAction {
-  case save  // saves changes
-  case discard  // discards any changes made in this presentation
-  case cancel  // aborts and undos a create new feature process
-}
-
-enum PresentationMode {
-  case edit
-  case new
-  case review
-}
-
-//MARK: - Computed Properties
-extension ObservationPresenter {
-
-  var awaitingGps: Bool {
-    return gpsPoint == nil && presentationMode == .new
+  private func updateLocationProperties() {
+    locationMethod = .gps  //default
+    if let missionProperty = entity as? MissionProperty {
+      if let location = missionProperty.adhocLocation {
+        adhocLocation = location
+        locationMethod = .mapTouch
+      }
+      gpsPoint = missionProperty.gpsPoint
+    }
+    if let observation = entity as? Observation {
+      if let location = observation.angleDistanceLocation {
+        angleDistanceLocation = location
+        locationMethod = .angleDistance
+      }
+      if let location = observation.adhocLocation {
+        adhocLocation = location
+        locationMethod = .mapTouch
+      }
+      gpsPoint = observation.gpsPoint
+    }
   }
 
-  var awaitingFeature: Bool {
-    return observationClass == nil && presentationMode == .new
+  private func updateName(with observationClass: ObservationClass?) {
+    guard let observationClass = observationClass else {
+      name = nil
+      return
+    }
+    switch observationClass {
+    case .mission:
+      name = .entityNameMissionProperty
+    case .feature(let feature):
+      name = feature.name
+    }
   }
 
-  //TODO: Simplify this with other computed properties
-  //TODO: alternatively start with entity, not graphic
-  var observationForm: AttributeFormDefinition {
-    let defaultObservationForm = AttributeFormDefinition()
-
-    guard let graphic = graphic else {
-      print("No graphic provided to ObservationPresenter.observationForm")
-      return defaultObservationForm
+  private func updateObservationClass(with name: String?) {
+    guard let name = name else {
+      observationClass = nil
+      return
     }
-    guard let name = graphic.graphicsOverlay?.overlayID else {
-      print("No name found for graphic's layer in ObservationPresenter.observationForm")
-      return defaultObservationForm
-    }
-    var maybeFeature: Feature? = nil
-    var maybeFields: [Attribute]? = nil
-    var maybeDialog: Dialog? = nil
+    observationClass = nil  // default
     if name == .layerNameMissionProperties {
-      maybeFields = survey?.config.mission?.attributes
-      maybeDialog = survey?.config.mission?.dialog
+      observationClass = .mission
     } else {
       for feature in survey?.config.features ?? [Feature]() {
         if feature.name == name {
-          maybeFeature = feature
-          maybeFields = feature.attributes
-          maybeDialog = feature.dialog
+          observationClass = .feature(feature)
         }
       }
     }
-    guard let dialog = maybeDialog else {
-      print("No dialog definition found in ObservationPresenter.observationForm")
-      return defaultObservationForm
-    }
-    guard let fields = maybeFields else {
-      print("No attribute definition found in ObservationPresenter.observationForm")
-      return defaultObservationForm
-    }
-    guard let timestamp = graphic.attributes[String.attributeKeyTimestamp] as? Date else {
-      print("No timestamp found for graphic in ObservationPresenter.observationForm")
-      return defaultObservationForm
-    }
-    guard let context = survey?.viewContext else {
-      print("No coredata context found in ObservationPresenter.observationForm")
-      return defaultObservationForm
-    }
-    var object: NSObject?
-    if name == .layerNameMissionProperties {
-      object = MissionProperties.fetchFirst(at: timestamp, in: context)
-    } else {
-      if let feature = maybeFeature {
-        object = Observations.fetchFirst(feature, at: timestamp, in: context)
-      }
-    }
-    guard let data = object else {
-      print("No object found CoreData Context in ObservationPresenter.observationForm")
-      return defaultObservationForm
-    }
-    return dialog.form(with: data, fields: fields)
   }
+
+  private func updateTimestamp(with entity: NSManagedObject) {
+    //TODO: Get timestamp from gps if PresentationMode == .new else
+    //  otherwise get timestamp from entity
+  }
+
+  private func updateTimestamp(with graphic: AGSGraphic) {
+    if let timestamp = graphic.attributes[String.attributeKeyTimestamp] as? Date {
+      self.timestamp = timestamp
+    }
+  }
+
+  private func updateTitle() {
+    if let name = name {
+      title = name
+      let fields = self.fields ?? [Attribute]()
+      //TODO: If feature has a map label defined, use that (it may be the id)
+      if let idFieldName = fields.first(where: { $0.type == .id })?.name,
+        let id = entity?.value(forKey: .attributePrefix + idFieldName) as? Int
+      {
+        title = "\(name) #\(id)"
+      }
+      //TODO: If feature has no label or id, then use Timestamp
+    }
+  }
+
+}
+
+//MARK: - Computed Properties
+
+extension ObservationPresenter {
+
+  private var angleDistanceDefinition: LocationMethod? {
+    switch observationClass {
+    case .feature(let feature):
+      return feature.angleDistanceConfig
+    default:
+      return nil
+    }
+  }
+
+  private var angleDistanceFormDefinition: AngleDistanceFormDefinition? {
+    guard let definition = angleDistanceDefinition,
+      let angleDistanceLocation = angleDistanceLocation
+    else {
+      return nil
+    }
+    return AngleDistanceFormDefinition(
+      definition: definition, angleDistanceLocation: angleDistanceLocation)
+  }
+
+  private var attributeFormDefinition: AttributeFormDefinition? {
+    guard let dialog = dialog, let entity = entity, let fields = fields else {
+      return nil
+    }
+    return dialog.form(with: entity, fields: fields)
+  }
+
+  private var dialog: Dialog? {
+    switch observationClass {
+    case .mission:
+      return survey?.config.mission?.dialog
+    case .feature(let feature):
+      return feature.dialog
+    case .none:
+      return nil
+    }
+  }
+
+  private var fields: [Attribute]? {
+    switch observationClass {
+    case .mission:
+      return survey?.config.mission?.attributes
+    case .feature(let feature):
+      return feature.attributes
+    case .none:
+      return nil
+    }
+  }
+
 }
