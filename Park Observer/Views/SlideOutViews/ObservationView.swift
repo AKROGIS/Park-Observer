@@ -54,7 +54,13 @@ struct ObservationView: View {
       } else {
         //TODO: Support cancel-on-top
         if presenter.isDeletable {
-          Button(action: { self.presenter.delete() }) {
+          Button(action: {
+            self.presenter.delete()
+            if self.presenter.closeAllowed {
+              //TODO: If we came from the selector, can we go back?
+              self.surveyController.slideOutMenuVisible = false
+            }
+          }) {
             HStack {
               Image(systemName: "trash")
               Text("Delete")
@@ -67,14 +73,30 @@ struct ObservationView: View {
           }
         }
         if presenter.isMoveableToTouch {
-          Button(action: { self.presenter.initiateMoveToTouch() }) {
+          Button(action: {
+            self.presenter.initiateMoveToTouch()
+            if self.presenter.closeAllowed {
+              // Go directly to MapView, do NOT go back to selector, do not collect $200
+              self.surveyController.slideOutMenuVisible = false
+            }
+          }) {
             Text("Move to Map Touch")
           }
         }
-        Button(action: { self.presenter.cancel() }) {
+        Button(action: {
+          self.presenter.cancel()
+          //TODO: If we came from the selector, can we go back?
+          self.surveyController.slideOutMenuVisible = false
+        }) {
           Text("Cancel")
         }
-        Button(action: { self.presenter.save() }) {
+        Button(action: {
+          self.presenter.save()
+          if self.presenter.closeAllowed {
+            //TODO: If we came from the selector, can we go back?
+            self.surveyController.slideOutMenuVisible = false
+          }
+        }) {
           Text("Save")
         }
       }

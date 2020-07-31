@@ -22,6 +22,7 @@
 		5989329D24995C7100A7C346 /* ViewModifiers.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5989329C24995C7100A7C346 /* ViewModifiers.swift */; };
 		5989329F2499A71300A7C346 /* SlideOutView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5989329E2499A71300A7C346 /* SlideOutView.swift */; };
 		598932A12499DE6900A7C346 /* MainMenuView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 598932A02499DE6900A7C346 /* MainMenuView.swift */; };
+		5996F58A24D3282D008C0E32 /* ObservationClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5996F58924D3282D008C0E32 /* ObservationClass.swift */; };
 		59BA0EC924A50F6300CA6EF2 /* FileListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 59BA0EC824A50F6300CA6EF2 /* FileListView.swift */; };
 		59BA0ECB24A50FC700CA6EF2 /* FileItemView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 59BA0ECA24A50FC700CA6EF2 /* FileItemView.swift */; };
 		59BA0ECD24A510B800CA6EF2 /* ObservationView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 59BA0ECC24A510B800CA6EF2 /* ObservationView.swift */; };
@@ -150,6 +151,7 @@
 		5989329C24995C7100A7C346 /* ViewModifiers.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewModifiers.swift; sourceTree = "<group>"; };
 		5989329E2499A71300A7C346 /* SlideOutView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SlideOutView.swift; sourceTree = "<group>"; };
 		598932A02499DE6900A7C346 /* MainMenuView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainMenuView.swift; sourceTree = "<group>"; };
+		5996F58924D3282D008C0E32 /* ObservationClass.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ObservationClass.swift; sourceTree = "<group>"; };
 		59BA0EC824A50F6300CA6EF2 /* FileListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FileListView.swift; sourceTree = "<group>"; };
 		59BA0ECA24A50FC700CA6EF2 /* FileItemView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FileItemView.swift; sourceTree = "<group>"; };
 		59BA0ECC24A510B800CA6EF2 /* ObservationView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ObservationView.swift; sourceTree = "<group>"; };
@@ -392,6 +394,7 @@
 				596638E124B7E6D1006D2C29 /* AttributeFormDefinition.swift */,
 				74D85B3F246F1E8B0091EA8E /* CoreData */,
 				596638E724BF8BC9006D2C29 /* MapInfo.swift */,
+				5996F58924D3282D008C0E32 /* ObservationClass.swift */,
 				59717BEB24D0C10B005F0BDF /* ObservationPresenter.swift */,
 				5935172824A68A8800A4CD45 /* OnlineBaseMaps.swift */,
 				74A25FC4245232F1006D82CE /* Survey Protocol */,
@@ -708,6 +711,7 @@
 				59717BEA24CCCE8A005F0BDF /* InfoBannerView.swift in Sources */,
 				5935172D24ABC99A00A4CD45 /* MapViewTouchDelegate.swift in Sources */,
 				749DE9B22469CF41003D433A /* FileManagement.swift in Sources */,
+				5996F58A24D3282D008C0E32 /* ObservationClass.swift in Sources */,
 				74A25FC824523381006D82CE /* Dialog.swift in Sources */,
 				7466877224A274FB00A8FEFA /* UserSettingsView.swift in Sources */,
 				7471662F243D898A00A9C960 /* LicenseManager.swift in Sources */,

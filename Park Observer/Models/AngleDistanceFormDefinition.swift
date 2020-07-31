@@ -9,6 +9,7 @@
 import SwiftUI  // For Binding
 
 //TODO: adapt to definition
+//TODO: use AngleDistanceHelper (in AngleDistanceLocation) to convert between user units and database units
 struct AngleDistanceFormDefinition {
   let definition: LocationMethod
   let angleDistanceLocation: AngleDistanceLocation

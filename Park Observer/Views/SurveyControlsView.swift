@@ -41,7 +41,7 @@ struct SurveyControlsView: View {
         .mapButton(darkMode: userSettings.darkMapControls)
 
         Button(action: {
-          self.surveyController.addMissionPropertyAtGps()
+          self.surveyController.addMissionPropertyAtGps(showEditor: false)
         }) {
           Image(systemName: "cloud.sun.rain").font(.headline)
         }
@@ -72,13 +72,17 @@ struct SurveyControlsView: View {
 
   func sheetButtons() -> [ActionSheet.Button] {
     var buttons = [ActionSheet.Button]()
-    for feature in surveyController.featuresLocatableWithTouch {
-      let button = ActionSheet.Button.default(Text(feature.name)) {
-        self.surveyController.viewDidSelectFeature(feature)
+    for observation in surveyController.observationsLocatableWithTouch {
+      let button = ActionSheet.Button.default(Text(observation.name)) {
+        self.surveyController.viewDidSelectObservationClass(observation)
       }
       buttons.append(button)
     }
-    buttons.append(.cancel())
+    let cancel = ActionSheet.Button.cancel(
+      Text("Cancel"),
+      action: { self.surveyController.viewDidSelectObservationClass(nil) }
+    )
+    buttons.append(cancel)
     return buttons
   }
 
