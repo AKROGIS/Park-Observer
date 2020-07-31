@@ -524,6 +524,10 @@ class SurveyController: NSObject, ObservableObject {
     var gpsPoint: GpsPoint
     if redundant {
       gpsPoint = previousGpsPoint!
+      // previous gps is in the wrong context if awaitingGps
+      if let context = editingContext {
+        gpsPoint = context.object(with: gpsPoint.objectID) as! GpsPoint
+      }
     } else {
       let context = editingContext ?? survey.viewContext
       gpsPoint = GpsPoint.new(in: context)
