@@ -519,12 +519,22 @@ class SurveyController: NSObject, ObservableObject {
       }
       return false
     }()
+    let awaitingGps = selectedObservation?.awaitingGps ?? false
+    let editingContext = awaitingGps ? selectedObservation?.editContext : nil
     var gpsPoint: GpsPoint
     if redundant {
       gpsPoint = previousGpsPoint!
     } else {
-      gpsPoint = GpsPoint.new(in: survey.viewContext)
-      gpsPoint.initializeWith(mission: mission, location: location)
+      let context = editingContext ?? survey.viewContext
+      gpsPoint = GpsPoint.new(in: context)
+      let missionInContext: Mission = {
+        if let context = editingContext {
+          return context.object(with: mission.objectID) as! Mission
+        } else {
+          return mission
+        }
+      }()
+      gpsPoint.initializeWith(mission: missionInContext, location: location)
       mapView.addGpsPoint(gpsPoint)
       if let oldPoint = previousGpsPoint {
         mapView.addTrackLogSegment(from: oldPoint, to: gpsPoint, observing: observing)
@@ -532,7 +542,11 @@ class SurveyController: NSObject, ObservableObject {
       totalizer.updateLocation(location)
       self.previousGpsPoint = gpsPoint
     }
-
+    if let context = editingContext, trackLogging {
+      // This GpsPoint is part of a new (cancelable) observation _AND_ a tracklog
+      // Save it to the viewContext (for the tracklog), in case the observation is canceled
+      try? context.save()
+    }
     if let observation = selectedObservation, observation.awaitingGps {
       observation.setGpsPoint(gpsPoint: gpsPoint)
     }

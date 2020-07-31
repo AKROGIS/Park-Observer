@@ -18,6 +18,14 @@ struct ObservationView: View {
     //    .font(.caption).foregroundColor(.secondary)
     //    .padding(.leading)
     Form {
+      if !presenter.errorMessage.isEmpty {
+        HStack {
+          Image(systemName: "exclamationmark.square.fill")
+            .foregroundColor(.red)
+            .font(.title)
+          Text(presenter.errorMessage).foregroundColor(.red)
+        }
+      }
       if presenter.hasAngleDistanceForm {
         AngleDistanceFormView(form: presenter.angleDistanceForm!)
           .disabled(!presenter.isEditing)

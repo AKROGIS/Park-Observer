@@ -30,10 +30,14 @@ import Foundation  // For ObservableObject
 //   SurveyController will ask the ObservationView if that is ok.  If ok, then the work
 //   is saved or discarded based on state of ObservationPresenter
 //   SurveyController deletes the ObservationPresenter
+// The presenter always uses an edit context; even if opened for review, because the user
+// might switch to edit mode.  The surveyController will use the edit context for creating
+// GPS points for the observation presenter, so that if the creation is canceled, the GPS
+// points are also removed (unless they are also part of a tracklog)
 
 enum CloseAction {
   case cancel  // aborts and undos a create new feature process
-  case `default` // form closed by tap on map or back button (pick save or cancel)
+  case `default`  // form closed by tap on map or back button (pick save or cancel)
   case delete
   case move(AGSGraphic)
   case save  // saves changes
@@ -61,20 +65,22 @@ final class ObservationPresenter: ObservableObject {
   @Published private(set) var awaitingFeature = false
   @Published private(set) var closeAction = CloseAction.default
   @Published private(set) var closeAllowed = true
+  @Published private(set) var errorMessage = "No survey available."
   @Published private(set) var hasAngleDistanceForm = false
   @Published private(set) var hasAttributeForm = false
   @Published private(set) var isDeletable = false
-  @Published private(set) var isEditable = true
+  @Published private(set) var isEditable = false
   @Published private(set) var isMoveableToGps = false
   @Published private(set) var isMoveableToTouch = false
   @Published private(set) var presentationMode: PresentationMode = .review
   @Published private(set) var timestamp = Date()  //: Date? = nil //ObservationSelectorView needs this to be not nil
   @Published private(set) var title = "Observation"
 
+  private(set) var editContext: NSManagedObjectContext? = nil
+
   //TODO: Ensure the published state is updated if these variables change
   private var adhocLocation: AdhocLocation? = nil
   private var angleDistanceLocation: AngleDistanceLocation? = nil
-  private var editContext: NSManagedObjectContext? = nil
   private var entity: NSManagedObject? = nil
   private var graphic: AGSGraphic? = nil
   private var gpsDisabled = false
@@ -94,21 +100,62 @@ final class ObservationPresenter: ObservableObject {
   //I'm using these public setters so I can differentiate
   //when the properties are set from outside or inside the class
   func setObservationClass(observationClass: ObservationClass?) {
+    // This can only be called if the observationClass is nil
+    guard self.observationClass == nil else {
+      print("Error: Illegal attempt to reset the observationClass in ObservationPresenter")
+      return
+    }
     self.observationClass = observationClass
-    //TODO: - call appropriate updaters
+    updateName(with: observationClass)
     updateAwaitingFeature()
+    if let context = editContext, let oClass = observationClass {
+      if locationMethod == .mapTouch && (gpsPoint != nil || gpsDisabled) {
+        createAdHocLocation(in: context)
+        createEntity(in: context, for: oClass)
+      }
+    }
+    updateAttributeForm()
+    updateTitle()
+    isEditing = true
   }
 
   func setGpsPoint(gpsPoint: GpsPoint?) {
+    // This can only be called if the gpsPoint is nil
+    // TODO: Verify the effect the moveToGps functionality
+    guard self.gpsPoint == nil else {
+      print("Error: Illegal attempt to reset the gpsPoint in ObservationPresenter")
+      return
+    }
     self.gpsPoint = gpsPoint
-    //TODO: - call appropriate updaters
+    updateTimestamp(with: gpsPoint)
     updateAwaitingGps()
+    if let context = editContext, let oClass = observationClass, gpsPoint != nil {
+      if locationMethod == .gps {
+        createEntity(in: context, for: oClass)
+      }
+      if locationMethod == .angleDistance, case .feature(let feature) = oClass {
+        createAngleDistanceLocation(in: context, feature: feature)
+        createEntity(in: context, for: oClass)
+        updateAngleDistanceForm()
+      }
+      if locationMethod == .mapTouch {
+        createAdHocLocation(in: context)
+        createEntity(in: context, for: oClass)
+      }
+      updateAttributeForm()
+      updateTitle()
+      isEditing = true
+    }
   }
 
   func setGpsDisabled() {
     gpsDisabled = true
     timestamp = Date()
     updateAwaitingGps()
+    if locationMethod == .mapTouch, let context = editContext, let oClass = observationClass {
+      createAdHocLocation(in: context)
+      createEntity(in: context, for: oClass)
+    }
   }
 
   //MARK: - Published Actions
@@ -174,18 +221,45 @@ final class ObservationPresenter: ObservableObject {
 
 }
 
-//MARK: - Initializers
+//MARK: - Convenience Initializers
 
 extension ObservationPresenter {
+
+  private convenience init(survey: Survey?) {
+    self.init()
+    self.survey = survey
+    if let survey = survey {
+      let editContext = NSManagedObjectContext(concurrencyType: .mainQueueConcurrencyType)
+      editContext.parent = survey.viewContext
+      self.editContext = editContext
+      self.errorMessage = ""
+      self.isEditable = true
+    }
+  }
+
+  private convenience init(survey: Survey?, mission: Mission?) {
+    self.init(survey: survey)
+    if mission == nil {
+      self.setError("No mission available")
+    } else {
+      if let context = editContext, let id = mission?.objectID {
+        self.mission = context.object(with: id) as? Mission
+      }
+    }
+  }
 
   static func create(
     survey: Survey?, mission: Mission?, mapTouch: AGSPoint, mapReference: MapReference?
   ) -> ObservationPresenter {
-    let op = ObservationPresenter()
+    let op = ObservationPresenter(survey: survey, mission: mission)
     op.presentationMode = .new
-    op.survey = survey
-    op.mission = mission
-    op.mapReference = mapReference
+    if mapReference == nil {
+      op.setError("No map reference available")
+    } else {
+      if let context = op.editContext, let id = mapReference?.objectID {
+        op.mapReference = context.object(with: id) as? MapReference
+      }
+    }
     op.initWith(mapTouch)
     return op
   }
@@ -196,10 +270,8 @@ extension ObservationPresenter {
   )
     -> ObservationPresenter
   {
-    let op = ObservationPresenter()
+    let op = ObservationPresenter(survey: survey, mission: mission)
     op.presentationMode = .new
-    op.survey = survey
-    op.mission = mission
     op.template = template
     op.observing = observing
     op.initWith(observationClass)
@@ -207,8 +279,8 @@ extension ObservationPresenter {
   }
 
   static func show(survey: Survey?, graphic: AGSGraphic) -> ObservationPresenter {
-    let op = ObservationPresenter()
-    op.survey = survey
+    let op = ObservationPresenter(survey: survey)
+    op.presentationMode = .review
     op.initWith(graphic)
     return op
   }
@@ -218,7 +290,7 @@ extension ObservationPresenter {
     self.name = graphic.graphicsOverlay?.overlayID
     updateObservationClass(with: self.name)
     updateTimestamp(with: graphic)
-    updateEntity(from: survey?.viewContext, with: self.timestamp)
+    updateEntity(from: editContext, with: self.timestamp)
     updateLocationProperties(from: entity)
     updateAttributeForm()
     updateAngleDistanceForm()
@@ -245,6 +317,13 @@ extension ObservationPresenter {
     // before getting the gpsPoint
   }
 
+  private func setError(_ message: String) {
+    if errorMessage.isEmpty {
+      errorMessage = message
+      isEditable = false
+    }
+  }
+
 }
 
 //MARK: - Entity Creation
@@ -252,7 +331,7 @@ extension ObservationPresenter {
 extension ObservationPresenter {
 
   private func createAdHocLocation(in context: NSManagedObjectContext) {
-    // depends on gpsPoint or timestamp, mapToucn, mapReference
+    // depends on gpsPoint or timestamp, mapTouch, mapReference, all previously validated
     if let mapTouch = mapTouch, let map = mapReference {
       let adhocLocation = AdhocLocation.new(in: context)
       adhocLocation.location = mapTouch.toCLLocationCoordinate2D()
@@ -263,28 +342,27 @@ extension ObservationPresenter {
   }
 
   private func createAngleDistanceLocation(in context: NSManagedObjectContext, feature: Feature) {
-    // depends on gpsPoint, locationMethod
-    if let gpsPoint = gpsPoint, let locationMethod = locationMethod,
-      locationMethod == .angleDistance
-    {
+    // depends on gpsPoint, previously validated
+    if let gpsPoint = gpsPoint {
       let angleDistanceLocation = AngleDistanceLocation.new(in: context)
       angleDistanceLocation.direction = gpsPoint.course
       self.angleDistanceLocation = angleDistanceLocation
     }
   }
 
-  private func createEntity(for observationClass: ObservationClass) {
-    //TODO: provide an editing context, or a copy of the attributes, in case the user cancels editing
+  private func createEntity(
+    in context: NSManagedObjectContext, for observationClass: ObservationClass
+  ) {
     guard let survey = survey, let mission = mission else {
-      print("Unable to create feature. No survey or mission")
+      print("Unable to create entity. No survey or mission")  //Error already set
       return
     }
     switch observationClass {
     case .mission:
-      createMissionProperty(to: survey.viewContext, config: survey.config, mission: mission)
+      createMissionProperty(to: context, config: survey.config, mission: mission)
       break
     case .feature(let feature):
-      createFeature(to: survey.viewContext, feature: feature, mission: mission)
+      createFeature(to: context, feature: feature, mission: mission)
       break
     }
   }
@@ -292,6 +370,12 @@ extension ObservationPresenter {
   private func createFeature(to context: NSManagedObjectContext, feature: Feature, mission: Mission)
   {
     // depends on gpsPoint, adhocLocation, angleDistanceLocation
+    guard gpsPoint != nil || adhocLocation != nil || angleDistanceLocation != nil else {
+      let msg = "Programmer Error: No location defined for Observation"
+      print(msg)
+      setError(msg)
+      return
+    }
     let defaults = feature.dialog?.defaultValues
     let uniqueIdAttribute = feature.attributes?.uniqueIdAttribute
     entity = Observation.new(
@@ -304,13 +388,20 @@ extension ObservationPresenter {
     to context: NSManagedObjectContext, config: SurveyProtocol, mission: Mission
   ) {
     // depends on template, fields, gpsPoint, adhocLocation, observing
-    let defaults: [String: Any]? = {
-      return template == nil ? config.mission?.dialog?.defaultValues : nil
-    }()
-    var mpTemplate: (MissionProperty, [Attribute])? = nil
-    if let template = template, let attrs = fields {
-      mpTemplate = (template, attrs)
+    guard gpsPoint != nil || adhocLocation != nil else {
+      let msg = "Programmer Error: No location defined for Mission Propery"
+      print(msg)
+      setError(msg)
+      return
     }
+    let defaults = template == nil ? config.mission?.dialog?.defaultValues : nil
+    let mpTemplate: (MissionProperty, [Attribute])? = {
+      if let template = template, let attrs = fields {
+        return (template, attrs)
+      } else {
+        return nil
+      }
+    }()
     let uniqueIdAttribute = fields?.uniqueIdAttribute
     entity = MissionProperty.new(
       mission: mission, gpsPoint: gpsPoint, adhocLocation: adhocLocation, observing: observing,
@@ -456,9 +547,10 @@ extension ObservationPresenter {
     }
   }
 
-  private func updateTimestamp(with entity: NSManagedObject) {
-    //TODO: Get timestamp from gps if PresentationMode == .new else
-    //  otherwise get timestamp from entity
+  private func updateTimestamp(with gpsPoint: GpsPoint?) {
+    if let timestamp = gpsPoint?.timestamp {
+      self.timestamp = timestamp
+    }
   }
 
   private func updateTimestamp(with graphic: AGSGraphic) {
