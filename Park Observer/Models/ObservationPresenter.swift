@@ -57,8 +57,15 @@ final class ObservationPresenter: ObservableObject {
     }
   }
 
+  //TODO: Review the visibility of all variables and functions
+  //TODO: Ensure the published state is updated if these variables change
   //TODO: Support cancel-on-top
+  //TODO: Update presentation of Save based on context.hasChanges and validation status?
+  //TODO: Validate on save
+  //TODO: The timestamp should be optional, but ObservationSelectorView doesn't like that
 
+  // These properties are used in the view, may not all need to be published,
+  // but it is nice insurance to know that the view will be updated if they do change.
   @Published private(set) var angleDistanceForm: AngleDistanceFormDefinition? = nil
   @Published private(set) var attributeForm: AttributeFormDefinition? = nil
   @Published private(set) var awaitingGps = false
@@ -73,12 +80,12 @@ final class ObservationPresenter: ObservableObject {
   @Published private(set) var isMoveableToGps = false
   @Published private(set) var isMoveableToTouch = false
   @Published private(set) var presentationMode: PresentationMode = .review
-  @Published private(set) var timestamp = Date()  //: Date? = nil //ObservationSelectorView needs this to be not nil
+  @Published private(set) var timestamp = Date()
   @Published private(set) var title = "Observation"
 
+  // SurveyController needs to read these is to create GPS point in "cancelable" context
   private(set) var editContext: NSManagedObjectContext? = nil
 
-  //TODO: Ensure the published state is updated if these variables change
   private var adhocLocation: AdhocLocation? = nil
   private var angleDistanceLocation: AngleDistanceLocation? = nil
   private var awaitingGpsForMove = false
@@ -100,6 +107,8 @@ final class ObservationPresenter: ObservableObject {
 
   //I'm using these public setters so I can differentiate
   //when the properties are set from outside or inside the class
+
+  /// Set the observation class when it becomes known
   func setObservationClass(observationClass: ObservationClass?) {
     // This can only be called if the observationClass is nil
     guard self.observationClass == nil else {
@@ -109,6 +118,8 @@ final class ObservationPresenter: ObservableObject {
     self.observationClass = observationClass
     updateName(with: observationClass)
     updateAwaitingFeature()
+
+    // Create entities
     if let context = editContext, let oClass = observationClass {
       if locationMethod == .mapTouch && (gpsPoint != nil || gpsDisabled) {
         createAdHocLocation(in: context)
@@ -120,9 +131,9 @@ final class ObservationPresenter: ObservableObject {
     isEditing = true
   }
 
+  /// Set the GpsPoint async when provided by the Location Services
   func setGpsPoint(gpsPoint: GpsPoint?) {
-    // This can only be called if the gpsPoint is nil
-    // TODO: Verify the effect the moveToGps functionality
+    // This can only be executed if the gpsPoint is nil
     guard self.gpsPoint == nil else {
       print("Error: Illegal attempt to reset the gpsPoint in ObservationPresenter")
       return
@@ -147,6 +158,8 @@ final class ObservationPresenter: ObservableObject {
     self.gpsPoint = gpsPoint
     updateTimestamp(with: gpsPoint)
     updateAwaitingGps()
+
+    // Create entities
     if let context = editContext, let oClass = observationClass, gpsPoint != nil {
       if locationMethod == .gps {
         createEntity(in: context, for: oClass)
@@ -190,6 +203,7 @@ final class ObservationPresenter: ObservableObject {
   func initiateMoveToTouch() {
     print("initiateMoveToTouch not implemented.")
     if let graphic = graphic {
+      //TODO: Implement
       // set surveyController.movingGraphic = true
       // set surveyController.isShowingSlideout = false
       // set surveyController.message.info("Tap on map to move graphic")
@@ -218,8 +232,6 @@ final class ObservationPresenter: ObservableObject {
   }
 
   func cancel() {
-    print("cancel not implemented.")
-    // delete the editContext
     closeAction = .cancel
   }
 
@@ -247,6 +259,7 @@ final class ObservationPresenter: ObservableObject {
     if let graphic = graphic {
       graphic.move(to: mapPoint)
     }
+    //TODO: update the entities adhocLocation
   }
 
 }
@@ -278,6 +291,8 @@ extension ObservationPresenter {
     }
   }
 
+  /// Create a new observation at the map touch location
+  /// Optional Gps Point (for timestamp), and observation class will come later
   static func create(
     survey: Survey?, mission: Mission?, mapTouch: AGSPoint, mapReference: MapReference?
   ) -> ObservationPresenter {
@@ -294,6 +309,8 @@ extension ObservationPresenter {
     return op
   }
 
+  /// Create a new observation at the GPS (or Angle/Distance)
+  /// Required Gps Point will come later
   static func create(
     survey: Survey?, mission: Mission?, observationClass: ObservationClass,
     template: MissionProperty? = nil, observing: Bool? = nil
@@ -308,6 +325,7 @@ extension ObservationPresenter {
     return op
   }
 
+  /// Show an existing observation
   static func show(survey: Survey?, graphic: AGSGraphic) -> ObservationPresenter {
     let op = ObservationPresenter(survey: survey)
     op.presentationMode = .review
@@ -467,7 +485,6 @@ extension ObservationPresenter {
     awaitingFeature = observationClass == nil && presentationMode == .new
   }
 
-  //TODO: Update presentation of cancel/Save based on validation or edit status?
   private func updateDeletable() {
     switch observationClass {
     case .feature(_):
