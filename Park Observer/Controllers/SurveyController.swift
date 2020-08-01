@@ -455,7 +455,8 @@ class SurveyController: NSObject, ObservableObject {
     locationManager.stopUpdatingLocation()
   }
 
-  private func requestGpsPointAsync() {
+  private func requestGpsPointAsync(for observationPresenter: ObservationPresenter) {
+    selectedObservation = observationPresenter
     // Cycle the Location Manager to get the current location
     // Should Ignore time/distance gaps, but not accuracy requirements
     locationManager.stopUpdatingLocation()
@@ -568,12 +569,16 @@ class SurveyController: NSObject, ObservableObject {
     }
     print("Adding Mission Property at GPS")
     if mission == nil { startNewMission() }
-    selectedObservation = ObservationPresenter.create(
+    let observationPresenter = ObservationPresenter.create(
       survey: survey, mission: mission, observationClass: .mission)
-    //selectedObservation will create the mission property when it gets the next GPS location
-    requestGpsPointAsync()
+    //observationPresenter will create the mission property when it gets the next GPS location
+    requestGpsPointAsync(for: observationPresenter)
     if showEditor {
-      presentObservation()
+      present(observationPresenter)
+    } else {
+      observationPresenter.autoAction = {
+        self.closeObservationView(observationPresenter)
+      }
     }
   }
 
@@ -586,11 +591,11 @@ class SurveyController: NSObject, ObservableObject {
     }
     print("Adding \(feature.name) at \(feature.allowAngleDistance ? "AngleDistance" : "GPS")")
     if mission == nil { startNewMission() }
-    selectedObservation = ObservationPresenter.create(
+    let observationPresenter = ObservationPresenter.create(
       survey: survey, mission: mission, observationClass: .feature(feature))
     //selectedObservation will create the observation when it gets the next GPS location
-    requestGpsPointAsync()
-    presentObservation()
+    requestGpsPointAsync(for: observationPresenter)
+    present(observationPresenter)
   }
 
   /// Tap the map to add a feature (or mission property if not) at the map location
@@ -605,20 +610,20 @@ class SurveyController: NSObject, ObservableObject {
     if mission == nil { startNewMission() }
     let observationPresenter = ObservationPresenter.create(
       survey: survey, mission: mission, mapTouch: mapPoint, mapReference: mapReference)
-    selectedObservation = observationPresenter
-    // selectedObservation will create observation after we get the next suitable GPS location
+    // observationPresenter will create observation after we get the next suitable GPS location
     // and the observationClass to create (may need to present selector to user)
 
     //Note: GPS Authorization is not required for map touch, so .denied is ok
     if gpsAuthorization == .denied {
       observationPresenter.setGpsDisabled()
     } else {
-      requestGpsPointAsync()
+      requestGpsPointAsync(for: observationPresenter)
     }
 
     if observationsLocatableWithTouch.count == 1 {
       observationPresenter.setObservationClass(observationClass: observationsLocatableWithTouch[0])
     } else {
+      selectedObservation = observationPresenter
       showMapTouchSelectionSheet = true  //ActionSheet is in SurveyControlsView
     }
   }
@@ -634,11 +639,13 @@ class SurveyController: NSObject, ObservableObject {
     print("Map Touch Observation Selector selected \(observation.name)")
     if let selected = selectedObservation, selected.awaitingFeature {
       selected.setObservationClass(observationClass: observation)
-      presentObservation()
+      present(selected)
     }
   }
 
-  private func presentObservation() {
+  private func present(_ observationPresenter: ObservationPresenter) {
+    selectedObservation = observationPresenter
+    observationPresenter.autoAction = nil
     showingObservationEditor = true
     slideOutMenuVisible = true
   }
@@ -669,7 +676,7 @@ class SurveyController: NSObject, ObservableObject {
           self.selectedObservation = nil
         }
       } else {
-        presentObservation()
+        present(selectedObservation)
       }
       break
     case .move:

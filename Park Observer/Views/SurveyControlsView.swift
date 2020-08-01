@@ -41,7 +41,7 @@ struct SurveyControlsView: View {
         .mapButton(darkMode: userSettings.darkMapControls)
 
         Button(action: {
-          self.surveyController.addMissionPropertyAtGps(showEditor: false)
+          self.surveyController.addMissionPropertyAtGps(showEditor: true)
         }) {
           Image(systemName: "cloud.sun.rain").font(.headline)
         }

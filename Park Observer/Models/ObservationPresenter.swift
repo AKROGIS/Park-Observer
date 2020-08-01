@@ -149,6 +149,8 @@ final class ObservationPresenter: ObservableObject {
   //I'm using these public setters so I can differentiate
   //when the properties are set from outside or inside the class
 
+  var autoAction: (() -> Void)? = nil
+
   /// Set the observation class when it becomes known
   func setObservationClass(observationClass: ObservationClass?) {
     // This can only be called if the observationClass is nil
@@ -165,6 +167,10 @@ final class ObservationPresenter: ObservableObject {
       if locationMethod == .mapTouch && (gpsPoint != nil || gpsDisabled) {
         createAdHocLocation(in: context)
         createEntity(in: context, for: oClass)
+        if let autoAction = autoAction {
+          autoAction()
+          return
+        }
       }
     }
     updateAttributeForm()
@@ -217,6 +223,10 @@ final class ObservationPresenter: ObservableObject {
         createAdHocLocation(in: context)
         createEntity(in: context, for: oClass)
       }
+      if let autoAction = autoAction {
+        autoAction()
+        return
+      }
       updateAttributeForm()
       updateTitle()
       isEditing = true
@@ -230,6 +240,10 @@ final class ObservationPresenter: ObservableObject {
     if locationMethod == .mapTouch, let context = editContext, let oClass = observationClass {
       createAdHocLocation(in: context)
       createEntity(in: context, for: oClass)
+      if let autoAction = autoAction {
+        autoAction()
+        return
+      }
     }
   }
 
