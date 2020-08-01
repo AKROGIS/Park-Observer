@@ -217,17 +217,21 @@ final class ObservationPresenter: ObservableObject {
   }
 
   func delete() {
-    if let entity = entity, let graphic = graphic {
+    closeAllowed = true
+    closeAction = .delete
+    if let entity = entity, let graphic = graphic, let overlay = graphic.graphicsOverlay {
       if let context = entity.managedObjectContext {
         context.delete(entity)
+        do {
+          try context.save()
+        } catch {
+          setError(error.localizedDescription)
+          closeAllowed = false
+        }
       }
-      if let overlay = graphic.graphicsOverlay {
-        overlay.graphics.remove(graphic)
-      }
-      closeAllowed = true
-      closeAction = .delete
+      overlay.graphics.remove(graphic)
     } else {
-      // Set an error message
+      setError("Programming Error: no entity or graphic layer")
       closeAllowed = false
     }
   }
