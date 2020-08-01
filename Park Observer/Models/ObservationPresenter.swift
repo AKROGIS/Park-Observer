@@ -15,10 +15,10 @@ import Foundation  // For ObservableObject, @Published, Date
 //  - when user taps on a feature (edit/review)
 //  - when the user taps on several features (edit/review) - an array is created
 //  - when user taps on a new properties/feature buttons
-//  - when the user starts/stops tracklogging/observing (if editing is appropriate)
-// SurveyController requests gpsPoint, and feature type as needed.  When the SurveyContoller
+//  - when the user starts/stops trackLogging/observing (if editing is appropriate)
+// SurveyController requests gpsPoint, and feature type as needed.  When the SurveyController
 //   receives them, it updates the ObservationPresenter which updates the ObservationView
-// ObservationPresenter will create/edit/save/delete entites in a disposible edit context
+// ObservationPresenter will create/edit/save/delete entities in a disposable edit context
 // ObservationPresenter will delete graphics when an existing entity is deleted.
 // ObservationPresenter will update graphic attributes when an existing entity is saved.
 // ObservationView can be dismissed in the following ways
@@ -26,14 +26,14 @@ import Foundation  // For ObservableObject, @Published, Date
 //    - if no changes same as Cancel button
 //    - save context
 //    - update graphic attributes (if existing)
-//    - if errors display and do not allow slideout to close
-//    - if no errors allow slideout to close (or go back to selector?)
+//    - if errors display and do not allow slide-out to close
+//    - if no errors allow slide-out to close (or go back to selector?)
 //    - flag Controller we saved (with new entity/observationClass)
 //    - Controller creates new graphic from self.entity (if new)
 //    - Controller releases self (context deleted)
 //  tap Cancel button
 //    - context has changes present confirmation alert?
-//    - allow slideout to close (or go back to selector?)
+//    - allow slide-out to close (or go back to selector?)
 //    - flag Controller we cancelled
 //    - Controller releases self (context deleted)
 //  tap MoveToMapTouch button
@@ -53,16 +53,16 @@ import Foundation  // For ObservableObject, @Published, Date
 //    - delete entity from context; save context
 //    - delete graphic from it's overlay
 //    - if errors display and do not close
-//    - if no errors close slideout (or go back to selector?)
+//    - if no errors close slide-out (or go back to selector?)
 //    - flag Controller we deleted
 //    - Controller releases self (context deleted)
-//  tap Back buttton (when presented from selector)
+//  tap Back button (when presented from selector)
 //    - Same as tap background
-//  tap background (to close slideout)
+//  tap background (to close slide-out)
 //    - assume the user did not want abandon changes
 //    - Controller calls save() on self
 //    - if not close allowed
-//      - Controller set slideout to showing
+//      - Controller set slide-out to showing
 //      - Controller does _NOT_ release self
 //    - if close allowed
 //      - Controller creates new graphic from self.entity (if new)
@@ -71,7 +71,7 @@ import Foundation  // For ObservableObject, @Published, Date
 // The presenter always uses an edit context; even if opened for review, because the user
 // might switch to edit mode.  The surveyController will use the edit context for creating
 // GPS points for the observation presenter, so that if the creation is canceled, the GPS
-// points are also removed (unless they are also part of a tracklog)
+// points are also removed (unless they are also part of a track log)
 
 enum CloseAction {
   case cancel  // abort edit or observation creation
@@ -489,7 +489,7 @@ extension ObservationPresenter {
   ) {
     // depends on template, fields, gpsPoint, adhocLocation, observing
     guard gpsPoint != nil || adhocLocation != nil else {
-      let msg = "Programmer Error: No location defined for Mission Propery"
+      let msg = "Programmer Error: No location defined for Mission Property"
       print(msg)
       setError(msg)
       return
@@ -585,8 +585,8 @@ extension ObservationPresenter {
       for key in graphic.attributes.allKeys {
         if let key = key as? String {
           if key != .attributeKeyTimestamp && key != .attributeKeyObserving {
-            let entitykey = .attributePrefix + key
-            graphic.attributes[key] = entity.value(forKey: entitykey)
+            let entityKey = .attributePrefix + key
+            graphic.attributes[key] = entity.value(forKey: entityKey)
           }
         }
       }
