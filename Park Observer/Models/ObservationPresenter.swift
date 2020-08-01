@@ -57,8 +57,6 @@ final class ObservationPresenter: ObservableObject {
     }
   }
 
-  //TODO: Review the visibility of all variables and functions
-  //TODO: Ensure the published state is updated if these variables change
   //TODO: Support cancel-on-top
   //TODO: Update presentation of Save based on context.hasChanges and validation status?
   //TODO: Validate on save
@@ -70,7 +68,6 @@ final class ObservationPresenter: ObservableObject {
   @Published private(set) var attributeForm: AttributeFormDefinition? = nil
   @Published private(set) var awaitingGps = false
   @Published private(set) var awaitingFeature = false
-  @Published private(set) var closeAction = CloseAction.default
   @Published private(set) var closeAllowed = true
   @Published private(set) var errorMessage = "No survey available."
   @Published private(set) var hasAngleDistanceForm = false
@@ -79,27 +76,28 @@ final class ObservationPresenter: ObservableObject {
   @Published private(set) var isEditable = false
   @Published private(set) var isMoveableToGps = false
   @Published private(set) var isMoveableToTouch = false
-  @Published private(set) var presentationMode: PresentationMode = .review
   @Published private(set) var timestamp = Date()
   @Published private(set) var title = "Observation"
 
   // SurveyController needs to read these is to create GPS point in "cancelable" context
+  private(set) var closeAction = CloseAction.default
   private(set) var editContext: NSManagedObjectContext? = nil
 
   private var adhocLocation: AdhocLocation? = nil
   private var angleDistanceLocation: AngleDistanceLocation? = nil
   private var awaitingGpsForMove = false
   private var entity: NSManagedObject? = nil
-  private var graphic: AGSGraphic? = nil
   private var gpsDisabled = false
   private var gpsPoint: GpsPoint? = nil
+  private var graphic: AGSGraphic? = nil
   private var locationMethod: LocationMethod.TypeEnum? = .gps
-  private var mapTouch: AGSPoint? = nil
   private var mapReference: MapReference? = nil
+  private var mapTouch: AGSPoint? = nil
   private var mission: Mission? = nil
   private var name: String?
   private var observationClass: ObservationClass? = nil
   private var observing: Bool? = nil
+  private var presentationMode: PresentationMode = .review
   private var survey: Survey? = nil
   private var template: MissionProperty? = nil
 
