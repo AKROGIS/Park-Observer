@@ -468,17 +468,22 @@ extension ObservationPresenter {
   }
 
   //TODO: Update presentation of cancel/Save based on validation or edit status?
+  private func updateDeletable() {
+    switch observationClass {
+    case .feature(_):
+      isDeletable = entity != nil && graphic != nil
+      break
+    default:
+      isDeletable = false
+      break
+    }
+  }
 
   private func updateEditing() {
     if isEditing {
-      //TODO: isDeletable depends on ObservationClass and presentationMode
-      //TODO: Delete requires entity and graphic
-      isDeletable = true
-      //TODO: is dependent on locationMethod and entity location properties
-      isMoveableToTouch = true
-      isMoveableToGps = true
+      updateDeletable()
+      updateMoveable()
       if presentationMode == .review {
-        //TODO: create an edit context and update the entity
         presentationMode = .edit
       }
     } else {
@@ -546,6 +551,16 @@ extension ObservationPresenter {
       if let location = observation.adhocLocation {
         adhocLocation = location
         locationMethod = .mapTouch
+    }
+  }
+
+  private func updateMoveable() {
+    isMoveableToTouch = false
+    isMoveableToGps = false
+    if locationMethod == .some(.mapTouch) {
+      isMoveableToGps = true
+      if presentationMode == .edit {
+        isMoveableToGps = true
       }
       gpsPoint = observation.gpsPoint
     }
