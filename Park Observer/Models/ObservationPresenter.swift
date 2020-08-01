@@ -585,7 +585,8 @@ extension ObservationPresenter {
       for key in graphic.attributes.allKeys {
         if let key = key as? String {
           if key != .attributeKeyTimestamp && key != .attributeKeyObserving {
-            graphic.attributes[key] = entity.value(forKey: key)
+            let entitykey = .attributePrefix + key
+            graphic.attributes[key] = entity.value(forKey: entitykey)
           }
         }
       }
