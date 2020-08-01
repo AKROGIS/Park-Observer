@@ -126,6 +126,8 @@ final class ObservationPresenter: ObservableObject {
       print("Error: Illegal attempt to reset the gpsPoint in ObservationPresenter")
       return
     }
+    // if locationMethod = .mapTouch, then the gps is only needed for the timestamp;
+    // do not save it with the entity; do not delete it or we might get another GPS point
     self.gpsPoint = gpsPoint
     updateTimestamp(with: gpsPoint)
     updateAwaitingGps()
@@ -378,6 +380,10 @@ extension ObservationPresenter {
     }
     let defaults = feature.dialog?.defaultValues
     let uniqueIdAttribute = feature.attributes?.uniqueIdAttribute
+    // A mapTouch uses the GpsPoint for the timestamp (to link to observer's GPS position),
+    // The Observation should should only set the AdhocLocation and not GpsPoint.
+    // See discussion in Observation:requestLocationOfObserver
+    let gpsPoint = adhocLocation == nil ? self.gpsPoint : nil
     entity = Observation.new(
       feature, mission: mission, gpsPoint: gpsPoint, adhocLocation: adhocLocation,
       angleDistanceLocation: angleDistanceLocation, defaults: defaults,
