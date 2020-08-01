@@ -217,7 +217,6 @@ class SurveyController: NSObject, ObservableObject {
   }
 
   func loadSurvey(name: String? = nil) {
-    unloadCurrentSurvey()
     guard let name = name ?? surveyName ?? Defaults.surveyName.readString() else {
       message = Message.warning("No survey loaded. Use the menu to select a survey.")
       return
@@ -229,7 +228,6 @@ class SurveyController: NSObject, ObservableObject {
       case .success(let survey):
         self.surveyName = name
         self.survey = survey
-        self.startNewMission()  // We need a mission to add observations w/o a tracklog
         NSLog("Start draw survey")
         // Map draw can take several seconds for a large survey. Fortunately, the map layers can
         // be updated on a background thread, and mapView updates the UI appropriately.
@@ -410,8 +408,8 @@ class SurveyController: NSObject, ObservableObject {
     observing = false
     stopGpsStreaming()
     updateFeatureLocatableWithoutTouch()
-    startNewMission()  // We need a mission outside of tracklogs for adding observation w/o tracklog
     previousGpsPoint = nil
+    mission = nil
     saveSurvey()
   }
 
@@ -569,7 +567,7 @@ class SurveyController: NSObject, ObservableObject {
       return
     }
     print("Adding Mission Property at GPS")
-
+    if mission == nil { startNewMission() }
     selectedObservation = ObservationPresenter.create(
       survey: survey, mission: mission, observationClass: .mission)
     //selectedObservation will create the mission property when it gets the next GPS location
@@ -587,6 +585,7 @@ class SurveyController: NSObject, ObservableObject {
       return
     }
     print("Adding \(feature.name) at \(feature.allowAngleDistance ? "AngleDistance" : "GPS")")
+    if mission == nil { startNewMission() }
     selectedObservation = ObservationPresenter.create(
       survey: survey, mission: mission, observationClass: .feature(feature))
     //selectedObservation will create the observation when it gets the next GPS location
@@ -600,10 +599,10 @@ class SurveyController: NSObject, ObservableObject {
     updateObservationsLocatableWithTouch()
     guard observationsLocatableWithTouch.count > 0 else { return }
 
-    print("Adding observation at \(mapPoint.toCLLocationCoordinate2D())")
-
     if waitingToAuthorizeGps(callback: { self.addObservation(at: mapPoint) }) { return }
 
+    print("Adding observation at \(mapPoint.toCLLocationCoordinate2D())")
+    if mission == nil { startNewMission() }
     let observationPresenter = ObservationPresenter.create(
       survey: survey, mission: mission, mapTouch: mapPoint, mapReference: mapReference)
     selectedObservation = observationPresenter
