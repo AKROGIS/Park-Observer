@@ -531,26 +531,40 @@ extension ObservationPresenter {
   }
 
   private func updateLocationProperties(from entity: NSManagedObject?) {
+    // See Observation:requestLocationOfObserver for a discussion of how an observation's
+    //   gpsPoint, adhocLocation and AngleLocation work together
+    // In short there are 4 supported configurations (where properties are not null)
+    //  1) gpsPoint -> .gps
+    //  2) angleDistanceLocation + gpsPoint -> .angleDistance (not supported on MissionProperty)
+    //  3) adhocLocation -> .mapTouch
+    //  4) adhocLocation + gpsPoint -> .gps (original touch location was moved to GPS)
+
     locationMethod = .gps  //default
     guard let entity = entity else {
       print("No entity provided to ObservationPresenter.updateLocationProperties(from:)")
       return
     }
     if let missionProperty = entity as? MissionProperty {
+      gpsPoint = missionProperty.gpsPoint
       if let location = missionProperty.adhocLocation {
         adhocLocation = location
-        locationMethod = .mapTouch
+        if gpsPoint == nil {
+          locationMethod = .mapTouch
+        }
       }
-      gpsPoint = missionProperty.gpsPoint
     }
     if let observation = entity as? Observation {
+      gpsPoint = observation.gpsPoint
       if let location = observation.angleDistanceLocation {
         angleDistanceLocation = location
         locationMethod = .angleDistance
       }
       if let location = observation.adhocLocation {
         adhocLocation = location
-        locationMethod = .mapTouch
+        if gpsPoint == nil {
+          locationMethod = .mapTouch
+        }
+      }
     }
   }
 
@@ -562,7 +576,6 @@ extension ObservationPresenter {
       if presentationMode == .edit {
         isMoveableToGps = true
       }
-      gpsPoint = observation.gpsPoint
     }
   }
 
