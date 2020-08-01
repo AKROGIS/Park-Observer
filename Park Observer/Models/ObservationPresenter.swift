@@ -203,11 +203,18 @@ final class ObservationPresenter: ObservableObject {
   }
 
   func save() {
-    // validate - show errors set denyClose
-    // attempt to save - show errors set deny Close
-    closeAllowed = true
+    closeAllowed = false
+    if let context = editContext {
+      if context.hasChanges {
+        do {
+          try context.save()
+          closeAllowed = true
+        } catch {
+          setError(error.localizedDescription)
+        }
+      }
+    }
     closeAction = .save
-    print("save not implemented.")
   }
 
   func cancel() {
