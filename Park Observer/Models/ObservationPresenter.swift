@@ -220,6 +220,7 @@ final class ObservationPresenter: ObservableObject {
       if context.hasChanges {
         do {
           try context.save()
+          updateGraphicAttributesOnSave()
           closeAllowed = true
         } catch {
           setError(error.localizedDescription)
@@ -527,6 +528,18 @@ extension ObservationPresenter {
       break
     case .none:
       entity = nil
+    }
+  }
+
+  private func updateGraphicAttributesOnSave() {
+    if let graphic = graphic, let entity = entity {
+      for key in graphic.attributes.allKeys {
+        if let key = key as? String {
+          if key != .attributeKeyTimestamp && key != .attributeKeyObserving {
+            graphic.attributes[key] = entity.value(forKey: key)
+          }
+        }
+      }
     }
   }
 
