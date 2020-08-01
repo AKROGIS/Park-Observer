@@ -644,37 +644,71 @@ class SurveyController: NSObject, ObservableObject {
     slideOutMenuVisible = true
   }
 
+  //TODO: catch ObservationView disappeared due to back to selector button and treat like slideoutClosed
+  //TODO: monitor selectedObservation.awaitingGpsForMove and trigger requestGpsPointAsync
+  //TODO: new GPS Points are not being saved with the right mission (building tracklog errors)
+
   func slideOutClosedActions() {
     if showingObservationSelector {
       showingObservationSelector = false
     }
     if showingObservationEditor {
       showingObservationEditor = false
-      //if let selectedObservation = selectedObservation {
-      //save(observationClass: selectedObservation.observationClass, entity: selectedObservation.entity)
-      //}
-      //TODO:
-      // Check with selectedObservation to get cancel/save/move status and observationClass
-      // if editing canceled, then request selectedObservation delete any temp state; clear selectedObservation
-      // if saving edits, then validate save; request selectedObservation save state (was save ok?) release edit context;
-      // update existng graphics new objects and update graphics add attributes to graphics
-      // Do I need to do any cleanup? if fails or canceled
-      // if using an editing context or a copy of the attributes, then copy to new object
-      // If saving a _new_ missionProperty get missionProperty from ObservationEditor and update totalizer
-      //   totalizer.updateProperties(missionProperty)
+    }
+    if let selectedObservation = selectedObservation {
+      closeObservationView(selectedObservation)
     }
   }
 
-  private func save(observationClass: ObservationClass?, entity: NSObject?) {
+  private func closeObservationView(_ selectedObservation: ObservationPresenter) {
+    switch selectedObservation.closeAction {
+    case .default:
+      selectedObservation.save()
+      if selectedObservation.closeAllowed {
+        if case .save(let observationClass, let entity) = selectedObservation.closeAction {
+          addNew(observationClass: observationClass, entity: entity)
+          self.selectedObservation = nil
+        }
+      } else {
+        presentObservation()
+      }
+      break
+    case .move:
+      message = .info("Tap on the map at the new location for the observation")
+      // Can I set up a modal to prevent any other touches
+      movingGraphic = true
+    // wait until the map touch delegate calls back to moveGraphic
+    case .save(let observationClass, let entity):
+      addNew(observationClass: observationClass, entity: entity)
+      self.selectedObservation = nil
+      break
+    default:  //.cancel, .delete
+      self.selectedObservation = nil
+      break
+    }
+  }
+
+  func moveGraphic(to mapPoint: AGSPoint) {
+    do {
+      try selectedObservation?.moveGraphic(to: mapPoint)
+      message = nil
+    } catch {
+      message = .error(error.localizedDescription)
+    }
+    selectedObservation = nil
+    movingGraphic = false
+  }
+
+  private func addNew(observationClass: ObservationClass?, entity: NSObject?) {
     switch observationClass {
     case .mission:
       if let missionProperty = entity as? MissionProperty {
-        save(missionProperty: missionProperty)
+        addNew(missionProperty: missionProperty)
       }
       break
     case .feature(let feature):
       if let observation = entity as? Observation {
-        save(observation: observation, feature: feature)
+        addNew(observation: observation, feature: feature)
       }
       break
     case .none:
@@ -682,14 +716,14 @@ class SurveyController: NSObject, ObservableObject {
     }
   }
 
-  private func save(missionProperty: MissionProperty) {
+  private func addNew(missionProperty: MissionProperty) {
     let _ = mapView.addMissionProperty(missionProperty)
     self.missionPropertyTemplate = missionProperty
     totalizer.updateProperties(missionProperty)
     //TODO: update totalizer when observing changes (the property edits might finish after several more gps points)
   }
 
-  private func save(observation: Observation, feature: Feature) {
+  private func addNew(observation: Observation, feature: Feature) {
     //TODO: Simplify mapview feature graphic creation (remove index)
     if let index = survey?.config.features.firstIndex(where: { $0.name == feature.name }) {
       let _ = mapView.addFeature(observation, feature: feature, index: index)

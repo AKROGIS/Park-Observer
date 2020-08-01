@@ -6,9 +6,9 @@
 //  Copyright © 2020 Alaska Region GIS Team. All rights reserved.
 //
 
-import ArcGIS  // For AGSGraphic
-import CoreData  // For NSManagedObject
-import Foundation  // For ObservableObject
+import ArcGIS  // For AGSGraphic, AGSPoint
+import CoreData  // For NSManagedObject, NSManagedObjectContext
+import Foundation  // For ObservableObject, @Published, Date
 
 // SurveyController creates an ObservationPresenter and shows the ObservationView
 //  - when user taps on map (new)
@@ -18,29 +18,67 @@ import Foundation  // For ObservableObject
 //  - when the user starts/stops tracklogging/observing (if editing is appropriate)
 // SurveyController requests gpsPoint, and feature type as needed.  When the SurveyContoller
 //   receives them, it updates the ObservationPresenter which updates the ObservationView
-// ? SurveyController create a new graphic on the correct layer (without attributes) at the
-//   correct location when apropriate and provides it to the ObservationPresenter
-//   ?? issues: needs feature (layer), and gpsPoint/angle/distance from ObservationPresenter
-//    which may take a while (or never) to collect
-// ObservationPresenter can create/edit/save/delete entites as needed
-// ObservationPresenter can update/move/copy/delete graphics.
-// ObservationPresenter will have save/cancel buttons which will set the state of the
-//   ObservationPresenter, and then trigger a close view event
-// ObservationView (or a parent view) can ask the SurveyController to close the view.
-//   SurveyController will ask the ObservationView if that is ok.  If ok, then the work
-//   is saved or discarded based on state of ObservationPresenter
-//   SurveyController deletes the ObservationPresenter
+// ObservationPresenter will create/edit/save/delete entites in a disposible edit context
+// ObservationPresenter will delete graphics when an existing entity is deleted.
+// ObservationPresenter will update graphic attributes when an existing entity is saved.
+// ObservationView can be dismissed in the following ways
+//  tap Save button
+//    - if no changes same as Cancel button
+//    - save context
+//    - update graphic attributes (if existing)
+//    - if errors display and do not allow slideout to close
+//    - if no errors allow slideout to close (or go back to selector?)
+//    - flag Controller we saved (with new entity/observationClass)
+//    - Controller creates new graphic from self.entity (if new)
+//    - Controller releases self (context deleted)
+//  tap Cancel button
+//    - context has changes present confirmation alert?
+//    - allow slideout to close (or go back to selector?)
+//    - flag Controller we cancelled
+//    - Controller releases self (context deleted)
+//  tap MoveToMapTouch button
+//    - only allowed for existing entities/graphics with map touch location
+//    - self calls save
+//    - if not close allowed
+//      - done; error message will tell user why view did not close
+//    - if close allowed
+//      - flag Controller we moved
+//      - Controller requests map tap (delegated to Controller)
+//      - Controller request self try move
+//        - self moves graphic, updates entity, saves context may throw
+//      - Controller displays any errors
+//      - Controller releases self (context deleted)
+//  tap Delete button
+//    - present confirmation alert?
+//    - delete entity from context; save context
+//    - delete graphic from it's overlay
+//    - if errors display and do not close
+//    - if no errors close slideout (or go back to selector?)
+//    - flag Controller we deleted
+//    - Controller releases self (context deleted)
+//  tap Back buttton (when presented from selector)
+//    - Same as tap background
+//  tap background (to close slideout)
+//    - assume the user did not want abandon changes
+//    - Controller calls save() on self
+//    - if not close allowed
+//      - Controller set slideout to showing
+//      - Controller does _NOT_ release self
+//    - if close allowed
+//      - Controller creates new graphic from self.entity (if new)
+//      - Controller releases self (context deleted)
+//
 // The presenter always uses an edit context; even if opened for review, because the user
 // might switch to edit mode.  The surveyController will use the edit context for creating
 // GPS points for the observation presenter, so that if the creation is canceled, the GPS
 // points are also removed (unless they are also part of a tracklog)
 
 enum CloseAction {
-  case cancel  // aborts and undos a create new feature process
+  case cancel  // abort edit or observation creation
   case `default`  // form closed by tap on map or back button (pick save or cancel)
-  case delete
-  case move(AGSGraphic)
-  case save  // saves changes
+  case delete  // existing entity and graphic were deleted
+  case move  // move the graphic/adhocLocation to a pending mapTouch location
+  case save(ObservationClass?, NSManagedObject?)  // saves changes
 }
 
 enum PresentationMode {
@@ -57,10 +95,15 @@ final class ObservationPresenter: ObservableObject {
     }
   }
 
+  //TODO: request GPS Point for MoveToGps (Controller could listen to awaitingGps)
+  //TODO: Cleanup/Improve Title (add label or id or timestamp)
+  //TODO: Verify canceling Mission Property creation is done right
   //TODO: Support cancel-on-top
-  //TODO: Update presentation of Save based on context.hasChanges and validation status?
   //TODO: Validate on save
-  //TODO: The timestamp should be optional, but ObservationSelectorView doesn't like that
+  //TODO: Error handling needs more work (clear error, set isEditing/isEditable)
+  //TODO?: Alert "This cannot be undone" warning before delete or cancel(with changes)
+  //TODO?: Update presentation of Save based on context.hasChanges and validation status
+  //TODO?: The timestamp should be optional, but ObservationSelectorView doesn't like that
 
   // These properties are used in the view, may not all need to be published,
   // but it is nice insurance to know that the view will be updated if they do change.
@@ -143,12 +186,15 @@ final class ObservationPresenter: ObservableObject {
       updateAwaitingGps()
       if let missionProperty = entity as? MissionProperty {
         missionProperty.gpsPoint = gpsPoint
-        if gpsPoint != nil { locationMethod = .gps }
       }
       if let observation = entity as? Observation {
         observation.gpsPoint = gpsPoint
-        if gpsPoint != nil { locationMethod = .gps }
       }
+      if gpsPoint != nil { locationMethod = .gps }
+      if let graphic = graphic, let location = gpsPoint?.location {
+        graphic.move(to: AGSPoint(clLocationCoordinate2D: location))
+      }
+      updateMoveable()
     }
 
     // if locationMethod = .mapTouch, then the gps is only needed for the timestamp;
@@ -194,40 +240,38 @@ final class ObservationPresenter: ObservableObject {
       gpsPoint = nil
       awaitingGpsForMove = true
       updateAwaitingGps()
-      //TODO: surveyController.requestGpsAsync
     }
   }
 
   func initiateMoveToTouch() {
-    print("initiateMoveToTouch not implemented.")
-    if let graphic = graphic {
-      //TODO: Implement
-      // set surveyController.movingGraphic = true
-      // set surveyController.isShowingSlideout = false
-      // set surveyController.message.info("Tap on map to move graphic")
-      // tap will callback to self.moveGraphic(to:)
-      closeAllowed = true
-      closeAction = .move(graphic)
-    } else {
-      // Set error message
-      closeAllowed = false
+    save()
+    if closeAllowed {
+      closeAction = .move
     }
   }
 
   func save() {
-    closeAllowed = false
     if let context = editContext {
       if context.hasChanges {
         do {
           try context.save()
-          updateGraphicAttributesOnSave()
+          updateGraphicAttributes()
           closeAllowed = true
+          if presentationMode == .new {
+            closeAction = .save(observationClass, entity)
+          } else {
+            closeAction = .save(nil, nil)
+          }
         } catch {
           setError(error.localizedDescription)
+          closeAllowed = false
+          closeAction = .default
         }
+      } else {
+        closeAllowed = true
+        closeAction = .cancel
       }
     }
-    closeAction = .save
   }
 
   func cancel() {
@@ -235,30 +279,35 @@ final class ObservationPresenter: ObservableObject {
   }
 
   func delete() {
-    closeAllowed = true
-    closeAction = .delete
-    if let entity = entity, let graphic = graphic, let overlay = graphic.graphicsOverlay {
-      if let context = entity.managedObjectContext {
-        context.delete(entity)
-        do {
-          try context.save()
-        } catch {
-          setError(error.localizedDescription)
-          closeAllowed = false
-        }
+    if let entity = entity, let context = entity.managedObjectContext, let graphic = graphic,
+      let overlay = graphic.graphicsOverlay
+    {
+      context.delete(entity)
+      do {
+        try context.save()
+        overlay.graphics.remove(graphic)
+        closeAllowed = true
+        closeAction = .delete
+      } catch {
+        setError(error.localizedDescription)
+        closeAllowed = false
+        closeAction = .default
       }
-      overlay.graphics.remove(graphic)
     } else {
-      setError("Programming Error: no entity or graphic layer")
+      setError("Programming Error: no entity or graphic")
       closeAllowed = false
+      closeAction = .default
     }
   }
 
-  func moveGraphic(to mapPoint: AGSPoint) {
-    if let graphic = graphic {
-      graphic.move(to: mapPoint)
+  func moveGraphic(to mapPoint: AGSPoint) throws {
+    if let adhocLocation = adhocLocation {
+      adhocLocation.location = mapPoint.toCLLocationCoordinate2D()
+      try editContext?.save()
+      if let graphic = graphic {
+        graphic.move(to: mapPoint)
+      }
     }
-    //TODO: update the entities adhocLocation
   }
 
 }
@@ -531,7 +580,7 @@ extension ObservationPresenter {
     }
   }
 
-  private func updateGraphicAttributesOnSave() {
+  private func updateGraphicAttributes() {
     if let graphic = graphic, let entity = entity {
       for key in graphic.attributes.allKeys {
         if let key = key as? String {
@@ -600,9 +649,9 @@ extension ObservationPresenter {
     isMoveableToTouch = false
     isMoveableToGps = false
     if locationMethod == .some(.mapTouch) {
-      isMoveableToGps = true
+      isMoveableToGps = !gpsDisabled
       if presentationMode == .edit {
-        isMoveableToGps = true
+        isMoveableToTouch = true
       }
     }
   }
@@ -654,13 +703,13 @@ extension ObservationPresenter {
     if let name = name {
       title = name
       let fields = self.fields ?? [Attribute]()
-      //TODO: If feature has a map label defined, use that (it may be the id)
+      //If feature has a map label defined, use that (it may be the id)
       if let idFieldName = fields.first(where: { $0.type == .id })?.name,
         let id = entity?.value(forKey: .attributePrefix + idFieldName) as? Int
       {
         title = "\(name) #\(id)"
       }
-      //TODO: If feature has no label or id, then use Timestamp
+      //If feature has no label or id, then use Timestamp
     }
   }
 
