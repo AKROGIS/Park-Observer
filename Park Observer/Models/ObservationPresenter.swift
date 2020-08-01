@@ -81,6 +81,7 @@ final class ObservationPresenter: ObservableObject {
   //TODO: Ensure the published state is updated if these variables change
   private var adhocLocation: AdhocLocation? = nil
   private var angleDistanceLocation: AngleDistanceLocation? = nil
+  private var awaitingGpsForMove = false
   private var entity: NSManagedObject? = nil
   private var graphic: AGSGraphic? = nil
   private var gpsDisabled = false
@@ -126,6 +127,21 @@ final class ObservationPresenter: ObservableObject {
       print("Error: Illegal attempt to reset the gpsPoint in ObservationPresenter")
       return
     }
+
+    if awaitingGpsForMove {
+      awaitingGpsForMove = gpsPoint == nil
+      self.gpsPoint = gpsPoint
+      updateAwaitingGps()
+      if let missionProperty = entity as? MissionProperty {
+        missionProperty.gpsPoint = gpsPoint
+        if gpsPoint != nil { locationMethod = .gps }
+      }
+      if let observation = entity as? Observation {
+        observation.gpsPoint = gpsPoint
+        if gpsPoint != nil { locationMethod = .gps }
+      }
+    }
+
     // if locationMethod = .mapTouch, then the gps is only needed for the timestamp;
     // do not save it with the entity; do not delete it or we might get another GPS point
     self.gpsPoint = gpsPoint
@@ -163,11 +179,12 @@ final class ObservationPresenter: ObservableObject {
   //MARK: - Published Actions
 
   func initiateMoveToGps() {
-    print("initiateMoveToGps not implemented.")
-    // set locationMethod = .gps
-    // set awaitingGPS = true
-    // surveyController.requestGpsAsync
-    // Do not close
+    if locationMethod == .mapTouch && entity != nil {
+      gpsPoint = nil
+      awaitingGpsForMove = true
+      updateAwaitingGps()
+      //TODO: surveyController.requestGpsAsync
+    }
   }
 
   func initiateMoveToTouch() {
