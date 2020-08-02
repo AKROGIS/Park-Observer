@@ -221,6 +221,7 @@ class SurveyController: NSObject, ObservableObject {
       message = Message.warning("No survey loaded. Use the menu to select a survey.")
       return
     }
+    unloadCurrentSurvey()
     NSLog("Start load survey \(name)")
     Survey.load(name) { (result) in
       NSLog("Finish load survey")
@@ -257,6 +258,7 @@ class SurveyController: NSObject, ObservableObject {
   /// Save Survey, Stop TrackLogging, and clear all references to objects owned by the survey
   func unloadCurrentSurvey() {
     trackLogging = false
+    saveSurvey()
     enableSurveyControls = false
     featuresLocatableWithoutTouch.removeAll()
     observationsLocatableWithTouch.removeAll()
