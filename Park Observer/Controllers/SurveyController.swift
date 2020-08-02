@@ -726,7 +726,12 @@ class SurveyController: NSObject, ObservableObject {
 
   private func addNew(missionProperty: MissionProperty) {
     let _ = mapView.addMissionProperty(missionProperty)
-    self.missionPropertyTemplate = missionProperty
+    // missionProperty is in the edit context which will disappear soon
+    // get the same object in the permanent viewContext
+    if let context = survey?.viewContext {
+      let id = missionProperty.objectID
+      self.missionPropertyTemplate = context.object(with: id) as? MissionProperty
+    }
     totalizer.updateProperties(missionProperty)
     //TODO: update totalizer when observing changes (the property edits might finish after several more gps points)
   }
