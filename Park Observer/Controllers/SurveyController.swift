@@ -727,7 +727,7 @@ class SurveyController: NSObject, ObservableObject {
   }
 
   private func addNew(missionProperty: MissionProperty) {
-    let _ = mapView.addMissionProperty(missionProperty)
+    let _ = mapView.addMissionProperty(missionProperty, config: survey?.config.mission)
     // missionProperty is in the edit context which will disappear soon
     // get the same object in the permanent viewContext
     if let context = survey?.viewContext {

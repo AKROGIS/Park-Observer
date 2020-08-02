@@ -114,6 +114,14 @@ extension MissionProperties {
 
 extension MissionProperty {
 
+  func attributes(for config: ProtocolMission?) -> [String: Any] {
+    var values = [String: Any]()
+    for attrib in config?.attributes ?? [] {
+      values[attrib.name] = self.value(forKey: .attributePrefix + attrib.name)
+    }
+    return values
+  }
+
   var timestamp: Date? {
     return gpsPoint?.timestamp ?? adhocLocation?.timestamp
   }

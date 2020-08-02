@@ -104,10 +104,8 @@ extension Observation {
 
   func attributes(for feature: Feature) -> [String: Any] {
     var values = [String: Any]()
-    if let attribs = feature.attributes {
-      for attrib in attribs {
-        values[attrib.name] = self.value(forKey: .attributePrefix + attrib.name)
-      }
+    for attrib in feature.attributes ?? [] {
+      values[attrib.name] = self.value(forKey: .attributePrefix + attrib.name)
     }
     return values
   }

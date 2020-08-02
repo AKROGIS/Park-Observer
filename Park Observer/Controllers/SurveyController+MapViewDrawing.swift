@@ -39,15 +39,14 @@ extension GpsPoint {
 
 extension MissionProperty {
 
-  var asGraphic: AGSGraphic? {
+  func asGraphic(for config: ProtocolMission?) -> AGSGraphic? {
     // Use the timestamp to lookup the MissionProperty on any thread
     guard let location = self.location else {
       print("Cannot draw graphic; MissionProperty has no location")
       return nil
     }
     let agsPoint = AGSPoint(clLocationCoordinate2D: location)
-    //TODO: if renderer is unique value or class break, then include rendering fields in attributes
-    var attributes = [String: Any]()
+    var attributes = self.attributes(for: config)
     if let timestamp = self.timestamp {
       attributes[.attributeKeyTimestamp] = timestamp
     }
@@ -87,7 +86,7 @@ extension Survey {
     guard let missionProperties = try? self.viewContext.fetch(MissionProperties.fetchRequest) else {
       return []
     }
-    return missionProperties.compactMap { $0.asGraphic }
+    return missionProperties.compactMap { $0.asGraphic(for: self.config.mission) }
   }
 
   func featureGraphics(for feature: Feature) -> [AGSGraphic] {
@@ -175,8 +174,10 @@ extension AGSMapView {
     overlay.graphics.addObjects(from: survey.gpsGraphics)
   }
 
-  func addMissionProperty(_ missionProperty: MissionProperty) -> AGSGraphic? {
-    guard let graphic = missionProperty.asGraphic else {
+  func addMissionProperty(_ missionProperty: MissionProperty, config: ProtocolMission?)
+    -> AGSGraphic?
+  {
+    guard let graphic = missionProperty.asGraphic(for: config) else {
       return nil
     }
     let overlay = self.missionPropertyOverlay
