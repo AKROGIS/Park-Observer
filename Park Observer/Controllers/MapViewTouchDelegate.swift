@@ -55,6 +55,7 @@ class MapViewTouchDelegate: NSObject, AGSGeoViewTouchDelegate {
 
     if surveyController.movingGraphic {
       surveyController.moveGraphic(to: mapPoint)
+      return
     }
 
     geoView.hitTest(at: screenPoint) { foundGraphics in
