@@ -356,10 +356,13 @@ extension ObservationPresenter {
   /// Create a new observation at the map touch location
   /// Optional Gps Point (for timestamp), and observation class will come later
   static func create(
-    survey: Survey?, mission: Mission?, mapTouch: AGSPoint, mapReference: MapReference?
+    survey: Survey?, mission: Mission?, mapTouch: AGSPoint, mapReference: MapReference?,
+    template: MissionProperty? = nil, observing: Bool? = nil
   ) -> ObservationPresenter {
     let op = ObservationPresenter(survey: survey, mission: mission)
     op.presentationMode = .new
+    op.template = template
+    op.observing = observing
     if mapReference == nil {
       op.setError("No map reference available")
     } else {

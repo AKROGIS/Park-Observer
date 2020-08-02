@@ -570,7 +570,8 @@ class SurveyController: NSObject, ObservableObject {
     print("Adding Mission Property at GPS")
     if mission == nil { startNewMission() }
     let observationPresenter = ObservationPresenter.create(
-      survey: survey, mission: mission, observationClass: .mission)
+      survey: survey, mission: mission, observationClass: .mission,
+      template: missionPropertyTemplate, observing: observing)
     //observationPresenter will create the mission property when it gets the next GPS location
     requestGpsPointAsync(for: observationPresenter)
     if showEditor {
@@ -609,7 +610,8 @@ class SurveyController: NSObject, ObservableObject {
     print("Adding observation at \(mapPoint.toCLLocationCoordinate2D())")
     if mission == nil { startNewMission() }
     let observationPresenter = ObservationPresenter.create(
-      survey: survey, mission: mission, mapTouch: mapPoint, mapReference: mapReference)
+      survey: survey, mission: mission, mapTouch: mapPoint, mapReference: mapReference,
+      template: missionPropertyTemplate, observing: observing)
     // observationPresenter will create observation after we get the next suitable GPS location
     // and the observationClass to create (may need to present selector to user)
 
