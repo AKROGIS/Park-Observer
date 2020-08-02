@@ -66,9 +66,7 @@ struct SlideOutView_Previews: PreviewProvider {
   }
 }
 
-//TODO: conditionally replace MainMenuView with on of the following
-//  AttributeEditingView
-//  OtherView??
+
 //TODO: limit to maxWidth as % of screenwidth
 //TODO: on device rotation, recalc maxwidth and adjust width if necessary
 //TODO: Add and swipe to close (but do not adjust width)
@@ -76,5 +74,5 @@ struct SlideOutView_Previews: PreviewProvider {
 //TODO: Deal with safe area; add to offset
 //TODO: refresh the visible view
 //  hiding the slideout like this is nice because it restores to the same
-//  place in the navigation heirarchy where we left off, but views the file
-//  list do not refresh
+//  place in the navigation heirarchy where we left off,
+//  but file list views do not refresh

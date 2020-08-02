@@ -102,7 +102,7 @@ final class ObservationPresenter: ObservableObject {
   //TODO: Validate on save
   //TODO: Error handling needs more work (clear error, set isEditing/isEditable)
   //TODO?: Alert "This cannot be undone" warning before delete or cancel(with changes)
-  //TODO?: Update presentation of Save based on context.hasChanges and validation status
+  //TODO?: Update presentation of Save Button based on context.hasChanges and validation status
   //TODO?: The timestamp should be optional, but ObservationSelectorView doesn't like that
 
   // These properties are used in the view, may not all need to be published,

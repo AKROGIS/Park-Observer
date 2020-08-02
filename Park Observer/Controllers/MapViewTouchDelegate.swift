@@ -76,7 +76,6 @@ class MapViewTouchDelegate: NSObject, AGSGeoViewTouchDelegate {
   }
 
   private func displayInfo(for graphic: AGSGraphic) {
-    //TODO: Set presentation mode to edit as needed (default is review)
     surveyController.selectedObservation = surveyController.observationPresenter(for: graphic)
     surveyController.showingObservationEditor = true
     surveyController.slideOutMenuVisible = true
@@ -84,7 +83,6 @@ class MapViewTouchDelegate: NSObject, AGSGeoViewTouchDelegate {
 
   private func displaySelector(for graphics: [AGSGraphic]) {
     surveyController.selectedObservations = graphics.map {
-      //TODO: Set presentation mode to edit as needed (default is review)
       surveyController.observationPresenter(for: $0)
     }
     surveyController.showingObservationSelector = true
@@ -119,7 +117,6 @@ extension Int {
 extension AGSGeoView {
 
   func hitTest(at point: CGPoint, completion: @escaping ([AGSGraphic]) -> Void) {
-    //TODO: adjust hit radius based on user selected control size
     let hitRadius = 22.0
     self.identifyGraphicsOverlays(
       atScreenPoint: point, tolerance: hitRadius, returnPopupsOnly: false,
@@ -133,7 +130,6 @@ extension AGSGeoView {
         let layersToIgnore: [String] = [
           .layerNameGpsPoints, .layerNameTrackLogsOn, .layerNameTrackLogsOff,
         ]
-        //TODO: if a tracklog is selected, return the related mission property graphic
         let graphics = results.reduce([AGSGraphic]()) { x, y in
           layersToIgnore.contains(y.graphicsOverlay.overlayID) ? x : x + y.graphics
         }

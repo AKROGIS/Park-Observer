@@ -13,7 +13,7 @@ struct MapInfo {
   let author: String
   let date: Date?
   let title: String
-  //TODO: Thumbnail
+  // Thumbnail?
 }
 
 //MARK: - Codable

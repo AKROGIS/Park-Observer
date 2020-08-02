@@ -656,11 +656,11 @@ class SurveyController: NSObject, ObservableObject {
 
   //TODO: catch ObservationView disappeared due to back to selector button and treat like slideoutClosed
   //TODO: monitor selectedObservation.awaitingGpsForMove and trigger requestGpsPointAsync
-  //TODO: new GPS Points are not being saved with the right mission (building tracklog errors)
 
   func slideOutClosedActions() {
     if showingObservationSelector {
       showingObservationSelector = false
+      //TODO: check each item in selectedObservations for changes and save
     }
     if showingObservationEditor {
       showingObservationEditor = false

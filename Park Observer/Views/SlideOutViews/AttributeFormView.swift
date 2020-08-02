@@ -24,8 +24,6 @@ struct AttributeFormView: View {
         }
       }
     }
-    //TODO:  Reconcile form.title with implicit title (feature #id @ time)
-    //.navigationBarTitle(Text(form.title))
   }
 
   func build(_ element: FormElement) -> some View {
