@@ -564,10 +564,10 @@ extension ObservationPresenter {
   private func updateEditing() {
     if isEditing {
       updateDeletable()
-      updateMoveable()
       if presentationMode == .review {
         presentationMode = .edit
       }
+      updateMoveable() // depends on presentation Mode
     } else {
       //Note: this branch only occurs during setup. It cannot be called by the view/user,
       // so I do not need to worry about saving or canceling edits
