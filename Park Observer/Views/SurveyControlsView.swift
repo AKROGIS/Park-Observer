@@ -20,7 +20,7 @@ struct SurveyControlsView: View {
         }) {
           Image(systemName: "slider.horizontal.3").font(.title)
         }
-        .mapButton(darkMode: userSettings.darkMapControls, size: userSettings.controlSize)
+        .mapButton(darkMode: userSettings.darkMapControls, size: userSettings.mapControlsSize)
 
         Spacer()
 
@@ -43,7 +43,7 @@ struct SurveyControlsView: View {
             }
           }
         }
-        .wideMapButton(darkMode: userSettings.darkMapControls, size: userSettings.controlSize)
+        .wideMapButton(darkMode: userSettings.darkMapControls, size: userSettings.mapControlsSize)
 
         if self.surveyController.trackLogging {
           Button(action: {
@@ -63,7 +63,7 @@ struct SurveyControlsView: View {
               }
             }
           }
-          .wideMapButton(darkMode: userSettings.darkMapControls, size: userSettings.controlSize)
+          .wideMapButton(darkMode: userSettings.darkMapControls, size: userSettings.mapControlsSize)
         }
 
         Button(action: {
@@ -71,7 +71,7 @@ struct SurveyControlsView: View {
         }) {
           Image(systemName: "cloud.sun.rain").font(.headline)
         }
-        .mapButton(darkMode: userSettings.darkMapControls, size: userSettings.controlSize)
+        .mapButton(darkMode: userSettings.darkMapControls, size: userSettings.mapControlsSize)
       }
       VStack {
         ForEach(self.surveyController.featuresLocatableWithoutTouch, id: \.name) { feature in
@@ -87,7 +87,7 @@ struct SurveyControlsView: View {
                 .offset(x: -1, y: 4.0)
             }
           }
-          .mapButton(darkMode: self.userSettings.darkMapControls, size: self.userSettings.controlSize)
+          .mapButton(darkMode: self.userSettings.darkMapControls, size: self.userSettings.mapControlsSize)
         }
       }
     }

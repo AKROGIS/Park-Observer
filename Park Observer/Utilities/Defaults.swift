@@ -20,6 +20,7 @@ enum Defaults: String {
   case mapAutoPanMode  // AGSLocationDisplayAutoPanMode (enum:Int); default: .off
   case mapCenterLat  // Double; default: 0.0
   case mapCenterLon  // Double; default: 0.0
+  case mapControlsSize  // MapControlSize (enum:CGFloat); default: .small (44.0)
   case mapLocationDisplay  // Bool; default : false
   case mapName  // String?; default: nil
   case mapRotation  // Double; default: 0.0
@@ -41,6 +42,12 @@ extension Defaults {
         defaults.set(value.rawValue, forKey: self.rawValue)
       } else {
         print("Error: Value in .mapAutoPanMode is not a AGSLocationDisplayAutoPanMode")
+      }
+    case .mapControlsSize:
+      if let value = value as? MapControlSize {
+        defaults.set(value.rawValue, forKey: self.rawValue)
+      } else {
+        print("Error: Value in .mapControlsSize is not a MapControlSize")
       }
     default:
       defaults.set(value, forKey: self.rawValue)
@@ -99,7 +106,19 @@ extension Defaults {
           + "for \(self.rawValue) in defaults; returning '.off''")
       return .off
     }
+  }
 
+  func readMapControlSize() -> MapControlSize {
+    switch self {
+    case .mapControlsSize:
+      let rawValue = UserDefaults.standard.double(forKey: self.rawValue)
+      return MapControlSize(rawValue: CGFloat(rawValue)) ?? .small
+    default:
+      print(
+        "Error: MapControlSize not a valid type "
+          + "for \(self.rawValue) in defaults; returning '.small''")
+      return .small
+    }
   }
 
 }

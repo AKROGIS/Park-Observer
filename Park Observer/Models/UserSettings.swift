@@ -13,7 +13,7 @@ class UserSettings: ObservableObject {
   /// MapControls can be light (for dark colored maps), or dark (for light maps)
   @Published var darkMapControls = false
 
-  @Published var controlSize: MapControlSize = .small
+  @Published var mapControlsSize: MapControlSize = .small
 
   /// Minimum required accuracy (in meters) of the GPS points
   @Published var gpsAccuracy = 0.0
@@ -41,6 +41,7 @@ class UserSettings: ObservableObject {
 
   func restoreState() {
     darkMapControls = Defaults.darkMapControls.readBool()
+    mapControlsSize = Defaults.mapControlsSize.readMapControlSize()
     gpsAccuracy = Defaults.gpsAccuracy.readDouble()
     showAlarmClock = Defaults.showAlarmClock.readBool()
     showInfoBanner = Defaults.showInfoBanner.readBool()
@@ -49,6 +50,7 @@ class UserSettings: ObservableObject {
 
   func saveState() {
     Defaults.darkMapControls.write(darkMapControls)
+    Defaults.mapControlsSize.write(mapControlsSize)
     Defaults.gpsAccuracy.write(gpsAccuracy)
     Defaults.showAlarmClock.write(showAlarmClock)
     Defaults.showInfoBanner.write(showInfoBanner)

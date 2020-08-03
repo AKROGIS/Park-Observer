@@ -13,11 +13,28 @@ struct UserSettingsView: View {
   @EnvironmentObject var userSettings: UserSettings
 
   var body: some View {
-    Form {
+
+    let controlSize = Binding<MapControlSize>(
+      get: { return self.userSettings.mapControlsSize },
+      set: { self.userSettings.mapControlsSize = $0 }
+    )
+
+    return Form {
       //TODO: Use form groups/controls; implement save settings
-      Toggle(isOn: $userSettings.darkMapControls) {
-        Text("Dark Mode Map Controls")
+      Section(header: Text("MAP CONTROLS")) {
+        Toggle(isOn: $userSettings.darkMapControls) {
+          Text("Dark mode")
+        }
+        Picker("", selection: controlSize) {
+          ForEach(MapControlSize.allCases) { size in
+            Text(size.localizedString)
+          }
+        }.pickerStyle(SegmentedPickerStyle())
+        Toggle(isOn: $userSettings.showAlarmClock) {
+          Text("Alarm Clock")
+        }
       }
+
       Toggle(isOn: $surveyController.enableBackgroundTrackLogging) {
         Text("Tracklog When Not Active")
       }
@@ -25,25 +42,28 @@ struct UserSettingsView: View {
         Text("Warning: App will consume extra power when not active").foregroundColor(.red)
           .font(.subheadline)
       }
-      Toggle(isOn: $userSettings.showAlarmClock) {
-        Text("Show Alarm Clock")
-      }
-      if surveyController.hasInfoBannerDefinition {
-        Toggle(isOn: $userSettings.showInfoBanner) {
-          Text("Show Informational Banner")
+
+      Section(header: Text("BANNERS")) {
+        if surveyController.hasInfoBannerDefinition {
+          Toggle(isOn: $userSettings.showInfoBanner) {
+            Text("Show Informational Banner")
+          }
+        }
+        if surveyController.totalizerDefinition != nil {
+          Toggle(isOn: $userSettings.showTotalizer) {
+            Text("Show Totalizer")
+          }
         }
       }
-      if surveyController.totalizerDefinition != nil {
-        Toggle(isOn: $userSettings.showTotalizer) {
-          Text("Show Totalizer")
-        }
-      }
+
       //Picker(title: "hi", selection: $userSettings.totalizerUnits) {}
-      Text("Gps Settings")
-      //Slider(value: $userSettings.gpsAccuracy, in: 5..<200, minimumValueLabel: Text("5m"), maximumValueLabel: Text("200m"))
-      Text("  Gps Frequency - time")
-      Text("  Gps Frequency - distance")
-      Text("  Gps Frequency - smart mode?")
+      Section(header: Text("GPS SETTINGS")) {
+        Slider(value: $userSettings.gpsAccuracy, in: 5.0...200.0, minimumValueLabel: Text("5m"), maximumValueLabel: Text("200m")) {
+          Text("Accuracy")
+        }
+        Text("Frequency - time")
+        Text("Frequency - distance")
+      }
     }
   }
 

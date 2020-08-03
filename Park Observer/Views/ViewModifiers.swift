@@ -11,7 +11,7 @@ import SwiftUI
 
 //MARK: - .mapButton
 
-enum MapControlSize: CGFloat {
+enum MapControlSize: CGFloat, CaseIterable, Hashable, Identifiable {
   case small = 44
   case medium = 66
   case large = 88
@@ -26,6 +26,20 @@ enum MapControlSize: CGFloat {
       return 6
     }
   }
+
+  var localizedString: String {
+    switch self {
+    case .small:
+      return NSLocalizedString("Small", comment: "")
+    case .medium:
+      return NSLocalizedString("Medium", comment: "")
+    case .large:
+      return NSLocalizedString("Large", comment: "")
+    }
+  }
+
+  var id: MapControlSize {self}
+  
 }
 
 extension View {

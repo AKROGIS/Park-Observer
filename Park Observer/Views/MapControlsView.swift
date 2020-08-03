@@ -27,7 +27,7 @@ struct MapControlsView: View {
         }) {
           CompassView(rotation: -1 * viewPointController.rotation, darkMode: userSettings.darkMapControls)
         }
-        .mapButton(darkMode: userSettings.darkMapControls, size: userSettings.controlSize)
+        .mapButton(darkMode: userSettings.darkMapControls, size: userSettings.mapControlsSize)
         //.transition(AnyTransition.scale.combined(with:.opacity))
       }
       LocationButtonView(controller: locationButtonController)
