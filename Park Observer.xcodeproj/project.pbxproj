@@ -155,6 +155,8 @@
 		59BA0EC824A50F6300CA6EF2 /* FileListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FileListView.swift; sourceTree = "<group>"; };
 		59BA0ECA24A50FC700CA6EF2 /* FileItemView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FileItemView.swift; sourceTree = "<group>"; };
 		59BA0ECC24A510B800CA6EF2 /* ObservationView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ObservationView.swift; sourceTree = "<group>"; };
+		59C8282A24D88C090082BED2 /* TODO.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = TODO.md; sourceTree = "<group>"; };
+		59C8282B24D88C1B0082BED2 /* Contributing.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = Contributing.md; sourceTree = "<group>"; };
 		7401743924CB82010005555E /* TotalizerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TotalizerView.swift; sourceTree = "<group>"; };
 		7401743B24CB83850005555E /* Totalizer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Totalizer.swift; sourceTree = "<group>"; };
 		740D5AC0246DB3420018A684 /* Legacy Archives */ = {isa = PBXFileReference; lastKnownFileType = folder; path = "Legacy Archives"; sourceTree = "<group>"; };
@@ -456,12 +458,14 @@
 			isa = PBXGroup;
 			children = (
 				74716620243C41C900A9C960 /* Adding ArcGIS.md */,
+				59C8282B24D88C1B0082BED2 /* Contributing.md */,
 				74A25FC024522877006D82CE /* Protocol Guide.md */,
 				742B08A2244A477A00A5137C /* Protocol Specification.md */,
 				74A25FB62451F206006D82CE /* protocol.v1.schema.json */,
 				74A25FB72451F206006D82CE /* protocol.v2.schema.json */,
 				74A25FBD24522466006D82CE /* Sample Protocol.v1.obsprot */,
 				74A25FBC24522465006D82CE /* Sample Protocol.v2.obsprot */,
+				59C8282A24D88C090082BED2 /* TODO.md */,
 			);
 			path = Documentation;
 			sourceTree = "<group>";
