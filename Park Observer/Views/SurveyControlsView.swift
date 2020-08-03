@@ -25,20 +25,46 @@ struct SurveyControlsView: View {
         Spacer()
 
         Button(action: {
-          self.surveyController.trackLogging.toggle()
+          withAnimation {
+            self.surveyController.trackLogging.toggle()
+          }
         }) {
-          Image(systemName: surveyController.trackLogging ? "stop.fill" : "play.fill").font(
-            .headline)
+          Group {
+            if self.surveyController.trackLogging {
+              Image(systemName: "stop.fill").font(.headline).padding()
+            } else {
+              HStack {
+                Image(systemName: "play.fill").font(.headline).padding(.leading)
+                Text("Tracklog").fontWeight(.bold).padding(.trailing)
+                //Text("Track Log").fontWeight(.bold).padding(.trailing)
+                //Text("Start Tracklog").fontWeight(.bold).padding()
+                //Text("▶️ Tracklog").fontWeight(.bold).padding()
+              }
+            }
+          }
         }
-        .mapButton(darkMode: userSettings.darkMapControls)
+        .wideMapButton(darkMode: userSettings.darkMapControls)
 
-        Button(action: {
-          self.surveyController.observing.toggle()
-        }) {
-          Image(systemName: surveyController.observing ? "stop.fill" : "play.fill").font(.headline)
+        if self.surveyController.trackLogging {
+          Button(action: {
+            withAnimation {
+              self.surveyController.observing.toggle()
+            }
+          }) {
+            Group {
+              if self.surveyController.observing {
+                Image(systemName: "stop.fill").font(.headline).padding()
+              } else {
+                HStack {
+                  Image(systemName: "play.fill").font(.headline).padding(.leading)
+                  Text("Survey").fontWeight(.bold).padding(.trailing)
+                  //Text("Start Survey").fontWeight(.bold).padding()
+                }
+              }
+            }
+          }
+          .wideMapButton(darkMode: userSettings.darkMapControls)
         }
-        .disabled(!self.surveyController.trackLogging)
-        .mapButton(darkMode: userSettings.darkMapControls)
 
         Button(action: {
           self.surveyController.addMissionPropertyAtGps(showEditor: true)

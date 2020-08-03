@@ -13,11 +13,14 @@ import SwiftUI
 
 extension View {
   func mapButton(darkMode: Bool) -> some View {
-    self.modifier(MapButton(darkMode: darkMode))
+    self.modifier(RoundMapButton(darkMode: darkMode))
+  }
+  func wideMapButton(darkMode: Bool) -> some View {
+    self.modifier(WideMapButton(darkMode: darkMode))
   }
 }
 
-struct MapButton: ViewModifier {
+struct RoundMapButton: ViewModifier {
   let darkMode: Bool
 
   func body(content: Content) -> some View {
@@ -26,6 +29,19 @@ struct MapButton: ViewModifier {
       .background(Color(darkMode ? .black : .white).opacity(0.65))
       .clipShape(Circle())
       .overlay(Circle().stroke(Color(darkMode ? .black : .white), lineWidth: 3))
+  }
+
+}
+
+struct WideMapButton: ViewModifier {
+  let darkMode: Bool
+
+  func body(content: Content) -> some View {
+    content
+      .frame(height: 44)
+      .background(Color(darkMode ? .black : .white).opacity(0.65))
+      .clipShape(RoundedRectangle(cornerRadius: 22))
+      .overlay(RoundedRectangle(cornerRadius: 22).stroke(Color(darkMode ? .black : .white), lineWidth: 3))
   }
 
 }
