@@ -13,6 +13,8 @@ class UserSettings: ObservableObject {
   /// MapControls can be light (for dark colored maps), or dark (for light maps)
   @Published var darkMapControls = false
 
+  @Published var controlSize: MapControlSize = .small
+
   /// Minimum required accuracy (in meters) of the GPS points
   @Published var gpsAccuracy = 0.0
 

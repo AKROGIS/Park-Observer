@@ -11,37 +11,59 @@ import SwiftUI
 
 //MARK: - .mapButton
 
-extension View {
-  func mapButton(darkMode: Bool) -> some View {
-    self.modifier(RoundMapButton(darkMode: darkMode))
+enum MapControlSize: CGFloat {
+  case small = 44
+  case medium = 66
+  case large = 88
+
+  var lineWidth: CGFloat {
+    switch self {
+    case .small:
+      return 3
+    case .medium:
+      return 4.5
+    case .large:
+      return 6
+    }
   }
-  func wideMapButton(darkMode: Bool) -> some View {
-    self.modifier(WideMapButton(darkMode: darkMode))
+}
+
+extension View {
+  func mapButton(darkMode: Bool, size: MapControlSize) -> some View {
+    self.modifier(RoundMapButton(darkMode: darkMode, size: size))
+  }
+
+  func wideMapButton(darkMode: Bool, size: MapControlSize) -> some View {
+    self.modifier(WideMapButton(darkMode: darkMode, size: size))
   }
 }
 
 struct RoundMapButton: ViewModifier {
   let darkMode: Bool
+  let size: MapControlSize
 
   func body(content: Content) -> some View {
     content
-      .frame(width: 44, height: 44)
+      .frame(width: size.rawValue, height: size.rawValue)
       .background(Color(darkMode ? .black : .white).opacity(0.65))
       .clipShape(Circle())
-      .overlay(Circle().stroke(Color(darkMode ? .black : .white), lineWidth: 3))
+      .overlay(Circle().stroke(Color(darkMode ? .black : .white), lineWidth: size.lineWidth))
   }
 
 }
 
 struct WideMapButton: ViewModifier {
   let darkMode: Bool
+  let size: MapControlSize
 
   func body(content: Content) -> some View {
     content
-      .frame(height: 44)
+      .frame(minWidth: size.rawValue, minHeight: size.rawValue, maxHeight: size.rawValue)
       .background(Color(darkMode ? .black : .white).opacity(0.65))
-      .clipShape(RoundedRectangle(cornerRadius: 22))
-      .overlay(RoundedRectangle(cornerRadius: 22).stroke(Color(darkMode ? .black : .white), lineWidth: 3))
+      .clipShape(RoundedRectangle(cornerRadius: size.rawValue / 2))
+      .overlay(
+        RoundedRectangle(cornerRadius: size.rawValue / 2).stroke(
+          Color(darkMode ? .black : .white), lineWidth: size.lineWidth))
   }
 
 }
@@ -72,12 +94,12 @@ extension Publishers {
     let willShow = NotificationCenter.default.publisher(
       for: UIApplication.keyboardWillShowNotification
     )
-    .map { $0.keyboardHeight }
+      .map { $0.keyboardHeight }
 
     let willHide = NotificationCenter.default.publisher(
       for: UIApplication.keyboardWillHideNotification
     )
-    .map { _ in CGFloat(0) }
+      .map { _ in CGFloat(0) }
 
     return MergeMany(willShow, willHide).eraseToAnyPublisher()
   }
@@ -91,6 +113,6 @@ extension Notification {
 
 struct ViewModifiers_Previews: PreviewProvider {
   static var previews: some View {
-    Image(systemName: "map").font(.headline).mapButton(darkMode: true)
+    Image(systemName: "map").font(.headline).mapButton(darkMode: true, size: .medium)
   }
 }

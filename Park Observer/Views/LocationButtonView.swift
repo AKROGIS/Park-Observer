@@ -22,7 +22,7 @@ struct LocationButtonView: View {
     }) {
       Image(systemName: getImageName()).font(.headline)
     }
-    .mapButton(darkMode: userSettings.darkMapControls)
+    .mapButton(darkMode: userSettings.darkMapControls, size: userSettings.controlSize)
     .alert(isPresented: $showingAlert) {
       Alert(
         title: Text("Location Services Disabled"),
