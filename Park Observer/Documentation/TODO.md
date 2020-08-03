@@ -13,6 +13,7 @@ User requested features I intend to implement.
 ## Planned Features 2
 Functionality I plan to implement for parity with Park Observer 1.0.
   * Multi-line text fields
+  * Add version# to settings (in footer or sub section)
   * Warn when deleting unsaved surveys
   * Protocol Pick lists should show name, version and data from protocol info
   * Archive Pick list should show modification date
@@ -48,6 +49,7 @@ These create errors in stored data or limit required functionality.
   * In SurveyController.slideoutcloseactions if selector was shown, then check each item in selectedObservations for changes and save as needed.
   * Fix Angle Distance Section - Needs to use helper (and give initial focus) when creating new AD location
     - make sure angles and distances are within reasonable ranges (i.e. distance > 0) angles -180 -> 180 or 0 -> 360
+  * Angle Distance graphics do not move when angle/distance edits are saved
   * Move to GPS does not work without a track log - Fix for Presenter needing GPS from Controller
   * Move to GPS does not appear to work with a track log (however reload the survey and it is moved)
   * Move to GPS while creating a new touch observation starts a new observation,
@@ -55,9 +57,16 @@ These create errors in stored data or limit required functionality.
   * Hide/Disable weather button as appropriate;
   * Fix Bug - able to create MP (weather button) without track log in Test Protocol 2 (requires track log)
   * optional track logging and observing is only partially implemented
+  * Turning off background track logging (in settings) while track logging does not take effect until the track log is closed.
+  * Totalizer has a number of issues:
+    - Start observing resets the totalize counts.
+    - Counts did not appear consistent or correct (increasing not observing while observing)
+    - The tracked field sometimes showed correctly, but sometimes appeared as "??"
 
 ### Nice to fix
 These are obvious errors that can be worked around or ignored.
+  * Hiding the totalizer or banner display from the the main view (x in circle)
+    does not update the state in the user settings panel.
   * Sometimes a label does not display for a cabin in test protocol 2.  In consistent and not repeatable.
   * First text entry after launch disappears from form's text box,
     but is saved (and shows in label and subsequent edits).  Steps to repeat:
