@@ -115,6 +115,11 @@ extension Date {
   var shortDateMediumTime: String {
     let date = DateFormattingHelper.shared.formatShortDate(self)
     let time = DateFormattingHelper.shared.formatMediumTime(self)
-    return "At \(time) on \(date)"
+    return "at \(time) on \(date)"
+  }
+
+  var shortDate: String {
+    let date = DateFormattingHelper.shared.formatShortDate(self)
+    return "\(date)"
   }
 }

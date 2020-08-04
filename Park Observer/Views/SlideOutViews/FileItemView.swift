@@ -31,20 +31,23 @@ struct FileItemView: View {
 
 struct MapItemView: View {
   var name: String
+
   @EnvironmentObject var surveyController: SurveyController
 
   var body: some View {
-    //TODO: 2) add thumbnail, date and author
-    HStack {
+    let info = MapInfo(from: name)
+    return HStack {
       if surveyController.mapName == name {
         Image(systemName: "star.fill").foregroundColor(.yellow)
       }
-      Text(name)
-        .font(surveyController.mapName == name ? .headline : .body)
-        .onTapGesture {
-          self.surveyController.loadMap(name: self.name)
-          //self.surveyController.slideOutMenuVisible.toggle()
-        }
+      VStack(alignment: .leading) {
+        Text(info.title).font(.headline)
+        Text("Source: \(info.author)\(info.date == nil ? "" : " dated \(info.date!.shortDate)")")
+          .font(.caption)
+      }
+    }
+    .onTapGesture {
+      self.surveyController.loadMap(name: self.name)
     }
   }
 }

@@ -19,7 +19,6 @@ Functionality I plan to implement for parity with Park Observer 1.0.
   * Archive Pick list should show modification date
   * Survey Pick list should show status and date
   * Survey Pick list should allow renaming
-  * Map list should show thumbnail and other info (friendly name, author, date...)
   * Add openURL to SceneDelegate
     - Open map, protocol, archive by "Add to App"
     - Respond to errors: cancel, replace, keep both
@@ -123,6 +122,7 @@ Features from Park Observer 1.0 I don't plan to implement, unless requested.
   * Show detailed survey/protocol/location info
   * Map Target and add location at target feature (target visibility could be limited to as needed)
   * Analytics/crash logging service
+  * Thumbnails for maps
 
 ## Feature Ideas
 Features ideas open for discussion, but no plans/time to implement.

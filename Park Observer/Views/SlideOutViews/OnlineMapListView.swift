@@ -14,18 +14,15 @@ struct OnlineMapListView: View {
   var body: some View {
     List {
       ForEach(Array(OnlineBaseMaps.esri.keys.sorted()), id: \.self) { name in
-        //TODO: add thumbnail, date and author
         HStack {
           if self.surveyController.mapName == name {
             Image(systemName: "star.fill").foregroundColor(.yellow)
           }
-          Text(name)
-            .font(self.surveyController.mapName == name ? .headline : .body)
-            .onTapGesture {
-              self.surveyController.loadMap(name: name)
-              //self.surveyController.slideOutMenuVisible.toggle()
-            }
+          Text(name).font(self.surveyController.mapName == name ? .headline : .body)
+        }.onTapGesture {
+          self.surveyController.loadMap(name: name)
         }
+
       }
     }
     .navigationBarTitle("Online Maps")
