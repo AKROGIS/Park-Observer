@@ -30,7 +30,7 @@ struct InfoBannerView: View {
       // Deep Purple 50 - A100 #B388FF
       Color(red: 179.0 / 255.0, green: 136.0 / 255.0, blue: 255.0 / 255.0)
         .opacity(0.3).onTapGesture {
-          withAnimation { self.surveyController.isShowingInfoBanner = false }
+          withAnimation { self.userSettings.showInfoBanner = false }
         })
   }
 

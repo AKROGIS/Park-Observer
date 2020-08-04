@@ -7,7 +7,6 @@ Park Observer 2.0 To Do List
 User requested features I intend to implement.
   * Support "required" for form attributes; add validation message
   * Implement alarm control
-  * Settings - large buttons (with extra padding) for bumpy platforms
   * Support general form validation
 
 ## Planned Features 2
@@ -29,7 +28,6 @@ Functionality I plan to implement for parity with Park Observer 1.0.
 
 ## Planned Features 3
 New functionality I want to implement.
-  * Make resizable "Start Track log" "Start Survey" oval -> circle buttons
   * Change footer in file pick lists when there are no files
   * Allow multiple error messages in VStack with ForEach. Close button to hide all or hide individuals
   * Feature selector should use map label when defined
@@ -65,8 +63,6 @@ These create errors in stored data or limit required functionality.
 
 ### Nice to fix
 These are obvious errors that can be worked around or ignored.
-  * Hiding the totalizer or banner display from the the main view (x in circle)
-    does not update the state in the user settings panel.
   * Sometimes a label does not display for a cabin in test protocol 2.  In consistent and not repeatable.
   * First text entry after launch disappears from form's text box,
     but is saved (and shows in label and subsequent edits).  Steps to repeat:

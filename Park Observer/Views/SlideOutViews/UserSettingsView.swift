@@ -45,12 +45,12 @@ struct UserSettingsView: View {
 
       Section(header: Text("BANNERS")) {
         if surveyController.hasInfoBannerDefinition {
-          Toggle(isOn: $userSettings.showInfoBanner) {
+          Toggle(isOn: $userSettings.showInfoBanner.animation()) {
             Text("Show Informational Banner")
           }
         }
         if surveyController.totalizerDefinition != nil {
-          Toggle(isOn: $userSettings.showTotalizer) {
+          Toggle(isOn: $userSettings.showTotalizer.animation()) {
             Text("Show Totalizer")
           }
         }

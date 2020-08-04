@@ -31,7 +31,7 @@ struct TotalizerView: View {
       // Blue 50 - 500 #2196F3
       Color(red: 33.0 / 255.0, green: 150.0 / 255.0, blue: 253.0 / 255.0)
         .opacity(0.3).onTapGesture {
-          withAnimation { self.surveyController.isShowingTotalizer = false }
+          withAnimation { self.userSettings.showTotalizer = false }
         })
   }
 
