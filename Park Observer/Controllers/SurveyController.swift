@@ -278,7 +278,7 @@ class SurveyController: NSObject, ObservableObject {
 
   private func updateMapReference() {
     if let context = survey?.viewContext, let name = mapName {
-      let mapInfo = MapInfo(mapName: name)
+      let mapInfo = MapInfo(from: name)
       mapReference = MapReference.findOrNew(matching: mapInfo, in: context)
     } else {
       mapReference = nil

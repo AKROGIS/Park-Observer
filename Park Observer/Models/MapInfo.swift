@@ -10,8 +10,11 @@ import Foundation  //For Date, Data, URL, FileManager, Codable, JSONEncoder, JSO
 
 /// Metadata about a local background map
 struct MapInfo {
+  /// Name of the person or organization that created the map
   let author: String
+  /// Publication date of the map
   let date: Date?
+  /// Title of the map
   let title: String
   // Thumbnail?
 }
@@ -30,7 +33,8 @@ extension MapInfo: Codable {
 
 extension MapInfo {
 
-  init(mapName: String) {
+  /// Create a new instance from the map name
+  init(from mapName: String) {
     if mapName.starts(with: "Esri ") {
       self = MapInfo(esriName: mapName)
     } else {
@@ -38,7 +42,7 @@ extension MapInfo {
     }
   }
 
-  init(esriName name: String) {
+  private init(esriName name: String) {
     self.init(
       author: "Esri Service",
       date: Date(),
@@ -46,9 +50,9 @@ extension MapInfo {
     )
   }
 
-  init(tpkName name: String) {
+  private init(tpkName name: String) {
     if let mapInfoURL = FileManager.default.mapInfoURL(with: name),
-      let mapInfo = try? MapInfo(fromURL: mapInfoURL)
+      let mapInfo = try? MapInfo(from: mapInfoURL)
     {
       self = mapInfo
     } else {
@@ -62,6 +66,7 @@ extension MapInfo {
     }
   }
 
+  /// Create a copy of a MapInfo object with selected properties changed
   func with(
     author: String? = nil,
     date: Date? = nil,
@@ -76,26 +81,31 @@ extension MapInfo {
 
   //MARK: - Decoders
 
+  /// Create a new instance from the data containing a MapInfo in JSON format
   init(data: Data) throws {
     let decoder = JSONDecoder()
     self = try decoder.decode(MapInfo.self, from: data)
   }
 
-  init(fromURL url: URL) throws {
+  /// Create a new instance from the URL of a saved JSON encoded MapInfo
+  init(from url: URL) throws {
     try self.init(data: try Data(contentsOf: url))
   }
 
   //MARK: - Encoders
 
+  /// Encodes the instance to JSON data
   func jsonData() throws -> Data {
     let encoder = JSONEncoder()
     return try encoder.encode(self)
   }
 
+  /// Encodes the instance to a JSON string
   func jsonString(encoding: String.Encoding = .utf8) throws -> String? {
     return String(data: try self.jsonData(), encoding: encoding)
   }
 
+  /// Encodes the instance to JSON and writes it to the URL
   func write(to url: URL) throws {
     try self.jsonData().write(to: url)
   }
