@@ -7,7 +7,8 @@ Park Observer 2.0 To Do List
 User requested features I intend to implement.
   * Support "required" for form attributes; add validation message
   * Implement alarm control
-  * Support general form validation
+  * Angle distance location option with north (not course) as the angular basis
+  * Settings option to flip buttons map controls on bottom, survey controls on top
 
 ## Planned Features 2
 Functionality I plan to implement for parity with Park Observer 1.0.
@@ -39,6 +40,8 @@ New functionality I want to implement.
   * User setting for turning on/off display of gps points and/or track logs
   * User setting for hit test area (small:11, medium:22, large:44) - default medium
   * swipe to close slide out view
+  * dynamic sized text in scale bar
+  * Add a graphic for the observers location (set symbology in mission)
 
 ## Bugs and broken features
 
@@ -99,6 +102,9 @@ Maintainability issues in the code that are generally invisible to the user.
 
 ## Questions
 Implementation issues than need additional consideration.
+  * Next button on the keyboard? navigation between form elements?
+  * Differentiate the two stop buttons?
+  * Can a user easily refresh the graphics if needed? What about 1 survey, and 1 map 
   * Split track logs at 1000 vertices?
   * Warn when deleting archives?
   * Scale bar fade in/out after zoom?
@@ -121,6 +127,7 @@ Features from Park Observer 1.0 I don't plan to implement, unless requested.
 ## Feature Ideas
 Features ideas open for discussion, but no plans/time to implement.
   * Display "Getting Started" screens if first launch
+  * Support general form validation (Issue #61) i.e. sum of count calfs + males + females > 0
   * Add a observation attribute type for a sketch-able geometry.
     The underlying storage would be a WKTString describing the line or polygon.
   * Support selecting and editing track logs (via associated map properties)
@@ -130,9 +137,13 @@ Features ideas open for discussion, but no plans/time to implement.
   * Calculated fields
   * Static vs. dynamic mission properties (static at start track logging, mission properties at weather/start observing)
   * Move mission property points (snap to a gps point)
+  * Delete mission property points
   * Browse and download tile caches (*.tpk) from ArcGIS Online
   * Browse and download protocol files (*.obsprot) from GitHub
   * Protocol V3 - complete re-write.
+  * Hi speed KIMU interface. Coded string like a180d100k4w which is decoded into the appropriate attributes
+  * Load feature classes like nests or transects and use the attribute (nest ID or transect ID) of
+    the closest feature to populate observation (NOTE: much easier to do in post processing)
 
 
 # Testing
@@ -151,6 +162,9 @@ Features ideas open for discussion, but no plans/time to implement.
     - reload a loaded context, load a closed context
 
 ## UI (or interactive) Testing
+  * Test Gps failure condition and correct resumption of data collection
+  * Test computed and multi-value labels
+  * Test the size of form controls when large dynamic fonts are used
   * Test lists of features addable with/without touch based on state of config/trackLogging/observing
   * Test switch to background mode when creating a new observation (may request GPS in foreground and get it in background)
 
