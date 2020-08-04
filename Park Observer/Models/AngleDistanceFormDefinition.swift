@@ -15,11 +15,11 @@ struct AngleDistanceFormDefinition {
   let angleDistanceLocation: AngleDistanceLocation
 
   var header: String? {
-    "Location of ???"
+    "Location from observer"
   }
 
   var footer: String? {
-    "Do I even need a footer"
+    "Dead ahead is 180°"
   }
 
   var angleCaption: String? {

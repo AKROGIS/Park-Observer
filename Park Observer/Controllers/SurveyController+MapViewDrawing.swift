@@ -104,7 +104,7 @@ extension AGSMapView {
   func draw(_ survey: Survey, zoomToExtents: Bool = true) {
     self.removeLayers()
     self.addLayers(for: survey)
-    self.addGpsPoints(from: survey)
+    //self.addGpsPoints(from: survey)
     self.addTrackLogs(from: survey)
     self.addMissionProperties(from: survey)
     self.addFeatures(from: survey)
