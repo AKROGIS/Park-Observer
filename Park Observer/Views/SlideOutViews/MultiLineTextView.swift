@@ -26,6 +26,9 @@ fileprivate struct UITextViewWrapper: UIViewRepresentable {
     textField.isUserInteractionEnabled = true
     textField.isScrollEnabled = false
     textField.backgroundColor = UIColor.clear
+    textField.layer.borderColor = UIColor.lightGray.cgColor;
+    textField.layer.borderWidth = 1.0;
+    textField.layer.cornerRadius = 8;
     if nil != onDone {
       textField.returnKeyType = .done
     }
@@ -38,9 +41,9 @@ fileprivate struct UITextViewWrapper: UIViewRepresentable {
     if uiView.text != self.text {
       uiView.text = self.text
     }
-    if uiView.window != nil, !uiView.isFirstResponder {
-      uiView.becomeFirstResponder()
-    }
+    //if uiView.window != nil, !uiView.isFirstResponder {
+    //  uiView.becomeFirstResponder()
+    //}
     UITextViewWrapper.recalculateHeight(view: uiView, result: $calculatedHeight)
   }
 

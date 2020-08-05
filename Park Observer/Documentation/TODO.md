@@ -11,7 +11,6 @@ User requested features I intend to implement.
 
 ## Planned Features 2
 Functionality I plan to implement for parity with Park Observer 1.0.
-  * Multi-line text fields
   * Add version# to settings (in footer or sub section)
   * File save conflict resolutions for survey
   * Survey Pick list should allow renaming
