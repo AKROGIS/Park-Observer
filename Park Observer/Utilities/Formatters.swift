@@ -51,6 +51,14 @@ fileprivate class DateFormattingHelper {
     return dateFormatter
   }()
 
+  private let mediumDateFormatter: DateFormatter = {
+    let dateFormatter = DateFormatter()
+    dateFormatter.locale = Locale.current
+    dateFormatter.dateStyle = .medium
+    dateFormatter.timeStyle = .none
+    return dateFormatter
+  }()
+
   private let mediumTimeFormatter: DateFormatter = {
     let dateFormatter = DateFormatter()
     dateFormatter.locale = Locale.current
@@ -69,6 +77,10 @@ fileprivate class DateFormattingHelper {
 
   func formatShortDate(_ date: Date) -> String {
     return shortDateFormatter.string(from: date)
+  }
+
+  func formatMediumDate(_ date: Date) -> String {
+    return mediumDateFormatter.string(from: date)
   }
 
   func formatMediumTime(_ date: Date) -> String {
@@ -119,7 +131,11 @@ extension Date {
   }
 
   var shortDate: String {
-    let date = DateFormattingHelper.shared.formatShortDate(self)
-    return "\(date)"
+    return DateFormattingHelper.shared.formatShortDate(self)
   }
+
+  var mediumDate: String {
+    return DateFormattingHelper.shared.formatMediumDate(self)
+  }
+
 }

@@ -15,7 +15,6 @@ Functionality I plan to implement for parity with Park Observer 1.0.
   * Multi-line text fields
   * Add version# to settings (in footer or sub section)
   * Protocol Pick lists should show name, version and data from protocol info
-  * Archive Pick list should show modification date
   * Survey Pick list should allow renaming
   * Add openURL to SceneDelegate
     - Open map, protocol, archive by "Add to App"

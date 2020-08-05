@@ -164,7 +164,7 @@ struct ArchiveItemView: View {
             Image(systemName: "tray.and.arrow.down")
             VStack(alignment: .leading) {
               Text(name)
-              Text("Created: June 12, 2020").font(.caption).foregroundColor(.secondary)
+              Text(creationDate(for: name)).font(.caption).foregroundColor(.secondary)
             }
           }
         }
@@ -177,6 +177,16 @@ struct ArchiveItemView: View {
       }
     }
   }
+
+  func creationDate(for name: String) -> String {
+    let url = FileManager.default.archiveURL(with: name)
+    if let date = FileManager.default.creationDate(url: url) {
+      return "Created: \(date.mediumDate)"
+    } else {
+      return "Created: Unknown"
+    }
+  }
+
 }
 
 struct ProtocolItemView: View {
