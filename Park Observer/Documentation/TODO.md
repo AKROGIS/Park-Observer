@@ -17,7 +17,6 @@ Functionality I plan to implement for parity with Park Observer 1.0.
   * Warn when deleting unsaved surveys
   * Protocol Pick lists should show name, version and data from protocol info
   * Archive Pick list should show modification date
-  * Survey Pick list should show status and date
   * Survey Pick list should allow renaming
   * Add openURL to SceneDelegate
     - Open map, protocol, archive by "Add to App"
@@ -88,6 +87,7 @@ These relate to rarely used or potential functionality.
 
 ## Code Issues
 Maintainability issues in the code that are generally invisible to the user.
+  * Create doc strings for all public members
   * Cleanup SurveyController - Break into testable components
   * Refactor Filesystem around appFile
   * Replace print statements with unified logging

@@ -41,9 +41,9 @@ struct MapItemView: View {
         Image(systemName: "star.fill").foregroundColor(.yellow)
       }
       VStack(alignment: .leading) {
-        Text(info.title).font(.headline)
+        Text(info.title).font(surveyController.mapName == name ? .headline : .body)
         Text("Source: \(info.author)\(info.date == nil ? "" : " dated \(info.date!.shortDate)")")
-          .font(.caption)
+          .font(.caption).foregroundColor(.secondary)
       }
     }
     .onTapGesture {
@@ -61,24 +61,46 @@ struct SurveyItemView: View {
 
   var body: some View {
     //TODO: 1) Support other conflict resolution strategies
-    //TODO: 2) replace file name with title from info; add icon, dates and status
     //TODO: 3) navigate to additional info about the survey
-    VStack(alignment: .leading) {
+    let info = try? SurveyInfo(fromURL: FileManager.default.surveyInfoURL(with: name))
+
+    return VStack(alignment: .leading) {
       HStack {
         VStack(alignment: .leading) {
           HStack {
             if surveyController.surveyName == name {
               Image(systemName: "star.fill").foregroundColor(.yellow)
             }
-            Text(name)
+            Text(info?.title ?? name)
               .font(surveyController.surveyName == name ? .headline : .body)
           }
-          Text("Modifed: 6/22/2020").font(.caption).foregroundColor(.secondary)
-          Text("Not exported").font(.caption).foregroundColor(.secondary)
+          Group {
+            if info != nil {
+              if info!.version > 1 {
+                // Version 1 (Legacy Surveys) did not correctly update the status
+                Text("Status: \(info!.state.localizedString)")
+                  .fontWeight(info!.state == .modified ? .bold : .regular)
+              }
+            }
+            if info?.creationDate == nil {
+              Text("Created: Legacy survey - Unknown")
+            } else {
+              Text("Created: \(info!.creationDate!.shortDateMediumTime)")
+            }
+            if info?.modificationDate == nil {
+              Text("Not Modifed")
+            } else {
+              Text("Modifed: \(info!.modificationDate!.shortDateMediumTime)")
+            }
+            if info?.exportDate == nil {
+              Text("Not Exported")
+            } else {
+              Text("Exported: \(info!.exportDate!.shortDateMediumTime)")
+            }
+          }.font(.caption).foregroundColor(.secondary)
         }
         .onTapGesture {
           self.surveyController.loadSurvey(name: self.name)
-          //self.surveyController.slideOutMenuVisible.toggle()
         }
         Spacer()
         Button(action: {

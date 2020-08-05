@@ -33,6 +33,21 @@ struct SurveyInfo {
     case created = 2
     case modified = 3
     case saved = 4
+
+    var localizedString: String {
+      switch self {
+      case .unborn:
+        return NSLocalizedString("Not yet initialized", comment: "")
+      case .corrupt:
+        return NSLocalizedString("Corrupt", comment: "")
+      case .created:
+        return NSLocalizedString("Empty", comment: "")
+      case .modified:
+        return NSLocalizedString("Changes not saved to archive", comment: "")
+      case .saved:
+        return NSLocalizedString("Changes saved to archive", comment: "")
+      }
+    }
   }
 
 }
