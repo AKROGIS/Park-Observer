@@ -61,10 +61,8 @@ struct SurveyItemView: View {
   @EnvironmentObject var surveyController: SurveyController
 
   var body: some View {
-    //TODO: 1) Support other conflict resolution strategies
     //TODO: 2) Edit Name of survey
     //TODO: 3) navigate to additional info about the survey
-    //TODO: 4) Use progressView when archiving
     let info = loadInfo(name)
 
     return VStack(alignment: .leading) {
@@ -161,17 +159,31 @@ struct SurveyItemView: View {
   }
 
   private func createArchive() {
-    self.isExporting = true
-    Survey.export(self.name, conflict: .fail) { error in
-      self.isExporting = false
-      if let error = error {
-        if (error as NSError).code == NSFileWriteFileExistsError {
-          self.showingActionSheet = true
+    // Creating an archive can be time consuming, and if it fails, then
+    // we need to create it again.  This will check for a likely fail
+    let archiveExist: Bool = {
+      if let info = loadInfo(name) {
+        let presumptiveArchiveName = info.title.sanitizedFileName
+        let path = FileManager.default.archiveURL(with: presumptiveArchiveName).path
+        return FileManager.default.fileExists(atPath: path)
+      }
+      return false
+    }()
+    if archiveExist {
+      self.showingActionSheet = true
+    } else {
+      self.isExporting = true
+      Survey.export(self.name, conflict: .fail) { error in
+        self.isExporting = false
+        if let error = error {
+          if (error as NSError).code == NSFileWriteFileExistsError {
+            self.showingActionSheet = true
+          } else {
+            self.errorMessage = error.localizedDescription
+          }
         } else {
-          self.errorMessage = error.localizedDescription
+          self.infoMessage = "Exported survey"
         }
-      } else {
-        self.infoMessage = "Exported survey"
       }
     }
   }

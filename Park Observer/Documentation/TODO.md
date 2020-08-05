@@ -76,6 +76,7 @@ These are obvious errors that can be worked around or ignored.
   * Slide out View does not check width on rotation
   * Refresh file views when they are re-shown
   * Safe area on device with safe area mucks with styling of slide out view
+  * Action Sheets on iPad do not show up in correct location (especially for items at bottom of file list) - Apple Bug (https://stackoverflow.com/q/61676063/542911)
 
 ### Annoying
 These relate to rarely used or potential functionality.
