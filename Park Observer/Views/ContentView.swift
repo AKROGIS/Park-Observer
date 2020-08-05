@@ -10,6 +10,7 @@ import SwiftUI
 
 struct ContentView: View {
   @EnvironmentObject var surveyController: SurveyController
+  @EnvironmentObject var userSettings: UserSettings
 
   var body: some View {
     ZStack(alignment: .bottomTrailing) {
@@ -25,12 +26,22 @@ struct ContentView: View {
           if surveyController.isShowingInfoBanner {
             InfoBannerView()
           }
-          MapControlsView().padding(20.0)
-            .environmentObject(surveyController.viewPointController)
-            .environmentObject(surveyController.locationButtonController)
+          if userSettings.surveyControlsOnBottom {
+            MapControlsView().padding(20.0)
+              .environmentObject(surveyController.viewPointController)
+              .environmentObject(surveyController.locationButtonController)
+          } else {
+            SurveyControlsView().padding(20.0)
+          }
         }
       }
-      SurveyControlsView().padding(20.0)
+      if userSettings.surveyControlsOnBottom {
+        SurveyControlsView().padding(20.0)
+      } else {
+        MapControlsView().padding(20.0)
+          .environmentObject(surveyController.viewPointController)
+          .environmentObject(surveyController.locationButtonController)
+      }
       SlideOutView()
     }.environmentObject(surveyController.userSettings)
       .alert(isPresented: $surveyController.showingAlert) { surveyController.alert! }

@@ -13,7 +13,7 @@ struct SurveyControlsView: View {
   @EnvironmentObject var userSettings: UserSettings
 
   var body: some View {
-    HStack(alignment: .bottom) {
+    HStack(alignment: userSettings.surveyControlsOnBottom ? .bottom : .top) {
       HStack {
         Button(action: {
           self.surveyController.slideOutMenuVisible.toggle()

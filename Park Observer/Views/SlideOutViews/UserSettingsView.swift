@@ -25,6 +25,12 @@ struct UserSettingsView: View {
         Toggle(isOn: $userSettings.darkMapControls) {
           Text("Dark mode")
         }
+        Toggle(isOn: $userSettings.surveyControlsOnBottom) {
+          VStack(alignment: .leading) {
+            Text("Survey buttons on the bottom")
+            Text("Map buttons/scale on the top").font(.caption).foregroundColor(.secondary)
+          }
+        }
         Picker("", selection: controlSize) {
           ForEach(MapControlSize.allCases) { size in
             Text(size.localizedString)

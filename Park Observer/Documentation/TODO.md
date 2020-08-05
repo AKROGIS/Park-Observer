@@ -8,7 +8,6 @@ User requested features I intend to implement.
   * Support "required" for form attributes; add validation message
   * Implement alarm control
   * Angle distance location option with north (not course) as the angular basis
-  * Settings option to flip buttons map controls on bottom, survey controls on top
 
 ## Planned Features 2
 Functionality I plan to implement for parity with Park Observer 1.0.
