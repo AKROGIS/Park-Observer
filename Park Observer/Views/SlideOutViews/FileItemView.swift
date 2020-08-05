@@ -54,6 +54,7 @@ struct MapItemView: View {
 
 struct SurveyItemView: View {
   var name: String
+  @State private var showingActionSheet = false
   @State private var isExporting = false
   @State private var infoMessage: String? = nil
   @State private var errorMessage: String? = nil
@@ -109,14 +110,7 @@ struct SurveyItemView: View {
           self.infoMessage = nil
           self.errorMessage = nil
           self.isExporting = true
-          Survey.export(self.name, conflict: .fail) { error in
-            if let error = error {
-              self.errorMessage = error.localizedDescription
-            } else {
-              self.infoMessage = "Exported survey"
-            }
-            self.isExporting = false
-          }
+          self.createArchive()
         }) {
           if self.isExporting {
             // In ios14 use ProgressView()
@@ -136,6 +130,64 @@ struct SurveyItemView: View {
       if infoMessage != nil {
         Text(infoMessage!).font(.caption).foregroundColor(.green)
       }
+    }.actionSheet(isPresented: $showingActionSheet) {
+      ActionSheet(
+        title: Text("Archive exists"),
+        message: Text(
+          "An archive for this survey already exists. Do you want to replace it with a new one?"),
+        buttons: [
+          ActionSheet.Button.destructive(
+            Text("Replace"),
+            action: {
+              self.createArchiveReplace()
+            }),
+          ActionSheet.Button.default(
+            Text("Keep Both"),
+            action: {
+              self.createArchiveKeepBoth()
+            }),
+          ActionSheet.Button.default(
+            Text("Stop"),
+            action: {
+              self.isExporting = false
+            }),
+        ])
+    }
+  }
+
+  private func createArchive() {
+    Survey.export(self.name, conflict: .fail) { error in
+      if let error = error {
+        self.errorMessage = error.localizedDescription
+        self.showingActionSheet = true
+      } else {
+        self.infoMessage = "Exported survey"
+        self.isExporting = false
+      }
+    }
+  }
+
+  private func createArchiveKeepBoth() {
+    Survey.export(self.name, conflict: .keepBoth) { error in
+      if let error = error {
+        self.errorMessage = error.localizedDescription
+      } else {
+        self.infoMessage = "Exported survey"
+        self.errorMessage = nil
+      }
+      self.isExporting = false
+    }
+  }
+
+  private func createArchiveReplace() {
+    Survey.export(self.name, conflict: .replace) { error in
+      if let error = error {
+        self.errorMessage = error.localizedDescription
+      } else {
+        self.infoMessage = "Exported survey"
+        self.errorMessage = nil
+      }
+      self.isExporting = false
     }
   }
 }

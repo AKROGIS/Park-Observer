@@ -11,7 +11,6 @@ User requested features I intend to implement.
 
 ## Planned Features 2
 Functionality I plan to implement for parity with Park Observer 1.0.
-  * File save conflict resolutions for survey
   * Survey Pick list should allow renaming
   * Add openURL to SceneDelegate
     - Open map, protocol, archive by "Add to App"
