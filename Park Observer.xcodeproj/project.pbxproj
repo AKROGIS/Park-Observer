@@ -26,6 +26,7 @@
 		59BA0EC924A50F6300CA6EF2 /* FileListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 59BA0EC824A50F6300CA6EF2 /* FileListView.swift */; };
 		59BA0ECB24A50FC700CA6EF2 /* FileItemView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 59BA0ECA24A50FC700CA6EF2 /* FileItemView.swift */; };
 		59BA0ECD24A510B800CA6EF2 /* ObservationView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 59BA0ECC24A510B800CA6EF2 /* ObservationView.swift */; };
+		59C8283024DB33770082BED2 /* MultiLineTextView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 59C8282F24DB33770082BED2 /* MultiLineTextView.swift */; };
 		7401743A24CB82010005555E /* TotalizerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7401743924CB82010005555E /* TotalizerView.swift */; };
 		7401743C24CB83850005555E /* Totalizer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7401743B24CB83850005555E /* Totalizer.swift */; };
 		740D5AC1246DB3420018A684 /* Legacy Archives in Resources */ = {isa = PBXBuildFile; fileRef = 740D5AC0246DB3420018A684 /* Legacy Archives */; };
@@ -157,6 +158,7 @@
 		59BA0ECC24A510B800CA6EF2 /* ObservationView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ObservationView.swift; sourceTree = "<group>"; };
 		59C8282A24D88C090082BED2 /* TODO.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = TODO.md; sourceTree = "<group>"; };
 		59C8282B24D88C1B0082BED2 /* Contributing.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = Contributing.md; sourceTree = "<group>"; };
+		59C8282F24DB33770082BED2 /* MultiLineTextView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MultiLineTextView.swift; sourceTree = "<group>"; };
 		7401743924CB82010005555E /* TotalizerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TotalizerView.swift; sourceTree = "<group>"; };
 		7401743B24CB83850005555E /* Totalizer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Totalizer.swift; sourceTree = "<group>"; };
 		740D5AC0246DB3420018A684 /* Legacy Archives */ = {isa = PBXFileReference; lastKnownFileType = folder; path = "Legacy Archives"; sourceTree = "<group>"; };
@@ -281,6 +283,7 @@
 				59BA0ECA24A50FC700CA6EF2 /* FileItemView.swift */,
 				59BA0EC824A50F6300CA6EF2 /* FileListView.swift */,
 				598932A02499DE6900A7C346 /* MainMenuView.swift */,
+				59C8282F24DB33770082BED2 /* MultiLineTextView.swift */,
 				596638E324BE6AF9006D2C29 /* ObservationSelectorView.swift */,
 				59BA0ECC24A510B800CA6EF2 /* ObservationView.swift */,
 				7466876F24A265D500A8FEFA /* OnlineMapListView.swift */,
@@ -758,6 +761,7 @@
 				74ABE146248FF0750047017C /* SurveyController.swift in Sources */,
 				7466877024A265D500A8FEFA /* OnlineMapListView.swift in Sources */,
 				744C9B3A24760A700099D414 /* Formatters.swift in Sources */,
+				59C8283024DB33770082BED2 /* MultiLineTextView.swift in Sources */,
 				59717BEE24D0C8B4005F0BDF /* AngleDistanceFormView.swift in Sources */,
 				74D85B58246F1EB60091EA8E /* ObserverModel.xcdatamodeld in Sources */,
 				74A25FBB2451F33F006D82CE /* SurveyProtocol.swift in Sources */,

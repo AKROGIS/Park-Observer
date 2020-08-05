@@ -137,11 +137,8 @@ struct AttributeFormView: View {
       } else {
         VStack(alignment: .leading) {
           OptionalTextView(e.label)
-          //TODO: Replace with a multiline text editor
-          // TextField is a single line View (no amount of modifiers will change that.
-          // Multiline on ios 14: see https://developer.apple.com/documentation/swiftui/texteditor
-          // Multiline on ios 13: wrap UITextView; see https://stackoverflow.com/a/56549250
-          TextField(e.placeholder, text: e.binding)
+          // with ios14 use https://developer.apple.com/documentation/swiftui/texteditor
+          MultilineTextField(e.placeholder, text: e.binding, onCommit: nil)
             .keyboardType(e.keyboard)
             .autocapitalization(e.autoCapitalization)
             .disableAutocorrection(e.disableAutoCorrect)
