@@ -14,7 +14,9 @@ User requested features I intend to implement.
 Functionality I plan to implement for parity with Park Observer 1.0.
   * Multi-line text fields
   * Add version# to settings (in footer or sub section)
-  * Protocol Pick lists should show name, version and data from protocol info
+  * File save conflict resolutions for archive
+  * File save conflict resolutions for protocol
+  * File save conflict resolutions for survey
   * Survey Pick list should allow renaming
   * Add openURL to SceneDelegate
     - Open map, protocol, archive by "Add to App"
@@ -38,6 +40,8 @@ New functionality I want to implement.
   * swipe to close slide out view
   * dynamic sized text in scale bar
   * Add a graphic for the observers location (set symbology in mission)
+  * Add info button to protocol pick list to show protocol file structure
+  * Add info button to survey pick list to show protocol info and feature counts/dates
 
 ## Bugs and broken features
 

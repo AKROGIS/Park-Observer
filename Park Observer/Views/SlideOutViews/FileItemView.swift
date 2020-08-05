@@ -197,10 +197,19 @@ struct ProtocolItemView: View {
 
   var body: some View {
     //TODO: 1) Support other conflict resolution strategies
-    //TODO: 2) Replace file name with title, version, date from SurveyProtocol
     //TODO: 3) navigate to additional info about the protocol
-    VStack(alignment: .leading) {
-      Text(name)
+    let url = FileManager.default.protocolURL(with: name)
+    let info = try? SurveyProtocol(fromURL: url, skipValidation: true)
+
+    return VStack(alignment: .leading) {
+      VStack(alignment: .leading) {
+        if info == nil {
+          Text(name)
+        } else {
+          Text(info!.name)
+          Text(details(for: info!)).font(.caption).foregroundColor(.secondary)
+        }
+      }
         .onTapGesture {
           self.infoMessage = nil
           self.errorMessage = nil
@@ -218,6 +227,12 @@ struct ProtocolItemView: View {
         Text(errorMessage!).font(.caption).foregroundColor(.red)
       }
     }
+  }
+
+  func details(for info: SurveyProtocol) -> String {
+    let version = "\(info.majorVersion).\(info.minorVersion)"
+    let date = info.date == nil ? "Unknown" : info.date!.mediumDate
+    return "Version: \(version), Date: \(date)"
   }
 }
 
