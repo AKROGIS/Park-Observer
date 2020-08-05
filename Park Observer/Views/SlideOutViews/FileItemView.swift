@@ -65,7 +65,7 @@ struct SurveyItemView: View {
     //TODO: 2) Edit Name of survey
     //TODO: 3) navigate to additional info about the survey
     //TODO: 4) Use progressView when archiving
-    let info = try? SurveyInfo(fromURL: FileManager.default.surveyInfoURL(with: name))
+    let info = loadInfo(name)
 
     return VStack(alignment: .leading) {
       HStack {
@@ -109,7 +109,6 @@ struct SurveyItemView: View {
         Button(action: {
           self.infoMessage = nil
           self.errorMessage = nil
-          self.isExporting = true
           self.createArchive()
         }) {
           if self.isExporting {
@@ -130,7 +129,8 @@ struct SurveyItemView: View {
       if infoMessage != nil {
         Text(infoMessage!).font(.caption).foregroundColor(.green)
       }
-    }.actionSheet(isPresented: $showingActionSheet) {
+    }
+    .actionSheet(isPresented: $showingActionSheet) {
       ActionSheet(
         title: Text("Archive exists"),
         message: Text(
@@ -140,54 +140,63 @@ struct SurveyItemView: View {
             Text("Replace"),
             action: {
               self.createArchiveReplace()
-            }),
+          }),
           ActionSheet.Button.default(
             Text("Keep Both"),
             action: {
               self.createArchiveKeepBoth()
-            }),
+          }),
           ActionSheet.Button.default(
             Text("Stop"),
             action: {
               self.isExporting = false
-            }),
-        ])
+          })
+      ])
     }
+
+  }
+
+  private func loadInfo(_ name: String) -> SurveyInfo? {
+    return try? SurveyInfo(fromURL: FileManager.default.surveyInfoURL(with: name))
   }
 
   private func createArchive() {
+    self.isExporting = true
     Survey.export(self.name, conflict: .fail) { error in
+      self.isExporting = false
       if let error = error {
-        self.errorMessage = error.localizedDescription
-        self.showingActionSheet = true
+        if (error as NSError).code == NSFileWriteFileExistsError {
+          self.showingActionSheet = true
+        } else {
+          self.errorMessage = error.localizedDescription
+        }
       } else {
         self.infoMessage = "Exported survey"
-        self.isExporting = false
       }
     }
   }
 
   private func createArchiveKeepBoth() {
+    self.isExporting = true
     Survey.export(self.name, conflict: .keepBoth) { error in
+      self.isExporting = false
       if let error = error {
         self.errorMessage = error.localizedDescription
       } else {
         self.infoMessage = "Exported survey"
-        self.errorMessage = nil
       }
-      self.isExporting = false
     }
   }
 
   private func createArchiveReplace() {
+    self.isExporting = true
     Survey.export(self.name, conflict: .replace) { error in
+      self.isExporting = false
       if let error = error {
         self.errorMessage = error.localizedDescription
       } else {
         self.infoMessage = "Exported survey"
-        self.errorMessage = nil
       }
-      self.isExporting = false
     }
   }
 }
@@ -259,8 +268,11 @@ struct ArchiveItemView: View {
       let surveyName = try FileManager.default.importSurvey(from: name, conflict: .fail)
       infoMessage = "Added \(surveyName) to your surveys"
     } catch {
-      errorMessage = error.localizedDescription
-      showingActionSheet = true
+      if (error as NSError).code == NSFileWriteFileExistsError {
+        showingActionSheet = true
+      } else {
+        errorMessage = error.localizedDescription
+      }
     }
   }
 
@@ -268,7 +280,6 @@ struct ArchiveItemView: View {
     do {
       let surveyName = try FileManager.default.importSurvey(from: name, conflict: .keepBoth)
       infoMessage = "Added \(surveyName) to your surveys"
-      errorMessage = nil
     } catch {
       errorMessage = error.localizedDescription
     }
@@ -278,7 +289,6 @@ struct ArchiveItemView: View {
     do {
       let surveyName = try FileManager.default.importSurvey(from: name, conflict: .replace)
       infoMessage = "Added \(surveyName) to your surveys"
-      errorMessage = nil
     } catch {
       errorMessage = error.localizedDescription
     }
@@ -351,8 +361,11 @@ struct ProtocolItemView: View {
       let newName = try Survey.create(self.name, from: self.name, conflict: .fail)
       infoMessage = "Created new survey \(newName)"
     } catch {
-      errorMessage = error.localizedDescription
-      showingActionSheet = true
+      if (error as NSError).code == NSFileWriteFileExistsError {
+        showingActionSheet = true
+      } else {
+        errorMessage = error.localizedDescription
+      }
     }
   }
 
@@ -360,7 +373,6 @@ struct ProtocolItemView: View {
     do {
       let newName = try Survey.create(self.name, from: self.name, conflict: .keepBoth)
       infoMessage = "Created new survey \(newName)"
-      errorMessage = nil
     } catch {
       errorMessage = error.localizedDescription
     }
@@ -370,7 +382,6 @@ struct ProtocolItemView: View {
     do {
       let newName = try Survey.create(self.name, from: self.name, conflict: .replace)
       infoMessage = "Created new survey \(newName)"
-      errorMessage = nil
     } catch {
       errorMessage = error.localizedDescription
     }
