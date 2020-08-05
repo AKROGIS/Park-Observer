@@ -297,13 +297,13 @@ class SurveyController: NSObject, ObservableObject {
     locationButtonController.saveState()
     viewPointController.saveState()
     Defaults.slideOutMenuWidth.write(slideOutMenuWidth)
-    Defaults.backgroundTracklogging.write(enableBackgroundTrackLogging)
+    Defaults.backgroundTrackLogging.write(enableBackgroundTrackLogging)
     userSettings.saveState()
   }
 
   func restoreState() {
     userSettings.restoreState()
-    enableBackgroundTrackLogging = Defaults.backgroundTracklogging.readBool()
+    enableBackgroundTrackLogging = Defaults.backgroundTrackLogging.readBool()
     slideOutMenuWidth = CGFloat(Defaults.slideOutMenuWidth.readDouble())
     slideOutMenuWidth = slideOutMenuWidth < 10.0 ? 300.0 : slideOutMenuWidth
   }
