@@ -60,21 +60,25 @@ struct FileListView: View {
       }
     }
     .actionSheet(isPresented: $isShowingDeleteAlert) {
-      ActionSheet(title: Text("Delete Survey?"),
-                  message: Text("The changes in this survey have not been saved to an archive. They will be permanently deleted."),
-                  buttons: [
-                    ActionSheet.Button.destructive(
-                      Text("Delete"), action: {
-                        self.delete(self.surveyFileAwaitingDeleteOk)
-                        self.surveyFileAwaitingDeleteOk = nil
-                        self.refreshList()
-                      }),
-                    ActionSheet.Button.cancel(
-                      Text("Cancel"),
-                      action: {
-                        self.surveyFileAwaitingDeleteOk = nil
-                      })
-                  ])
+      ActionSheet(
+        title: Text("Delete Survey?"),
+        message: Text(
+          "The changes in this survey have not been saved to an archive. They will be permanently deleted."
+        ),
+        buttons: [
+          ActionSheet.Button.destructive(
+            Text("Delete"),
+            action: {
+              self.delete(self.surveyFileAwaitingDeleteOk)
+              self.surveyFileAwaitingDeleteOk = nil
+              self.refreshList()
+            }),
+          ActionSheet.Button.cancel(
+            Text("Cancel"),
+            action: {
+              self.surveyFileAwaitingDeleteOk = nil
+            }),
+        ])
     }
     .navigationBarTitle(title)
   }
@@ -103,9 +107,7 @@ struct FileListView: View {
 
   private func delete(_ file: AppFile?) {
     guard let file = file else { return }
-    print("willDelete \(file)")
     surveyController.willDelete(file)
-    print("finished willDelete \(file)")
     do {
       try FileManager.default.delete(file: file)
     } catch {
@@ -130,7 +132,6 @@ struct FileListView: View {
   }
 
 }
-
 
 struct FileListView_Previews: PreviewProvider {
   static var previews: some View {
