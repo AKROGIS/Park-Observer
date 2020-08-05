@@ -43,7 +43,7 @@ struct FileListView: View {
     }
     .onAppear {
       self.errorMessage = nil
-      self.fileNames = FileManager.default.names(type: self.fileType).sorted()
+      self.refreshList()
       switch self.fileType {
       case .map:
         self.title = "Select a Map"
@@ -114,7 +114,9 @@ struct FileListView: View {
   }
 
   private func refreshList() {
-    self.fileNames = FileManager.default.names(type: fileType).sorted()
+    fileNames = FileManager.default.names(type: fileType).sorted {
+      $0.localizedCompare($1) == .orderedAscending
+    }
   }
 
   private func isSurveyWithChanges(_ file: AppFile) -> Bool {
