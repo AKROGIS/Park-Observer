@@ -119,9 +119,8 @@ struct SurveyItemView: View {
           }
         }) {
           if self.isExporting {
-            // In Xcode 12 (beta) use ProgressView()
-            // Until then, wrap UIActivityIndicatorView (https://stackoverflow.com/a/56496896)
-            Image(systemName: "staroflife.fill")
+            // In ios14 use ProgressView()
+            ActivityIndicatorView(isAnimating: .constant(true), style: .medium)
           } else {
             Image(systemName: "tray.and.arrow.up")
           }

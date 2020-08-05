@@ -27,6 +27,7 @@
 		59BA0ECB24A50FC700CA6EF2 /* FileItemView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 59BA0ECA24A50FC700CA6EF2 /* FileItemView.swift */; };
 		59BA0ECD24A510B800CA6EF2 /* ObservationView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 59BA0ECC24A510B800CA6EF2 /* ObservationView.swift */; };
 		59C8283024DB33770082BED2 /* MultiLineTextView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 59C8282F24DB33770082BED2 /* MultiLineTextView.swift */; };
+		59C8283224DB40FC0082BED2 /* ActivityIndicatorView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 59C8283124DB40FC0082BED2 /* ActivityIndicatorView.swift */; };
 		7401743A24CB82010005555E /* TotalizerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7401743924CB82010005555E /* TotalizerView.swift */; };
 		7401743C24CB83850005555E /* Totalizer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7401743B24CB83850005555E /* Totalizer.swift */; };
 		740D5AC1246DB3420018A684 /* Legacy Archives in Resources */ = {isa = PBXBuildFile; fileRef = 740D5AC0246DB3420018A684 /* Legacy Archives */; };
@@ -159,6 +160,7 @@
 		59C8282A24D88C090082BED2 /* TODO.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = TODO.md; sourceTree = "<group>"; };
 		59C8282B24D88C1B0082BED2 /* Contributing.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = Contributing.md; sourceTree = "<group>"; };
 		59C8282F24DB33770082BED2 /* MultiLineTextView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MultiLineTextView.swift; sourceTree = "<group>"; };
+		59C8283124DB40FC0082BED2 /* ActivityIndicatorView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ActivityIndicatorView.swift; sourceTree = "<group>"; };
 		7401743924CB82010005555E /* TotalizerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TotalizerView.swift; sourceTree = "<group>"; };
 		7401743B24CB83850005555E /* Totalizer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Totalizer.swift; sourceTree = "<group>"; };
 		740D5AC0246DB3420018A684 /* Legacy Archives */ = {isa = PBXFileReference; lastKnownFileType = folder; path = "Legacy Archives"; sourceTree = "<group>"; };
@@ -415,6 +417,7 @@
 		7471661C243C391E00A9C960 /* Views */ = {
 			isa = PBXGroup;
 			children = (
+				59C8283124DB40FC0082BED2 /* ActivityIndicatorView.swift */,
 				7471663B243E858700A9C960 /* CompassView.swift */,
 				747165EF243C37A800A9C960 /* ContentView.swift */,
 				59717BE924CCCE8A005F0BDF /* InfoBannerView.swift */,
@@ -758,6 +761,7 @@
 				74A25FCC245233B8006D82CE /* MissionTotalizer.swift in Sources */,
 				74D0B0DA2460C1E100624FE9 /* DecodingError.swift in Sources */,
 				596638E824BF8BC9006D2C29 /* MapInfo.swift in Sources */,
+				59C8283224DB40FC0082BED2 /* ActivityIndicatorView.swift in Sources */,
 				74ABE146248FF0750047017C /* SurveyController.swift in Sources */,
 				7466877024A265D500A8FEFA /* OnlineMapListView.swift in Sources */,
 				744C9B3A24760A700099D414 /* Formatters.swift in Sources */,
