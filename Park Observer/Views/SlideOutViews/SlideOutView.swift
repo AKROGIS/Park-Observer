@@ -16,7 +16,8 @@ struct SlideOutView: View {
   var body: some View {
     ZStack {
       if self.surveyController.slideOutMenuVisible {
-        Color(.gray).opacity(0.3)
+        Color(.gray).opacity(0.5)
+          .edgesIgnoringSafeArea(.all)
           .onTapGesture {
             withAnimation {
               self.surveyController.slideOutMenuWidth = self.width
