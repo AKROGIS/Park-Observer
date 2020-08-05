@@ -14,7 +14,6 @@ User requested features I intend to implement.
 Functionality I plan to implement for parity with Park Observer 1.0.
   * Multi-line text fields
   * Add version# to settings (in footer or sub section)
-  * Warn when deleting unsaved surveys
   * Protocol Pick lists should show name, version and data from protocol info
   * Archive Pick list should show modification date
   * Survey Pick list should allow renaming

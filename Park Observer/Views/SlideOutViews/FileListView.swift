@@ -14,6 +14,8 @@ struct FileListView: View {
   @State private var errorMessage: String? = nil
   @State private var fileNames = [String]()
   @State private var title: String = ""
+  @State private var isShowingDeleteAlert = false
+  @State private var surveyFileAwaitingDeleteOk: AppFile? = nil
 
   var body: some View {
     Form {
@@ -57,31 +59,76 @@ struct FileListView: View {
         break
       }
     }
+    .actionSheet(isPresented: $isShowingDeleteAlert) {
+      ActionSheet(title: Text("Delete Survey?"),
+                  message: Text("The changes in this survey have not been saved to an archive. They will be permanently deleted."),
+                  buttons: [
+                    ActionSheet.Button.destructive(
+                      Text("Delete"), action: {
+                        self.delete(self.surveyFileAwaitingDeleteOk)
+                        self.surveyFileAwaitingDeleteOk = nil
+                        self.refreshList()
+                      }),
+                    ActionSheet.Button.cancel(
+                      Text("Cancel"),
+                      action: {
+                        self.surveyFileAwaitingDeleteOk = nil
+                      })
+                  ])
+    }
     .navigationBarTitle(title)
   }
 
-  var footer: Text {
+  private var footer: Text {
     Text(
       (fileType == .surveyProtocol ? "Tap to create a new survey. " : "")
         + "Swipe left to delete."
     )
   }
 
-  func delete(at offsets: IndexSet) {
+  private func delete(at offsets: IndexSet) {
     self.errorMessage = nil
     offsets.forEach { index in
       let name = fileNames[index]
-      do {
-        let file = AppFile(type: self.fileType, name: name)
-        surveyController.willDelete(file)
-        try FileManager.default.delete(file: file)
-      } catch {
-        self.errorMessage = error.localizedDescription
+      let file = AppFile(type: self.fileType, name: name)
+      if isSurveyWithChanges(file) {
+        surveyFileAwaitingDeleteOk = file
+        isShowingDeleteAlert = true
+      } else {
+        delete(file)
       }
     }
+    refreshList()
+  }
+
+  private func delete(_ file: AppFile?) {
+    guard let file = file else { return }
+    print("willDelete \(file)")
+    surveyController.willDelete(file)
+    print("finished willDelete \(file)")
+    do {
+      try FileManager.default.delete(file: file)
+    } catch {
+      self.errorMessage = error.localizedDescription
+    }
+  }
+
+  private func refreshList() {
     self.fileNames = FileManager.default.names(type: fileType).sorted()
   }
+
+  private func isSurveyWithChanges(_ file: AppFile) -> Bool {
+    if file.type == .survey {
+      let infoUrl = FileManager.default.surveyInfoURL(with: file.name)
+      if let info = try? SurveyInfo(fromURL: infoUrl) {
+        return info.state == .modified
+      }
+    }
+    return false
+  }
+
 }
+
 
 struct FileListView_Previews: PreviewProvider {
   static var previews: some View {
