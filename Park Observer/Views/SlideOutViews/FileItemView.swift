@@ -80,7 +80,8 @@ struct SurveyItemView: View {
               if info!.version > 1 {
                 // Version 1 (Legacy Surveys) did not correctly update the status
                 Text("Status: \(info!.state.localizedString)")
-                  .fontWeight(info!.state == .modified ? .bold : .regular)
+                  .fontWeight((info!.state == .modified || info!.state == .corrupt) ? .bold : .regular)
+                  .foregroundColor(info!.state == .corrupt ? .red : .secondary)
               }
             }
             if info?.creationDate == nil {
