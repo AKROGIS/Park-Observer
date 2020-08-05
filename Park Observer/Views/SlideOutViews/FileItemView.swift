@@ -61,7 +61,9 @@ struct SurveyItemView: View {
 
   var body: some View {
     //TODO: 1) Support other conflict resolution strategies
+    //TODO: 2) Edit Name of survey
     //TODO: 3) navigate to additional info about the survey
+    //TODO: 4) Use progressView when archiving
     let info = try? SurveyInfo(fromURL: FileManager.default.surveyInfoURL(with: name))
 
     return VStack(alignment: .leading) {
@@ -170,21 +172,25 @@ struct ArchiveItemView: View {
         }
       }
     }.actionSheet(isPresented: $showingActionSheet) {
-      ActionSheet(title: Text("Survey exists"), message: Text("This survey already exists. Do you want to replace it with the one in this archive?"), buttons: [
-        ActionSheet.Button.destructive(
-          Text("Replace"),
-          action: {
-            self.importArchiveReplace()
-        }),
-        ActionSheet.Button.default(
-          Text("Keep Both"),
-          action: {
-            self.importArchiveKeepBoth()
-        }),
-        ActionSheet.Button.default(
-          Text("Stop"),
-          action: {}),
-      ])
+      ActionSheet(
+        title: Text("Survey exists"),
+        message: Text(
+          "This survey already exists. Do you want to replace it with the one in this archive?"),
+        buttons: [
+          ActionSheet.Button.destructive(
+            Text("Replace"),
+            action: {
+              self.importArchiveReplace()
+            }),
+          ActionSheet.Button.default(
+            Text("Keep Both"),
+            action: {
+              self.importArchiveKeepBoth()
+            }),
+          ActionSheet.Button.default(
+            Text("Stop"),
+            action: {}),
+        ])
     }
   }
 
@@ -233,10 +239,10 @@ struct ProtocolItemView: View {
   var name: String
   @State private var errorMessage: String? = nil
   @State private var infoMessage: String? = nil
+  @State private var showingActionSheet = false
   @EnvironmentObject var surveyController: SurveyController
 
   var body: some View {
-    //TODO: 1) Support other conflict resolution strategies
     //TODO: 3) navigate to additional info about the protocol
     let url = FileManager.default.protocolURL(with: name)
     let info = try? SurveyProtocol(fromURL: url, skipValidation: true)
@@ -250,22 +256,36 @@ struct ProtocolItemView: View {
           Text(details(for: info!)).font(.caption).foregroundColor(.secondary)
         }
       }
-        .onTapGesture {
-          self.infoMessage = nil
-          self.errorMessage = nil
-          do {
-            let newName = try Survey.create(self.name, from: self.name, conflict: .fail)
-            self.infoMessage = "Created new survey \(newName)"
-          } catch {
-            self.errorMessage = error.localizedDescription
-          }
-        }
+      .onTapGesture {
+        self.infoMessage = nil
+        self.errorMessage = nil
+        self.createSurvey()
+      }
       if infoMessage != nil {
         Text(infoMessage!).font(.caption).foregroundColor(.green)
       }
       if errorMessage != nil {
         Text(errorMessage!).font(.caption).foregroundColor(.red)
       }
+    }.actionSheet(isPresented: $showingActionSheet) {
+      ActionSheet(
+        title: Text("Survey exists"),
+        message: Text("This survey already exists. Do you want to replace it with a new one?"),
+        buttons: [
+          ActionSheet.Button.destructive(
+            Text("Replace"),
+            action: {
+              self.createSurveyReplace()
+            }),
+          ActionSheet.Button.default(
+            Text("Keep Both"),
+            action: {
+              self.createSurveyKeepBoth()
+            }),
+          ActionSheet.Button.default(
+            Text("Stop"),
+            action: {}),
+        ])
     }
   }
 
@@ -274,6 +294,37 @@ struct ProtocolItemView: View {
     let date = info.date == nil ? "Unknown" : info.date!.mediumDate
     return "Version: \(version), Date: \(date)"
   }
+
+  private func createSurvey() {
+    do {
+      let newName = try Survey.create(self.name, from: self.name, conflict: .fail)
+      infoMessage = "Created new survey \(newName)"
+    } catch {
+      errorMessage = error.localizedDescription
+      showingActionSheet = true
+    }
+  }
+
+  private func createSurveyKeepBoth() {
+    do {
+      let newName = try Survey.create(self.name, from: self.name, conflict: .keepBoth)
+      infoMessage = "Created new survey \(newName)"
+      errorMessage = nil
+    } catch {
+      errorMessage = error.localizedDescription
+    }
+  }
+
+  private func createSurveyReplace() {
+    do {
+      let newName = try Survey.create(self.name, from: self.name, conflict: .replace)
+      infoMessage = "Created new survey \(newName)"
+      errorMessage = nil
+    } catch {
+      errorMessage = error.localizedDescription
+    }
+  }
+
 }
 
 struct FileItemView_Previews: PreviewProvider {
