@@ -12,7 +12,7 @@ struct MainMenuView: View {
   var body: some View {
     NavigationView {
       Form {
-        List {
+        Section(footer: Text("Version: \(version)")) {
           NavigationLink(destination: FileListView(fileType: .survey)) {
             Text("Your Surveys")
           }
@@ -39,6 +39,13 @@ struct MainMenuView: View {
       .navigationBarTitle("Park Observer")
     }
     .navigationViewStyle(StackNavigationViewStyle())
+  }
+
+  private var version: String {
+    if let version = Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String {
+      return version
+    }
+    return "Unknown"
   }
 }
 
