@@ -141,24 +141,18 @@ struct SurveyItemView: View {
 
 struct ArchiveItemView: View {
   var name: String
+  @State private var showingActionSheet = false
   @State private var infoMessage: String? = nil
   @State private var errorMessage: String? = nil
   @EnvironmentObject var surveyController: SurveyController
 
   var body: some View {
-    //TODO: 1) Support other conflict resolution strategies
-    //TODO: 2) add file date
     HStack {
       VStack(alignment: .leading) {
         Button(action: {
           self.infoMessage = nil
           self.errorMessage = nil
-          do {
-            _ = try FileManager.default.importSurvey(from: self.name, conflict: .fail)
-            self.infoMessage = "Added to your surveys"
-          } catch {
-            self.errorMessage = error.localizedDescription
-          }
+          self.importArchive()
         }) {
           HStack {
             Image(systemName: "tray.and.arrow.down")
@@ -175,6 +169,22 @@ struct ArchiveItemView: View {
           Text(infoMessage!).font(.caption).foregroundColor(.green)
         }
       }
+    }.actionSheet(isPresented: $showingActionSheet) {
+      ActionSheet(title: Text("Survey exists"), message: Text("This survey already exists. Do you want to replace it with the one in this archive?"), buttons: [
+        ActionSheet.Button.destructive(
+          Text("Replace"),
+          action: {
+            self.importArchiveReplace()
+        }),
+        ActionSheet.Button.default(
+          Text("Keep Both"),
+          action: {
+            self.importArchiveKeepBoth()
+        }),
+        ActionSheet.Button.default(
+          Text("Stop"),
+          action: {}),
+      ])
     }
   }
 
@@ -184,6 +194,36 @@ struct ArchiveItemView: View {
       return "Created: \(date.mediumDate)"
     } else {
       return "Created: Unknown"
+    }
+  }
+
+  private func importArchive() {
+    do {
+      let surveyName = try FileManager.default.importSurvey(from: name, conflict: .fail)
+      infoMessage = "Added \(surveyName) to your surveys"
+    } catch {
+      errorMessage = error.localizedDescription
+      showingActionSheet = true
+    }
+  }
+
+  private func importArchiveKeepBoth() {
+    do {
+      let surveyName = try FileManager.default.importSurvey(from: name, conflict: .keepBoth)
+      infoMessage = "Added \(surveyName) to your surveys"
+      errorMessage = nil
+    } catch {
+      errorMessage = error.localizedDescription
+    }
+  }
+
+  private func importArchiveReplace() {
+    do {
+      let surveyName = try FileManager.default.importSurvey(from: name, conflict: .replace)
+      infoMessage = "Added \(surveyName) to your surveys"
+      errorMessage = nil
+    } catch {
+      errorMessage = error.localizedDescription
     }
   }
 

@@ -14,7 +14,6 @@ User requested features I intend to implement.
 Functionality I plan to implement for parity with Park Observer 1.0.
   * Multi-line text fields
   * Add version# to settings (in footer or sub section)
-  * File save conflict resolutions for archive
   * File save conflict resolutions for protocol
   * File save conflict resolutions for survey
   * Survey Pick list should allow renaming
