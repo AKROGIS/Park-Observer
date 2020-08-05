@@ -86,6 +86,7 @@ These relate to rarely used or potential functionality.
 
 ## Code Issues
 Maintainability issues in the code that are generally invisible to the user.
+  * ObservationPresenter is creating a retain cycle
   * Create doc strings for all public members
   * Cleanup SurveyController - Break into testable components
   * Refactor Filesystem around appFile

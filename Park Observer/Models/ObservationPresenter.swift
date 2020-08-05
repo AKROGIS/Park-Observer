@@ -141,7 +141,8 @@ final class ObservationPresenter: ObservableObject {
   private var observationClass: ObservationClass? = nil
   private var observing: Bool? = nil
   private var presentationMode: PresentationMode = .review
-  private var survey: Survey? = nil
+  //TODO: A view or closure is holding on to the ObservationPresenter which is retaining the survey
+  weak private var survey: Survey? = nil
   private var template: MissionProperty? = nil
 
   //MARK: - Public setters
