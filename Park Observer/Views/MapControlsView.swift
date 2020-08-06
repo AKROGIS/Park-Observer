@@ -18,6 +18,10 @@ struct MapControlsView: View {
       ScalebarView()
         .frame(width: 200.0, height: 36)
       Spacer()
+      if userSettings.showAlarmClock {
+        AlarmView()
+        .mapButton(darkMode: userSettings.darkMapControls, size: userSettings.mapControlsSize)
+      }
       if viewPointController.rotation != 0 {
         Button(
           action: {

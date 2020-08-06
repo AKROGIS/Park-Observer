@@ -6,7 +6,6 @@ Park Observer 2.0 To Do List
 ## Planned Features 1
 User requested features I intend to implement.
   * Support "required" for form attributes; add validation message
-  * Implement alarm control
   * Angle distance location option with north (not course) as the angular basis
 
 ## Planned Features 2
@@ -58,6 +57,8 @@ These create errors in stored data or limit required functionality.
     - Start observing resets the totalize counts.
     - Counts did not appear consistent or correct (increasing not observing while observing)
     - The tracked field sometimes showed correctly, but sometimes appeared as "??"
+  * Add Alarm Interval to settings View
+  * Add notice to turn on Notification in settings if denied for Alarm setting
 
 ### Nice to fix
 These are obvious errors that can be worked around or ignored.

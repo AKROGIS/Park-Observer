@@ -20,7 +20,9 @@ class UserSettings: ObservableObject {
   @Published var mapControlsSize: MapControlSize = .small
 
   /// An Alarm clock control for countdown alerts
-  @Published var showAlarmClock = false
+  @Published var showAlarmClock = false {
+    didSet { toggleAlarm() }
+  }
 
   /// A text strip along the top of the map with the state of the map
   @Published var showInfoBanner = false
@@ -63,6 +65,27 @@ class UserSettings: ObservableObject {
     Defaults.showInfoBanner.write(showInfoBanner)
     Defaults.showTotalizer.write(showTotalizer)
     Defaults.surveyControlsOnBottom.write(surveyControlsOnBottom)
+  }
+
+  private func toggleAlarm() {
+    if showAlarmClock {
+      requestNotificationAutorization()
+    } else {
+      let center = UNUserNotificationCenter.current()
+      center.removeAllPendingNotificationRequests()
+    }
+  }
+
+  func requestNotificationAutorization() {
+    let center = UNUserNotificationCenter.current()
+    center.requestAuthorization(options: [.alert, .sound]) { (granted, error) in
+      if !granted {
+        self.showAlarmClock = false
+        //TODO: Show alert to turn on Notifications in Settings
+        // add @Published private(set) var showNotificationAlert
+        // add .alert(isPresented: userSettings.$showNotificationAlert)
+      }
+    }
   }
 
 }
