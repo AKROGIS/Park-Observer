@@ -271,6 +271,7 @@ final class ObservationPresenter: ObservableObject {
         do {
           try context.save()
           updateGraphicAttributes()
+          updateGraphicLocation()
           closeAllowed = true
           if presentationMode == .new {
             closeAction = .save(observationClass, entity)
@@ -568,7 +569,7 @@ extension ObservationPresenter {
       if presentationMode == .review {
         presentationMode = .edit
       }
-      updateMoveable() // depends on presentation Mode
+      updateMoveable()  // depends on presentation Mode
     } else {
       //Note: this branch only occurs during setup. It cannot be called by the view/user,
       // so I do not need to worry about saving or canceling edits
@@ -606,6 +607,19 @@ extension ObservationPresenter {
             let entityKey = .attributePrefix + key
             graphic.attributes[key] = entity.value(forKey: entityKey)
           }
+        }
+      }
+    }
+  }
+
+  private func updateGraphicLocation() {
+    if let graphic = graphic, let observer = gpsPoint?.location {
+      if let location = angleDistanceLocation, let definition = angleDistanceDefinition {
+        var helper = AngleDistanceHelper(config: definition, heading: location.direction)
+        helper.absoluteAngle = location.angle
+        helper.distanceInMeters = location.distance
+        if let location = helper.featureLocationFromUserLocation(observer) {
+          graphic.geometry = AGSPoint(clLocationCoordinate2D: location)
         }
       }
     }
