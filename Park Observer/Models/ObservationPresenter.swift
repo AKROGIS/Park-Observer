@@ -144,6 +144,7 @@ final class ObservationPresenter: ObservableObject {
   //TODO: A view or closure is holding on to the ObservationPresenter which is retaining the survey
   weak private var survey: Survey? = nil
   private var template: MissionProperty? = nil
+  private var graphicNeedsMoving = false
 
   //MARK: - Public setters
 
@@ -187,8 +188,8 @@ final class ObservationPresenter: ObservableObject {
       return
     }
 
-    if awaitingGpsForMove {
-      awaitingGpsForMove = gpsPoint == nil
+    if awaitingGpsForMove && gpsPoint != nil {
+      awaitingGpsForMove = false
       self.gpsPoint = gpsPoint
       updateAwaitingGps()
       if let missionProperty = entity as? MissionProperty {
@@ -197,11 +198,10 @@ final class ObservationPresenter: ObservableObject {
       if let observation = entity as? Observation {
         observation.gpsPoint = gpsPoint
       }
-      if gpsPoint != nil { locationMethod = .gps }
-      if let graphic = graphic, let location = gpsPoint?.location {
-        graphic.move(to: AGSPoint(clLocationCoordinate2D: location))
-      }
+      locationMethod = .gps
+      graphicNeedsMoving = true
       updateMoveable()
+      return
     }
 
     // if locationMethod = .mapTouch, then the gps is only needed for the timestamp;
@@ -619,9 +619,14 @@ extension ObservationPresenter {
         helper.absoluteAngle = location.angle
         helper.distanceInMeters = location.distance
         if let location = helper.featureLocationFromUserLocation(observer) {
-          graphic.geometry = AGSPoint(clLocationCoordinate2D: location)
+          graphic.move(to: AGSPoint(clLocationCoordinate2D: location))
         }
       }
+      if graphicNeedsMoving {
+        graphic.move(to: AGSPoint(clLocationCoordinate2D: observer))
+        graphicNeedsMoving = false
+      }
+
     }
   }
 
