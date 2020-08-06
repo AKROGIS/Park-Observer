@@ -36,14 +36,13 @@ New functionality I want to implement.
   * Add info button to protocol pick list to show protocol file structure
   * Add info button to survey pick list to show protocol info and feature counts/dates
   * Add progress view to survey pick list item while archiving.
+  * Add warning when angle is outside range of deadAhead +/- 90°
 
 ## Bugs and broken features
 
 ### Critical
 These create errors in stored data or limit required functionality.
   * In SurveyController.slideoutcloseactions if selector was shown, then check each item in selectedObservations for changes and save as needed.
-  * Fix Angle Distance Section - Needs to use helper (and give initial focus) when creating new AD location
-    - make sure angles and distances are within reasonable ranges (i.e. distance > 0) angles -180 -> 180 or 0 -> 360
   * Angle Distance graphics do not move when angle/distance edits are saved
   * Move to GPS does not work without a track log - Fix for Presenter needing GPS from Controller
   * Move to GPS does not appear to work with a track log (however reload the survey and it is moved)
@@ -78,9 +77,11 @@ These are obvious errors that can be worked around or ignored.
   * Refresh file views when they are re-shown
   * Safe area on device with safe area mucks with styling of slide out view
   * Action Sheets on iPad do not show up in correct location (especially for items at bottom of file list) - Apple Bug (https://stackoverflow.com/q/61676063/542911)
+  * TextFields do not fix their display (per the formatter) until return is pressed (losing focus is not enough);
+    - The bindings are good (they represent the last valid value (per the formatter), not the value in the text box).
 
 ### Annoying
-These relate to rarely used or potential functionality.
+These are relate to potential functionality (so while incorrect, they have no impact yet).
   * encode(AnyJSON(agsRenderer.toJSON())) converts 0 to false, so result is no longer valid on read
 
 

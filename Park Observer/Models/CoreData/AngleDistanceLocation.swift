@@ -112,9 +112,16 @@ struct AngleDistanceHelper {
     guard let heading = heading, let angle = angle else {
       return nil
     }
-    let referenceAngle = config?.deadAhead ?? LocationMethod.defaultDeadAhead
-    let direction = config?.direction ?? LocationMethod.defaultDirection
-    let multiplier = direction == .cw ? 1.0 : -1.0
+    let deadAhead = config?.deadAhead ?? LocationMethod.defaultDeadAhead
+    let positiveRotation = config?.direction ?? LocationMethod.defaultDirection
+    let cw = positiveRotation == .cw
+    return databaseAngle(from: angle, with: heading, as: deadAhead, increasing: cw)
+  }
+
+  func databaseAngle(
+    from angle: Double, with heading: Double, as referenceAngle: Double, increasing cw: Bool
+  ) -> Double {
+    let multiplier = cw ? 1.0 : -1.0
     var absoluteAngle = heading + multiplier * (angle - referenceAngle)
     if absoluteAngle < 0 {
       absoluteAngle = fmod(absoluteAngle, 360.0) + 360.0
@@ -129,9 +136,16 @@ struct AngleDistanceHelper {
     guard let heading = heading, let angle = angle else {
       return nil
     }
-    let referenceAngle = config?.deadAhead ?? LocationMethod.defaultDeadAhead
-    let direction = config?.direction ?? LocationMethod.defaultDirection
-    let multiplier = direction == .cw ? 1.0 : -1.0
+    let deadAhead = config?.deadAhead ?? LocationMethod.defaultDeadAhead
+    let positiveRotation = config?.direction ?? LocationMethod.defaultDirection
+    let cw = positiveRotation == .cw
+    return userAngle(from: angle, with: heading, as: deadAhead, increasing: cw)
+  }
+
+  func userAngle(
+    from angle: Double, with heading: Double, as referenceAngle: Double, increasing cw: Bool
+  ) -> Double {
+    let multiplier = cw ? 1.0 : -1.0
     let userAngle = referenceAngle + multiplier * (angle - heading)
     if userAngle < referenceAngle - 180.0 {
       return userAngle + 360.0
@@ -150,13 +164,17 @@ struct AngleDistanceHelper {
       return nil
     }
     let units = config?.units ?? LocationMethod.defaultUnits
-    switch units {
+    return convert(meters: distance, to: units)
+  }
+
+  func convert(meters: Double, to unit: LocationMethod.LocationUnits) -> Double {
+    switch unit {
     case .feet:
-      return distance * AngleDistanceHelper.feetPerMeter
+      return meters * AngleDistanceHelper.feetPerMeter
     case .meters:
-      return distance
+      return meters
     case .yards:
-      return distance * AngleDistanceHelper.yardsPerMeter
+      return meters * AngleDistanceHelper.yardsPerMeter
     }
   }
 
@@ -165,7 +183,11 @@ struct AngleDistanceHelper {
       return nil
     }
     let units = config?.units ?? LocationMethod.defaultUnits
-    switch units {
+    return meters(from: distance, in: units)
+  }
+
+  func meters(from distance: Double, in unit: LocationMethod.LocationUnits) -> Double {
+    switch unit {
     case .feet:
       return distance / AngleDistanceHelper.feetPerMeter
     case .meters:

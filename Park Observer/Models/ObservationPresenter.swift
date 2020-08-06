@@ -756,7 +756,7 @@ extension ObservationPresenter {
       return nil
     }
     return AngleDistanceFormDefinition(
-      definition: definition, angleDistanceLocation: angleDistanceLocation)
+      definition: definition, location: angleDistanceLocation)
   }
 
   private var attributeFormDefinition: AttributeFormDefinition? {
