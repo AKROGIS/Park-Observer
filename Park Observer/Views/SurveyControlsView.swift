@@ -24,28 +24,30 @@ struct SurveyControlsView: View {
 
         Spacer()
 
-        Button(action: {
-          withAnimation {
-            self.surveyController.trackLogging.toggle()
-          }
-        }) {
-          Group {
-            if self.surveyController.trackLogging {
-              Image(systemName: "stop.fill").font(.headline).padding()
-            } else {
-              HStack {
-                Image(systemName: "play.fill").font(.headline).padding(.leading)
-                Text("Tracklog").fontWeight(.bold).padding(.trailing)
-                //Text("Track Log").fontWeight(.bold).padding(.trailing)
-                //Text("Start Tracklog").fontWeight(.bold).padding()
-                //Text("▶️ Tracklog").fontWeight(.bold).padding()
+        if surveyController.showingTrackLogButton {
+          Button(action: {
+            withAnimation {
+              self.surveyController.trackLogging.toggle()
+            }
+          }) {
+            Group {
+              if self.surveyController.trackLogging {
+                Image(systemName: "stop.fill").font(.headline).padding()
+              } else {
+                HStack {
+                  Image(systemName: "play.fill").font(.headline).padding(.leading)
+                  Text("Tracklog").fontWeight(.bold).padding(.trailing)
+                  //Text("Track Log").fontWeight(.bold).padding(.trailing)
+                  //Text("Start Tracklog").fontWeight(.bold).padding()
+                  //Text("▶️ Tracklog").fontWeight(.bold).padding()
+                }
               }
             }
           }
+          .wideMapButton(darkMode: userSettings.darkMapControls, size: userSettings.mapControlsSize)
         }
-        .wideMapButton(darkMode: userSettings.darkMapControls, size: userSettings.mapControlsSize)
 
-        if self.surveyController.trackLogging {
+        if surveyController.showingObserveButton {
           Button(action: {
             withAnimation {
               self.surveyController.observing.toggle()
@@ -66,12 +68,15 @@ struct SurveyControlsView: View {
           .wideMapButton(darkMode: userSettings.darkMapControls, size: userSettings.mapControlsSize)
         }
 
-        Button(action: {
-          self.surveyController.addMissionPropertyAtGps(showEditor: true)
-        }) {
-          Image(systemName: "cloud.sun.rain").font(.headline)
+        if surveyController.showingMissionPropertiesButton {
+          Button(action: {
+            self.surveyController.addMissionPropertyAtGps(showEditor: true)
+          }) {
+            Image(systemName: "cloud.sun.rain").font(.headline)
+          }
+          .mapButton(darkMode: userSettings.darkMapControls, size: userSettings.mapControlsSize)
         }
-        .mapButton(darkMode: userSettings.darkMapControls, size: userSettings.mapControlsSize)
+
       }
       VStack {
         ForEach(self.surveyController.featuresLocatableWithoutTouch, id: \.name) { feature in
@@ -87,7 +92,8 @@ struct SurveyControlsView: View {
                 .offset(x: -1, y: 4.0)
             }
           }
-          .mapButton(darkMode: self.userSettings.darkMapControls, size: self.userSettings.mapControlsSize)
+          .mapButton(
+            darkMode: self.userSettings.darkMapControls, size: self.userSettings.mapControlsSize)
         }
       }
     }

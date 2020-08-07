@@ -60,6 +60,7 @@ class SurveyController: NSObject, ObservableObject {
         stopTotalizer()
       }
       updateInfoBanner()
+      updateSurveyControls()
     }
   }
 
@@ -81,9 +82,13 @@ class SurveyController: NSObject, ObservableObject {
         addMissionPropertyAtGps(showEditor: showEditor)
       }
       updateInfoBanner()
-      updateFeatureLocatableWithoutTouch()
+      updateSurveyControls()
     }
   }
+
+  @Published var showingTrackLogButton = false
+  @Published var showingObserveButton = false
+  @Published var showingMissionPropertiesButton = false
 
   private var reObserving = false  // Set to true after first observation is started
 
@@ -108,7 +113,6 @@ class SurveyController: NSObject, ObservableObject {
   @Published var observationsLocatableWithTouch = [ObservationClass]()
   @Published var featuresLocatableWithoutTouch = [Feature]()
   @Published var gpsAuthorization = GpsAuthorization.unknown
-  @Published var enableSurveyControls = false
 
   // TouchDelegate properties
   @Published var showingAlert = false
@@ -136,10 +140,9 @@ class SurveyController: NSObject, ObservableObject {
   private var survey: Survey? = nil {
     didSet {
       updateMapReference()
+      updateSurveyControls()
       if let survey = survey {
-        updateFeatureLocatableWithoutTouch()
         missionPropertyTemplate = MissionProperties.fetchLast(in: survey.viewContext)
-        enableSurveyControls = true
         initializeUniqueIds()
       }
     }
@@ -260,7 +263,6 @@ class SurveyController: NSObject, ObservableObject {
   func unloadCurrentSurvey() {
     trackLogging = false
     saveSurvey()
-    enableSurveyControls = false
     featuresLocatableWithoutTouch.removeAll()
     observationsLocatableWithTouch.removeAll()
     mission = nil
@@ -275,6 +277,9 @@ class SurveyController: NSObject, ObservableObject {
     mapView.removeLayers()
     survey = nil
     surveyName = nil
+    showingTrackLogButton = false
+    showingObserveButton = false
+    showingMissionPropertiesButton = false
   }
 
   private func updateMapReference() {
@@ -332,6 +337,37 @@ class SurveyController: NSObject, ObservableObject {
   }
 
   //MARK: - Feature lists
+
+  private func updateSurveyControls() {
+    updateFeatureLocatableWithoutTouch()
+    showingMissionPropertiesButton = isEditingEnabled(for: .mission)
+    if let config = survey?.config {
+      showingTrackLogButton = config.tracklogs != .none
+      showingObserveButton = {
+        if config.transects == .none {
+          return false
+        }
+        if config.tracklogs == .required && !trackLogging {
+          return false
+        }
+        return true
+      }()
+    }
+  }
+
+  func isEditingEnabled(for observationClass: ObservationClass?) -> Bool {
+    switch observationClass {
+    case .feature(let feature):
+      return allowAddFeature(feature)
+    case .mission:
+      if let config = survey?.config {
+        return trackLogging || config.tracklogs != .required
+      }
+      return false
+    case .none:
+      return false
+    }
+  }
 
   /// Updates the state of the published property featuresLocatableWithoutTouch
   /// Should be called whenever the survey, tracklogging or observing change
@@ -774,10 +810,6 @@ class SurveyController: NSObject, ObservableObject {
     return op
   }
 
-  func isEditingEnabled(for observationClass: ObservationClass?) -> Bool {
-    //TODO: support tracklogging/observing not required for editing
-    return observing
-  }
 }
 
 //TODO: Move to a separate file

@@ -42,9 +42,6 @@ New functionality I want to implement.
 
 ### Critical
 These create errors in stored data or limit required functionality.
-  * Hide/Disable weather button as appropriate;
-  * Fix Bug - able to create MP (weather button) without track log in Test Protocol 2 (requires track log)
-  * optional track logging and observing is only partially implemented
   * Turning off background track logging (in settings) while track logging does not take effect until the track log is closed.
   * Totalizer has a number of issues:
     - Start observing resets the totalize counts.
