@@ -11,8 +11,7 @@ import SwiftUI
 struct ObservationView: View {
   @ObservedObject var presenter: ObservationPresenter
   @EnvironmentObject var surveyController: SurveyController
-  @Environment(\.presentationMode) var presentation //Mode: Binding<PresentationMode>
-
+  @Environment(\.presentationMode) var presentation
 
   var body: some View {
     // TODO: find some pleasing way to show the time the observation was collected
@@ -99,7 +98,9 @@ struct ObservationView: View {
         Button(action: {
           self.presenter.cancel()
           if self.surveyController.showingObservationSelector {
-            //TODO: reset the state and edit mode
+            //TODO: reset the edit context and attribute form
+            let kind = self.presenter.observationClass
+            self.presenter.isEditing = self.surveyController.isEditingEnabled(for: kind)
             self.presentation.wrappedValue.dismiss()
           } else {
             self.surveyController.slideOutMenuVisible = false
@@ -111,7 +112,8 @@ struct ObservationView: View {
           self.presenter.save()
           if self.presenter.closeAllowed {
             if self.surveyController.showingObservationSelector {
-              //TODO: reset the state and edit mode
+              let kind = self.presenter.observationClass
+              self.presenter.isEditing = self.surveyController.isEditingEnabled(for: kind)
               self.presentation.wrappedValue.dismiss()
             } else {
               self.surveyController.slideOutMenuVisible = false

@@ -125,6 +125,7 @@ final class ObservationPresenter: ObservableObject {
   // SurveyController needs to read these is to create GPS point in "cancelable" context
   private(set) var closeAction = CloseAction.default
   private(set) var editContext: NSManagedObjectContext? = nil
+  private(set) var observationClass: ObservationClass? = nil
 
   private var adhocLocation: AdhocLocation? = nil
   private var angleDistanceLocation: AngleDistanceLocation? = nil
@@ -139,7 +140,6 @@ final class ObservationPresenter: ObservableObject {
   private var mapTouch: AGSPoint? = nil
   private var mission: Mission? = nil
   private var name: String?
-  private var observationClass: ObservationClass? = nil
   private var observing: Bool? = nil
   private var presentationMode: PresentationMode = .review
   private var requestGpsPointAsync: (() -> Void)? = nil

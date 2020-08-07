@@ -668,7 +668,7 @@ class SurveyController: NSObject, ObservableObject {
       // Do not set selectedObservation to nil (we may have represented due to a failed save)
     }
     if selectedObservation != nil {
-      return //Wait for user to resolve the errors in saving selectedObservation
+      return  //Wait for user to resolve the errors in saving selectedObservation
     }
     if let observations = selectedObservations {
       selectedObservation = nil
@@ -680,7 +680,7 @@ class SurveyController: NSObject, ObservableObject {
         closeObservationView(observation)
         // selectedObservation will be set if the observation fails to save an is represented
         if selectedObservation != nil {
-          return //Wait for user to resolve the save error
+          return  //Wait for user to resolve the save error
         }
       }
       // None of observations in selectedObservations failed to save, so we are done
@@ -770,11 +770,14 @@ class SurveyController: NSObject, ObservableObject {
   func observationPresenter(for graphic: AGSGraphic) -> ObservationPresenter {
     let op = ObservationPresenter.show(
       survey: survey, graphic: graphic, gpsRequestor: requestGpsPointAsync)
-    //TODO: support tracklogging/observing not required for editing
-    op.isEditing = observing
+    op.isEditing = isEditingEnabled(for: graphic.asObservationClass(in: survey))
     return op
   }
 
+  func isEditingEnabled(for observationClass: ObservationClass?) -> Bool {
+    //TODO: support tracklogging/observing not required for editing
+    return observing
+  }
 }
 
 //TODO: Move to a separate file
