@@ -459,6 +459,10 @@ class SurveyController: NSObject, ObservableObject {
 
   private func requestGpsPointAsync(for observationPresenter: ObservationPresenter) {
     selectedObservation = observationPresenter
+    requestGpsPointAsync()
+  }
+
+  private func requestGpsPointAsync() {
     // Cycle the Location Manager to get the current location
     // Should Ignore time/distance gaps, but not accuracy requirements
     locationManager.stopUpdatingLocation()
@@ -510,6 +514,7 @@ class SurveyController: NSObject, ObservableObject {
       message = Message.error("No active survey.")
       return
     }
+    if mission == nil { startNewMission() }
     guard let mission = self.mission else {
       message = Message.error("No active mission.")
       return
@@ -613,7 +618,7 @@ class SurveyController: NSObject, ObservableObject {
     if mission == nil { startNewMission() }
     let observationPresenter = ObservationPresenter.create(
       survey: survey, mission: mission, mapTouch: mapPoint, mapReference: mapReference,
-      template: missionPropertyTemplate, observing: observing)
+      template: missionPropertyTemplate, observing: observing, gpsRequestor: requestGpsPointAsync)
     // observationPresenter will create observation after we get the next suitable GPS location
     // and the observationClass to create (may need to present selector to user)
 
@@ -748,7 +753,8 @@ class SurveyController: NSObject, ObservableObject {
   //MARK: - Attribute Form Support
 
   func observationPresenter(for graphic: AGSGraphic) -> ObservationPresenter {
-    let op = ObservationPresenter.show(survey: survey, graphic: graphic)
+    let op = ObservationPresenter.show(
+      survey: survey, graphic: graphic, gpsRequestor: requestGpsPointAsync)
     //TODO: support tracklogging/observing not required for editing
     op.isEditing = observing
     return op

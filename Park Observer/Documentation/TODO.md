@@ -43,10 +43,6 @@ New functionality I want to implement.
 ### Critical
 These create errors in stored data or limit required functionality.
   * In SurveyController.slideoutcloseactions if selector was shown, then check each item in selectedObservations for changes and save as needed.
-  * Move to GPS does not work without a track log - Fix for Presenter needing GPS from Controller
-  * Move to GPS does not appear to work with a track log (however reload the survey and it is moved)
-  * Move to GPS while creating a new touch observation starts a new observation,
-    and does not appear to move observation (although reload shows it moved).
   * Hide/Disable weather button as appropriate;
   * Fix Bug - able to create MP (weather button) without track log in Test Protocol 2 (requires track log)
   * optional track logging and observing is only partially implemented

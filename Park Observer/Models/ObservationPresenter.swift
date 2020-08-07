@@ -133,6 +133,7 @@ final class ObservationPresenter: ObservableObject {
   private var gpsDisabled = false
   private var gpsPoint: GpsPoint? = nil
   private var graphic: AGSGraphic? = nil
+  private var graphicNeedsMoving = false
   private var locationMethod: LocationMethod.TypeEnum? = .gps
   private var mapReference: MapReference? = nil
   private var mapTouch: AGSPoint? = nil
@@ -141,10 +142,10 @@ final class ObservationPresenter: ObservableObject {
   private var observationClass: ObservationClass? = nil
   private var observing: Bool? = nil
   private var presentationMode: PresentationMode = .review
+  private var requestGpsPointAsync: (() -> Void)? = nil
   //TODO: A view or closure is holding on to the ObservationPresenter which is retaining the survey
   weak private var survey: Survey? = nil
   private var template: MissionProperty? = nil
-  private var graphicNeedsMoving = false
 
   //MARK: - Public setters
 
@@ -252,9 +253,12 @@ final class ObservationPresenter: ObservableObject {
 
   func initiateMoveToGps() {
     if locationMethod == .mapTouch && entity != nil {
-      gpsPoint = nil
-      awaitingGpsForMove = true
-      updateAwaitingGps()
+      if let requestGpsPointAsync = requestGpsPointAsync {
+        gpsPoint = nil
+        awaitingGpsForMove = true
+        updateAwaitingGps()
+        requestGpsPointAsync()
+      }
     }
   }
 
@@ -359,12 +363,13 @@ extension ObservationPresenter {
   /// Optional Gps Point (for timestamp), and observation class will come later
   static func create(
     survey: Survey?, mission: Mission?, mapTouch: AGSPoint, mapReference: MapReference?,
-    template: MissionProperty? = nil, observing: Bool? = nil
+    template: MissionProperty? = nil, observing: Bool? = nil, gpsRequestor: (() -> Void)? = nil
   ) -> ObservationPresenter {
     let op = ObservationPresenter(survey: survey, mission: mission)
     op.presentationMode = .new
     op.template = template
     op.observing = observing
+    op.requestGpsPointAsync = gpsRequestor
     if mapReference == nil {
       op.setError("No map reference available")
     } else {
@@ -393,9 +398,12 @@ extension ObservationPresenter {
   }
 
   /// Show an existing observation
-  static func show(survey: Survey?, graphic: AGSGraphic) -> ObservationPresenter {
+  static func show(survey: Survey?, graphic: AGSGraphic, gpsRequestor: (() -> Void)? = nil)
+    -> ObservationPresenter
+  {
     let op = ObservationPresenter(survey: survey)
     op.presentationMode = .review
+    op.requestGpsPointAsync = gpsRequestor
     op.initWith(graphic)
     return op
   }
@@ -545,7 +553,8 @@ extension ObservationPresenter {
   }
 
   private func updateAwaitingGps() {
-    awaitingGps = !gpsDisabled && gpsPoint == nil && presentationMode == .new
+    awaitingGps =
+      !gpsDisabled && gpsPoint == nil && (presentationMode == .new || awaitingGpsForMove)
   }
 
   private func updateAwaitingFeature() {
