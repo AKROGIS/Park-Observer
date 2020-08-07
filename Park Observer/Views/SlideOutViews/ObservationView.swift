@@ -99,6 +99,7 @@ struct ObservationView: View {
         Button(action: {
           self.presenter.cancel()
           if self.surveyController.showingObservationSelector {
+            //TODO: reset the state and edit mode
             self.presentation.wrappedValue.dismiss()
           } else {
             self.surveyController.slideOutMenuVisible = false
@@ -110,6 +111,7 @@ struct ObservationView: View {
           self.presenter.save()
           if self.presenter.closeAllowed {
             if self.surveyController.showingObservationSelector {
+              //TODO: reset the state and edit mode
               self.presentation.wrappedValue.dismiss()
             } else {
               self.surveyController.slideOutMenuVisible = false

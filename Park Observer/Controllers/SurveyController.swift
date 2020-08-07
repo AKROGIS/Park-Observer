@@ -115,6 +115,7 @@ class SurveyController: NSObject, ObservableObject {
 
   @Published var alert: Alert? = nil
 
+  private var movingObservation: ObservationPresenter? = nil
   @Published var selectedObservation: ObservationPresenter? = nil
   @Published var selectedObservations: [ObservationPresenter]? = nil
 
@@ -662,25 +663,35 @@ class SurveyController: NSObject, ObservableObject {
   func slideOutClosedActions() {
     showingObservationSelector = false
     showingObservationEditor = false
+    if let selectedObservation = selectedObservation {
+      closeObservationView(selectedObservation)
+      // Do not set selectedObservation to nil (we may have represented due to a failed save)
+    }
+    if selectedObservation != nil {
+      return //Wait for user to resolve the errors in saving selectedObservation
+    }
     if let observations = selectedObservations {
       selectedObservation = nil
       for observation in observations {
+        // TODO: There is a conflict if one of the observations is waiting for a map touch
+        //   and another fails to save. option 1) present save fail, when that resolves, get map
+        //   touch (current resolution), problem: user may forget about the map touch.
+        //   2) resolve move first, then try to save remaining observations.
         closeObservationView(observation)
+        // selectedObservation will be set if the observation fails to save an is represented
         if selectedObservation != nil {
-          //TODO May be not nil because of a move.  we should do the rest and kill selectedObservations
-          return
+          return //Wait for user to resolve the save error
         }
       }
+      // None of observations in selectedObservations failed to save, so we are done
       selectedObservations = nil
-    }
-    if let selectedObservation = selectedObservation {
-      closeObservationView(selectedObservation)
     }
   }
 
   private func closeObservationView(_ selectedObservation: ObservationPresenter) {
     switch selectedObservation.closeAction {
     case .default:
+      // Save not Cancel is the default action
       selectedObservation.save()
       if selectedObservation.closeAllowed {
         if case .save(let observationClass, let entity) = selectedObservation.closeAction {
@@ -692,11 +703,11 @@ class SurveyController: NSObject, ObservableObject {
       }
       break
     case .move:
-      self.selectedObservation = selectedObservation
+      self.movingObservation = selectedObservation
       message = .info("Tap on the map at the new location for the observation")
-      // Can I set up a modal to prevent any other touches
+      // TODO: Can I set up a modal to prevent any other events?
       movingGraphic = true
-      // wait until the map touch delegate calls back to moveGraphic before clearing selectedObservation
+      self.selectedObservation = nil
     case .save(let observationClass, let entity):
       addNew(observationClass: observationClass, entity: entity)
       self.selectedObservation = nil
@@ -709,12 +720,12 @@ class SurveyController: NSObject, ObservableObject {
 
   func moveGraphic(to mapPoint: AGSPoint) {
     do {
-      try selectedObservation?.moveGraphic(to: mapPoint)
+      try movingObservation?.moveGraphic(to: mapPoint)
       message = nil
     } catch {
       message = .error(error.localizedDescription)
     }
-    selectedObservation = nil
+    movingObservation = nil
     movingGraphic = false
   }
 
