@@ -11,6 +11,8 @@ import SwiftUI
 struct ObservationView: View {
   @ObservedObject var presenter: ObservationPresenter
   @EnvironmentObject var surveyController: SurveyController
+  @Environment(\.presentationMode) var presentation //Mode: Binding<PresentationMode>
+
 
   var body: some View {
     // TODO: find some pleasing way to show the time the observation was collected
@@ -65,8 +67,11 @@ struct ObservationView: View {
           Button(action: {
             self.presenter.delete()
             if self.presenter.closeAllowed {
-              //TODO: If we came from the selector, can we go back?
-              self.surveyController.slideOutMenuVisible = false
+              if self.surveyController.showingObservationSelector {
+                self.presentation.wrappedValue.dismiss()
+              } else {
+                self.surveyController.slideOutMenuVisible = false
+              }
             }
           }) {
             HStack {
@@ -93,16 +98,22 @@ struct ObservationView: View {
         }
         Button(action: {
           self.presenter.cancel()
-          //TODO: If we came from the selector, can we go back?
-          self.surveyController.slideOutMenuVisible = false
+          if self.surveyController.showingObservationSelector {
+            self.presentation.wrappedValue.dismiss()
+          } else {
+            self.surveyController.slideOutMenuVisible = false
+          }
         }) {
           Text("Cancel")
         }
         Button(action: {
           self.presenter.save()
           if self.presenter.closeAllowed {
-            //TODO: If we came from the selector, can we go back?
-            self.surveyController.slideOutMenuVisible = false
+            if self.surveyController.showingObservationSelector {
+              self.presentation.wrappedValue.dismiss()
+            } else {
+              self.surveyController.slideOutMenuVisible = false
+            }
           }
         }) {
           Text("Save")
