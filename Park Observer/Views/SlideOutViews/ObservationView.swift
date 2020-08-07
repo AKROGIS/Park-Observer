@@ -98,7 +98,7 @@ struct ObservationView: View {
         Button(action: {
           self.presenter.cancel()
           if self.surveyController.showingObservationSelector {
-            //TODO: reset the edit context and attribute form
+            self.presenter.reset()
             let kind = self.presenter.observationClass
             self.presenter.isEditing = self.surveyController.isEditingEnabled(for: kind)
             self.presentation.wrappedValue.dismiss()

@@ -42,7 +42,6 @@ New functionality I want to implement.
 
 ### Critical
 These create errors in stored data or limit required functionality.
-  * In SurveyController.slideoutcloseactions if selector was shown, then check each item in selectedObservations for changes and save as needed.
   * Hide/Disable weather button as appropriate;
   * Fix Bug - able to create MP (weather button) without track log in Test Protocol 2 (requires track log)
   * optional track logging and observing is only partially implemented

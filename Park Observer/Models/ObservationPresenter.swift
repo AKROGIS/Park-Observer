@@ -330,6 +330,11 @@ final class ObservationPresenter: ObservableObject {
     }
   }
 
+  func reset() {
+    editContext?.rollback()
+    updateAttributeForm()
+    updateAngleDistanceForm()
+  }
 }
 
 //MARK: - Convenience Initializers
