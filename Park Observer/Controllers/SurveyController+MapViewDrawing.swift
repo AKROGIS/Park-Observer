@@ -257,3 +257,23 @@ extension AGSMapView {
   }
 
 }
+
+extension AGSGraphic {
+
+  func asObservationClass(in survey: Survey?) -> ObservationClass? {
+    guard let name = self.graphicsOverlay?.overlayID else {
+      return nil
+    }
+    if name == .layerNameMissionProperties {
+      return .mission
+    } else {
+      for feature in survey?.config.features ?? [Feature]() {
+        if feature.name == name {
+          return .feature(feature)
+        }
+      }
+    }
+    return nil
+  }
+
+}

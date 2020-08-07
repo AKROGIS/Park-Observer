@@ -411,7 +411,7 @@ extension ObservationPresenter {
   private func initWith(_ graphic: AGSGraphic) {
     self.graphic = graphic
     self.name = graphic.graphicsOverlay?.overlayID
-    updateObservationClass(with: self.name)
+    self.observationClass = graphic.asObservationClass(in: survey)
     updateTimestamp(with: graphic)
     updateEntity(from: editContext, with: self.timestamp)
     updateLocationProperties(from: entity)
@@ -713,23 +713,6 @@ extension ObservationPresenter {
       name = .entityNameMissionProperty
     case .feature(let feature):
       name = feature.name
-    }
-  }
-
-  private func updateObservationClass(with name: String?) {
-    guard let name = name else {
-      observationClass = nil
-      return
-    }
-    observationClass = nil  // default
-    if name == .layerNameMissionProperties {
-      observationClass = .mission
-    } else {
-      for feature in survey?.config.features ?? [Feature]() {
-        if feature.name == name {
-          observationClass = .feature(feature)
-        }
-      }
     }
   }
 
