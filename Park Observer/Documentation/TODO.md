@@ -66,6 +66,10 @@ These are obvious errors that can be worked around or ignored.
   * Action Sheets on iPad do not show up in correct location (especially for items at bottom of file list) - Apple Bug (https://stackoverflow.com/q/61676063/542911)
   * TextFields do not fix their display (per the formatter) until return is pressed (losing focus is not enough);
     - The bindings are good (they represent the last valid value (per the formatter), not the value in the text box).
+  * When exporting, the export date is updated before we know if the export succeeds.  If it fails, we need to undo the export date.
+  * Need to be able to delete status messages when they no longer apply.
+  * Banner should stand out more; Maybe the background should be less transparent not full width.
+    - maybe next to the scalebar on the ipad (below/above) on the iPhone
 
 ### Annoying
 These are relate to potential functionality (so while incorrect, they have no impact yet).
@@ -157,10 +161,10 @@ Maintainability issues in the code that are generally invisible to the user.
 
 
 # Documentation
+  * Create a simple how to document with screenshots
   * Post new specs and schema to existing website.
   * Edit/Cleanup the Park Observer 2.0 section of specs in the new project
   * Create Readme.md and license file for gitHub
-  * Review Issues in old Park Observer; add to to do list, or create new Issues
   * Review bug fixes in version change documents in website/downloads; add to Issues
   * Contributing guidelines - step by step processes for:
     - fixing bugs
