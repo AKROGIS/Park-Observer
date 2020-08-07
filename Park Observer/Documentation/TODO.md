@@ -5,54 +5,50 @@ Park Observer 2.0 To Do List
 
 ## Planned Features 1
 User requested features I intend to implement.
-  * Support "required" for form attributes; add validation message
-  * Angle distance location option with north (not course) as the angular basis
+  * Add optional "required" property for form attributes; add validation message
+  * Add location method option to collect angle distance locations with north (not course) as the angular basis
 
 ## Planned Features 2
 Functionality I plan to implement for parity with Park Observer 1.0.
-  * Survey Pick list should allow renaming
-  * Add openURL to SceneDelegate
-    - Open map, protocol, archive by "Add to App"
-    - Respond to errors: cancel, replace, keep both
-    - Prompt for follow-ons: Unpack archive?, new survey from protocol?; load survey? load map?
-    - create file associations so email, safari, files and other apps will launch PO with URL
-    - Alerts on contentView for use by SceneDelegate openUrl
+  * Survey pick list should allow renaming the survey
+  * Support opening obsprot/archive/map from email, browser or the files app
 
 ## Planned Features 3
 New functionality I want to implement.
   * Change footer in file pick lists when there are no files
-  * Allow multiple error messages in VStack with ForEach. Close button to hide all or hide individuals
+  * Allow multiple concurrent messages. Close button to hide all or hide individuals
   * Feature selector should use map label when defined
   * Group features by type on the feature Selector view.
   * Edit form should get focus when displayed (and editable)
   * Get MapInfo data from user and encode in a json file.
-  * GPS Settings in User Settings View
+  * Implement GPS Settings in settings view
   * Format CSV per protocol definition
   * User setting for turning on/off display of gps points and/or track logs
   * User setting for hit test area (small:11, medium:22, large:44) - default medium
-  * swipe to close slide out view
-  * dynamic sized text in scale bar
+  * Swipe to close slide out view
+  * Dynamic sized text in scale bar
   * Add a graphic for the observers location (set symbology in mission)
   * Add info button to protocol pick list to show protocol file structure
   * Add info button to survey pick list to show protocol info and feature counts/dates
   * Add progress view to survey pick list item while archiving.
   * Add warning when angle is outside range of deadAhead +/- 90°
+  * Add configuration option to choose "Survey" or "Transect" for the observing button
 
 ## Bugs and broken features
 
 ### Critical
 These create errors in stored data or limit required functionality.
-  * Turning off background track logging (in settings) while track logging does not take effect until the track log is closed.
   * Totalizer has a number of issues:
     - Start observing resets the totalize counts.
     - Counts did not appear consistent or correct (increasing not observing while observing)
     - The tracked field sometimes showed correctly, but sometimes appeared as "??"
-  * Add Alarm Interval to settings View
-  * Add notice to turn on Notification in settings if denied for Alarm setting
+  * Turning off background track logging (in settings) while track logging does not take effect until the track log is closed.
+  * Add alarm interval to settings view
+  * Add notice to turn on notification in settings if denied for alarm setting
 
 ### Nice to fix
 These are obvious errors that can be worked around or ignored.
-  * Sometimes a label does not display for a cabin in test protocol 2.  In consistent and not repeatable.
+  * Sometimes a label does not display for a cabin in test protocol 2.  Inconsistent and not repeatable.
   * First text entry after launch disappears from form's text box,
     but is saved (and shows in label and subsequent edits).  Steps to repeat:
       1) quit app. open test protocol 2 survey. start track log, start transect (no edits). tap map to add cabin. tap in name field, enter name, hit enter, text disappears. now all text box edits work correctly
@@ -63,9 +59,9 @@ These are obvious errors that can be worked around or ignored.
   * User can provide a unique value renderer for track logs and or gps points,
     but graphics do not have the necessary attributes
   * Check that user provided range on numbers have lower < upper
-  * Selecting the most recent Mission Property (for default) does not consider adhoc locations
-  * Slide out View does not check width on rotation
-  * Refresh file views when they are re-shown
+  * Getting the most recent Mission Property (for default) from database does not consider adhoc locations
+  * Slide out view does not check width on device rotation
+  * Refresh the current file list if the slide out is hidden and re-shown
   * Safe area on device with safe area mucks with styling of slide out view
   * Action Sheets on iPad do not show up in correct location (especially for items at bottom of file list) - Apple Bug (https://stackoverflow.com/q/61676063/542911)
   * TextFields do not fix their display (per the formatter) until return is pressed (losing focus is not enough);
@@ -74,22 +70,6 @@ These are obvious errors that can be worked around or ignored.
 ### Annoying
 These are relate to potential functionality (so while incorrect, they have no impact yet).
   * encode(AnyJSON(agsRenderer.toJSON())) converts 0 to false, so result is no longer valid on read
-
-
-## Code Issues
-Maintainability issues in the code that are generally invisible to the user.
-  * ObservationPresenter is creating a retain cycle
-  * Create doc strings for all public members
-  * Cleanup SurveyController - Break into testable components
-  * Refactor Filesystem around appFile
-  * Replace print statements with unified logging
-  * Remove magic numbers and static strings
-  * Use a single Track logs layer
-  * Simplify building ranges in Attribute Form Definition
-  * search for use of forced unwrapping (!) and replace with try do catch
-  * search for array access by index and verify index in bounds
-  * bad key in kvo access can crash app, review all cases of value(for:)
-  * Cleanup Survey.saveAsArchive (use Futures<Void, Error>)
 
 ## Questions
 Implementation issues than need additional consideration.
@@ -136,6 +116,21 @@ Features ideas open for discussion, but no plans/time to implement.
   * Hi speed KIMU interface. Coded string like a180d100k4w which is decoded into the appropriate attributes
   * Load feature classes like nests or transects and use the attribute (nest ID or transect ID) of
     the closest feature to populate observation (NOTE: much easier to do in post processing)
+
+## Code Issues
+Maintainability issues in the code that are generally invisible to the user.
+  * ObservationPresenter is creating a retain cycle
+  * Create doc strings for all public members
+  * Cleanup SurveyController - Break into testable components
+  * Refactor Filesystem around appFile
+  * Replace print statements with unified logging
+  * Remove magic numbers and static strings
+  * Use a single Track logs layer
+  * Simplify building ranges in Attribute Form Definition
+  * search for use of forced unwrapping (!) and replace with try do catch
+  * search for array access by index and verify index in bounds
+  * bad key in kvo access can crash app, review all cases of value(for:)
+  * Cleanup Survey.saveAsArchive (use Futures<Void, Error>)
 
 
 # Testing

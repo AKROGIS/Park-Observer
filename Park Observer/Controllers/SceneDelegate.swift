@@ -42,6 +42,16 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
     }
   }
 
+//  func scene(_ scene: UIScene, openURLContexts URLContexts: Set<UIOpenURLContext>) {
+//    * Support opening obsprot/archive/map from email, browser or the files app
+//    - Add openURL to SceneDelegate
+//    - Open map, protocol, archive by "Add to App"
+//    - Respond to errors: cancel, replace, keep both
+//    - Prompt for follow-ons: Unpack archive?, new survey from protocol?; load survey? load map?
+//    - create file associations so email, safari, files and other apps will launch PO with URL
+//    - Alerts on contentView for use by SceneDelegate openUrl
+//  }
+
   func sceneDidBecomeActive(_ scene: UIScene) {
     // For developer testing, remove in production.
     //surveyController.loadMap(name: "Anchorage18")
