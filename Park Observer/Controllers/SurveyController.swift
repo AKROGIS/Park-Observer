@@ -659,16 +659,19 @@ class SurveyController: NSObject, ObservableObject {
     slideOutMenuVisible = true
   }
 
-  //TODO: catch ObservationView disappeared due to back to selector button and treat like slideoutClosed
-  //TODO: monitor selectedObservation.awaitingGpsForMove and trigger requestGpsPointAsync
-
   func slideOutClosedActions() {
-    if showingObservationSelector {
-      showingObservationSelector = false
-      //TODO: check each item in selectedObservations for changes and save
-    }
-    if showingObservationEditor {
-      showingObservationEditor = false
+    showingObservationSelector = false
+    showingObservationEditor = false
+    if let observations = selectedObservations {
+      selectedObservation = nil
+      for observation in observations {
+        closeObservationView(observation)
+        if selectedObservation != nil {
+          //TODO May be not nil because of a move.  we should do the rest and kill selectedObservations
+          return
+        }
+      }
+      selectedObservations = nil
     }
     if let selectedObservation = selectedObservation {
       closeObservationView(selectedObservation)
@@ -682,17 +685,18 @@ class SurveyController: NSObject, ObservableObject {
       if selectedObservation.closeAllowed {
         if case .save(let observationClass, let entity) = selectedObservation.closeAction {
           addNew(observationClass: observationClass, entity: entity)
-          self.selectedObservation = nil
         }
+        self.selectedObservation = nil
       } else {
         present(selectedObservation)
       }
       break
     case .move:
+      self.selectedObservation = selectedObservation
       message = .info("Tap on the map at the new location for the observation")
       // Can I set up a modal to prevent any other touches
       movingGraphic = true
-    // wait until the map touch delegate calls back to moveGraphic
+      // wait until the map touch delegate calls back to moveGraphic before clearing selectedObservation
     case .save(let observationClass, let entity):
       addNew(observationClass: observationClass, entity: entity)
       self.selectedObservation = nil
