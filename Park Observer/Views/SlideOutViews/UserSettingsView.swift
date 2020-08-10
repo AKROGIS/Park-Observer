@@ -39,8 +39,9 @@ struct UserSettingsView: View {
         Toggle(isOn: $userSettings.showAlarmClock) {
           Text("Alarm Clock")
         }
-        //TODO: if alarm then display interval picker
-        // Add subtitle that changes will not take effect until alarm is restarted
+        if userSettings.showAlarmClock {
+          DurationPicker(duration: $userSettings.alarmInterval)
+        }
       }
 
       Toggle(isOn: $surveyController.enableBackgroundTrackLogging) {

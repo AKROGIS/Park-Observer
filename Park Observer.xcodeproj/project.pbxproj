@@ -23,6 +23,7 @@
 		5989329F2499A71300A7C346 /* SlideOutView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5989329E2499A71300A7C346 /* SlideOutView.swift */; };
 		598932A12499DE6900A7C346 /* MainMenuView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 598932A02499DE6900A7C346 /* MainMenuView.swift */; };
 		5996F58A24D3282D008C0E32 /* ObservationClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5996F58924D3282D008C0E32 /* ObservationClass.swift */; };
+		59A11CF324E1FDD900061B36 /* DurationPicker.swift in Sources */ = {isa = PBXBuildFile; fileRef = 59A11CF224E1FDD900061B36 /* DurationPicker.swift */; };
 		59BA0EC924A50F6300CA6EF2 /* FileListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 59BA0EC824A50F6300CA6EF2 /* FileListView.swift */; };
 		59BA0ECB24A50FC700CA6EF2 /* FileItemView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 59BA0ECA24A50FC700CA6EF2 /* FileItemView.swift */; };
 		59BA0ECD24A510B800CA6EF2 /* ObservationView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 59BA0ECC24A510B800CA6EF2 /* ObservationView.swift */; };
@@ -155,6 +156,7 @@
 		5989329E2499A71300A7C346 /* SlideOutView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SlideOutView.swift; sourceTree = "<group>"; };
 		598932A02499DE6900A7C346 /* MainMenuView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainMenuView.swift; sourceTree = "<group>"; };
 		5996F58924D3282D008C0E32 /* ObservationClass.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ObservationClass.swift; sourceTree = "<group>"; };
+		59A11CF224E1FDD900061B36 /* DurationPicker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DurationPicker.swift; sourceTree = "<group>"; };
 		59BA0EC824A50F6300CA6EF2 /* FileListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FileListView.swift; sourceTree = "<group>"; };
 		59BA0ECA24A50FC700CA6EF2 /* FileItemView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FileItemView.swift; sourceTree = "<group>"; };
 		59BA0ECC24A510B800CA6EF2 /* ObservationView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ObservationView.swift; sourceTree = "<group>"; };
@@ -423,6 +425,7 @@
 				59C8283324DB7E1D0082BED2 /* AlarmView.swift */,
 				7471663B243E858700A9C960 /* CompassView.swift */,
 				747165EF243C37A800A9C960 /* ContentView.swift */,
+				59A11CF224E1FDD900061B36 /* DurationPicker.swift */,
 				59717BE924CCCE8A005F0BDF /* InfoBannerView.swift */,
 				74716632243E5B4200A9C960 /* LocationButtonView.swift */,
 				7471663F243F933700A9C960 /* MapControlsView.swift */,
@@ -719,6 +722,7 @@
 				5989329D24995C7100A7C346 /* ViewModifiers.swift in Sources */,
 				59717BF024D0C8E9005F0BDF /* AngleDistanceFormDefinition.swift in Sources */,
 				747165EC243C37A800A9C960 /* AppDelegate.swift in Sources */,
+				59A11CF324E1FDD900061B36 /* DurationPicker.swift in Sources */,
 				7401743C24CB83850005555E /* Totalizer.swift in Sources */,
 				74D85B64246F354F0091EA8E /* CoreData.swift in Sources */,
 				59717BEA24CCCE8A005F0BDF /* InfoBannerView.swift in Sources */,

@@ -10,6 +10,9 @@ import SwiftUI
 
 class UserSettings: ObservableObject {
 
+  /// The time interval (seconds) until the alarm clock should alert
+  @Published var alarmInterval = 0.0
+
   /// Map Controls can be light (for dark colored maps), or dark (for light maps)
   @Published var darkMapControls = false
 
@@ -47,6 +50,7 @@ class UserSettings: ObservableObject {
 
   /// Read the user defaults from the persisted defaults database
   func restoreState() {
+    alarmInterval = Defaults.alarmInterval.readDouble()
     darkMapControls = Defaults.darkMapControls.readBool()
     gpsAccuracy = Defaults.gpsAccuracy.readDouble()
     mapControlsSize = Defaults.mapControlsSize.readMapControlSize()
@@ -54,10 +58,14 @@ class UserSettings: ObservableObject {
     showInfoBanner = Defaults.showInfoBanner.readBool()
     showTotalizer = Defaults.showTotalizer.readBool()
     surveyControlsOnBottom = Defaults.surveyControlsOnBottom.readBool()
+    if alarmInterval < 60.0 {
+      alarmInterval = 2.0 * 60.0 * 60.0  // 2 hours in seconds
+    }
   }
 
   /// Save the user defaults to the persisted defaults database
   func saveState() {
+    Defaults.alarmInterval.write(alarmInterval)
     Defaults.darkMapControls.write(darkMapControls)
     Defaults.gpsAccuracy.write(gpsAccuracy)
     Defaults.mapControlsSize.write(mapControlsSize)

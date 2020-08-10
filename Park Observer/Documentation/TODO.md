@@ -89,7 +89,6 @@ These bugs create errors in stored data.
 
 ## Important
 These bugs limit required functionality.
-  * Add alarm interval to settings view
 
 ## Nice to fix
 These bugs can be worked around or ignored.

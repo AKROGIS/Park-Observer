@@ -10,6 +10,8 @@ import SwiftUI
 
 struct AlarmView: View {
 
+  @EnvironmentObject var userSettings: UserSettings
+
   @State private var alarmRunning = false
   @State private var showingSheet = false
   let ctrl = AlarmControl()
@@ -78,8 +80,8 @@ struct AlarmView: View {
     content.body = "Time is up."
     content.sound = UNNotificationSound.default
 
-    //TODO: get interval from usersettings
-    let trigger = UNTimeIntervalNotificationTrigger(timeInterval: 60, repeats: true)
+    let trigger = UNTimeIntervalNotificationTrigger(
+      timeInterval: userSettings.alarmInterval, repeats: true)
 
     let request = UNNotificationRequest(
       identifier: UUID().uuidString, content: content, trigger: trigger)

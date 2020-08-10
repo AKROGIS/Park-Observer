@@ -16,6 +16,12 @@ import Foundation  // for UserDefaults
 /// An enumeration of the values persisted in the defaults database
 enum Defaults: String {
 
+  /// The time interval (seconds) until the alarm clock should alert
+  ///
+  /// A Double value; default is 0.0
+  /// Zero indicates no value is set and a more reasonable default will be assigned
+  case alarmInterval
+
   /// Track logging may or may not be allowed when app is in the background
   ///
   /// A Boolean value; default is false
@@ -137,7 +143,8 @@ extension Defaults {
   /// Read a double value from the defaults database
   func readDouble() -> Double {
     switch self {
-    case .gpsAccuracy, .mapCenterLat, .mapCenterLon, .mapRotation, .mapScale, .slideOutMenuWidth:
+    case .alarmInterval, .gpsAccuracy, .mapCenterLat, .mapCenterLon, .mapRotation, .mapScale,
+      .slideOutMenuWidth:
       return UserDefaults.standard.double(forKey: self.rawValue)
     default:
       print("Error: Double not a valid type for \(self.rawValue) in defaults; returning 0")
