@@ -510,9 +510,19 @@ class SurveyController: NSObject, ObservableObject {
   //MARK: - Background Locations
 
   func startBackgroundLocations() {
-    locationManager.allowsBackgroundLocationUpdates =
+    let allowBackgroundLocations =
       trackLogging && self.enableBackgroundTrackLogging && gpsAuthorization == .background
-    //print("In background. Locations enabled: \(locationManager.allowsBackgroundLocationUpdates)")
+    //NOTE: setting locationManager.allowsBackgroundLocationUpdates to true from false
+    // will work without cycling the locationManager.  However the reverse is not true.
+    // i.e. changing to false take effect until the the next startUpdatingLocation()
+    let cycleManager =
+      locationManager.allowsBackgroundLocationUpdates && !allowBackgroundLocations && trackLogging
+      && gpsAuthorization == .background
+    locationManager.allowsBackgroundLocationUpdates = allowBackgroundLocations
+    if cycleManager {
+      locationManager.stopUpdatingLocation()
+      locationManager.startUpdatingLocation()
+    }
   }
 
   func drawBackgroundLocations() {

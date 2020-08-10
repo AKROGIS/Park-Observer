@@ -38,7 +38,6 @@ New functionality I want to implement.
 
 ### Critical
 These create errors in stored data or limit required functionality.
-  * Turning off background track logging (in settings) while track logging does not take effect until the track log is closed.
   * Add alarm interval to settings view
   * Add notice to turn on notification in settings if denied for alarm setting
 
