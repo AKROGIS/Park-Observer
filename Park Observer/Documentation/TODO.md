@@ -38,10 +38,6 @@ New functionality I want to implement.
 
 ### Critical
 These create errors in stored data or limit required functionality.
-  * Totalizer has a number of issues:
-    - Start observing resets the totalize counts.
-    - Counts did not appear consistent or correct (increasing not observing while observing)
-    - The tracked field sometimes showed correctly, but sometimes appeared as "??"
   * Turning off background track logging (in settings) while track logging does not take effect until the track log is closed.
   * Add alarm interval to settings view
   * Add notice to turn on notification in settings if denied for alarm setting

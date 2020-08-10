@@ -79,6 +79,7 @@ class SurveyController: NSObject, ObservableObject {
             return survey?.config.mission?.editAtStopObserving ?? true
           }
         }()
+        totalizer.observing = observing
         addMissionPropertyAtGps(showEditor: showEditor)
       }
       updateInfoBanner()
@@ -619,6 +620,7 @@ class SurveyController: NSObject, ObservableObject {
     //observationPresenter will create the mission property when it gets the next GPS location
     requestGpsPointAsync(for: observationPresenter)
     if showEditor {
+      totalizer.propertyUpdatePending = true
       present(observationPresenter)
     } else {
       observationPresenter.autoAction = {
@@ -749,6 +751,7 @@ class SurveyController: NSObject, ObservableObject {
       self.selectedObservation = nil
       break
     default:  //.cancel, .delete
+      totalizer.propertyUpdatePending = false
       self.selectedObservation = nil
       break
     }
@@ -790,8 +793,9 @@ class SurveyController: NSObject, ObservableObject {
       let id = missionProperty.objectID
       self.missionPropertyTemplate = context.object(with: id) as? MissionProperty
     }
-    totalizer.updateProperties(missionProperty)
-    //TODO: update totalizer when observing changes (the property edits might finish after several more gps points)
+    if totalizer.propertyUpdatePending {
+      totalizer.updateProperties(missionProperty)
+    }
   }
 
   private func addNew(observation: Observation, feature: Feature) {
@@ -823,13 +827,13 @@ extension SurveyController {
 
   func startTotalizer() {
     if let definition = totalizerDefinition {
-      totalizer.setup(with: definition)
+      totalizer.start(with: definition, missionProperty: missionPropertyTemplate)
       isShowingTotalizer = userSettings.showTotalizer
     }
   }
 
   func stopTotalizer() {
-    totalizer.clear()
+    totalizer.stop()
     isShowingTotalizer = false
   }
 }

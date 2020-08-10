@@ -9,38 +9,94 @@
 import CoreLocation  // For CLLocation
 import Foundation  // For ObservableObject and @Published
 
-class Totalizer: ObservableObject {
+/// Publishes statistics regarding the current tracklog
+final class Totalizer: ObservableObject {
 
-  @Published var text = "Totalizer not configured"
+  /// The text to be displayed to the user
+  @Published private(set) var text = "Totalizer not configured"
 
   private var definition: MissionTotalizer? = nil
-  private var oldMissionProperty: MissionProperty? = nil
+  private var monitoredPropertyValues = [String: Any?]()
   private var oldLocation: CLLocation? = nil
   private var totalObserving = 0.0
   private var totalNotObserving = 0.0
+  private var totalPending = 0.0
 
-  func setup(with definition: MissionTotalizer) {
-    clear()
+  /// Should the next location be added to the observing or not observing total
+  var observing = false
+
+  /// Subsequent locations may be the start of a new total
+  ///
+  /// However we won't know until the user finishes editing the properties
+  /// This should be set to true when the mission properties editor is presented to the user
+  /// It should be set to false if the user cancels a mission properties editor
+  /// It has no effect if there are no monitored fields in the totalizer definition
+  var propertyUpdatePending = false {
+    didSet {
+      guard definition?.fields?.count ?? 0 > 0 else {
+        propertyUpdatePending = false
+        return
+      }
+      totalPending = 0.0
+    }
+  }
+
+  /// Start the totalizer with the definition
+  func start(with definition: MissionTotalizer, missionProperty: MissionProperty?) {
+    stop()
     self.definition = definition
+    initializeProperties(missionProperty)
     updateText()
   }
 
+  /// Stop (and reset) the totalizer
+  func stop() {
+    definition = nil
+    monitoredPropertyValues.removeAll()
+    clear()
+    text = "Totalizer stopped"
+  }
+
+  /// The user has updated the mission properties
   func updateProperties(_ newMissionProperty: MissionProperty) {
-    if let fields = definition?.fields, let oldMissionProperty = oldMissionProperty {
-      for field in fields {
-        let key = .attributePrefix + field
-        let oldValue = oldMissionProperty.value(forKey: key)
-        let newValue = newMissionProperty.value(forKey: key)
+    var propertiesChanged = false
+    guard let definition = definition else { return }
+    guard propertyUpdatePending == true else {
+      print("Unexpected update of totalizer properties is being ignored.")
+      return
+    }
+    guard let fields = definition.fields else {
+      print("Totalizer not monitoring property changes; update is being ignored.")
+      return
+    }
+    if monitoredPropertyValues.count == 0 {
+      propertiesChanged = true
+    }
+    for field in fields {
+      let key = .attributePrefix + field
+      let newValue = newMissionProperty.value(forKey: key)
+      if let oldValue = monitoredPropertyValues[key] {
         if !valuesEqual(oldValue, newValue) {
-          reset()
-          break
+          propertiesChanged = true
         }
       }
+      monitoredPropertyValues[key] = newValue
     }
+    if propertiesChanged {
+      if observing {
+        totalObserving = totalPending
+        totalNotObserving = 0.0
+      } else {
+        totalObserving = 0.0
+        totalNotObserving = totalPending
+      }
+    }
+    propertyUpdatePending = false
+    totalPending = 0.0
     updateText()
-    self.oldMissionProperty = newMissionProperty
   }
 
+  /// Update the totalizer with a new location
   func updateLocation(_ newLocation: CLLocation) {
     guard let definition = definition else { return }
     if let oldLocation = oldLocation {
@@ -57,27 +113,37 @@ class Totalizer: ObservableObject {
           return meters / 1609.344
         }
       }()
-      let observing = oldMissionProperty?.observing ?? false
       if observing {
         totalObserving += value
       } else {
         totalNotObserving += value
+      }
+      if propertyUpdatePending {
+        totalPending += value
       }
       updateText()
     }
     oldLocation = newLocation
   }
 
-  func clear() {
-    definition = nil
-    oldMissionProperty = nil
-    reset()
-  }
-
-  private func reset() {
+  private func clear() {
+    observing = false
+    propertyUpdatePending = false
     totalObserving = 0.0
     totalNotObserving = 0.0
+    totalPending = 0.0
     oldLocation = nil
+  }
+
+  private func initializeProperties(_ missionProperty: MissionProperty?) {
+    monitoredPropertyValues.removeAll()
+    guard let fields = definition?.fields else { return }
+    guard let missionProperty = missionProperty else { return }
+    for field in fields {
+      let key = .attributePrefix + field
+      let newValue = missionProperty.value(forKey: key)
+      monitoredPropertyValues[key] = newValue
+    }
   }
 
   /// Assumes values come from coredata and are either String or NSNumber
@@ -112,8 +178,8 @@ class Totalizer: ObservableObject {
     if let fieldNames = definition.fields {
       let names = fieldNames.joined(separator: ";")
       let values = fieldNames.map { name in
-        guard let properties = oldMissionProperty else { return "??" }
-        guard let value = properties.value(forKey: .attributePrefix + name) else { return "??" }
+        let key = .attributePrefix + name
+        guard let optValue = monitoredPropertyValues[key], let value = optValue else { return "??" }
         return "\(value)"
       }.joined(separator: ";")
       tempText += " for \(names) = \(values)"
