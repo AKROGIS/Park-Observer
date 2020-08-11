@@ -152,6 +152,28 @@ extension Feature {
         }
       }
 
+      // Every 'required' attribute must have a matching attribute in the dialog
+      if let attributes = attributes {
+        let requiredAttributeNames = attributes.filter { $0.required }.map { $0.name }
+        if requiredAttributeNames.count > 0 {
+          guard let dialog = dialog else {
+            throw DecodingError.dataCorruptedError(
+              forKey: .attributes, in: container,
+              debugDescription:
+                "Cannot initialize Feature with required attribute(s) and no dialog")
+          }
+          let dialogNames = dialog.allAttributeNames
+          for name in requiredAttributeNames {
+            if !dialogNames.contains(name) {
+              throw DecodingError.dataCorruptedError(
+                forKey: .attributes, in: container,
+                debugDescription:
+                  "Cannot initialize Feature with required attribute \(name) not in dialog")
+            }
+          }
+        }
+      }
+
       // Every dialog bind name must match the name and type of an attribute in attributes.
       if let dialog = dialog {
         let dialogNames = dialog.allAttributeNames
@@ -261,9 +283,13 @@ struct Attribute: Codable {
   /// Identifies the kind of data the attribute stores (from NSAttributeType).
   let type: AttributeType
 
+  /// If true, then this attribute is required to be not null.
+  let required: Bool
+
   enum CodingKeys: String, CodingKey {
     case name = "name"
     case type = "type"
+    case required = "required"
   }
 
   // Aligns to NSAttributeType in CoreData (except id = 0)
@@ -340,6 +366,7 @@ extension Attribute {
     let container = try decoder.container(keyedBy: CodingKeys.self)
     let name = try container.decode(String.self, forKey: .name)
     let type = try container.decode(AttributeType.self, forKey: .type)
+    let required = try container.decodeIfPresent(Bool.self, forKey: .required)
 
     if validationEnabled {
       //validate name matches regex: i.e. does not have any non-word characters
@@ -354,7 +381,8 @@ extension Attribute {
     }
     self.init(
       name: name,
-      type: type)
+      type: type,
+      required: required ?? false)
   }
 
 }

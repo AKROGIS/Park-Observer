@@ -249,6 +249,11 @@
                     "description": "Identifies the kind of data the attribute stores (from NSAttributeType).",
                     "type": "integer",
                     "enum": [0, 100, 200, 300, 400, 500, 600, 700, 800, 900, 1000]
+                },
+                "required": {
+                    "description": "If true, then this attribute is required to be not null.",
+                    "type": "boolean",
+                    "default": false                    
                 }
             },
             "required": [

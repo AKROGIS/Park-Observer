@@ -947,8 +947,8 @@ class FeatureTests: XCTestCase {
   func testAttributeTypeLookup() {
     // Given:
     let attributes = [
-      Attribute(name: "One", type: .bool),
-      Attribute(name: "Two2", type: .int32),
+      Attribute(name: "One", type: .bool, required: false),
+      Attribute(name: "Two2", type: .int32, required: false),
     ]
     // When:
     let lookup = Attribute.typesLookup(from: attributes)
@@ -1052,8 +1052,8 @@ class FeatureTests: XCTestCase {
         "attributes": [
           {"name": "bob", "type": 0},
           {"name": "bob", "type": 100},
-          {"name": "bob", "type": 200},
-          {"name": "bob", "type": 300},
+          {"name": "bob", "type": 200, "required": true},
+          {"name": "bob", "type": 300, "required": false},
           {"name": "bob", "type": 400},
           {"name": "bob", "type": 500},
           {"name": "bob", "type": 600},
@@ -1085,6 +1085,9 @@ class FeatureTests: XCTestCase {
       XCTAssertEqual(test.attributes[8].type, .bool)
       XCTAssertEqual(test.attributes[9].type, .datetime)
       XCTAssertEqual(test.attributes[10].type, .blob)
+      XCTAssertFalse(test.attributes[1].required)
+      XCTAssertTrue(test.attributes[2].required)
+      XCTAssertFalse(test.attributes[3].required)
     }
   }
 
@@ -1617,6 +1620,71 @@ class FeatureTests: XCTestCase {
           "attributes": [ {"name": "one", "type": 100} ],
           "dialog": {"title": "a", "sections": [{"elements": [
             {"type": "QBooleanElement", "bind": "boolValue:one"} ] } ] }
+        }
+      }
+      """.utf8)
+
+    // When:
+    let test = try? JSONDecoder().decode(Test.self, from: jsonData)
+
+    // Then:
+    XCTAssertNil(test)
+  }
+
+  func testDialogElementsExistForRequiredAttributesValid() {
+    // Given:
+    struct Test: Codable {
+      let feature: Feature
+    }
+    let jsonData = Data(
+      """
+      {
+        "feature": {
+          "name": "Bob",
+          "symbology": {},
+          "locations": [{"type": "gps"}],
+          "attributes": [
+            {"name": "Name1",  "type": 800},
+            {"name": "Name2",  "type": 400, "required": true},
+            {"name": "Name3",  "type": 700, "required": false}
+          ],
+          "dialog": {"title": "a", "sections": [{"elements": [
+            {"type": "QDecimalElement",   "bind": "numberValue:Name2"},
+          ]}]},
+          "symbology": {}
+        }
+      }
+      """.utf8)
+
+    // When:
+    let test = try? JSONDecoder().decode(Test.self, from: jsonData)
+
+    // Then:
+    XCTAssertNotNil(test)
+  }
+
+  func testDialogElementsExistForRequiredAttributesFail() {
+    // Given:
+    struct Test: Codable {
+      let feature: Feature
+    }
+    let jsonData = Data(
+      """
+      {
+        "feature": {
+          "name": "Bob",
+          "symbology": {},
+          "locations": [{"type": "gps"}],
+          "attributes": [
+            {"name": "Name1",  "type": 800},
+            {"name": "Name2",  "type": 400, "required": true},
+            {"name": "Name3",  "type": 700, "required": false}
+          ],
+          "dialog": {"title": "a", "sections": [{"elements": [
+            {"type": "QBooleanElement",   "bind": "boolValue:Name1"},
+            {"type": "QEntryElement",     "bind": "textValue:Name3"}
+          ]}]},
+          "symbology": {}
         }
       }
       """.utf8)

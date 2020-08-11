@@ -357,4 +357,63 @@ class MissionTests: XCTestCase {
     XCTAssertNil(test)
   }
 
+  func testDialogElementsExistForRequiredAttributesValid() {
+    // Given:
+    struct Test: Codable {
+      let mission: ProtocolMission
+    }
+    let jsonData = Data(
+      """
+      {
+        "mission": {
+          "attributes": [
+            {"name": "Name1",  "type": 800},
+            {"name": "Name2",  "type": 400, "required": true},
+            {"name": "Name3",  "type": 700, "required": false}
+          ],
+          "dialog": {"title": "a", "sections": [{"elements": [
+            {"type": "QDecimalElement",   "bind": "numberValue:Name2"},
+          ]}]},
+          "symbology": {}
+        }
+      }
+      """.utf8)
+
+    // When:
+    let test = try? JSONDecoder().decode(Test.self, from: jsonData)
+
+    // Then:
+    XCTAssertNotNil(test)
+  }
+
+  func testDialogElementsExistForRequiredAttributesFail() {
+    // Given:
+    struct Test: Codable {
+      let mission: ProtocolMission
+    }
+    let jsonData = Data(
+      """
+      {
+        "mission": {
+          "attributes": [
+            {"name": "Name1",  "type": 800},
+            {"name": "Name2",  "type": 400, "required": true},
+            {"name": "Name3",  "type": 700, "required": false}
+          ],
+          "dialog": {"title": "a", "sections": [{"elements": [
+            {"type": "QBooleanElement",   "bind": "boolValue:Name1"},
+            {"type": "QEntryElement",     "bind": "textValue:Name3"}
+          ]}]},
+          "symbology": {}
+        }
+      }
+      """.utf8)
+
+    // When:
+    let test = try? JSONDecoder().decode(Test.self, from: jsonData)
+
+    // Then:
+    XCTAssertNil(test)
+  }
+
 }

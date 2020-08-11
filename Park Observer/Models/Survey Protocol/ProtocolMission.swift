@@ -188,6 +188,28 @@ extension ProtocolMission {
         }
       }
 
+      // Every 'required' attribute must have a matching attribute in the dialog
+      if let attributes = attributes {
+        let requiredAttributeNames = attributes.filter { $0.required }.map { $0.name }
+        if requiredAttributeNames.count > 0 {
+          guard let dialog = dialog else {
+            throw DecodingError.dataCorruptedError(
+              forKey: .attributes, in: container,
+              debugDescription:
+                "Cannot initialize Mission with required attribute(s) and no dialog")
+          }
+          let dialogNames = dialog.allAttributeNames
+          for name in requiredAttributeNames {
+            if !dialogNames.contains(name) {
+              throw DecodingError.dataCorruptedError(
+                forKey: .attributes, in: container,
+                debugDescription:
+                  "Cannot initialize Mission with required attribute \(name) not in dialog")
+            }
+          }
+        }
+      }
+
       // Every dialog bind name must match the name and type of an attribute in attributes.
       if let dialog = dialog {
         let dialogNames = dialog.allAttributeNames

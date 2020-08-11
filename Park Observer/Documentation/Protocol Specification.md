@@ -224,6 +224,7 @@ Each `attribute` has the following properties:
 
 * `name`
 * `type`
+* `required` (o)(v2)
 
 ### `name`
 A required string identifying the attribute.  This will be the name of the column in an exported
@@ -258,6 +259,16 @@ These numbers (with the exception of 0) correspond with NSAttributeType in the i
 -	1000 -> binary blob (? no UI support, check on ESRI support)
 
 The type 0 is ignored in versions of Park Observer before 0.9.8.
+
+### `required`
+This property is optional. If provided it must be `true` or `false`. The default is `false`.
+If `true` then this attribute is required to have a value (i.e. null is not allowed).
+The attribute editor will display a validation error when saving if this attribute
+is null. The attribute editor will not close until validation errors are resolved,
+or edits are aborted.  If an attribute is required, then it must have a
+matching element in the dialog property (in order to provide a value)
+
+This property is ignored in versions of Park Observer before 2.0.0.
 
 ## `dialog`
 This property is optional.  If provided it must be an object.  There is no default.
