@@ -269,7 +269,7 @@
                 "type": {
                     "description": "The kind of location method described by this location.",
                     "type": "string",
-                    "enum": ["gps", "mapTarget", "mapTouch", "angleDistance"]
+                    "enum": ["gps", "mapTarget", "mapTouch", "angleDistance", "azimuthDistance"]
                 },
                 "default": {
                     "description": "Designates this location method as the default method if multiple are allowed.",
@@ -289,7 +289,7 @@
                     "maximum": 360.0
                 },
                 "units": {
-                    "description": "Units of distance measurements to the feature. Only used with type angleDistance.",
+                    "description": "Units of distance measurements to the feature. Only used with type angleDistance and azimuthDistance.",
                     "type": "string",
                     "enum": ["feet", "meters", "yards"],
                     "default": "meters"

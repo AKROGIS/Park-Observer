@@ -133,6 +133,16 @@ extension Feature {
           "Cannot initialize locationMethods with duplicate types in the list \(locationMethods)"
         throw corruptError(message: message)
       }
+      // Validate locationMethods: only one of azimuthDistance OR angleDistance is allowed
+      let allowedLocationsTypes = locationMethods.filter { $0.allow }.map { $0.type }
+      if allowedLocationsTypes.contains(.angleDistance)
+        && allowedLocationsTypes.contains(.azimuthDistance)
+      {
+        let message =
+          "Cannot initialize locationMethods with both azimuthDistance AND angleDistance"
+        throw corruptError(message: message)
+      }
+
       // Validate 1) if we have a label, we must have attributes
       // 2) if definition is not provided, then field is in attributes
       // (label will not decode if both field and definition are missing)
@@ -234,6 +244,10 @@ extension Feature {
     return locationMethods.filter { $0.type == .angleDistance }.last
   }
 
+  var azimuthDistanceConfig: LocationMethod? {
+    return locationMethods.filter { $0.type == .azimuthDistance }.last
+  }
+
   var gpsLocationConfig: LocationMethod? {
     return locationMethods.filter { $0.type == .gps }.last
   }
@@ -246,8 +260,12 @@ extension Feature {
     (angleDistanceConfig?.allow ?? false)
   }
 
+  var allowAzimuthDistance: Bool {
+    (azimuthDistanceConfig?.allow ?? false)
+  }
+
   var allowGps: Bool {
-    (gpsLocationConfig?.allow ?? false) && !allowAngleDistance
+    (gpsLocationConfig?.allow ?? false) && !allowAngleDistance && !allowAzimuthDistance
   }
 
   var allowMapTouch: Bool {
@@ -263,7 +281,7 @@ extension Array where Element == Feature {
   }
 
   var locatableWithoutMapTouch: [Feature] {
-    self.filter { $0.allowGps || $0.allowAngleDistance }
+    self.filter { $0.allowGps || $0.allowAngleDistance || $0.allowAzimuthDistance }
   }
 
   var observableAnyTime: [Feature] {
@@ -431,6 +449,7 @@ struct LocationMethod: Codable {
   /// The kind of location method described by this location.
   enum TypeEnum: String, Codable {
     case angleDistance = "angleDistance"
+    case azimuthDistance = "azimuthDistance"
     case gps = "gps"
     case mapTarget = "mapTarget"
     case mapTouch = "mapTouch"

@@ -367,6 +367,31 @@ class FeatureTests: XCTestCase {
     XCTAssertNil(json)  // Failed parsing; JSON is invalid
   }
 
+  func testLocationsOnlyOneAngleDistance() {
+    // Given:
+    struct TestJson: Codable {
+      let feature: Feature
+    }
+    let jsonData = Data(
+      """
+      {
+        "feature": {
+          "name": "Bob",
+          "locations": [
+            {"type": "angleDistance"},
+            {"type": "azimuthDistance"}
+          ]
+        }
+      }
+      """.utf8)
+
+    // When:
+    let json = try? JSONDecoder().decode(TestJson.self, from: jsonData)
+
+    // Then:
+    XCTAssertNil(json)  // Failed parsing; JSON is invalid
+  }
+
   //MARK: - Feature Extensions
 
   func testFeatureLocations() {
@@ -390,7 +415,8 @@ class FeatureTests: XCTestCase {
             {"type": "gps", "allow": true},
             {"type": "mapTouch", "allow": true},
             {"type": "mapTarget", "allow": true},
-            {"type": "angleDistance", "allow": false}
+            {"type": "angleDistance", "allow": false},
+            {"type": "azimuthDistance", "allow": false}
           ],
           "allow_off_transect_observations": false
         },
@@ -409,7 +435,8 @@ class FeatureTests: XCTestCase {
           {"type": "gps", "allow": true},
           {"type": "mapTouch", "allow": true},
           {"type": "mapTarget", "allow": true},
-          {"type": "angleDistance", "allow": true}
+          {"type": "angleDistance", "allow": true},
+          {"type": "azimuthDistance", "allow": false}
         ] },
         { "name": "Eve5", "locations": [
           {"type": "mapTarget", "allow": true}
@@ -418,8 +445,17 @@ class FeatureTests: XCTestCase {
           {"type": "gps", "allow": false},
           {"type": "mapTouch", "allow": false},
           {"type": "mapTarget", "allow": false},
-          {"type": "angleDistance", "allow": false}
-        ] }
+          {"type": "angleDistance", "allow": false},
+          {"type": "azimuthDistance", "allow": false}
+        ] },
+        { "name": "Dave7", "locations": [
+          {"type": "gps", "allow": true},
+          {"type": "mapTouch", "allow": true},
+          {"type": "mapTarget", "allow": true},
+          {"type": "angleDistance", "allow": false},
+          {"type": "azimuthDistance", "allow": true}
+        ] },
+
       ] }
       """.utf8)
 
@@ -429,72 +465,96 @@ class FeatureTests: XCTestCase {
     // Then:
     XCTAssertNotNil(json)
     if let test = json {
-      XCTAssertEqual(test.features.count, 7)
+      XCTAssertEqual(test.features.count, 8)
 
       XCTAssertNil(test.features[0].angleDistanceConfig)
+      XCTAssertNil(test.features[0].azimuthDistanceConfig)
       XCTAssertNotNil(test.features[0].gpsLocationConfig)
       XCTAssertNotNil(test.features[0].mapLocationConfig)
       XCTAssertFalse(test.features[0].allowAngleDistance)
+      XCTAssertFalse(test.features[0].allowAzimuthDistance)
       XCTAssertFalse(test.features[0].allowGps)
       XCTAssertTrue(test.features[0].allowMapTouch)
       XCTAssertTrue(test.features[0].allowOffTransectObservations)
 
       XCTAssertNotNil(test.features[1].angleDistanceConfig)
+      XCTAssertNotNil(test.features[1].azimuthDistanceConfig)
       XCTAssertNotNil(test.features[1].gpsLocationConfig)
       XCTAssertNotNil(test.features[1].mapLocationConfig)
       XCTAssertFalse(test.features[1].allowAngleDistance)
+      XCTAssertFalse(test.features[1].allowAzimuthDistance)
       XCTAssertTrue(test.features[1].allowGps)
       XCTAssertTrue(test.features[1].allowMapTouch)
       XCTAssertFalse(test.features[1].allowOffTransectObservations)
 
       XCTAssertNil(test.features[2].angleDistanceConfig)
+      XCTAssertNil(test.features[2].azimuthDistanceConfig)
       XCTAssertNotNil(test.features[2].gpsLocationConfig)
       XCTAssertNotNil(test.features[2].mapLocationConfig)
       XCTAssertFalse(test.features[2].allowAngleDistance)
+      XCTAssertFalse(test.features[2].allowAzimuthDistance)
       XCTAssertTrue(test.features[2].allowGps)
       XCTAssertFalse(test.features[2].allowMapTouch)
       XCTAssertTrue(test.features[2].allowOffTransectObservations)
 
       XCTAssertNil(test.features[3].angleDistanceConfig)
+      XCTAssertNil(test.features[3].azimuthDistanceConfig)
       XCTAssertNotNil(test.features[3].gpsLocationConfig)
       XCTAssertNotNil(test.features[3].mapLocationConfig)
       XCTAssertFalse(test.features[3].allowAngleDistance)
+      XCTAssertFalse(test.features[3].allowAzimuthDistance)
       XCTAssertFalse(test.features[3].allowGps)
       XCTAssertTrue(test.features[3].allowMapTouch)
       XCTAssertFalse(test.features[3].allowOffTransectObservations)
 
       XCTAssertNotNil(test.features[4].angleDistanceConfig)
+      XCTAssertNotNil(test.features[4].azimuthDistanceConfig)
       XCTAssertNotNil(test.features[4].gpsLocationConfig)
       XCTAssertNotNil(test.features[4].mapLocationConfig)
       XCTAssertTrue(test.features[4].allowAngleDistance)
+      XCTAssertFalse(test.features[4].allowAzimuthDistance)
       XCTAssertFalse(test.features[4].allowGps)  // Gps is not allowed if angleDistance is allowed
       XCTAssertTrue(test.features[4].allowMapTouch)
       XCTAssertFalse(test.features[4].allowOffTransectObservations)
 
       XCTAssertNil(test.features[5].angleDistanceConfig)
+      XCTAssertNil(test.features[5].azimuthDistanceConfig)
       XCTAssertNil(test.features[5].gpsLocationConfig)
       XCTAssertNil(test.features[5].mapLocationConfig)
       XCTAssertFalse(test.features[5].allowAngleDistance)
+      XCTAssertFalse(test.features[5].allowAzimuthDistance)
       XCTAssertFalse(test.features[5].allowGps)
       XCTAssertFalse(test.features[5].allowMapTouch)
       XCTAssertFalse(test.features[5].allowOffTransectObservations)
 
       XCTAssertNotNil(test.features[6].angleDistanceConfig)
+      XCTAssertNotNil(test.features[6].azimuthDistanceConfig)
       XCTAssertNotNil(test.features[6].gpsLocationConfig)
       XCTAssertNotNil(test.features[6].mapLocationConfig)
       XCTAssertFalse(test.features[6].allowAngleDistance)
+      XCTAssertFalse(test.features[6].allowAzimuthDistance)
       XCTAssertFalse(test.features[6].allowGps)
       XCTAssertFalse(test.features[6].allowMapTouch)
       XCTAssertFalse(test.features[6].allowOffTransectObservations)
 
-      XCTAssertEqual(test.features.locatableWithMapTouch.count, 4)
+      XCTAssertNotNil(test.features[7].angleDistanceConfig)
+      XCTAssertNotNil(test.features[7].azimuthDistanceConfig)
+      XCTAssertNotNil(test.features[7].gpsLocationConfig)
+      XCTAssertNotNil(test.features[7].mapLocationConfig)
+      XCTAssertFalse(test.features[7].allowAngleDistance)
+      XCTAssertTrue(test.features[7].allowAzimuthDistance)
+      XCTAssertFalse(test.features[7].allowGps)  // Gps is not allowed if azimuthDistance is allowed
+      XCTAssertTrue(test.features[7].allowMapTouch)
+      XCTAssertFalse(test.features[7].allowOffTransectObservations)
+
+      XCTAssertEqual(test.features.locatableWithMapTouch.count, 5)
       let mapTouch = test.features.locatableWithMapTouch.map { $0.name }
-      let expectedMapTouch = ["Alice0", "Bob1", "Carol3", "Dave4"]
+      let expectedMapTouch = ["Alice0", "Bob1", "Carol3", "Dave4", "Dave7"]
       XCTAssertEqual(mapTouch, expectedMapTouch)
 
-      XCTAssertEqual(test.features.locatableWithoutMapTouch.count, 3)
+      XCTAssertEqual(test.features.locatableWithoutMapTouch.count, 4)
       let withoutMapTouch = test.features.locatableWithoutMapTouch.map { $0.name }
-      let expectedWithoutMapTouch = ["Bob1", "Carol2", "Dave4"]  //Gps and AngleDistance
+      let expectedWithoutMapTouch = ["Bob1", "Carol2", "Dave4", "Dave7"]  //Gps and AngleDistance*2
       XCTAssertEqual(withoutMapTouch, expectedWithoutMapTouch)
 
       XCTAssertEqual(test.features.observableAnyTime.count, 2)
@@ -1457,7 +1517,8 @@ class FeatureTests: XCTestCase {
           {"type": "mapTarget"},
           {"type": "mapTouch"},
           {"type": "adhocTarget"},
-          {"type": "adhocTouch"}
+          {"type": "adhocTouch"},
+          {"type": "azimuthDistance"}
         ]
       }
       """.utf8)
@@ -1477,6 +1538,7 @@ class FeatureTests: XCTestCase {
 
       XCTAssertEqual(test.locations[4].type, .mapTarget)
       XCTAssertEqual(test.locations[5].type, .mapTouch)
+      XCTAssertEqual(test.locations[6].type, .azimuthDistance)
     }
   }
 
@@ -1489,10 +1551,10 @@ class FeatureTests: XCTestCase {
       """
       {
         "locations": [
-        {"type": "gps", "deadAhead": 100.00},
-        {"type": "gps", "baseline": 200.00},
-        {"type": "gps", "deadAhead": 10.00, "baseline": 20.00},
-        {"type": "gps", "baseline": 30.00, "deadAhead": 40.00}
+        {"type": "angleDistance", "deadAhead": 100.00},
+        {"type": "angleDistance", "baseline": 200.00},
+        {"type": "angleDistance", "deadAhead": 10.00, "baseline": 20.00},
+        {"type": "angleDistance", "baseline": 30.00, "deadAhead": 40.00}
         ]
       }
       """.utf8)

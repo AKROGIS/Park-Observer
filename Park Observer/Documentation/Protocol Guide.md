@@ -88,9 +88,13 @@ What types of locations do you want to allow/require? Your choices are:
 
  * At the map touch
 
- * At the target on the map
-
  * At an angle/distance from the current GPS location/course
+
+ * At an azimuth/distance from the current GPS location
+
+If a feature has both `angleDistance` and `gps` or `azimuthDistance` and `gps`,
+the `gps` method is ignored (the user interface will always create an `angleDistance`
+or `azimuthDistance` location).
 
 By default, the first three are allowed, and none is required.
 GPS is the default unless you touch the map.

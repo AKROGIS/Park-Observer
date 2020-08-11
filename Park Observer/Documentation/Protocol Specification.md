@@ -642,12 +642,15 @@ This property is required and must be one of the following strings:
  * `mapTarget` - locates the observation where the target is on the map
  * `mapTouch` - locates the observation where the user touches the map
  * `angleDistance` - locates the observation at an angle and distance from the GPS location and course.
+ * `azimuthDistance` - locates the observation at the azimuth and distance from the GPS location.
 
 `adhocTarget` is a deprecated synonym for `mapTarget`, and
 `adhocTouch` is a deprecated synonym for `mapTouch`.  These types should not be
 used in new protocol files, but may still exist in older files.
 
-**Important:** Providing multiple locations with the same type not prohibited,
+`azimuthDistance` is ignored in versions of Park Observer before 2.0.0.
+
+**Important:** Providing multiple locations with the same type is not prohibited,
  but it is discouraged as the behavior is undefined.
 
 See the [Protocol Guide](Protocol_Guide.html) for details on how the user interface behaves with
@@ -902,6 +905,7 @@ Changes implemented in 2.0 which effect the processing of version 1 and 2 protoc
  * feature names are limited to 10 characters.
  * Additional constraints and testing of the fields in Totalizer.
  * feature.location.type must be unique
+ * feature.locations cannot `allow` both type = `angleDistance` and type = `azimuthDistance`
  * Version 1 and version 2 symbology are both supported in both versions of the protocol file.
  * Added an optional `definition` property to feature label to support ESRI label definition JSON.
  * Made label.field optional. It will be ignored and can be omitted if label.definition is provided. Size, color, and symbol will also be ignored if label.definition is provided.
