@@ -475,6 +475,8 @@ extension ObservationPresenter {
     if let gpsPoint = gpsPoint {
       let angleDistanceLocation = AngleDistanceLocation.new(in: context)
       angleDistanceLocation.direction = gpsPoint.course
+      angleDistanceLocation.angle = -9999  //Bogus value displayed as null
+      angleDistanceLocation.distance = -9999  //Bogus value displayed as null
       self.angleDistanceLocation = angleDistanceLocation
     }
   }

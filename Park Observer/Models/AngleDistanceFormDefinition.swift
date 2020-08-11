@@ -28,6 +28,7 @@ extension AngleDistanceFormDefinition {
   var angle: Binding<Double?> {
     return Binding<Double?>(
       get: {
+        guard self.location.angle > -360 else { return nil }
         let angle = self.location.angle
         if self.definition.type == .azimuthDistance {
           return angle
@@ -102,6 +103,7 @@ extension AngleDistanceFormDefinition {
   var distance: Binding<Double?> {
     return Binding<Double?>(
       get: {
+        guard self.location.distance > 0 else { return nil }
         return self.helper.convert(meters: self.location.distance, to: self.definition.units)
       },
       set: { value in
