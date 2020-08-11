@@ -83,22 +83,23 @@ extension ProtocolMission {
     let container = try decoder.container(keyedBy: CodingKeys.self)
     let attributes = try container.decodeIfPresent([Attribute].self, forKey: .attributes)
     let dialog = try container.decodeIfPresent(Dialog.self, forKey: .dialog)
-    let editAtStartFirstObserving = try container.decodeIfPresent(
-      Bool.self, forKey: .editAtStartFirstObserving) ?? false
-    let editAtStartRecording = try container.decodeIfPresent(
-      Bool.self, forKey: .editAtStartRecording) ?? false
-    let editAtStartReobserving = try container.decodeIfPresent(
-      Bool.self, forKey: .editAtStartReobserving) ?? false
-    let editAtStopObserving = try container.decodeIfPresent(Bool.self, forKey: .editAtStopObserving)
+    let editAtStartFirstObserving =
+      try container.decodeIfPresent(Bool.self, forKey: .editAtStartFirstObserving) ?? false
+    let editAtStartRecording =
+      try container.decodeIfPresent(Bool.self, forKey: .editAtStartRecording) ?? false
+    let editAtStartReobserving =
+      try container.decodeIfPresent(Bool.self, forKey: .editAtStartReobserving) ?? false
+    let editAtStopObserving =
+      try container.decodeIfPresent(Bool.self, forKey: .editAtStopObserving)
       ?? false
-    let editPriorAtStopObserving = try container.decodeIfPresent(
-      Bool.self, forKey: .editPriorAtStopObserving) ?? false
+    let editPriorAtStopObserving =
+      try container.decodeIfPresent(Bool.self, forKey: .editPriorAtStopObserving) ?? false
     let totalizer = try container.decodeIfPresent(MissionTotalizer.self, forKey: .totalizer)
 
     // Symbology
     var gpsRenderer: AGSRenderer? = nil
     // Version 2 Symbology
-    if let agsJSON:AnyJSON = try container.decodeIfPresent(AnyJSON.self, forKey: .gpsSymbology) {
+    if let agsJSON: AnyJSON = try container.decodeIfPresent(AnyJSON.self, forKey: .gpsSymbology) {
       gpsRenderer = try AGSRenderer.fromAnyJSON(agsJSON, codingPath: decoder.codingPath)
     }
     // Version 1 Symbology
@@ -110,7 +111,7 @@ extension ProtocolMission {
     }
     var onRenderer: AGSRenderer? = nil
     // Version 2 Symbology
-    if let agsJSON:AnyJSON = try container.decodeIfPresent(AnyJSON.self, forKey: .onSymbology) {
+    if let agsJSON: AnyJSON = try container.decodeIfPresent(AnyJSON.self, forKey: .onSymbology) {
       onRenderer = try AGSRenderer.fromAnyJSON(agsJSON, codingPath: decoder.codingPath)
     }
     // Version 1 Symbology
@@ -122,7 +123,7 @@ extension ProtocolMission {
     }
     var offRenderer: AGSRenderer? = nil
     // Version 2 Symbology
-    if let agsJSON:AnyJSON = try container.decodeIfPresent(AnyJSON.self, forKey: .offSymbology) {
+    if let agsJSON: AnyJSON = try container.decodeIfPresent(AnyJSON.self, forKey: .offSymbology) {
       offRenderer = try AGSRenderer.fromAnyJSON(agsJSON, codingPath: decoder.codingPath)
     }
     // Version 1 Symbology
@@ -135,7 +136,7 @@ extension ProtocolMission {
     }
     var renderer: AGSRenderer? = nil
     // Version 2 Symbology
-    if let agsJSON:AnyJSON = try container.decodeIfPresent(AnyJSON.self, forKey: .symbology) {
+    if let agsJSON: AnyJSON = try container.decodeIfPresent(AnyJSON.self, forKey: .symbology) {
       renderer = try AGSRenderer.fromAnyJSON(agsJSON, codingPath: decoder.codingPath)
     }
     // Version 1 Symbology
