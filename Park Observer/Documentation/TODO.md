@@ -6,7 +6,6 @@ Park Observer 2.0 To Do List
 ## Priority 1
 User requested features I intend to implement.
   * Add optional "required" property for form attributes; add validation message
-  * Add location method option to collect angle distance locations with north (not course) as the angular basis
 
 ## Priority 2
 Functionality I plan to implement for parity with Park Observer 1.0.
@@ -116,6 +115,10 @@ These bugs can be worked around or ignored.
   * Need to be able to delete status messages when they no longer apply.
   * Banner should stand out more; Maybe the background should be less transparent not full width.
     - maybe next to the scalebar on the ipad (below/above) on the iPhone
+  * Alarm does not play alert sound when app is active
+  * If you delete a feature from the selector, it should be removed from the selector list
+  * New AngleDistance features are created with a default distnce and absolute angle of 0, which puts an unexpected user angle in the form
+    The new form should initialize with a null value for both angle and distance.
 
 ## Annoying
 These bugs are related to potential functionality (so while incorrect, they have no impact yet).

@@ -29,6 +29,9 @@ extension AngleDistanceFormDefinition {
     return Binding<Double?>(
       get: {
         let angle = self.location.angle
+        if self.definition.type == .azimuthDistance {
+          return angle
+        }
         let heading = self.location.direction
         let deadAhead = self.definition.deadAhead
         let cw = self.definition.direction == .cw
@@ -36,6 +39,10 @@ extension AngleDistanceFormDefinition {
       },
       set: { value in
         if let userAngle = value {
+          if self.definition.type == .azimuthDistance {
+            self.location.angle = userAngle
+            return
+          }
           let heading = self.location.direction
           let deadAhead = self.definition.deadAhead
           let cw = self.definition.direction == .cw
@@ -49,6 +56,9 @@ extension AngleDistanceFormDefinition {
   //TODO Add warning text when angle not in self.definition.deadAhead +/- 90.0
 
   var angleCaption: String? {
+    if self.definition.type == .azimuthDistance {
+      return "Range: 0°(N)..90°(E)..360°"
+    }
     let min = String(format: "%.0f", self.definition.deadAhead - 180.0)
     let max = String(format: "%.0f", self.definition.deadAhead + 180.0)
     let deadAhead = String(format: "%.0f", definition.deadAhead)
@@ -66,14 +76,23 @@ extension AngleDistanceFormDefinition {
 
   var angleFormatter: NumberFormatter {
     let formatter = NumberFormatter()
-    formatter.minimum = NSNumber(value: self.definition.deadAhead - 180.0)
-    formatter.maximum = NSNumber(value: self.definition.deadAhead + 180.0)
+    if self.definition.type == .azimuthDistance {
+      formatter.minimum = 0.0
+      formatter.maximum = 360.0
+    } else {
+      formatter.minimum = NSNumber(value: self.definition.deadAhead - 180.0)
+      formatter.maximum = NSNumber(value: self.definition.deadAhead + 180.0)
+    }
     formatter.maximumFractionDigits = 0
     return formatter
   }
 
   var anglePrefix: String {
-    "Angle:"
+    if self.definition.type == .azimuthDistance {
+      return "Azimuth:"
+    } else {
+      return "Angle:"
+    }
   }
 
   var angleSuffix: String? {

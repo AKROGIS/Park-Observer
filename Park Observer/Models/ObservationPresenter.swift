@@ -216,7 +216,8 @@ final class ObservationPresenter: ObservableObject {
       if locationMethod == .gps {
         createEntity(in: context, for: oClass)
       }
-      if locationMethod == .angleDistance, case .feature(let feature) = oClass {
+      let angleMethod = locationMethod == .angleDistance || locationMethod == .azimuthDistance
+      if angleMethod, case .feature(let feature) = oClass {
         createAngleDistanceLocation(in: context, feature: feature)
         createEntity(in: context, for: oClass)
         updateAngleDistanceForm()
@@ -653,6 +654,9 @@ extension ObservationPresenter {
       if feature.allowAngleDistance {
         locationMethod = .angleDistance
       }
+      if feature.allowAzimuthDistance {
+        locationMethod = .azimuthDistance
+      }
       break
     default:
       break
@@ -758,7 +762,9 @@ extension ObservationPresenter {
     // depends on observationClass
     switch observationClass {
     case .feature(let feature):
-      return feature.angleDistanceConfig
+      if feature.allowAzimuthDistance { return feature.azimuthDistanceConfig }
+      if feature.allowAngleDistance { return feature.angleDistanceConfig }
+      return nil
     default:
       return nil
     }
