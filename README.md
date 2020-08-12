@@ -9,7 +9,7 @@ as well as where you went looking for the observations.
 Park Observer was developed by the Alaska Region of the
 National Park Service.
 
-Park Observer 2.0 requires iOS 13+ as it is built with SwiftUI.
+Park Observer 2.0 is built with SwiftUI and requires iOS 13+.
 For older versions of iOS, please see the [original version
 of Park Observer](https://github.com/regan-sarwas/Observer)
 
