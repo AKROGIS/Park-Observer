@@ -14,7 +14,7 @@ import SwiftUI
 /// The required form property defines the look and feel of the form.
 struct AngleDistanceFormView: View {
   let form: AngleDistanceFormDefinition
-  @Binding var showValidation: Bool
+  let showValidation: Bool
   // Use a counter for the state because we want the view to re-render
   // whenever the text changes
   @State private var angleEditCount = 0

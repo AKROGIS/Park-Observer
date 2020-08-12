@@ -49,12 +49,18 @@ struct ObservationView: View {
         attributeButtons
       }
       if presenter.hasAngleDistanceForm {
-        AngleDistanceFormView(form: presenter.angleDistanceForm!, showValidation: $showValidation)
-          .disabled(!presenter.isEditing)
+        AngleDistanceFormView(
+          form: presenter.angleDistanceForm!,
+          showValidation: showValidation || !presenter.closeAllowed
+        )
+        .disabled(!presenter.isEditing)
       }
       if presenter.hasAttributeForm {
-        AttributeFormView(form: presenter.attributeForm!, showValidation: $showValidation)
-          .disabled(!presenter.isEditing)
+        AttributeFormView(
+          form: presenter.attributeForm!,
+          showValidation: showValidation || !presenter.closeAllowed
+        )
+        .disabled(!presenter.isEditing)
       }
       if !userSettings.attributeButtonsOnTop {
         attributeButtons

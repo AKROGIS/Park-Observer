@@ -10,7 +10,7 @@ import SwiftUI
 
 struct AttributeFormView: View {
   let form: AttributeFormDefinition
-  @Binding var showValidation: Bool
+  let showValidation: Bool
   // Use a counter for the state because we want the view to re-render whenever an attribute changes
   @State private var editCount = 0
 
@@ -25,7 +25,7 @@ struct AttributeFormView: View {
         ForEach(section.elements, id: \.id) { element in
           VStack(alignment: .leading) {
             self.build(element)
-            if self.showValidation || self.editCount > 0 {
+            if self.showValidation && self.editCount >= 0 {
               OptionalTextView(element.validationMessage).foregroundColor(.red)
             }
           }
@@ -180,7 +180,7 @@ struct AttributeFormView_Previews: PreviewProvider {
   static var previews: some View {
     AttributeFormView(
       form: AttributeFormDefinition(title: "Testing", sections: []),
-      showValidation: .constant(true))
+      showValidation: true)
   }
 }
 
