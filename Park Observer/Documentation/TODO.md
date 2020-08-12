@@ -8,64 +8,69 @@ User requested features I intend to implement.
 
 ## Priority 2
 Functionality I plan to implement for parity with Park Observer 1.0.
+  * Warn when deleting observation
+  * Support _Cancel/Delete_ button on top (bottom is default) of attribute form
+  * Add time and location of observation to attribute form (user settings configurable)
   * Survey pick list should allow renaming the survey
   * Support opening obsprot/archive/map from email, browser or the files app
-  * Warn when deleting observation
 
 ## Priority 3
 New functionality I want to implement.
+  * Hide/disable _Save_ button on ObservationPresenter if editing and context has no changes
+  * On first launch select an online map for the default.
+  * Include a small simple sample protocol file with app. Create survey and activate sample survey on first launch.
   * User (and/or protocol) settings for GPS accuracy and frequency (time and/or distance)
-  * Change footer in file pick lists when there are no files
-  * Allow multiple concurrent messages. Close button to hide all or hide individuals
-  * Feature selector should use map label when defined
-  * Group features by type on the feature Selector view.
-  * Edit form should get focus when displayed (and editable)
-  * Get MapInfo data from user and encode in a json file.
-  * Implement GPS Settings in settings view
-  * Format CSV per protocol definition
   * User setting for turning on/off display of gps points and/or track logs
   * User setting for hit test area (small:11, medium:22, large:44) - default medium
-  * Swipe to close slide out view
-  * Dynamic sized text in scale bar
-  * Add a graphic for the observers location (set symbology in mission)
-  * Add info button to protocol pick list to show protocol file structure
+  * Text alignment in Add feature at GPS button breaks down with accessible (larger) fonts
+  * Feature selector/presenter should show map label when defined otherwise the id if defined
+  * Group features by type on the feature Selector view.
+  * If GPS is denied when starting a track log or adding a feature, then raise "Go to settings" alert
+  * Change footer in file pick lists when there are no files
+  * Allow multiple concurrent messages. Close button to hide all or hide individuals
+  * Option to choose "Survey" or "Transect" for the observing button - New option in protocol file
   * Add info button to survey pick list to show protocol info and feature counts/dates
-  * Add configuration option to choose "Survey" or "Transect" for the observing button
+  * Add info button to protocol pick list to show protocol file structure
+  * Get MapInfo data from user and encode in a json file.
+  * Format CSV per protocol definition
+  * Add a graphic for the observers location (set symbology in mission) - New option in protocol file
+  * Dynamic sized text in scale bar
 
 ## Considering
 Potential features than need additional consideration.
-  * Next button on the keyboard? navigation between form elements?
-  * Differentiate the two stop buttons?
-  * Can a user easily refresh the graphics if needed? What about 1 survey, and 1 map 
-  * Split track logs at 1000 vertices?
   * Warn when deleting archives?
   * Scale bar fade in/out after zoom?
   * Color the add observation button to match observation symbology?
   * Provide button to show map legend?
+  * Differentiate the two stop buttons?
   * After importing a survey prompt to make survey active?
   * After creating a new survey prompt to make active?
+  * Should the Info Banner should stand out more?
+    - Maybe the background should be less transparent and not full width.
+    - Maybe it should be next to the scalebar on the ipad (below/above) on the iPhone
+  * Split track logs at 1000 vertices?
   * Revisit database schema - explore schema migration
 
 ## Potential
 Features ideas open for discussion, but no plans/time to implement.
-  * Display "Getting Started" screens if first launch
-  * Support general form validation (Issue #61) i.e. sum of count calfs + males + females > 0
+  * Calculated fields
+  * Support general form validation (Old Issue #61) i.e. sum of counts > 0
+  * Add photo points, and camera button to UI
+  * Add audio clips to observations
   * Add a observation attribute type for a sketch-able geometry.
     The underlying storage would be a WKTString describing the line or polygon.
-  * Support selecting and editing track logs (via associated map properties)
-  * Add audio clips to observations
-  * Add photo points, and camera button to UI
-  * Companion app to build protocol files
-  * Calculated fields
   * Static vs. dynamic mission properties (static at start track logging, mission properties at weather/start observing)
+  * Support selecting and editing track logs (via associated map properties)
   * Move mission property points (snap to a gps point)
   * Delete mission property points
   * Browse and download tile caches (*.tpk) from ArcGIS Online
   * Browse and download protocol files (*.obsprot) from GitHub
-  * Protocol V3 - complete re-write.
   * Hi speed KIMU interface. Coded string like a180d100k4w which is decoded into the appropriate attributes
-  * Load feature classes like nests or transects and use the attribute (nest ID or transect ID) of
-    the closest feature to populate observation (NOTE: much easier to do in post processing)
+  * Load feature classes like nests or transects and use an attribute (i.e. nest ID or transect ID) of
+    the closest feature to populate observation (NOTE: This is much easier to do in post processing)
+  * Protocol V3 - complete re-write.
+  * Companion app to build protocol files
+  * Display "Getting Started" screens if first launch
 
 ## Omitted
 Features from Park Observer 1.0 I don't plan to implement, unless requested.
@@ -88,43 +93,52 @@ These bugs limit required functionality.
 
 ## Nice to fix
 These bugs can be worked around or ignored.
-  * When returning from background addGpsLocation can be called from cache and from locationManager out of order
-  * Sometimes a label does not display for a cabin in test protocol 2.  Inconsistent and not repeatable.
-  * First text entry after launch disappears from form's text box,
-    but is saved (and shows in label and subsequent edits).  Steps to repeat:
-      1) quit app. open test protocol 2 survey. start track log, start transect (no edits). tap map to add cabin. tap in name field, enter name, hit enter, text disappears. now all text box edits work correctly
-      2) quit app. open test protocol 2 survey. start track log, start transect (make text box edit). Edit disappears.  subsequent edits work.
-  * Settings - background track log toggle needs to abide by authorization
-    - Control should be hidden if user had explicitly rejected Always
-    - may be impossible to determine, since In Use is used when Not asked, or asked and denied
-  * Add notice to turn on notification in settings if denied for alarm setting
-  * User can provide a unique value renderer for track logs and or gps points,
-    but graphics do not have the necessary attributes
+  * Check default min/max for stepper control matches legacy Park Observer
+  * Do not show attribute editor if no dialog _and_ not angleDistance
+  * Canceling a mission property dialog when launched from tracklogging or observing button does not cancel operation only attribute editing.
+  * If you delete a feature from the selector, it should be removed from the selector list
   * Check that user provided range on numbers have lower < upper
   * Getting the most recent Mission Property (for default) from database does not consider adhoc locations
-  * Slide out view does not check width on device rotation
-  * Refresh the current file list if the slide out is hidden and re-shown
-  * Safe area on device with safe area mucks with styling of slide out view
-  * Action Sheets on iPad do not show up in correct location (especially for items at bottom of file list) - Apple Bug (https://stackoverflow.com/q/61676063/542911)
-  * TextFields do not fix their display (per the formatter) until return is pressed (losing focus is not enough);
-    - The bindings are good (they represent the last valid value (per the formatter), not the value in the text box).
-  * When exporting, the export date is updated before we know if the export succeeds.  If it fails, we need to undo the export date.
-  * Need to be able to delete status messages when they no longer apply.
-  * Banner should stand out more; Maybe the background should be less transparent not full width.
-    - maybe next to the scalebar on the ipad (below/above) on the iPhone
-  * Alarm does not play alert sound when app is active
-  * If you delete a feature from the selector, it should be removed from the selector list
-  * Do not show attribute editor if no dialog _and_ not angleDistance
-  * Check default min/max for stepper control matches legacy Park Observer
   * Problem with Mission Properties with required values and no editing on start tracklog (values will be null)
+  * When editing multiple features, if one has validation errors when you decide to move another feature, the validation interrupts the move
+  * When exporting, the export date is updated before we know if the export succeeds.  If it fails, we need to undo the export date.
+  * When returning from background addGpsLocation can be called from cache and from locationManager out of order
+  * Chaos may ensue if the user does not tap on the map when "Moving to map location"; start modal mode?
+  * Need to be able to delete status messages when they no longer apply.
+  * First text entry after launch disappears from form's text box, but is saved (and shows in label and subsequent edits).  Steps to repeat:
+      1) quit app. open test protocol 2 survey. start track log, start transect (no edits). tap map to add cabin. tap in name field, enter name, hit enter, text disappears. now all text box edits work correctly
+      2) quit app. open test protocol 2 survey. start track log, start transect (make text box edit). Edit disappears.  subsequent edits work.
+  * Slide out view does not check width on device rotation (limit to maxWidth as % of screenwidth)
+  * Refresh the current file list if the slide out is hidden and re-shown
+  * Alarm does not play alert sound when app is active
+  * Add notice to turn on notification in settings if denied for alarm setting
+  * User can provide a unique value renderer for track logs and or gps points, but graphics do not have the necessary attributes
+  * The safe area (on devices with safe area - iPhone X and 11) mucks with styling of slide out view
+  * Sometimes a label does not display for a cabin in test protocol 2.  Inconsistent and not repeatable.
 
 ## Annoying
 These bugs are related to potential functionality (so while incorrect, they have no impact yet).
   * encode(AnyJSON(agsRenderer.toJSON())) converts 0 to false, so result is no longer valid on read
 
+## Not mine
+These issues are in software provided by others (Apple, Esri). If they become a problem, a work around may be possible
+  * TextFields with number formatters can show an invalid value. They do not update the display the return key is pressed -- 
+    they do not update when moving focus to another control with a screen touch.  The data saved will be the last valid value
+    the the user typed.  For example if the field limited numbers to 360, and the user typed  2-5-4-3, the display would show
+    2543, but 254 would be saved.   The work around is to always press the return key when done editing a number field.
+  * Action Sheets on the iPad do not show up in correct location (especially for items at bottom of file list)
+    This is a known Apple bug(https://stackoverflow.com/q/61676063/542911)
+  * Background Track Log toggle is settings is not hidden when the user has rejected _Always_ (background) location authorization.
+    The system does not track if _Always_ authorization was requested and rejected.  If the app has not requested _Always_ authorization
+    it will have _In Use_, _Denied_, or _Unknown_ authorization.  If the app has requested _Always_ and the user has rejected it,
+    the authorization still be one of _In Use_, _Denied_, or _Unknown_ authorization.
+  * Text/Number fields in attribute editing form should get focus when displayed and editable.
+    The user should be able to navigate to next/previous Text/Number field with a next/prev key on the on-screen keyboard, or
+    the tab (shift-tab) keys on a bluetooth keyboard.  Unfortunately, this is not supported in SwiftUI (iOS 13 and 14_beta).
+    See https://developer.apple.com/forums/thread/650263
+
 
 # Documentation
-  * Create Readme.md and license file for gitHub
   * Post new specs and schema to existing website.
   * Edit/Cleanup the Park Observer 2.0 section of specs in the new project
   * Create a simple how to document with screenshots
@@ -160,11 +174,13 @@ These bugs are related to potential functionality (so while incorrect, they have
 
 ## Code Cleanup
 Maintainability issues in the code that are generally invisible to the user.
-  * Put all TODOs into this document
   * Refactor Filesystem around appFile
   * Cleanup SurveyController
+  * SurveyController should listen to ObservationPresenter.awaitingGPS then trigger Async GPS request.
+  * Fix timestamp property in ObservationPresenter (should be optional, but ObservationSelectorView doesn't like that)
+  * Cleanup handling of error messages in ObservationPresenter
+  * ObservationPresenter is creating a retain cycle (break at end of SurveyController.observing didSet)
   * Refactor to reduce testing dependant on CoreData
-  * ObservationPresenter is creating a retain cycle (break at end of observing didSet)
   * Create doc strings for all public members
   * Replace print statements with unified logging
   * Remove magic numbers and static strings

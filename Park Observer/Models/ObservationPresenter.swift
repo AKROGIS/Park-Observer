@@ -95,14 +95,13 @@ final class ObservationPresenter: ObservableObject {
     }
   }
 
-  //TODO: request GPS Point for MoveToGps (Controller could listen to awaitingGps)
+  //TODO: Support cancel-on-top
+  //TODO: Alert "This cannot be undone" warning before delete or cancel(with changes)
+  //TODO: SurveyController could listen to awaitingGps - remove gpsRequestor: from init()
   //TODO: Cleanup/Improve Title (add label or id or timestamp)
   //TODO: Verify canceling Mission Property creation is done right
-  //TODO: Support cancel-on-top
-  //TODO: Validate on save
   //TODO: Error handling needs more work (clear error, set isEditing/isEditable)
-  //TODO?: Alert "This cannot be undone" warning before delete or cancel(with changes)
-  //TODO?: Update presentation of Save Button based on context.hasChanges and validation status
+  //TODO?: Update presentation of Save Button based on context.hasChanges
   //TODO?: The timestamp should be optional, but ObservationSelectorView doesn't like that
 
   // These properties are used in the view, may not all need to be published,

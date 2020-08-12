@@ -66,14 +66,3 @@ struct SlideOutView_Previews: PreviewProvider {
     SlideOutView()
   }
 }
-
-
-//TODO: limit to maxWidth as % of screenwidth
-//TODO: on device rotation, recalc maxwidth and adjust width if necessary
-//TODO: Add and swipe to close (but do not adjust width)
-//TODO: Add close button on SlideOutView
-//TODO: Deal with safe area; add to offset
-//TODO: refresh the visible view
-//  hiding the slideout like this is nice because it restores to the same
-//  place in the navigation heirarchy where we left off,
-//  but file list views do not refresh
