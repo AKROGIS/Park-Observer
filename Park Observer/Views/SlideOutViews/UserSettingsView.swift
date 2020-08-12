@@ -20,7 +20,6 @@ struct UserSettingsView: View {
     )
 
     return Form {
-      //TODO: Use form groups/controls; implement save settings
       Section(header: Text("MAP CONTROLS")) {
         Toggle(isOn: $userSettings.darkMapControls) {
           Text("Dark mode")
@@ -44,9 +43,15 @@ struct UserSettingsView: View {
         }
       }
 
-      Toggle(isOn: $surveyController.enableBackgroundTrackLogging) {
-        Text("Tracklog When Not Active")
+      Section(header: Text("TRACK LOGS")) {
+        Toggle(isOn: $surveyController.enableBackgroundTrackLogging) {
+          VStack(alignment: .leading) {
+            Text("Track log when not active")
+            Text("Background track logging").font(.caption).foregroundColor(.secondary)
+          }
+        }
       }
+
       if surveyController.enableBackgroundTrackLogging {
         Text("Warning: App will consume extra power when not active").foregroundColor(.red)
           .font(.subheadline)
@@ -65,9 +70,11 @@ struct UserSettingsView: View {
         }
       }
 
-      //Picker(title: "hi", selection: $userSettings.totalizerUnits) {}
       Section(header: Text("GPS SETTINGS")) {
-        Slider(value: $userSettings.gpsAccuracy, in: 5.0...200.0, minimumValueLabel: Text("5m"), maximumValueLabel: Text("200m")) {
+        Slider(
+          value: $userSettings.gpsAccuracy, in: 5.0...200.0, minimumValueLabel: Text("5m"),
+          maximumValueLabel: Text("200m")
+        ) {
           Text("Accuracy")
         }
         Text("Frequency - time")
