@@ -11,6 +11,7 @@ import SwiftUI
 struct ObservationView: View {
   @ObservedObject var presenter: ObservationPresenter
   @EnvironmentObject var surveyController: SurveyController
+  @EnvironmentObject var userSettings: UserSettings
   @Environment(\.presentationMode) var presentation
   @State private var showValidation = false
 
@@ -28,14 +29,6 @@ struct ObservationView: View {
           Text(presenter.errorMessage).foregroundColor(.red)
         }
       }
-      if presenter.hasAngleDistanceForm {
-        AngleDistanceFormView(form: presenter.angleDistanceForm!, showValidation: $showValidation)
-          .disabled(!presenter.isEditing)
-      }
-      if presenter.hasAttributeForm {
-        AttributeFormView(form: presenter.attributeForm!, showValidation: $showValidation)
-          .disabled(!presenter.isEditing)
-      }
       if presenter.awaitingGps {
         HStack {
           Image(systemName: "exclamationmark.square.fill")
@@ -52,6 +45,25 @@ struct ObservationView: View {
           Text("Waiting for feature selection").foregroundColor(.red)
         }
       }
+      if userSettings.attributeButtonsOnTop {
+        attributeButtons
+      }
+      if presenter.hasAngleDistanceForm {
+        AngleDistanceFormView(form: presenter.angleDistanceForm!, showValidation: $showValidation)
+          .disabled(!presenter.isEditing)
+      }
+      if presenter.hasAttributeForm {
+        AttributeFormView(form: presenter.attributeForm!, showValidation: $showValidation)
+          .disabled(!presenter.isEditing)
+      }
+      if !userSettings.attributeButtonsOnTop {
+        attributeButtons
+      }
+    }.navigationBarTitle(presenter.title)
+  }
+
+  var attributeButtons: some View {
+    Group {
       if !presenter.isEditing {
         if presenter.isEditable {
           Button(action: { self.presenter.isEditing = true }) {
@@ -140,9 +152,8 @@ struct ObservationView: View {
           Text("Save")
         }
       }
-    }.navigationBarTitle(presenter.title)
+    }
   }
-
 }
 
 struct ObservationView_Previews: PreviewProvider {

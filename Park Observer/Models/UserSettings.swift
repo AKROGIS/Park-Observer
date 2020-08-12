@@ -13,6 +13,9 @@ class UserSettings: ObservableObject {
   /// The time interval (seconds) until the alarm clock should alert
   @Published var alarmInterval = 0.0
 
+  /// Display buttons (i.e. Cancel/Delete/Move/...) on the top (instead of bottom) of the attribute editing form
+  @Published var attributeButtonsOnTop = false
+
   /// Map Controls can be light (for dark colored maps), or dark (for light maps)
   @Published var darkMapControls = false
 
@@ -51,6 +54,7 @@ class UserSettings: ObservableObject {
   /// Read the user defaults from the persisted defaults database
   func restoreState() {
     alarmInterval = Defaults.alarmInterval.readDouble()
+    attributeButtonsOnTop = Defaults.attributeButtonsOnTop.readBool()
     darkMapControls = Defaults.darkMapControls.readBool()
     gpsAccuracy = Defaults.gpsAccuracy.readDouble()
     mapControlsSize = Defaults.mapControlsSize.readMapControlSize()
@@ -66,6 +70,7 @@ class UserSettings: ObservableObject {
   /// Save the user defaults to the persisted defaults database
   func saveState() {
     Defaults.alarmInterval.write(alarmInterval)
+    Defaults.attributeButtonsOnTop.write(attributeButtonsOnTop)
     Defaults.darkMapControls.write(darkMapControls)
     Defaults.gpsAccuracy.write(gpsAccuracy)
     Defaults.mapControlsSize.write(mapControlsSize)

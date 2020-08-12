@@ -48,13 +48,21 @@ struct UserSettingsView: View {
           VStack(alignment: .leading) {
             Text("Track log when not active")
             Text("Background track logging").font(.caption).foregroundColor(.secondary)
+            if surveyController.enableBackgroundTrackLogging {
+              Text("Warning: App will consume extra power when not active").foregroundColor(.red)
+                .font(.subheadline)
+            }
           }
         }
       }
 
-      if surveyController.enableBackgroundTrackLogging {
-        Text("Warning: App will consume extra power when not active").foregroundColor(.red)
-          .font(.subheadline)
+      Section(header: Text("ATTRIBUTE EDITOR")) {
+        Toggle(isOn: $userSettings.attributeButtonsOnTop) {
+          VStack(alignment: .leading) {
+            Text("Buttons on Top")
+            Text("Edit/Cancel/Save/...").font(.caption).foregroundColor(.secondary)
+          }
+        }
       }
 
       Section(header: Text("BANNERS")) {

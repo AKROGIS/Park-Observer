@@ -915,6 +915,8 @@ Changes implemented in 2.0 which effect the processing of version 1 and 2 protoc
  * feature.locations.default is ignored
  * feature.locations.type = "gps" is ignored if feature.locations.type = "angleDistance" exists and allowed
  * if feature has multiple location objects with the same locations.type, an error is thrown (new surveys); last one is used (existing surveys)
+ * `cancel_on_top` is ignored - set in user settings
+ * `status_message_fontsize` is ignored - Set font size in Settings App Accessibility -> Display & Font Size
 
 New root properties:
 * [`tracklogs`](#tracklogs) (o)(v3)

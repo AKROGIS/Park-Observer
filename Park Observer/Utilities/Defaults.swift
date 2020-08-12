@@ -22,6 +22,11 @@ enum Defaults: String {
   /// Zero indicates no value is set and a more reasonable default will be assigned
   case alarmInterval
 
+  /// Display buttons (i.e. Cancel/Delete/Move/...) on the top (instead of bottom) of the attribute editing form
+  ///
+  /// A Boolean value; default is false
+  case attributeButtonsOnTop
+
   /// Track logging may or may not be allowed when app is in the background
   ///
   /// A Boolean value; default is false
@@ -120,8 +125,8 @@ extension Defaults {
   /// Read a boolean value from the defaults database
   func readBool() -> Bool {
     switch self {
-    case .backgroundTrackLogging, .darkMapControls, .mapLocationDisplay, .showAlarmClock,
-      .showInfoBanner, .showTotalizer, .surveyControlsOnBottom:
+    case .attributeButtonsOnTop, .backgroundTrackLogging, .darkMapControls, .mapLocationDisplay,
+      .showAlarmClock, .showInfoBanner, .showTotalizer, .surveyControlsOnBottom:
       return UserDefaults.standard.bool(forKey: self.rawValue)
     default:
       print("Error: Bool not a valid type for \(self.rawValue) in defaults; returning false")
