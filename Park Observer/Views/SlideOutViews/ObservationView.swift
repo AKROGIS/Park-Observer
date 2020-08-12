@@ -14,6 +14,7 @@ struct ObservationView: View {
   @EnvironmentObject var userSettings: UserSettings
   @Environment(\.presentationMode) var presentation
   @State private var showValidation = false
+  @State private var isAlertPresented = false
 
   var body: some View {
     // TODO: find some pleasing way to show the time the observation was collected
@@ -66,6 +67,13 @@ struct ObservationView: View {
         attributeButtons
       }
     }.navigationBarTitle(presenter.title)
+      .alert(isPresented: $isAlertPresented) {
+        Alert(
+          title: Text("Delete Observation?"),
+          message: Text("This cannot be undone."),
+          primaryButton: .destructive(Text("Delete"), action: deleteAction),
+          secondaryButton: .cancel())
+      }
   }
 
   var attributeButtons: some View {
@@ -80,86 +88,71 @@ struct ObservationView: View {
           }
         }
       } else {
-        //TODO: Support cancel-on-top
-
-        // Delete
-
         if presenter.isDeletable {
-          Button(action: {
-            self.presenter.delete()
-            if self.presenter.closeAllowed {
-              if self.surveyController.showingObservationSelector {
-                self.presentation.wrappedValue.dismiss()
-              } else {
-                self.surveyController.slideOutMenuVisible = false
-              }
-            }
-          }) {
+          Button(action: { self.isAlertPresented = true }) {
             HStack {
               Image(systemName: "trash")
               Text("Delete")
             }.foregroundColor(.red)
           }
         }
-
-        // Move To GPS
-
         if presenter.isMoveableToGps {
-          Button(action: { self.presenter.initiateMoveToGps() }) {
-            Text("Move to GPS Location")
-          }
+          Button(action: { self.presenter.initiateMoveToGps() }) { Text("Move to GPS Location") }
         }
-
-        // Move To Touch
-
         if presenter.isMoveableToTouch {
-          Button(action: {
-            self.presenter.initiateMoveToTouch()
-            if self.presenter.closeAllowed {
-              // Go directly to MapView, do NOT go back to selector, do not collect $200
-              self.surveyController.slideOutMenuVisible = false
-            }
-          }) {
-            Text("Move to Map Touch")
-          }
+          Button(action: moveAction) { Text("Move to Map Touch") }
         }
-
-        // Cancel
-
-        Button(action: {
-          self.presenter.cancel()
-          if self.surveyController.showingObservationSelector {
-            self.presenter.reset()
-            let kind = self.presenter.observationClass
-            self.presenter.isEditing = self.surveyController.isEditingEnabled(for: kind)
-            self.presentation.wrappedValue.dismiss()
-          } else {
-            self.surveyController.slideOutMenuVisible = false
-          }
-        }) {
-          Text("Cancel")
-        }
-
-        // Save
-
-        Button(action: {
-          self.showValidation = true
-          self.presenter.save()
-          if self.presenter.closeAllowed {
-            if self.surveyController.showingObservationSelector {
-              let kind = self.presenter.observationClass
-              self.presenter.isEditing = self.surveyController.isEditingEnabled(for: kind)
-              self.presentation.wrappedValue.dismiss()
-            } else {
-              self.surveyController.slideOutMenuVisible = false
-            }
-          }
-        }) {
-          Text("Save")
-        }
+        Button(action: cancelAction) { Text("Cancel") }
+        Button(action: saveAction) { Text("Save") }
       }
     }
   }
+
+  private func cancelAction() {
+    self.presenter.cancel()
+    if self.surveyController.showingObservationSelector {
+      self.presenter.reset()
+      let kind = self.presenter.observationClass
+      self.presenter.isEditing = self.surveyController.isEditingEnabled(for: kind)
+      self.presentation.wrappedValue.dismiss()
+    } else {
+      self.surveyController.slideOutMenuVisible = false
+    }
+  }
+
+  private func deleteAction() {
+    self.presenter.delete()
+    if self.presenter.closeAllowed {
+      if self.surveyController.showingObservationSelector {
+        self.presentation.wrappedValue.dismiss()
+      } else {
+        self.surveyController.slideOutMenuVisible = false
+      }
+    }
+  }
+
+  private func moveAction() {
+    self.presenter.initiateMoveToTouch()
+    if self.presenter.closeAllowed {
+      // Go directly to MapView, do NOT go back to selector, do not collect $200
+      self.surveyController.slideOutMenuVisible = false
+    }
+  }
+
+  private func saveAction() {
+    self.showValidation = true
+    self.presenter.save()
+    if self.presenter.closeAllowed {
+      if self.surveyController.showingObservationSelector {
+        let kind = self.presenter.observationClass
+        self.presenter.isEditing = self.surveyController.isEditingEnabled(for: kind)
+        self.presentation.wrappedValue.dismiss()
+      } else {
+        self.surveyController.slideOutMenuVisible = false
+      }
+    }
+  }
+
 }
 
 struct ObservationView_Previews: PreviewProvider {
