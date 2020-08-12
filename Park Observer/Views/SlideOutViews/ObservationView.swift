@@ -33,7 +33,7 @@ struct ObservationView: View {
           .disabled(!presenter.isEditing)
       }
       if presenter.hasAttributeForm {
-        AttributeFormView(form: presenter.attributeForm!)
+        AttributeFormView(form: presenter.attributeForm!, showValidation: $showValidation)
           .disabled(!presenter.isEditing)
       }
       if presenter.awaitingGps {

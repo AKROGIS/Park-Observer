@@ -10,6 +10,9 @@ import SwiftUI
 
 struct AttributeFormView: View {
   let form: AttributeFormDefinition
+  @Binding var showValidation: Bool
+  // Use a counter for the state because we want the view to re-render whenever an attribute changes
+  @State private var editCount = 0
 
   var body: some View {
     // Must be embedded in a Navigation view for the picker to work
@@ -20,7 +23,12 @@ struct AttributeFormView: View {
         footer: OptionalTextView(section.footer)
       ) {
         ForEach(section.elements, id: \.id) { element in
-          self.build(element)
+          VStack(alignment: .leading) {
+            self.build(element)
+            if self.showValidation || self.editCount > 0 {
+              OptionalTextView(element.validationMessage).foregroundColor(.red)
+            }
+          }
         }
       }
     }
@@ -69,7 +77,7 @@ struct AttributeFormView: View {
       OptionalTextView(e.label)
       DoubleEditView(
         n: e.binding, placeholder: e.placeholder, formatter: formatter, stringFormat: stringFormat,
-        onLoseFocus: {}
+        onLoseFocus: { self.editCount += 1 }
       )
       .textFieldStyle(RoundedBorderTextFieldStyle())
       .keyboardType(e.keyboard)
@@ -96,14 +104,17 @@ struct AttributeFormView: View {
         if e.showStepper {
           StepperView(
             n: e.binding, label: e.label, placeholder: e.placeholder, range: e.range,
-            formatter: formatter, keyboard: e.keyboard)
+            formatter: formatter, keyboard: e.keyboard, onChanged: { self.editCount += 1 })
         } else {
           HStack {
             OptionalTextView(e.label)
-            IntEditView(n: e.binding, placeholder: e.placeholder, formatter: formatter)
-              .textFieldStyle(RoundedBorderTextFieldStyle())
-              .keyboardType(e.keyboard)
-              .disableAutocorrection(true)
+            IntEditView(
+              n: e.binding, placeholder: e.placeholder, formatter: formatter,
+              onLoseFocus: { self.editCount += 1 }
+            )
+            .textFieldStyle(RoundedBorderTextFieldStyle())
+            .keyboardType(e.keyboard)
+            .disableAutocorrection(true)
           }
         }
       }
@@ -117,9 +128,11 @@ struct AttributeFormView: View {
   func build(_ e: PickerElement) -> some View {
     Group {
       if e.segmentedStyle {
-        OptionalSegmentedPickerView(index: e.binding, label: e.label, choices: e.choices)
+        OptionalSegmentedPickerView(
+          index: e.binding, label: e.label, choices: e.choices, onChanged: { self.editCount += 1 })
       } else {
-        OptionalPickerView(index: e.binding, label: e.label, choices: e.choices)
+        OptionalPickerView(
+          index: e.binding, label: e.label, choices: e.choices, onChanged: { self.editCount += 1 })
       }
     }
   }
@@ -129,17 +142,22 @@ struct AttributeFormView: View {
       if e.lines == 1 {
         HStack {
           OptionalTextView(e.label)
-          TextField(e.placeholder, text: e.binding)
-            .keyboardType(e.keyboard)
-            .autocapitalization(e.autoCapitalization)
-            .disableAutocorrection(e.disableAutoCorrect)
-            .textFieldStyle(RoundedBorderTextFieldStyle())
+          TextField(
+            e.placeholder, text: e.binding,
+            onEditingChanged: { gotFocus in
+              if !gotFocus { self.editCount += 1 }
+            }
+          )
+          .keyboardType(e.keyboard)
+          .autocapitalization(e.autoCapitalization)
+          .disableAutocorrection(e.disableAutoCorrect)
+          .textFieldStyle(RoundedBorderTextFieldStyle())
         }
       } else {
         VStack(alignment: .leading) {
           OptionalTextView(e.label)
           // with ios14 use https://developer.apple.com/documentation/swiftui/texteditor
-          MultilineTextField(e.placeholder, text: e.binding, onCommit: nil)
+          MultilineTextField(e.placeholder, text: e.binding, onCommit: { self.editCount += 1 })
             .keyboardType(e.keyboard)
             .autocapitalization(e.autoCapitalization)
             .disableAutocorrection(e.disableAutoCorrect)
@@ -151,14 +169,18 @@ struct AttributeFormView: View {
   }
 
   func build(_ e: ToggleElement) -> OptionalToggle {
-    OptionalToggle(label: e.label, isOn: e.binding, toggleSet: e.binding.wrappedValue != nil)
+    OptionalToggle(
+      label: e.label, isOn: e.binding, toggleSet: e.binding.wrappedValue != nil,
+      onChanged: { self.editCount += 1 })
   }
 
 }
 
 struct AttributeFormView_Previews: PreviewProvider {
   static var previews: some View {
-    AttributeFormView(form: AttributeFormDefinition(title: "Testing", sections: []))
+    AttributeFormView(
+      form: AttributeFormDefinition(title: "Testing", sections: []),
+      showValidation: .constant(true))
   }
 }
 
@@ -185,9 +207,14 @@ struct OptionalPickerView: View {
   @Binding var index: Int
   let label: String?
   let choices: [String]
+  let onChanged: () -> Void
 
   // rebuild view when state changes
-  @State private var changed = false
+  @State private var changed = false {
+    didSet {
+      onChanged()
+    }
+  }
 
   var body: some View {
 
@@ -231,9 +258,14 @@ struct OptionalSegmentedPickerView: View {
   @Binding var index: Int
   let label: String?
   let choices: [String]
+  let onChanged: () -> Void
 
   // rebuild view when state changes
-  @State private var changed = false
+  @State private var changed = false {
+    didSet {
+      onChanged()
+    }
+  }
 
   var body: some View {
 
@@ -276,8 +308,17 @@ struct OptionalToggle: View {
   let label: String
   @Binding var isOn: Bool?
 
-  @State var toggleSet: Bool
-  @State private var toggleState = false
+  @State var toggleSet: Bool {
+    didSet {
+      onChanged()
+    }
+  }
+  let onChanged: () -> Void
+  @State private var toggleState = false {
+    didSet {
+      onChanged()
+    }
+  }
 
   var body: some View {
     // Intermediate Bindings to manage the view state
@@ -368,6 +409,7 @@ struct IntEditView: View {
   @Binding var n: Int?
   let placeholder: String
   let formatter: NumberFormatter
+  let onLoseFocus: () -> Void
 
   var numberProxy: Binding<String> {
     Binding<String>(
@@ -387,7 +429,11 @@ struct IntEditView: View {
 
   var body: some View {
     VStack {
-      TextField(placeholder, text: numberProxy)
+      TextField(
+        placeholder, text: numberProxy,
+        onEditingChanged: { gotFocus in
+          if !gotFocus { self.onLoseFocus() }
+        })
     }
   }
 }
@@ -399,9 +445,14 @@ struct StepperView: View {
   let range: ClosedRange<Int?>
   let formatter: NumberFormatter
   let keyboard: UIKeyboardType
+  let onChanged: () -> Void
 
   // rebuild view when state changes
-  @State private var changed = false
+  @State private var changed = false {
+    didSet {
+      onChanged()
+    }
+  }
 
   var body: some View {
     // used to alter state and rebuild view when binding changes
@@ -415,7 +466,7 @@ struct StepperView: View {
       })
     return HStack {
       OptionalTextView(label)
-      IntEditView(n: proxy, placeholder: placeholder, formatter: formatter)
+      IntEditView(n: proxy, placeholder: placeholder, formatter: formatter, onLoseFocus: {})
         .textFieldStyle(RoundedBorderTextFieldStyle())
         .keyboardType(keyboard)
         .disableAutocorrection(true)

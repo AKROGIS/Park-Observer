@@ -20,6 +20,11 @@ extension AttributeFormDefinition {
     self.title = "No Observation"
     self.sections = []
   }
+
+  var isValid: Bool {
+    return self.sections.allSatisfy { $0.isValid }
+  }
+
 }
 
 struct FormSection: Identifiable {
@@ -27,6 +32,11 @@ struct FormSection: Identifiable {
   let header: String?
   let footer: String?
   let elements: [FormElement]
+
+  var isValid: Bool {
+    return self.elements.allSatisfy { $0.isValid }
+  }
+
 }
 
 // [FormElement] will be used by ForEach, so FormElement needs to be identifiable
@@ -34,6 +44,15 @@ struct FormSection: Identifiable {
 // "Protocol 'Identifiable' can only be used as a generic constraint because it has Self or associated type requirements"
 protocol FormElement {
   var id: UUID { get }
+  var validationMessage: String? { get }
+}
+
+extension FormElement {
+
+  var isValid: Bool {
+    return validationMessage == nil
+  }
+
 }
 
 struct DoubleElement: FormElement {
@@ -46,6 +65,7 @@ struct DoubleElement: FormElement {
   let decimals: Int?
   let key: String
   let data: NSObject
+  let validator: () -> String?
 
   var binding: Binding<Double?> {
     return Binding<Double?>(
@@ -61,6 +81,10 @@ struct DoubleElement: FormElement {
       })
   }
 
+  var validationMessage: String? {
+    return validator()
+  }
+
 }
 
 struct IntElement: FormElement {
@@ -73,6 +97,7 @@ struct IntElement: FormElement {
   let range: ClosedRange<Int?>
   let key: String
   let data: NSObject
+  let validator: () -> String?
 
   var binding: Binding<Int?> {
     return Binding<Int?>(
@@ -88,11 +113,20 @@ struct IntElement: FormElement {
       })
   }
 
+  var validationMessage: String? {
+    return validator()
+  }
+
 }
 
 struct LabelElement: FormElement {
   let id = UUID()
   let label: String
+
+  var validationMessage: String? {
+    return nil
+  }
+
 }
 
 struct PickerElement: FormElement {
@@ -103,6 +137,7 @@ struct PickerElement: FormElement {
   let saveAsText: Bool
   let key: String
   let data: NSObject
+  let validator: () -> String?
 
   // Binds to the index of choices; anything out of range is ignored by UI; use -1 for nil (no selection)
   var binding: Binding<Int> {
@@ -128,6 +163,10 @@ struct PickerElement: FormElement {
       })
   }
 
+  var validationMessage: String? {
+    return validator()
+  }
+
 }
 
 struct TextElement: FormElement {
@@ -140,6 +179,7 @@ struct TextElement: FormElement {
   let lines: Int
   let key: String
   let data: NSObject
+  let validator: () -> String?
 
   var binding: Binding<String> {
     return Binding<String>(
@@ -153,6 +193,10 @@ struct TextElement: FormElement {
       })
   }
 
+  var validationMessage: String? {
+    return validator()
+  }
+
 }
 
 struct ToggleElement: FormElement {
@@ -160,6 +204,7 @@ struct ToggleElement: FormElement {
   let label: String
   let key: String
   let data: NSObject
+  let validator: () -> String?
 
   var binding: Binding<Bool?> {
     return Binding<Bool?>(
@@ -173,6 +218,10 @@ struct ToggleElement: FormElement {
         self.data.setValue(newValue, forKey: self.key)
         //print("data[\(self.key)] set to \(self.data.value(forKey: self.key))")
       })
+  }
+
+  var validationMessage: String? {
+    return validator()
   }
 
 }
@@ -209,9 +258,15 @@ extension DialogElement {
       }
     }
     let key = .attributePrefix + name
+    let validator: () -> String? = {
+      if attribute.required && data.value(forKey: key) == nil {
+        return "Response required"
+      }
+      return nil
+    }
     switch type {
     case .switch:
-      return ToggleElement(label: title ?? "", key: key, data: data)
+      return ToggleElement(label: title ?? "", key: key, data: data, validator: validator)
     case .numberEntry:
       switch attribute.type {
       case .float, .double:
@@ -220,14 +275,14 @@ extension DialogElement {
         return DoubleElement(
           label: title, placeholder: placeholder ?? "", keyboard: keyboardType, range: range,
           decimals: fractionDigits,
-          key: key, data: data)
+          key: key, data: data, validator: validator)
       case .int16, .int32, .int64:
         let range = intRange(
           lowerBound: minimumValue, upperBound: maximumValue, type: attribute.type)
         return IntElement(
           label: title, placeholder: placeholder ?? "", keyboard: keyboardType, showStepper: true,
           range: range, key: key,
-          data: data)
+          data: data, validator: validator)
       default:
         return LabelElement(label: (title ?? "") + " - None numeric attribute for \(type.rawValue)")
       }
@@ -235,13 +290,13 @@ extension DialogElement {
       return TextElement(
         label: title, placeholder: placeholder ?? "", keyboard: keyboardType,
         autoCapitalization: autocapitalizationType, disableAutoCorrect: disableAutocorrection,
-        lines: type == .textEntry ? 1 : 5, key: key, data: data)
+        lines: type == .textEntry ? 1 : 5, key: key, data: data, validator: validator)
     case .stepper:
       let range = intRange(lowerBound: minimumValue, upperBound: maximumValue, type: attribute.type)
       return IntElement(
         label: title, placeholder: placeholder ?? "", keyboard: keyboardType, showStepper: true,
         range: range, key: key,
-        data: data)
+        data: data, validator: validator)
     case .label:
       if let value = data.value(forKey: key) {
         return LabelElement(label: "\(title ?? "") \(value)")
@@ -251,7 +306,7 @@ extension DialogElement {
     case .defaultPicker, .segmentedPicker:
       return PickerElement(
         segmentedStyle: type == .segmentedPicker, label: title, choices: items ?? [],
-        saveAsText: bind == .item, key: key, data: data)
+        saveAsText: bind == .item, key: key, data: data, validator: validator)
     }
   }
 

@@ -271,6 +271,12 @@ final class ObservationPresenter: ObservableObject {
   }
 
   func save() {
+    if let attributeForm = attributeFormDefinition {
+      if !attributeForm.isValid {
+        closeAllowed = false
+        return
+      }
+    }
     if let angleDistanceForm = angleDistanceFormDefinition {
       if !angleDistanceForm.isValid {
         closeAllowed = false

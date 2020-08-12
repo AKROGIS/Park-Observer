@@ -5,7 +5,6 @@ Park Observer 2.0 To Do List
 
 ## Priority 1
 User requested features I intend to implement.
-  * Add optional "required" property for form attributes; add validation message
 
 ## Priority 2
 Functionality I plan to implement for parity with Park Observer 1.0.
@@ -116,6 +115,8 @@ These bugs can be worked around or ignored.
   * Alarm does not play alert sound when app is active
   * If you delete a feature from the selector, it should be removed from the selector list
   * Do not show attribute editor if no dialog _and_ not angleDistance
+  * Check default min/max for stepper control matches legacy Park Observer
+  * Problem with Mission Properties with required values and no editing on start tracklog (values will be null)
 
 ## Annoying
 These bugs are related to potential functionality (so while incorrect, they have no impact yet).
