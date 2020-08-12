@@ -39,8 +39,8 @@ protocol FormElement {
 struct DoubleElement: FormElement {
   let id = UUID()
   let label: String?
-  var placeholder: String
-  var keyboard: UIKeyboardType
+  let placeholder: String
+  let keyboard: UIKeyboardType
   //Caution, distance (max-min) must fit within Double; therefore 0...Double.max is ok, but -1...Double.max is not
   let range: ClosedRange<Double>?
   let decimals: Int?
@@ -67,7 +67,7 @@ struct IntElement: FormElement {
   let id = UUID()
   let label: String?
   let placeholder: String
-  var keyboard: UIKeyboardType
+  let keyboard: UIKeyboardType
   let showStepper: Bool
   //Caution, distance (max-min) must fit within Int; therefore 0...Int.max is ok, but -1...Int.max is not
   let range: ClosedRange<Int?>
@@ -133,11 +133,11 @@ struct PickerElement: FormElement {
 struct TextElement: FormElement {
   let id = UUID()
   let label: String?
-  var placeholder: String
-  var keyboard: UIKeyboardType
-  var autoCapitalization: UITextAutocapitalizationType
-  var disableAutoCorrect: Bool
-  var lines: Int
+  let placeholder: String
+  let keyboard: UIKeyboardType
+  let autoCapitalization: UITextAutocapitalizationType
+  let disableAutoCorrect: Bool
+  let lines: Int
   let key: String
   let data: NSObject
 

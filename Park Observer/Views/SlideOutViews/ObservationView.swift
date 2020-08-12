@@ -62,6 +62,9 @@ struct ObservationView: View {
         }
       } else {
         //TODO: Support cancel-on-top
+
+        // Delete
+
         if presenter.isDeletable {
           Button(action: {
             self.presenter.delete()
@@ -79,11 +82,17 @@ struct ObservationView: View {
             }.foregroundColor(.red)
           }
         }
+
+        // Move To GPS
+
         if presenter.isMoveableToGps {
           Button(action: { self.presenter.initiateMoveToGps() }) {
             Text("Move to GPS Location")
           }
         }
+
+        // Move To Touch
+
         if presenter.isMoveableToTouch {
           Button(action: {
             self.presenter.initiateMoveToTouch()
@@ -95,6 +104,9 @@ struct ObservationView: View {
             Text("Move to Map Touch")
           }
         }
+
+        // Cancel
+
         Button(action: {
           self.presenter.cancel()
           if self.surveyController.showingObservationSelector {
@@ -108,6 +120,9 @@ struct ObservationView: View {
         }) {
           Text("Cancel")
         }
+
+        // Save
+
         Button(action: {
           self.presenter.save()
           if self.presenter.closeAllowed {

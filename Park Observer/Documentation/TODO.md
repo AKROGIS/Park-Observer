@@ -31,7 +31,6 @@ New functionality I want to implement.
   * Add a graphic for the observers location (set symbology in mission)
   * Add info button to protocol pick list to show protocol file structure
   * Add info button to survey pick list to show protocol info and feature counts/dates
-  * Add progress view to survey pick list item while archiving.
   * Add warning when angle is outside range of deadAhead +/- 90°
   * Add configuration option to choose "Survey" or "Transect" for the observing button
 
@@ -117,6 +116,7 @@ These bugs can be worked around or ignored.
     - maybe next to the scalebar on the ipad (below/above) on the iPhone
   * Alarm does not play alert sound when app is active
   * If you delete a feature from the selector, it should be removed from the selector list
+  * Do not show attribute editor if no dialog _and_ not angleDistance
 
 ## Annoying
 These bugs are related to potential functionality (so while incorrect, they have no impact yet).
