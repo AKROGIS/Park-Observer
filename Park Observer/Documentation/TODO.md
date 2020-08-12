@@ -31,7 +31,6 @@ New functionality I want to implement.
   * Add a graphic for the observers location (set symbology in mission)
   * Add info button to protocol pick list to show protocol file structure
   * Add info button to survey pick list to show protocol info and feature counts/dates
-  * Add warning when angle is outside range of deadAhead +/- 90°
   * Add configuration option to choose "Survey" or "Transect" for the observing button
 
 ## Considering

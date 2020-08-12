@@ -12,6 +12,7 @@ struct ObservationView: View {
   @ObservedObject var presenter: ObservationPresenter
   @EnvironmentObject var surveyController: SurveyController
   @Environment(\.presentationMode) var presentation
+  @State private var showValidation = false
 
   var body: some View {
     // TODO: find some pleasing way to show the time the observation was collected
@@ -28,7 +29,7 @@ struct ObservationView: View {
         }
       }
       if presenter.hasAngleDistanceForm {
-        AngleDistanceFormView(form: presenter.angleDistanceForm!)
+        AngleDistanceFormView(form: presenter.angleDistanceForm!, showValidation: $showValidation)
           .disabled(!presenter.isEditing)
       }
       if presenter.hasAttributeForm {
@@ -124,6 +125,7 @@ struct ObservationView: View {
         // Save
 
         Button(action: {
+          self.showValidation = true
           self.presenter.save()
           if self.presenter.closeAllowed {
             if self.surveyController.showingObservationSelector {

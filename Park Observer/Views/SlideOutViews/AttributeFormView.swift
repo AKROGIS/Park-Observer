@@ -68,7 +68,8 @@ struct AttributeFormView: View {
     return HStack {
       OptionalTextView(e.label)
       DoubleEditView(
-        n: e.binding, placeholder: e.placeholder, formatter: formatter, stringFormat: stringFormat
+        n: e.binding, placeholder: e.placeholder, formatter: formatter, stringFormat: stringFormat,
+        onLoseFocus: {}
       )
       .textFieldStyle(RoundedBorderTextFieldStyle())
       .keyboardType(e.keyboard)
@@ -101,8 +102,8 @@ struct AttributeFormView: View {
             OptionalTextView(e.label)
             IntEditView(n: e.binding, placeholder: e.placeholder, formatter: formatter)
               .textFieldStyle(RoundedBorderTextFieldStyle())
-            .keyboardType(e.keyboard)
-            .disableAutocorrection(true)
+              .keyboardType(e.keyboard)
+              .disableAutocorrection(true)
           }
         }
       }
@@ -330,6 +331,7 @@ struct DoubleEditView: View {
   let placeholder: String
   let formatter: NumberFormatter
   let stringFormat: String
+  let onLoseFocus: () -> Void
 
   var numberProxy: Binding<String> {
     Binding<String>(
@@ -346,9 +348,18 @@ struct DoubleEditView: View {
       })
   }
 
+  // NOTE: onEditingChanged closure is called when the TextField gains or loses focus.
+  // The passed boolean is true when gaining focus and false when losing focus.
+  // onCommit is called when the return key (virtual or real) is pressed and before the
+  // control loses focus.
+
   var body: some View {
     VStack {
-      TextField(placeholder, text: numberProxy)
+      TextField(
+        placeholder, text: numberProxy,
+        onEditingChanged: { gotFocus in
+          if !gotFocus { self.onLoseFocus() }
+        })
     }
   }
 }

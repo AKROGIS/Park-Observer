@@ -54,8 +54,6 @@ extension AngleDistanceFormDefinition {
       })
   }
 
-  //TODO Add warning text when angle not in self.definition.deadAhead +/- 90.0
-
   var angleCaption: String? {
     if self.definition.type == .azimuthDistance {
       return "Range: 0°(N)..90°(E)..360°"
@@ -69,6 +67,13 @@ extension AngleDistanceFormDefinition {
     //let angle = String(format: "%.0f", location.angle)
     //let direction = String(format: "%.0f", location.direction)
     //return "Range: \(min)°..\(deadAhead)° aka \(direction)°(in front)..\(max)°; Increases \(inc) (DB: \(angle)°)"
+  }
+
+  var angleError: String? {
+    if self.angle.wrappedValue == nil {
+      return self.definition.type == .azimuthDistance ? "Azimuth required!" : "Angle required!"
+    }
+    return nil
   }
 
   var angleFormat: String {
@@ -89,15 +94,20 @@ extension AngleDistanceFormDefinition {
   }
 
   var anglePrefix: String {
-    if self.definition.type == .azimuthDistance {
-      return "Azimuth:"
-    } else {
-      return "Angle:"
-    }
+    return self.definition.type == .azimuthDistance ? "Azimuth:" : "Angle:"
   }
 
   var angleSuffix: String? {
     "degrees"
+  }
+
+  var angleWarning: String? {
+    if self.definition.type == .angleDistance, let angle = self.angle.wrappedValue {
+      if angle < self.definition.deadAhead - 90.0 || angle > self.definition.deadAhead + 90.0 {
+        return "Warning: feature is behind you!"
+      }
+    }
+    return nil
   }
 
   var distance: Binding<Double?> {
@@ -115,9 +125,13 @@ extension AngleDistanceFormDefinition {
   }
 
   var distanceCaption: String? {
-    "Range: 0..1000"
+    "Range: 1..1000"
     // For debugging
     //"Range: 0..1000 (DB:\(self.location.distance) meters)"
+  }
+
+  var distanceError: String? {
+    return self.distance.wrappedValue == nil ? "Distance required!" : nil
   }
 
   var distanceFormat: String {
@@ -150,6 +164,10 @@ extension AngleDistanceFormDefinition {
 
   var header: String? {
     "Location of feature from observer"
+  }
+
+  var isValid: Bool {
+    self.angle.wrappedValue != nil && self.distance.wrappedValue != nil
   }
 
 }

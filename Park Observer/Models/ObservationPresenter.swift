@@ -271,6 +271,12 @@ final class ObservationPresenter: ObservableObject {
   }
 
   func save() {
+    if let angleDistanceForm = angleDistanceFormDefinition {
+      if !angleDistanceForm.isValid {
+        closeAllowed = false
+        return
+      }
+    }
     if let context = editContext {
       if context.hasChanges {
         do {
