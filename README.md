@@ -1,7 +1,7 @@
 ![Park Observer 2.0 Logo](https://github.com/regan-sarwas/Park-Observer/blob/master/Park%20Observer/Assets/Assets.xcassets/AppIcon.appiconset/180.png)
 
 # Park Observer 2.0
-An iOS based application for spatial data collection.
+An iOS application for spatial data collection.
 The application is well suited for collecting the location,
 time and user defined attributes of **observations**, as well
 as well as where you went looking for the observations.
