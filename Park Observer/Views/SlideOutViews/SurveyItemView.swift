@@ -11,16 +11,17 @@ import SwiftUI
 struct SurveyItemView: View {
   var name: String
   @State private var navigationTag: Int? = 0
+  @State private var isEditingName = false
+  @State private var editName = ""
   @State private var showingActionSheet = false
   @State private var isExporting = false
+  @State private var info: SurveyInfo? = nil
   @State private var infoMessage: String? = nil
   @State private var errorMessage: String? = nil
   @EnvironmentObject var surveyController: SurveyController
 
   var body: some View {
-    let info = loadInfo(name)
-
-    return VStack(alignment: .leading) {
+    VStack(alignment: .leading) {
       HStack {
         VStack(alignment: .leading) {
           NavigationLink(
@@ -32,14 +33,38 @@ struct SurveyItemView: View {
             if surveyController.surveyName == name {
               Image(systemName: "star.fill").foregroundColor(.yellow)
             }
-            Text(info?.title ?? name)
-              .font(surveyController.surveyName == name ? .headline : .body)
-              .onTapGesture {
-                self.surveyController.loadSurvey(name: self.name)
+            if isEditingName {
+              HStack {
+                TextField(
+                  "", text: $editName,
+                  onEditingChanged: { gotFocus in
+                    if !gotFocus {
+                      print("Done Editing; new name: \(self.editName)")
+                      self.updateTitle(self.editName)
+                      self.isEditingName = false
+                    }
+                  },
+                  onCommit: {
+                    print("Done Editing; new name: \(self.editName)")
+                    self.updateTitle(self.editName)
+                    self.isEditingName = false
+
+                  }
+                ).textFieldStyle(RoundedBorderTextFieldStyle())
+                Button(action: { self.isEditingName = false }) {
+                  Image(systemName: "xmark.circle.fill").foregroundColor(.secondary)
+                }.buttonStyle(BorderlessButtonStyle())
               }
-            Button(action: { print("Edit survey name") }) {
-              Image(systemName: "pencil")
-            }.buttonStyle(BorderlessButtonStyle())
+            } else {
+              Text(info?.title ?? name)
+                .font(surveyController.surveyName == name ? .headline : .body)
+                .onTapGesture {
+                  self.surveyController.loadSurvey(name: self.name)
+                }
+              Button(action: { self.isEditingName = true }) {
+                Image(systemName: "pencil")
+              }.buttonStyle(BorderlessButtonStyle())
+            }
           }
           Group {
             if info != nil {
@@ -106,6 +131,10 @@ struct SurveyItemView: View {
         Text(infoMessage!).font(.caption).foregroundColor(.green)
       }
     }
+    .onAppear {
+      self.info = self.loadInfo(self.name)
+      self.editName = self.info?.title ?? ""
+    }
     .actionSheet(isPresented: $showingActionSheet) {
       ActionSheet(
         title: Text("Archive exists"),
@@ -134,6 +163,21 @@ struct SurveyItemView: View {
 
   private func loadInfo(_ name: String) -> SurveyInfo? {
     return try? SurveyInfo(fromURL: FileManager.default.surveyInfoURL(with: name))
+  }
+
+  private func updateTitle(_ title: String) {
+    if name == surveyController.surveyName {
+      info = surveyController.setTitle(title)
+    } else {
+      info = info?.with(title: title)
+      if let info = info {
+        do {
+          try info.write(to: FileManager.default.surveyInfoURL(with: name))
+        } catch {
+          errorMessage = error.localizedDescription
+        }
+      }
+    }
   }
 
   private func createArchive() {

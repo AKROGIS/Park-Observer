@@ -328,6 +328,14 @@ class SurveyController: NSObject, ObservableObject {
     }
   }
 
+  func setTitle(_ title: String) -> SurveyInfo? {
+    if let survey = survey {
+      survey.setTitle(title)
+      return survey.info
+    }
+    return nil
+  }
+
   func saveSurvey() {
     guard let survey = survey else { return }
     do {

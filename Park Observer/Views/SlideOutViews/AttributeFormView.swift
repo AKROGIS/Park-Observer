@@ -235,7 +235,7 @@ struct OptionalPickerView: View {
           Text(label ?? "")
           Spacer()
           if proxy.wrappedValue >= 0 {
-            Image(systemName: "x.circle.fill")
+            Image(systemName: "xmark.circle.fill")
               .resizable()
               .frame(width: 22, height: 22)
               .padding([.trailing], 11)
@@ -288,7 +288,7 @@ struct OptionalSegmentedPickerView: View {
           }
         }.pickerStyle(SegmentedPickerStyle())
         if proxy.wrappedValue >= 0 {
-          Image(systemName: "x.circle.fill")
+          Image(systemName: "xmark.circle.fill")
             .resizable()
             .frame(width: 22, height: 22)
             .padding([.leading], 11)
@@ -352,7 +352,7 @@ struct OptionalToggle: View {
       }
       Spacer()
       if toggleSet1.wrappedValue {
-        Image(systemName: "x.circle.fill")
+        Image(systemName: "xmark.circle.fill")
           .resizable()
           .frame(width: 22, height: 22)
           .padding([.trailing], 11)
