@@ -10,29 +10,39 @@ import SwiftUI
 
 struct ProtocolItemView: View {
   var name: String
+  @State private var navigationTag: Int? = 0
   @State private var errorMessage: String? = nil
   @State private var infoMessage: String? = nil
   @State private var showingActionSheet = false
   @EnvironmentObject var surveyController: SurveyController
 
   var body: some View {
-    //TODO: 3) navigate to additional info about the protocol
     let url = FileManager.default.protocolURL(with: name)
     let info = try? SurveyProtocol(fromURL: url, skipValidation: true)
 
     return VStack(alignment: .leading) {
-      VStack(alignment: .leading) {
-        if info == nil {
-          Text(name)
-        } else {
-          Text(info!.name)
-          Text(details(for: info!)).font(.caption).foregroundColor(.secondary)
-        }
+      NavigationLink(
+        destination: ProtocolDetailsView(name: name), tag: 1, selection: $navigationTag
+      ) {
+        EmptyView()
       }
-      .onTapGesture {
-        self.infoMessage = nil
-        self.errorMessage = nil
-        self.createSurvey()
+      HStack {
+        VStack(alignment: .leading) {
+          if info == nil {
+            Text(name)
+          } else {
+            Text(info!.name)
+            Text(details(for: info!)).font(.caption).foregroundColor(.secondary)
+          }
+        }.onTapGesture {
+          self.infoMessage = nil
+          self.errorMessage = nil
+          self.createSurvey()
+        }
+        Spacer()
+        Button(action: { self.navigationTag = 1 }) {
+          Image(systemName: "info.circle")
+        }
       }
       if infoMessage != nil {
         Text(infoMessage!).font(.caption).foregroundColor(.green)

@@ -29,6 +29,8 @@
 		59A11CFB24E59B7000061B36 /* SurveyItemView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 59A11CFA24E59B7000061B36 /* SurveyItemView.swift */; };
 		59A11CFD24E59B9200061B36 /* ArchiveItemView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 59A11CFC24E59B9200061B36 /* ArchiveItemView.swift */; };
 		59A11CFF24E59BA700061B36 /* ProtocolItemView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 59A11CFE24E59BA700061B36 /* ProtocolItemView.swift */; };
+		59A11D0124E5A09C00061B36 /* ProtocolDetailsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 59A11D0024E5A09C00061B36 /* ProtocolDetailsView.swift */; };
+		59A11D0324E5A0AC00061B36 /* SurveyDetailsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 59A11D0224E5A0AC00061B36 /* SurveyDetailsView.swift */; };
 		59BA0EC924A50F6300CA6EF2 /* FileListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 59BA0EC824A50F6300CA6EF2 /* FileListView.swift */; };
 		59BA0ECB24A50FC700CA6EF2 /* FileItemView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 59BA0ECA24A50FC700CA6EF2 /* FileItemView.swift */; };
 		59BA0ECD24A510B800CA6EF2 /* ObservationView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 59BA0ECC24A510B800CA6EF2 /* ObservationView.swift */; };
@@ -167,6 +169,8 @@
 		59A11CFA24E59B7000061B36 /* SurveyItemView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SurveyItemView.swift; sourceTree = "<group>"; };
 		59A11CFC24E59B9200061B36 /* ArchiveItemView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ArchiveItemView.swift; sourceTree = "<group>"; };
 		59A11CFE24E59BA700061B36 /* ProtocolItemView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProtocolItemView.swift; sourceTree = "<group>"; };
+		59A11D0024E5A09C00061B36 /* ProtocolDetailsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProtocolDetailsView.swift; sourceTree = "<group>"; };
+		59A11D0224E5A0AC00061B36 /* SurveyDetailsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SurveyDetailsView.swift; sourceTree = "<group>"; };
 		59BA0EC824A50F6300CA6EF2 /* FileListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FileListView.swift; sourceTree = "<group>"; };
 		59BA0ECA24A50FC700CA6EF2 /* FileItemView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FileItemView.swift; sourceTree = "<group>"; };
 		59BA0ECC24A510B800CA6EF2 /* ObservationView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ObservationView.swift; sourceTree = "<group>"; };
@@ -306,8 +310,10 @@
 				596638E324BE6AF9006D2C29 /* ObservationSelectorView.swift */,
 				59BA0ECC24A510B800CA6EF2 /* ObservationView.swift */,
 				7466876F24A265D500A8FEFA /* OnlineMapListView.swift */,
+				59A11D0024E5A09C00061B36 /* ProtocolDetailsView.swift */,
 				59A11CFE24E59BA700061B36 /* ProtocolItemView.swift */,
 				5989329E2499A71300A7C346 /* SlideOutView.swift */,
+				59A11D0224E5A0AC00061B36 /* SurveyDetailsView.swift */,
 				59A11CFA24E59B7000061B36 /* SurveyItemView.swift */,
 				7466877124A274FB00A8FEFA /* UserSettingsView.swift */,
 			);
@@ -736,6 +742,7 @@
 				59A11CF924E59B5C00061B36 /* MapItemView.swift in Sources */,
 				74D85B50246F1EB60091EA8E /* GpsPoint.swift in Sources */,
 				5989329D24995C7100A7C346 /* ViewModifiers.swift in Sources */,
+				59A11D0124E5A09C00061B36 /* ProtocolDetailsView.swift in Sources */,
 				59717BF024D0C8E9005F0BDF /* AngleDistanceFormDefinition.swift in Sources */,
 				59A11CFF24E59BA700061B36 /* ProtocolItemView.swift in Sources */,
 				747165EC243C37A800A9C960 /* AppDelegate.swift in Sources */,
@@ -768,6 +775,7 @@
 				747165F0243C37A800A9C960 /* ContentView.swift in Sources */,
 				59BA0EC924A50F6300CA6EF2 /* FileListView.swift in Sources */,
 				74A25FCE245233E1006D82CE /* CsvFormat.swift in Sources */,
+				59A11D0324E5A0AC00061B36 /* SurveyDetailsView.swift in Sources */,
 				5935172924A68A8800A4CD45 /* OnlineBaseMaps.swift in Sources */,
 				74A25FC624523371006D82CE /* ProtocolMission.swift in Sources */,
 				74D85B6B2472EEC30091EA8E /* Survey.swift in Sources */,

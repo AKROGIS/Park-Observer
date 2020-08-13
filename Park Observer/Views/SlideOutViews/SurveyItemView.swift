@@ -10,6 +10,7 @@ import SwiftUI
 
 struct SurveyItemView: View {
   var name: String
+  @State private var navigationTag: Int? = 0
   @State private var showingActionSheet = false
   @State private var isExporting = false
   @State private var infoMessage: String? = nil
@@ -17,19 +18,28 @@ struct SurveyItemView: View {
   @EnvironmentObject var surveyController: SurveyController
 
   var body: some View {
-    //TODO: 2) Edit Name of survey
-    //TODO: 3) navigate to additional info about the survey
     let info = loadInfo(name)
 
     return VStack(alignment: .leading) {
       HStack {
         VStack(alignment: .leading) {
+          NavigationLink(
+            destination: SurveyDetailsView(name: name), tag: 1, selection: $navigationTag
+          ) {
+            EmptyView()
+          }
           HStack {
             if surveyController.surveyName == name {
               Image(systemName: "star.fill").foregroundColor(.yellow)
             }
             Text(info?.title ?? name)
               .font(surveyController.surveyName == name ? .headline : .body)
+              .onTapGesture {
+                self.surveyController.loadSurvey(name: self.name)
+              }
+            Button(action: { print("Edit survey name") }) {
+              Image(systemName: "pencil")
+            }.buttonStyle(BorderlessButtonStyle())
           }
           Group {
             if info != nil {
@@ -58,27 +68,36 @@ struct SurveyItemView: View {
               Text("Exported: \(info!.exportDate!.shortDateMediumTime)")
             }
           }.font(.caption).foregroundColor(.secondary)
-        }
-        .onTapGesture {
-          self.surveyController.loadSurvey(name: self.name)
+            .onTapGesture {
+              self.surveyController.loadSurvey(name: self.name)
+            }
         }
         Spacer()
-        Button(action: {
-          self.infoMessage = nil
-          self.errorMessage = nil
-          self.createArchive()
-        }) {
-          if self.isExporting {
-            // In ios14 use ProgressView()
-            ActivityIndicatorView(isAnimating: .constant(true), style: .medium)
-          } else {
-            Image(systemName: "tray.and.arrow.up")
+        VStack {
+          Spacer()
+          Button(action: { self.navigationTag = 1 }) {
+            Image(systemName: "info.circle")
+          }.buttonStyle(BorderlessButtonStyle())
+          Spacer()
+          Button(action: {
+            self.infoMessage = nil
+            self.errorMessage = nil
+            self.createArchive()
+          }) {
+            if self.isExporting {
+              // In ios14 use ProgressView()
+              ActivityIndicatorView(isAnimating: .constant(true), style: .medium)
+            } else {
+              Image(systemName: "tray.and.arrow.up")
+            }
           }
+          .buttonStyle(BorderlessButtonStyle())
+          .disabled(
+            self.isExporting
+              || (surveyController.surveyName == name && surveyController.trackLogging)
+          )
+          Spacer()
         }
-        .buttonStyle(BorderlessButtonStyle())
-        .disabled(
-          self.isExporting || (surveyController.surveyName == name && surveyController.trackLogging)
-        )
       }
       if errorMessage != nil {
         Text(errorMessage!).font(.caption).foregroundColor(.red)
