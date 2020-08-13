@@ -8,7 +8,6 @@ User requested features I intend to implement.
 
 ## Priority 2
 Functionality I plan to implement for parity with Park Observer 1.0.
-  * Add time and location of observation to attribute form (user settings configurable)
   * Survey pick list should allow renaming the survey
   * Support opening obsprot/archive/map from email, browser or the files app
 

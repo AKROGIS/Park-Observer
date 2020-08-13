@@ -112,6 +112,7 @@ final class ObservationPresenter: ObservableObject {
   @Published private(set) var awaitingFeature = false
   @Published private(set) var closeAllowed = true
   @Published private(set) var errorMessage = "No survey available."
+  @Published private(set) var gpsPoint: GpsPoint? = nil
   @Published private(set) var hasAngleDistanceForm = false
   @Published private(set) var hasAttributeForm = false
   @Published private(set) var isDeletable = false
@@ -131,7 +132,6 @@ final class ObservationPresenter: ObservableObject {
   private var awaitingGpsForMove = false
   private var entity: NSManagedObject? = nil
   private var gpsDisabled = false
-  private var gpsPoint: GpsPoint? = nil
   private var graphic: AGSGraphic? = nil
   private var graphicNeedsMoving = false
   private var locationMethod: LocationMethod.TypeEnum? = .gps

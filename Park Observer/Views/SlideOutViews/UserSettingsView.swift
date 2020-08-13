@@ -63,6 +63,12 @@ struct UserSettingsView: View {
             Text("Edit/Cancel/Save/...").font(.caption).foregroundColor(.secondary)
           }
         }
+        Toggle(isOn: $userSettings.showLocationInAttributeForm) {
+          VStack(alignment: .leading) {
+            Text("Show Location")
+            Text("In the attribute editing form").font(.caption).foregroundColor(.secondary)
+          }
+        }
       }
 
       Section(header: Text("BANNERS")) {

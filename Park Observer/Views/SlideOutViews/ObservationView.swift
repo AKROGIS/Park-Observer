@@ -17,10 +17,6 @@ struct ObservationView: View {
   @State private var isAlertPresented = false
 
   var body: some View {
-    // TODO: find some pleasing way to show the time the observation was collected
-    //  Text(presenter.timestamp.shortDateMediumTime)
-    //    .font(.caption).foregroundColor(.secondary)
-    //    .padding(.leading)
     Form {
       if !presenter.errorMessage.isEmpty {
         HStack {
@@ -48,6 +44,23 @@ struct ObservationView: View {
       }
       if userSettings.attributeButtonsOnTop {
         attributeButtons
+      }
+      if userSettings.showLocationInAttributeForm {
+        Section {
+          if presenter.gpsPoint == nil {
+            VStack(alignment: .leading) {
+              Text("Observed").font(.caption).foregroundColor(.secondary)
+              Text(presenter.timestamp.shortDateMediumTime)
+            }
+          } else {
+            NavigationLink(destination: GpsDetailsView(gpsPoint: presenter.gpsPoint!)) {
+              VStack(alignment: .leading) {
+                Text("Observed").font(.caption).foregroundColor(.secondary)
+                Text(presenter.timestamp.shortDateMediumTime)
+              }
+            }
+          }
+        }
       }
       if presenter.hasAngleDistanceForm {
         AngleDistanceFormView(

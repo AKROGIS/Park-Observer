@@ -33,6 +33,9 @@ class UserSettings: ObservableObject {
   /// A text strip along the top of the map with the state of the map
   @Published var showInfoBanner = false
 
+  /// Show the time and location of the observation in the attribute editor
+  @Published var showLocationInAttributeForm = false
+
   /// Display of how long the user has been surveying (on transect/observing)
   @Published var showTotalizer = false
 
@@ -60,6 +63,7 @@ class UserSettings: ObservableObject {
     mapControlsSize = Defaults.mapControlsSize.readMapControlSize()
     showAlarmClock = Defaults.showAlarmClock.readBool()
     showInfoBanner = Defaults.showInfoBanner.readBool()
+    showLocationInAttributeForm = Defaults.showLocationInAttributeForm.readBool()
     showTotalizer = Defaults.showTotalizer.readBool()
     surveyControlsOnBottom = Defaults.surveyControlsOnBottom.readBool()
     if alarmInterval < 60.0 {
@@ -76,6 +80,7 @@ class UserSettings: ObservableObject {
     Defaults.mapControlsSize.write(mapControlsSize)
     Defaults.showAlarmClock.write(showAlarmClock)
     Defaults.showInfoBanner.write(showInfoBanner)
+    Defaults.showLocationInAttributeForm.write(showInfoBanner)
     Defaults.showTotalizer.write(showTotalizer)
     Defaults.surveyControlsOnBottom.write(surveyControlsOnBottom)
   }

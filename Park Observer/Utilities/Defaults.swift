@@ -93,9 +93,14 @@ enum Defaults: String {
 
   /// Should the information banner be shown on the screen?
   ///
-  /// The information banner display text for the state of track logging and/or observing
+  /// The information banner displays text for the state of track logging and/or observing
   /// A Boolean value; default is false
   case showInfoBanner
+
+  /// Show the time and location of the observation in the attribute editor
+  ///
+  /// A Boolean value; default is false
+  case showLocationInAttributeForm
 
   /// Should the totalizer be shown on the screen?
   ///
@@ -126,7 +131,8 @@ extension Defaults {
   func readBool() -> Bool {
     switch self {
     case .attributeButtonsOnTop, .backgroundTrackLogging, .darkMapControls, .mapLocationDisplay,
-      .showAlarmClock, .showInfoBanner, .showTotalizer, .surveyControlsOnBottom:
+      .showAlarmClock, .showInfoBanner, .showLocationInAttributeForm, .showTotalizer,
+      .surveyControlsOnBottom:
       return UserDefaults.standard.bool(forKey: self.rawValue)
     default:
       print("Error: Bool not a valid type for \(self.rawValue) in defaults; returning false")
