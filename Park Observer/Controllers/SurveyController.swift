@@ -193,7 +193,7 @@ class SurveyController: NSObject, ObservableObject {
       // MapView will be empty; user can now choose a map to display
       return
     }
-    NSLog("Start load map \(name)")
+    //NSLog("Start load map \(name)")
     if name.starts(with: "Esri ") {
       mapView.map = getEsriBasemap(for: name)
     } else {
@@ -216,7 +216,7 @@ class SurveyController: NSObject, ObservableObject {
         // location tracking should take precedence over the previous extents.
         self.locationButtonController.restoreState()
         self.mapName = name
-        NSLog("Finish load map")
+        //NSLog("Finish load map")
       }
     })
   }
@@ -227,20 +227,20 @@ class SurveyController: NSObject, ObservableObject {
       return
     }
     unloadCurrentSurvey()
-    NSLog("Start load survey \(name)")
+    //NSLog("Start load survey \(name)")
     Survey.load(name) { (result) in
-      NSLog("Finish load survey")
+      //NSLog("Finish load survey")
       switch result {
       case .success(let survey):
         self.surveyName = name
         self.survey = survey
-        NSLog("Start draw survey")
+        //NSLog("Start draw survey")
         // Map draw can take several seconds for a large survey. Fortunately, the map layers can
         // be updated on a background thread, and mapView updates the UI appropriately.
         DispatchQueue.global(qos: .userInitiated).async {
           self.mapView.draw(survey, zoomToExtents: !self.defaultMapExtentsSet)
           self.defaultMapExtentsSet = false
-          NSLog("Finish draw survey")
+          //NSLog("Finish draw survey")
         }
         break
       case .failure(let error):
@@ -920,7 +920,7 @@ extension SurveyController: CLLocationManagerDelegate {
     _ manager: CLLocationManager,
     didChangeAuthorization status: CLAuthorizationStatus
   ) {
-    print("Location Manager Did Change Authorization to: \(status.description)")
+    //print("Location Manager Did Change Authorization to: \(status.description)")
     switch status {
     case .notDetermined:
       gpsAuthorization = .unknown

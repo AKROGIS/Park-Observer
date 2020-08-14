@@ -22,7 +22,7 @@ enum LicenseManager {
   static func licenseArcGISRuntime() -> Bool {
     do {
       let result = try AGSArcGISRuntimeEnvironment.setLicenseKey(.licenseKey)
-      print("ArcGIS Runtime license request result: \(result.licenseStatus)")
+      //print("ArcGIS Runtime license request result: \(result.licenseStatus)")
       return result.licenseStatus == .valid
     } catch {
       // Do not throw or abort.
