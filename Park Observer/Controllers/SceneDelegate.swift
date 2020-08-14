@@ -42,15 +42,38 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
     }
   }
 
-//  func scene(_ scene: UIScene, openURLContexts URLContexts: Set<UIOpenURLContext>) {
-//    * Support opening obsprot/archive/map from email, browser or the files app
-//    - Add openURL to SceneDelegate
-//    - Open map, protocol, archive by "Add to App"
-//    - Respond to errors: cancel, replace, keep both
-//    - Prompt for follow-ons: Unpack archive?, new survey from protocol?; load survey? load map?
-//    - create file associations so email, safari, files and other apps will launch PO with URL
-//    - Alerts on contentView for use by SceneDelegate openUrl
-//  }
+  func scene(_ scene: UIScene, openURLContexts URLContexts: Set<UIOpenURLContext>) {
+    func followOnAction(_ appFile: AppFile) {
+      print("Added new \(appFile.type.rawValue) file named: \(appFile.name)")
+      //    - Prompt for follow-ons: Unpack archive?, new survey from protocol?; load survey? load map?
+    }
+
+    for context in URLContexts {
+      print("Open URL \(context.url) with options: \(context.options)")
+      if !context.options.openInPlace {
+        do {
+          let appFile = try FileManager.default.addToApp(url: context.url)
+          followOnAction(appFile)
+        } catch {
+          if (error as NSError).code == NSFileWriteFileExistsError {
+            //Display Alert to set cancel/replace/keep both
+            print("File Exists. Preference: cancel/replace/keepBoth? Selecting keepBoth")
+            let conflict = ConflictResolution.keepBoth
+            if conflict != .fail {
+              do {
+                let appFile = try FileManager.default.addToApp(url: context.url, conflict: conflict)
+                followOnAction(appFile)
+              } catch {
+                print(error.localizedDescription)
+              }
+            }
+          } else {
+            print(error.localizedDescription)
+          }
+        }
+      }
+    }
+  }
 
   func sceneDidBecomeActive(_ scene: UIScene) {
     // For developer testing, remove in production.
