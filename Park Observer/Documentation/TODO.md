@@ -8,7 +8,7 @@ User requested features I intend to implement.
 
 ## Priority 2
 Functionality I plan to implement for parity with Park Observer 1.0.
-  * Support opening obsprot/archive/map from email, browser or the files app
+  * Add UI/Alerts when adding obsprot/archive/map from email, browser or the files app
 
 ## Priority 3
 New functionality I want to implement.
@@ -116,7 +116,7 @@ These bugs are related to potential functionality (so while incorrect, they have
 
 ## Not mine
 These issues are in software provided by others (Apple, Esri). If they become a problem, a work around may be possible
-  * TextFields with number formatters can show an invalid value. They do not update the display the return key is pressed -- 
+  * TextFields with number formatters can show an invalid value. They do not update the display the return key is pressed --
     they do not update when moving focus to another control with a screen touch.  The data saved will be the last valid value
     the the user typed.  For example if the field limited numbers to 360, and the user typed  2-5-4-3, the display would show
     2543, but 254 would be saved.   The work around is to always press the return key when done editing a number field.
@@ -140,6 +140,26 @@ These issues are in software provided by others (Apple, Esri). If they become a 
     - fixing bugs
     - adding features
     - publishing new versions
+
+# Change Log
+
+## Completed Since Beta1
+
+ * Fix Bugs in totalizer
+ * Properly disable background tracklogging
+ * Add alarm interval to settings
+ * Add "required" property to attributes.  UI Forces user to provide non-null attribute value
+ * Add "azimuth/distance" option to location methods (angle is relative to north, not course)
+ * Fix bugs with angle/distance forms (start with null, make required and validate)
+ * Show warning when angle is behind you (based on course; only for angle/distance)
+ * Make [github repo](https://github.com/regan-sarwas/park-observer) public
+ * Add user setting to put attribute buttons on top of form (instead of bottom)
+ * Add confirmation alert when deleting an observation
+ * Add an optional time and location of observation to the attribute form
+ * Support editing of survey names
+ * Add forms showing details/structure of survey protocol
+ * Add form showing details of survey
+ * Survey protocol files and archives can be opened with Park Observer from email and files app (no UI yet)
 
 
 # Programmer Notes
