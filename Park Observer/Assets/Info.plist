@@ -113,6 +113,7 @@
 			<key>UTTypeConformsTo</key>
 			<array>
 				<string>public.data</string>
+				<string>com.pkware.zip-archive</string>
 			</array>
 			<key>UTTypeDescription</key>
 			<string>Survey Archive</string>
@@ -132,6 +133,7 @@
 			<key>UTTypeConformsTo</key>
 			<array>
 				<string>public.data</string>
+				<string>public.json</string>
 			</array>
 			<key>UTTypeDescription</key>
 			<string>Survey Protocol</string>
@@ -154,6 +156,7 @@
 			<key>UTTypeConformsTo</key>
 			<array>
 				<string>public.data</string>
+				<string>com.pkware.zip-archive</string>
 			</array>
 			<key>UTTypeDescription</key>
 			<string>Esri Tile Package</string>
