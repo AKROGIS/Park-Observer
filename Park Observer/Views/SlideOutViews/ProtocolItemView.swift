@@ -22,7 +22,9 @@ struct ProtocolItemView: View {
 
     return VStack(alignment: .leading) {
       NavigationLink(
-        destination: ProtocolDetailsView(name: name), tag: 1, selection: $navigationTag
+        destination: ProtocolDetailsView(
+          name: name, url: FileManager.default.protocolURL(with: name)
+        ), tag: 1, selection: $navigationTag
       ) {
         EmptyView()
       }

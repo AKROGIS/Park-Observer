@@ -71,6 +71,10 @@ extension Observations {
     return request
   }
 
+  static var fetchAll: NSFetchRequest<Observation> {
+    return NSFetchRequest<Observation>(entityName: .entityNameObservation)
+  }
+
   static func fetchFirst(_ feature: Feature, at timestamp: Date, in context: NSManagedObjectContext)
     -> Observation?
   {

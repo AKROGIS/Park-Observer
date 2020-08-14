@@ -31,3 +31,13 @@ extension Mission {
   }
 
 }
+
+// MARK: - Fetching
+
+extension Mission {
+
+  static var fetchAll: NSFetchRequest<Mission> {
+    return NSFetchRequest<Mission>(entityName: .entityNameMission)
+  }
+
+}

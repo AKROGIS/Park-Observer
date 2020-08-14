@@ -10,6 +10,7 @@ import SwiftUI
 
 struct ProtocolDetailsView: View {
   let name: String
+  let url: URL
   @State private var jsonObj: Any? = nil
   @State private var errorMessage = "File does not contain a JSON object."
 
@@ -25,8 +26,7 @@ struct ProtocolDetailsView: View {
     .navigationBarTitle(name)
     .onAppear {
       do {
-        let url = FileManager.default.protocolURL(with: self.name)
-        let data = try Data(contentsOf: url)
+        let data = try Data(contentsOf: self.url)
         self.jsonObj = try JSONSerialization.jsonObject(with: data)
       } catch {
         self.errorMessage = error.localizedDescription
@@ -114,6 +114,6 @@ struct JsonItemView: View {
 
 struct ProtocolDetailsView_Previews: PreviewProvider {
   static var previews: some View {
-    ProtocolDetailsView(name: "protocol1")
+    ProtocolDetailsView(name: "protocol1", url: FileManager.default.protocolURL(with: "protocol1"))
   }
 }

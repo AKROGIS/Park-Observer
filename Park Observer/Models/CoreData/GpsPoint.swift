@@ -108,6 +108,26 @@ extension GpsPoints {
     return request
   }
 
+  static var firstPoint: NSFetchRequest<GpsPoint> {
+    let request = allOrderByTime
+    request.fetchLimit = 1
+    return request
+  }
+
+  static var lastPoint: NSFetchRequest<GpsPoint> {
+    let request: NSFetchRequest<GpsPoint> = fetchRequest
+    let sortOrder = NSSortDescriptor(key: "timestamp", ascending: false)
+    request.sortDescriptors = [sortOrder]
+    request.fetchLimit = 1
+    return request
+  }
+
+  static func pointsSince(_ date: Date) -> NSFetchRequest<GpsPoint> {
+    let request: NSFetchRequest<GpsPoint> = fetchRequest
+    let filter = NSPredicate(format: "%@ <= timestamp", date as CVarArg)
+    request.predicate = filter
+    return request
+  }
 }
 
 // MARK: - Computed Properties

@@ -25,7 +25,6 @@ New functionality I want to implement.
   * Change footer in file pick lists when there are no files
   * Allow multiple concurrent messages. Close button to hide all or hide individuals
   * Option to choose "Survey" or "Transect" for the observing button - New option in protocol file
-  * Add info button to survey pick list to show protocol info and feature counts/dates
   * Get MapInfo data from user and encode in a json file.
   * Format CSV per protocol definition
   * Add a graphic for the observers location (set symbology in mission) - New option in protocol file
