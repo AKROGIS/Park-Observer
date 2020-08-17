@@ -3,8 +3,9 @@
   "meta-version":2,
   "name":"Sample Survey",
   "version": 1.0,
-  "date":"2020-08-14",
+  "date":"2020-08-17",
   "description":"This is a simple sample survey to for practicing with Park Observer",
+  "transects": "none",
   "mission":{
     "attributes":[
       {"name":"Observer",  "type":700},
@@ -21,8 +22,7 @@
         }
       ]
     },
-    "symbology": {},
-    "transects": "none"
+    "symbology": {}
   },
   "features":[
     {

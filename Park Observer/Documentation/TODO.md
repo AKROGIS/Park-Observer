@@ -12,7 +12,6 @@ Functionality I plan to implement for parity with Park Observer 1.0.
 
 ## Priority 3
 New functionality I want to implement.
-  * Support new tracklogs and transects properties (i.e. required, optional, none)
   * User (and/or protocol) settings for GPS accuracy and frequency (time and/or distance)
   * User setting for turning on/off display of gps points and/or track logs
   * User setting for hit test area (small:11, medium:22, large:44) - default medium
