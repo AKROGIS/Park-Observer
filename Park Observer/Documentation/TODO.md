@@ -13,8 +13,6 @@ Functionality I plan to implement for parity with Park Observer 1.0.
 ## Priority 3
 New functionality I want to implement.
   * Hide/disable _Save_ button on ObservationPresenter if editing and context has no changes
-  * On first launch select an online map for the default.
-  * Include a small simple sample protocol file with app. Create survey and activate sample survey on first launch.
   * User (and/or protocol) settings for GPS accuracy and frequency (time and/or distance)
   * User setting for turning on/off display of gps points and/or track logs
   * User setting for hit test area (small:11, medium:22, large:44) - default medium
@@ -143,7 +141,12 @@ These issues are in software provided by others (Apple, Esri). If they become a 
 
 # Change Log
 
-## Completed Since Beta1
+## 2020-08-21: Beta3
+
+* On first launch select an online map for the default.
+* On first launch create sample survey and set it as the default.
+
+## 2020-08-14: Beta2
 
  * Fix Bugs in totalizer
  * Properly disable background tracklogging
@@ -161,6 +164,7 @@ These issues are in software provided by others (Apple, Esri). If they become a 
  * Add form showing details of survey
  * Survey protocol files and archives can be opened with Park Observer from email and files app (no UI yet)
 
+## 2020-08-07: Beta1
 
 # Programmer Notes
 

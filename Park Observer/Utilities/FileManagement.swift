@@ -178,6 +178,10 @@ extension String {
 
 extension FileManager {
 
+  var hasSurveyDirectory: Bool {
+    fileExists(atPath: surveyDirectory.path)
+  }
+
   func createSurveyDirectory() throws {
     // Do not fail if surveyDirectory exists (withIntermediateDirectories == true)
     try createDirectory(at: surveyDirectory, withIntermediateDirectories: true, attributes: nil)

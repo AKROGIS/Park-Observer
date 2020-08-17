@@ -32,14 +32,23 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     // Disable shake to undo. Many users are in bouncy vehicles.
     application.applicationSupportsShakeToEdit = false
 
-    // Create a private folder for the surveys.
-    // Only really needs to be done once when app is installed.
-    do {
-      try FileManager.default.createSurveyDirectory()
-      // This will silently do nothing if the directory exists
-    } catch {
-      print("Unable to create directory for survey files.\n\(error)")
-      return false
+    // Set up default map and sample survey on very first launch
+    if !FileManager.default.hasSurveyDirectory {
+      do {
+        try FileManager.default.createSurveyDirectory()
+        // This will silently do nothing if the directory exists
+      } catch {
+        print("Unable to create directory for survey files.\n\(error)")
+        return false
+      }
+      if let sampleURL = Bundle().url(forResource: "Sample", withExtension: "obsprot") {
+        if let appFile = try? FileManager.default.addToApp(url: sampleURL) {
+          if let newName = try? Survey.create("Sample Survey", from: appFile.name) {
+            Defaults.surveyName.write(newName)
+          }
+        }
+      }
+      Defaults.mapName.write("Esri Imagery")
     }
 
     // We are ready to go!

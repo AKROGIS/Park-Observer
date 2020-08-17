@@ -51,6 +51,7 @@
 		7423E4CB249BE18300195DBB /* MessageView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7423E4CA249BE18300195DBB /* MessageView.swift */; };
 		744C9B36247482700099D414 /* SurveyTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 744C9B35247482700099D414 /* SurveyTests.swift */; };
 		744C9B3A24760A700099D414 /* Formatters.swift in Sources */ = {isa = PBXBuildFile; fileRef = 744C9B3924760A700099D414 /* Formatters.swift */; };
+		7451FF4924E7A43800A37A61 /* Sample.obsprot in Resources */ = {isa = PBXBuildFile; fileRef = 74A25FBC24522465006D82CE /* Sample.obsprot */; };
 		7466877024A265D500A8FEFA /* OnlineMapListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7466876F24A265D500A8FEFA /* OnlineMapListView.swift */; };
 		7466877224A274FB00A8FEFA /* UserSettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7466877124A274FB00A8FEFA /* UserSettingsView.swift */; };
 		7466877424A27C4B00A8FEFA /* UserSettings.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7466877324A27C4B00A8FEFA /* UserSettings.swift */; };
@@ -195,6 +196,7 @@
 		742B08A2244A477A00A5137C /* Protocol Specification.md */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = net.daringfireball.markdown; path = "Protocol Specification.md"; sourceTree = "<group>"; };
 		744C9B35247482700099D414 /* SurveyTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SurveyTests.swift; sourceTree = "<group>"; };
 		744C9B3924760A700099D414 /* Formatters.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Formatters.swift; sourceTree = "<group>"; };
+		7451FF4724E79B8200A37A61 /* Sample Protocol.v2.obsprot */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = "Sample Protocol.v2.obsprot"; sourceTree = "<group>"; };
 		7466876F24A265D500A8FEFA /* OnlineMapListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnlineMapListView.swift; sourceTree = "<group>"; };
 		7466877124A274FB00A8FEFA /* UserSettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserSettingsView.swift; sourceTree = "<group>"; };
 		7466877324A27C4B00A8FEFA /* UserSettings.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserSettings.swift; sourceTree = "<group>"; };
@@ -231,7 +233,7 @@
 		74A25FB62451F206006D82CE /* protocol.v1.schema.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = protocol.v1.schema.json; sourceTree = "<group>"; };
 		74A25FB72451F206006D82CE /* protocol.v2.schema.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = protocol.v2.schema.json; sourceTree = "<group>"; };
 		74A25FBA2451F33F006D82CE /* SurveyProtocol.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SurveyProtocol.swift; sourceTree = "<group>"; };
-		74A25FBC24522465006D82CE /* Sample Protocol.v2.obsprot */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = "Sample Protocol.v2.obsprot"; sourceTree = "<group>"; };
+		74A25FBC24522465006D82CE /* Sample.obsprot */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = Sample.obsprot; sourceTree = "<group>"; };
 		74A25FBD24522466006D82CE /* Sample Protocol.v1.obsprot */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = "Sample Protocol.v1.obsprot"; sourceTree = "<group>"; };
 		74A25FC024522877006D82CE /* Protocol Guide.md */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = net.daringfireball.markdown; path = "Protocol Guide.md"; sourceTree = "<group>"; };
 		74A25FC224522B48006D82CE /* SurveyProtocolTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SurveyProtocolTests.swift; sourceTree = "<group>"; };
@@ -500,7 +502,8 @@
 				74A25FB62451F206006D82CE /* protocol.v1.schema.json */,
 				74A25FB72451F206006D82CE /* protocol.v2.schema.json */,
 				74A25FBD24522466006D82CE /* Sample Protocol.v1.obsprot */,
-				74A25FBC24522465006D82CE /* Sample Protocol.v2.obsprot */,
+				7451FF4724E79B8200A37A61 /* Sample Protocol.v2.obsprot */,
+				74A25FBC24522465006D82CE /* Sample.obsprot */,
 				59C8282A24D88C090082BED2 /* TODO.md */,
 			);
 			path = Documentation;
@@ -688,6 +691,7 @@
 			files = (
 				747165F8243C37AA00A9C960 /* LaunchScreen.storyboard in Resources */,
 				747165F2243C37AA00A9C960 /* Assets.xcassets in Resources */,
+				7451FF4924E7A43800A37A61 /* Sample.obsprot in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
