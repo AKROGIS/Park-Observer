@@ -24,11 +24,6 @@ struct SurveyItemView: View {
     VStack(alignment: .leading) {
       HStack {
         VStack(alignment: .leading) {
-          NavigationLink(
-            destination: SurveyDetailsView(name: name), tag: 1, selection: $navigationTag
-          ) {
-            EmptyView()
-          }
           HStack {
             if surveyController.surveyName == name {
               Image(systemName: "star.fill").foregroundColor(.yellow)
@@ -101,7 +96,16 @@ struct SurveyItemView: View {
         VStack {
           Spacer()
           Button(action: { self.navigationTag = 1 }) {
-            Image(systemName: "info.circle")
+            HStack {
+              Image(systemName: "info.circle")
+              // The NavLink does not show up in the simulator (desired), but it does show up
+              // on a device (13.6), so this minimizes the impact
+              NavigationLink(
+                destination: SurveyDetailsView(name: name), tag: 1, selection: $navigationTag
+              ) {
+                EmptyView()
+              }.frame(width: 0, height: 0, alignment: .center).foregroundColor(.clear)
+            }
           }.buttonStyle(BorderlessButtonStyle())
           Spacer()
           Button(action: {

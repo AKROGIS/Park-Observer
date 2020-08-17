@@ -142,6 +142,7 @@ These issues are in software provided by others (Apple, Esri). If they become a 
 * On first launch select an online map for the default.
 * On first launch create sample survey and set it as the default.
 * Fixed bug that failed to update label and rendering when changing attribute from null to non-null
+* Fixed display glitch with disclosure angle for details view in survey and protocol lists.
 
 ## 2020-08-14: Beta2
 

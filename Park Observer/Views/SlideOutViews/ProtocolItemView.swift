@@ -21,13 +21,6 @@ struct ProtocolItemView: View {
     let info = try? SurveyProtocol(fromURL: url, skipValidation: true)
 
     return VStack(alignment: .leading) {
-      NavigationLink(
-        destination: ProtocolDetailsView(
-          name: name, url: FileManager.default.protocolURL(with: name)
-        ), tag: 1, selection: $navigationTag
-      ) {
-        EmptyView()
-      }
       HStack {
         VStack(alignment: .leading) {
           if info == nil {
@@ -43,7 +36,18 @@ struct ProtocolItemView: View {
         }
         Spacer()
         Button(action: { self.navigationTag = 1 }) {
-          Image(systemName: "info.circle")
+          HStack {
+            Image(systemName: "info.circle")
+            // The NavLink does not show up in the simulator (desired), but it does show up
+            // on a device (13.6), so this minimizes the impact
+            NavigationLink(
+              destination: ProtocolDetailsView(
+                name: name, url: FileManager.default.protocolURL(with: name)
+              ), tag: 1, selection: $navigationTag
+            ) {
+              EmptyView()
+            }.frame(width: 0, height: 0, alignment: .center).foregroundColor(.clear)
+          }
         }
       }
       if infoMessage != nil {
