@@ -106,14 +106,17 @@ These bugs can be worked around or ignored.
   * Add notice to turn on notification in settings if denied for alarm setting
   * User can provide a unique value renderer for track logs and or gps points, but graphics do not have the necessary attributes
   * The safe area (on devices with safe area - iPhone X and 11) mucks with styling of slide out view
-  * Sometimes a label does not display for a cabin in test protocol 2.  Inconsistent and not repeatable.
-
+ 
 ## Annoying
 These bugs are related to potential functionality (so while incorrect, they have no impact yet).
   * encode(AnyJSON(agsRenderer.toJSON())) converts 0 to false, so result is no longer valid on read
 
 ## Not mine
 These issues are in software provided by others (Apple, Esri). If they become a problem, a work around may be possible
+  * If a feature (graphic) has an attribute that is used in a symbology renderer or label, it will work correctly has long as it
+    is created with a non-null value, and the stays non-null.  If it is created with, or changed to, a null value it will no longer
+    update when changed to a non-null value until the survey is reloaded (the graphic is recreated).
+    This appears to be a bug in the ArcGIS 100.8 SDK. 
   * TextFields with number formatters can show an invalid value. They do not update the display the return key is pressed --
     they do not update when moving focus to another control with a screen touch.  The data saved will be the last valid value
     the the user typed.  For example if the field limited numbers to 360, and the user typed  2-5-4-3, the display would show
