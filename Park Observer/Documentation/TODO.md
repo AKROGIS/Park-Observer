@@ -86,7 +86,6 @@ These bugs limit required functionality.
 
 ## Nice to fix
 These bugs can be worked around or ignored.
-  * Check default min/max for stepper control matches legacy Park Observer
   * Do not show attribute editor if no dialog _and_ not angleDistance
   * Canceling a mission property dialog when launched from tracklogging or observing button does not cancel operation only attribute editing.
   * If you delete a feature from the selector, it should be removed from the selector list
@@ -146,6 +145,7 @@ These issues are in software provided by others (Apple, Esri). If they become a 
 * Fixed display glitch with disclosure angle for details view in survey and protocol lists.
 * Fixed bug where editor was not presented when creating a new feature at the map touch location
 * Fixed bug where the tracklog properties editor was not displayed at the proper times
+* Add default limits of 0..100 on the stepper control (for legacy compatibility)
 
 ## 2020-08-14: Beta2
 

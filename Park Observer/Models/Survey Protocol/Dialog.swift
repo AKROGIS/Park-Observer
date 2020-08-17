@@ -594,8 +594,9 @@ extension DialogElement: Codable {
       fractionDigits: fractionDigits,
       items: items,
       keyboardType: keyboardType ?? .default,
-      maximumValue: maximumValue,
-      minimumValue: minimumValue,
+      // Legacy defaults for the stepper (QIntegerElement) control
+      maximumValue: type == .stepper && maximumValue == nil ? 100.0 : maximumValue,
+      minimumValue: type == .stepper && minimumValue == nil ? 0.0 : minimumValue,
       placeholder: placeholder,
       title: title,
       type: type
