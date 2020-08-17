@@ -97,9 +97,6 @@ These bugs can be worked around or ignored.
   * When returning from background addGpsLocation can be called from cache and from locationManager out of order
   * Chaos may ensue if the user does not tap on the map when "Moving to map location"; start modal mode?
   * Need to be able to delete status messages when they no longer apply.
-  * First text entry after launch disappears from form's text box, but is saved (and shows in label and subsequent edits).  Steps to repeat:
-      1) quit app. open test protocol 2 survey. start track log, start transect (no edits). tap map to add cabin. tap in name field, enter name, hit enter, text disappears. now all text box edits work correctly
-      2) quit app. open test protocol 2 survey. start track log, start transect (make text box edit). Edit disappears.  subsequent edits work.
   * Slide out view does not check width on device rotation (limit to maxWidth as % of screenwidth)
   * Refresh the current file list if the slide out is hidden and re-shown
   * Alarm does not play alert sound when app is active
