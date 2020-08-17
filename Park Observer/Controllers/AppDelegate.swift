@@ -41,14 +41,18 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         print("Unable to create directory for survey files.\n\(error)")
         return false
       }
-      if let sampleURL = Bundle().url(forResource: "Sample", withExtension: "obsprot") {
+      if let sampleURL = Bundle.main.url(forResource: "Sample", withExtension: "obsprot") {
         if let appFile = try? FileManager.default.addToApp(url: sampleURL) {
           if let newName = try? Survey.create("Sample Survey", from: appFile.name) {
             Defaults.surveyName.write(newName)
           }
         }
       }
+      // Load the esri imagery service and center on Alaska
       Defaults.mapName.write("Esri Imagery")
+      Defaults.mapScale.write(35_000_000.0)
+      Defaults.mapCenterLat.write(64.4)
+      Defaults.mapCenterLon.write(-152.0)
     }
 
     // We are ready to go!

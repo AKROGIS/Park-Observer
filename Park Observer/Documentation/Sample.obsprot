@@ -7,7 +7,7 @@
   "description":"This is a simple sample survey to for practicing with Park Observer",
   "mission":{
     "attributes":[
-      {"name":"Observer1",  "type":700},
+      {"name":"Observer",  "type":700},
       {"name":"Visibility", "type":100}
     ],
     "dialog":{
@@ -21,7 +21,8 @@
         }
       ]
     },
-    "symbology": {}
+    "symbology": {},
+    "transects": "none"
   },
   "features":[
     {
@@ -38,14 +39,14 @@
         "sections":[
           {
             "elements":[
-              {"type":"QIntegerElement", "bind":"numberValue:count", "title":"Kitlitz"},
+              {"type":"QIntegerElement", "bind":"numberValue:count", "title":"Count"},
               {"type":"QSegmentedElement", "bind":"selectedItem:activity", "items":["Flying", "Fighting", "Other"]}
             ]
           }
         ]
       },
       "symbology":{
-        "color": [247,220,111,255],
+        "color": "#F8DC70",
         "size": 15
       }
     },
