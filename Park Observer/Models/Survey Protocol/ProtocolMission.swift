@@ -86,9 +86,9 @@ extension ProtocolMission {
     let editAtStartFirstObserving =
       try container.decodeIfPresent(Bool.self, forKey: .editAtStartFirstObserving) ?? false
     let editAtStartRecording =
-      try container.decodeIfPresent(Bool.self, forKey: .editAtStartRecording) ?? false
+      try container.decodeIfPresent(Bool.self, forKey: .editAtStartRecording) ?? true
     let editAtStartReobserving =
-      try container.decodeIfPresent(Bool.self, forKey: .editAtStartReobserving) ?? false
+      try container.decodeIfPresent(Bool.self, forKey: .editAtStartReobserving) ?? true
     let editAtStopObserving =
       try container.decodeIfPresent(Bool.self, forKey: .editAtStopObserving)
       ?? false

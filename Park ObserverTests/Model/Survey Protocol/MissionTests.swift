@@ -34,8 +34,8 @@ class MissionTests: XCTestCase {
       XCTAssertNil(test.mission.dialog)
       XCTAssertNil(test.mission.totalizer)
       XCTAssertFalse(test.mission.editAtStartFirstObserving)
-      XCTAssertFalse(test.mission.editAtStartReobserving)
-      XCTAssertFalse(test.mission.editAtStartRecording)
+      XCTAssertTrue(test.mission.editAtStartReobserving)
+      XCTAssertTrue(test.mission.editAtStartRecording)
       XCTAssertFalse(test.mission.editAtStopObserving)
       XCTAssertFalse(test.mission.editPriorAtStopObserving)
       // See Symbology for additional tests
