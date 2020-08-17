@@ -628,14 +628,14 @@ extension ObservationPresenter {
   }
 
   private func updateGraphicAttributes() {
-    if let graphic = graphic, let entity = entity {
-      for key in graphic.attributes.allKeys {
-        if let key = key as? String {
-          if key != .attributeKeyTimestamp && key != .attributeKeyObserving {
-            let entityKey = .attributePrefix + key
-            graphic.attributes[key] = entity.value(forKey: entityKey)
-          }
-        }
+    //NOTE: if an attribute is null, then it's key is not included in the graphic.attributes
+    // Therefore, we cannot update just the existing graphic attributes.
+    if let graphic = graphic, let entity = entity, let fields = fields {
+      for field in fields {
+        let key = field.name
+        let entityKey = .attributePrefix + field.name
+        let value = entity.value(forKey: entityKey)
+        graphic.attributes[key] = value
       }
     }
   }

@@ -113,10 +113,6 @@ These bugs are related to potential functionality (so while incorrect, they have
 
 ## Not mine
 These issues are in software provided by others (Apple, Esri). If they become a problem, a work around may be possible
-  * If a feature (graphic) has an attribute that is used in a symbology renderer or label, it will work correctly has long as it
-    is created with a non-null value, and the stays non-null.  If it is created with, or changed to, a null value it will no longer
-    update when changed to a non-null value until the survey is reloaded (the graphic is recreated).
-    This appears to be a bug in the ArcGIS 100.8 SDK. 
   * TextFields with number formatters can show an invalid value. They do not update the display the return key is pressed --
     they do not update when moving focus to another control with a screen touch.  The data saved will be the last valid value
     the the user typed.  For example if the field limited numbers to 360, and the user typed  2-5-4-3, the display would show
@@ -148,6 +144,7 @@ These issues are in software provided by others (Apple, Esri). If they become a 
 
 * On first launch select an online map for the default.
 * On first launch create sample survey and set it as the default.
+* Fixed bug that failed to update label and rendering when changing attribute from null to non-null
 
 ## 2020-08-14: Beta2
 
