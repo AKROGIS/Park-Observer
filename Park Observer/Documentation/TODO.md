@@ -12,6 +12,7 @@ Functionality I plan to implement for parity with Park Observer 1.0.
 
 ## Priority 3
 New functionality I want to implement.
+  * Support new tracklogs and transects properties (i.e. required, optional, none)
   * Hide/disable _Save_ button on ObservationPresenter if editing and context has no changes
   * User (and/or protocol) settings for GPS accuracy and frequency (time and/or distance)
   * User setting for turning on/off display of gps points and/or track logs
@@ -82,6 +83,8 @@ These bugs create errors in stored data.
 
 ## Important
 These bugs limit required functionality.
+  * With new sample.obsprot map touch for cabins does not work
+  * With new sample.obsprot the MP editor does not display at start of tracklog
 
 ## Nice to fix
 These bugs can be worked around or ignored.
