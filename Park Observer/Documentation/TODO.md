@@ -83,7 +83,6 @@ These bugs create errors in stored data.
 
 ## Important
 These bugs limit required functionality.
-  * With new sample.obsprot map touch for cabins does not work
   * With new sample.obsprot the MP editor does not display at start of tracklog
 
 ## Nice to fix
@@ -146,6 +145,7 @@ These issues are in software provided by others (Apple, Esri). If they become a 
 * On first launch create sample survey and set it as the default.
 * Fixed bug that failed to update label and rendering when changing attribute from null to non-null
 * Fixed display glitch with disclosure angle for details view in survey and protocol lists.
+* Fixed bug where editor was not presented when creating a new feature at the map touch location
 
 ## 2020-08-14: Beta2
 

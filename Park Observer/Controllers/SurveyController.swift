@@ -688,6 +688,7 @@ class SurveyController: NSObject, ObservableObject {
 
     if observationsLocatableWithTouch.count == 1 {
       observationPresenter.setObservationClass(observationClass: observationsLocatableWithTouch[0])
+      present(observationPresenter)
     } else {
       selectedObservation = observationPresenter
       showMapTouchSelectionSheet = true  //ActionSheet is in SurveyControlsView
