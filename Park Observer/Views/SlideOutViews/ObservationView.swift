@@ -116,7 +116,7 @@ struct ObservationView: View {
           Button(action: moveAction) { Text("Move to Map Touch") }
         }
         Button(action: cancelAction) { Text("Cancel") }
-        Button(action: saveAction) { Text("Save") }
+        Button(action: saveAction) { Text("Save") }.disabled(!presenter.isSaveEnabled)
       }
     }
   }

@@ -119,6 +119,7 @@ final class ObservationPresenter: ObservableObject {
   @Published private(set) var isEditable = false
   @Published private(set) var isMoveableToGps = false
   @Published private(set) var isMoveableToTouch = false
+  @Published private(set) var isSaveEnabled = false
   @Published private(set) var timestamp = Date()
   @Published private(set) var title = "Observation"
 
@@ -139,6 +140,7 @@ final class ObservationPresenter: ObservableObject {
   private var mapTouch: AGSPoint? = nil
   private var mission: Mission? = nil
   private var name: String?
+  private var notificationObserver: NSObjectProtocol? = nil
   private var observing: Bool? = nil
   private var presentationMode: PresentationMode = .review
   private var requestGpsPointAsync: (() -> Void)? = nil
@@ -360,6 +362,13 @@ extension ObservationPresenter {
       let editContext = NSManagedObjectContext(concurrencyType: .mainQueueConcurrencyType)
       editContext.parent = survey.viewContext
       self.editContext = editContext
+      notificationObserver = NotificationCenter.default.addObserver(
+        forName: .NSManagedObjectContextObjectsDidChange, object: editContext, queue: nil
+      ) { [weak self] notification in
+        if let context = self?.editContext {
+          self?.isSaveEnabled = context.hasChanges
+        }
+      }
       self.errorMessage = ""
       self.isEditable = true
     }
