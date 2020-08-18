@@ -142,9 +142,10 @@ These issues are in software provided by others (Apple, Esri). If they become a 
 * Fixed bug that failed to update label and rendering when changing attribute from null to non-null
 * Fixed display glitch with disclosure angle for details view in survey and protocol lists.
 * Fixed bug where editor was not presented when creating a new feature at the map touch location
-* Fixed bug where the tracklog properties editor was not displayed at the proper times
+* Fixed bug where the track log properties editor was not displayed at the proper times
 * Add default limits of 0..100 on the stepper control (for legacy compatibility)
 * Disable save button when there are no changes
+* Fixed bug where mission properties at touch location were mis drawn at gps location.
 
 ## 2020-08-14: Beta2
 
