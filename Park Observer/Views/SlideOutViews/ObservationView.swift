@@ -137,6 +137,11 @@ struct ObservationView: View {
     self.presenter.delete()
     if self.presenter.closeAllowed {
       if self.surveyController.showingObservationSelector {
+        if let i = self.surveyController.selectedObservations?.firstIndex(where: {
+          $0.timestamp == self.presenter.timestamp
+        }) {
+          self.surveyController.selectedObservations?.remove(at: i)
+        }
         self.presentation.wrappedValue.dismiss()
       } else {
         self.surveyController.slideOutMenuVisible = false

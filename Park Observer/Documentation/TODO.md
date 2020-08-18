@@ -86,7 +86,6 @@ These bugs limit required functionality.
 These bugs can be worked around or ignored.
   * Do not show attribute editor if no dialog _and_ not angleDistance
   * Canceling a mission property dialog when launched from tracklogging or observing button does not cancel operation only attribute editing.
-  * If you delete a feature from the selector, it should be removed from the selector list
   * Check that user provided range on numbers have lower < upper
   * Getting the most recent Mission Property (for default) from database does not consider adhoc locations
   * Problem with Mission Properties with required values and no editing on start tracklog (values will be null)
@@ -146,6 +145,7 @@ These issues are in software provided by others (Apple, Esri). If they become a 
 * Add default limits of 0..100 on the stepper control (for legacy compatibility)
 * Disable save button when there are no changes
 * Fixed bug where mission properties at touch location were mis drawn at gps location.
+* If you tap to select multiple features, and then delete one, it is removed from the list of selected features.
 
 ## 2020-08-14: Beta2
 
