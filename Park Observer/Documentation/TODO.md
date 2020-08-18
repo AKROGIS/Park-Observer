@@ -86,7 +86,6 @@ These bugs limit required functionality.
 These bugs can be worked around or ignored.
   * Do not show attribute editor if no dialog _and_ not angleDistance
   * Canceling a mission property dialog when launched from tracklogging or observing button does not cancel operation only attribute editing.
-  * Check that user provided range on numbers have lower < upper
   * Getting the most recent Mission Property (for default) from database does not consider adhoc locations
   * Problem with Mission Properties with required values and no editing on start tracklog (values will be null)
   * When editing multiple features, if one has validation errors when you decide to move another feature, the validation interrupts the move
@@ -100,6 +99,9 @@ These bugs can be worked around or ignored.
   * Add notice to turn on notification in settings if denied for alarm setting
   * User can provide a unique value renderer for track logs and or gps points, but graphics do not have the necessary attributes
   * The safe area (on devices with safe area - iPhone X and 11) mucks with styling of slide out view
+  * Transects "required" property should trump the features "allow off transect" property
+  * Mission Properties are not created when start/stop observing, and tracklog = none
+  * The default mission property "display editor" properties are not appropriate for all cases (i.e. tracklog = none)
  
 ## Annoying
 These bugs are related to potential functionality (so while incorrect, they have no impact yet).
