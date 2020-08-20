@@ -29,7 +29,7 @@ extension FileManager {
     urls(for: .libraryDirectory, in: .userDomainMask)[0]
   }
 
-  fileprivate func filenames(in directory: URL, with pathExtension: String) -> [String] {
+  func filenames(in directory: URL, with pathExtension: String) -> [String] {
     // Return an empty array if any errors are encountered
     if let contents = try? contentsOfDirectory(
       at: directory, includingPropertiesForKeys: [], options: [])
