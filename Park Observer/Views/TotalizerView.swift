@@ -11,7 +11,6 @@ import SwiftUI
 struct TotalizerView: View {
 
   @EnvironmentObject var totalizer: Totalizer
-  @EnvironmentObject var surveyController: SurveyController
   @EnvironmentObject var userSettings: UserSettings
 
   var body: some View {
@@ -26,13 +25,14 @@ struct TotalizerView: View {
       Image(systemName: "xmark.circle.fill")
         .foregroundColor(userSettings.darkMapControls ? .black : .white)
         .padding(.trailing)
-    }.overlay(
-      // https://material.io/design/color/the-color-system.html#tools-for-picking-colors
+    }.background(
+      //https://material.io/design/color/the-color-system.html#tools-for-picking-colors
       // Blue 50 - 500 #2196F3
-      Color(red: 33.0 / 255.0, green: 150.0 / 255.0, blue: 253.0 / 255.0)
-        .opacity(0.3).onTapGesture {
-          withAnimation { self.userSettings.showTotalizer = false }
-        })
+      Color(red: 33.0 / 255.0, green: 150.0 / 255.0, blue: 253.0 / 255.0).opacity(0.7)
+    )
+    .onTapGesture {
+      withAnimation { self.userSettings.showTotalizer = false }
+    }
   }
 
 }

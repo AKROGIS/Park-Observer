@@ -148,6 +148,8 @@ These issues are in software provided by others (Apple, Esri). If they become a 
 * Disable save button when there are no changes
 * Fixed bug where mission properties at touch location were mis drawn at gps location.
 * If you tap to select multiple features, and then delete one, it is removed from the list of selected features.
+* Undo button while editing survey name was confusing. Make it a "clear text" button and a new undo button.
+* Make the totalizer and info banner more visible 
 
 ## 2020-08-14: Beta2
 
