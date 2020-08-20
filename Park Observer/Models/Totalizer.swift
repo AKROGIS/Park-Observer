@@ -15,7 +15,7 @@ final class Totalizer: ObservableObject {
   /// The text to be displayed to the user
   @Published private(set) var text = "Totalizer not configured"
 
-  private var definition: MissionTotalizer? = nil
+  private var definition: MissionTotalizer
   private var monitoredPropertyValues = [String: Any?]()
   private var oldLocation: CLLocation? = nil
   private var totalObserving = 0.0
@@ -33,7 +33,7 @@ final class Totalizer: ObservableObject {
   /// It has no effect if there are no monitored fields in the totalizer definition
   var propertyUpdatePending = false {
     didSet {
-      guard definition?.fields?.count ?? 0 > 0 else {
+      guard definition.fields?.count ?? 0 > 0 else {
         propertyUpdatePending = false
         return
       }
@@ -41,17 +41,19 @@ final class Totalizer: ObservableObject {
     }
   }
 
-  /// Start the totalizer with the definition
-  func start(with definition: MissionTotalizer, missionProperty: MissionProperty?) {
-    stop()
+  init(definition: MissionTotalizer) {
     self.definition = definition
+  }
+
+  /// Start the totalizer with the definition
+  func start(with missionProperty: MissionProperty?) {
+    stop()
     initializeProperties(missionProperty)
     updateText()
   }
 
   /// Stop (and reset) the totalizer
   func stop() {
-    definition = nil
     monitoredPropertyValues.removeAll()
     clear()
     text = "Totalizer stopped"
@@ -60,7 +62,6 @@ final class Totalizer: ObservableObject {
   /// The user has updated the mission properties
   func updateProperties(_ newMissionProperty: MissionProperty) {
     var propertiesChanged = false
-    guard let definition = definition else { return }
     guard propertyUpdatePending == true else {
       print("Unexpected update of totalizer properties is being ignored.")
       return
@@ -98,7 +99,6 @@ final class Totalizer: ObservableObject {
 
   /// Update the totalizer with a new location
   func updateLocation(_ newLocation: CLLocation) {
-    guard let definition = definition else { return }
     if let oldLocation = oldLocation {
       let value: Double = {
         switch definition.units {
@@ -137,7 +137,7 @@ final class Totalizer: ObservableObject {
 
   private func initializeProperties(_ missionProperty: MissionProperty?) {
     monitoredPropertyValues.removeAll()
-    guard let fields = definition?.fields else { return }
+    guard let fields = definition.fields else { return }
     guard let missionProperty = missionProperty else { return }
     for field in fields {
       let key = .attributePrefix + field
@@ -161,8 +161,6 @@ final class Totalizer: ObservableObject {
   }
 
   private func updateText() {
-    guard let definition = definition else { return }
-
     var textParts = [String]()
     if definition.includeOn {
       textParts.append("\(format(totalObserving, definition.units)) observing")

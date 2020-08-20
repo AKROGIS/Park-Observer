@@ -9,8 +9,7 @@
 import SwiftUI
 
 struct TotalizerView: View {
-
-  @EnvironmentObject var totalizer: Totalizer
+  @ObservedObject var totalizer: Totalizer
   @EnvironmentObject var userSettings: UserSettings
 
   var body: some View {
@@ -35,10 +34,4 @@ struct TotalizerView: View {
     }
   }
 
-}
-
-struct TotalizerView_Previews: PreviewProvider {
-  static var previews: some View {
-    TotalizerView()
-  }
 }

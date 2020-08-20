@@ -20,8 +20,8 @@ struct ContentView: View {
           if surveyController.message != nil {
             MessageView(message: surveyController.message!)
           }
-          if surveyController.isShowingTotalizer {
-            TotalizerView().environmentObject(surveyController.totalizer)
+          if surveyController.isShowingTotalizer && surveyController.totalizer != nil {
+            TotalizerView(totalizer: surveyController.totalizer!)
           }
           if surveyController.isShowingInfoBanner {
             InfoBannerView()

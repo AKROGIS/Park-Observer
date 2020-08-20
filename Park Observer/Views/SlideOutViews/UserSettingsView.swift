@@ -77,7 +77,7 @@ struct UserSettingsView: View {
             Text("Show Informational Banner")
           }
         }
-        if surveyController.totalizerDefinition != nil {
+        if surveyController.totalizer != nil {
           Toggle(isOn: $userSettings.showTotalizer.animation()) {
             Text("Show Totalizer")
           }

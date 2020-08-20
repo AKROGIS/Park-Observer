@@ -79,7 +79,7 @@ class SurveyController: NSObject, ObservableObject {
             return survey?.config.mission?.editAtStopObserving ?? true
           }
         }()
-        totalizer.observing = observing
+        totalizer?.observing = observing
         addMissionPropertyAtGps(showEditor: showEditor)
       }
       updateInfoBanner()
@@ -145,6 +145,7 @@ class SurveyController: NSObject, ObservableObject {
       if let survey = survey {
         missionPropertyTemplate = MissionProperties.fetchLast(in: survey.viewContext)
         initializeUniqueIds()
+        initializeTotalizer()
       }
     }
   }
@@ -156,7 +157,7 @@ class SurveyController: NSObject, ObservableObject {
 
   //Totalizer support
   @Published var isShowingTotalizer = false
-  let totalizer = Totalizer()
+  var totalizer: Totalizer? = nil
 
   //Banner support
   @Published var isShowingInfoBanner = false
@@ -605,7 +606,7 @@ class SurveyController: NSObject, ObservableObject {
       if let oldPoint = previousGpsPoint {
         mapView.addTrackLogSegment(from: oldPoint, to: gpsPoint, observing: observing)
       }
-      totalizer.updateLocation(location)
+      totalizer?.updateLocation(location)
       self.previousGpsPoint = gpsPoint
     }
     if let context = editingContext, trackLogging {
@@ -638,7 +639,7 @@ class SurveyController: NSObject, ObservableObject {
     //observationPresenter will create the mission property when it gets the next GPS location
     requestGpsPointAsync(for: observationPresenter)
     if showEditor {
-      totalizer.propertyUpdatePending = true
+      totalizer?.propertyUpdatePending = true
       present(observationPresenter)
     } else {
       observationPresenter.autoAction = {
@@ -770,7 +771,7 @@ class SurveyController: NSObject, ObservableObject {
       self.selectedObservation = nil
       break
     default:  //.cancel, .delete
-      totalizer.propertyUpdatePending = false
+      totalizer?.propertyUpdatePending = false
       self.selectedObservation = nil
       break
     }
@@ -812,7 +813,7 @@ class SurveyController: NSObject, ObservableObject {
       let id = missionProperty.objectID
       self.missionPropertyTemplate = context.object(with: id) as? MissionProperty
     }
-    if totalizer.propertyUpdatePending {
+    if let totalizer = totalizer, totalizer.propertyUpdatePending {
       totalizer.updateProperties(missionProperty)
     }
   }
@@ -840,19 +841,25 @@ class SurveyController: NSObject, ObservableObject {
 //MARK: - Totalizer Support
 
 extension SurveyController {
-  var totalizerDefinition: MissionTotalizer? {
-    return survey?.config.mission?.totalizer
+
+  func initializeTotalizer() {
+    totalizer = nil
+    if let config = survey?.config, let definition = config.mission?.totalizer,
+      config.tracklogs != .none
+    {
+      totalizer = Totalizer(definition: definition)
+    }
   }
 
   func startTotalizer() {
-    if let definition = totalizerDefinition {
-      totalizer.start(with: definition, missionProperty: missionPropertyTemplate)
+    if let totalizer = totalizer {
+      totalizer.start(with: missionPropertyTemplate)
       isShowingTotalizer = userSettings.showTotalizer
     }
   }
 
   func stopTotalizer() {
-    totalizer.stop()
+    totalizer?.stop()
     isShowingTotalizer = false
   }
 }
