@@ -577,7 +577,8 @@ class DialogTests: XCTestCase {
           {"type": "QDecimalElement", "bind": "numberValue:Name",
            "numberValue": 43.99, "minimumValue": 12.99, "maximumValue": 56.01},
           {"type": "QDecimalElement", "bind": "numberValue:Name",
-           "numberValue": 43.21, "minimumValue": 12.34, "maximumValue": 56.78}
+           "numberValue": 43.21, "minimumValue": 12.34, "maximumValue": 56.78},
+          {"type": "QDecimalElement", "bind": "numberValue:Name"},
         ]
       }
       """.utf8)
@@ -589,11 +590,11 @@ class DialogTests: XCTestCase {
     XCTAssertNotNil(test)
     if let test = test {
       XCTAssertNil(test.elements[0].defaultNumber)
-      XCTAssertNil(test.elements[0].minimumValue)
-      XCTAssertNil(test.elements[0].maximumValue)
+      XCTAssertEqual(test.elements[0].minimumValue!, 0.0, accuracy: 0.001)
+      XCTAssertEqual(test.elements[0].maximumValue!, 100.0, accuracy: 0.001)
       XCTAssertNil(test.elements[0].defaultInt)
-      XCTAssertNil(test.elements[0].minimumInt)
-      XCTAssertNil(test.elements[0].maximumInt)
+      XCTAssertEqual(test.elements[0].minimumInt!, 0)
+      XCTAssertEqual(test.elements[0].maximumInt!, 100)
 
       XCTAssertEqual(test.elements[1].defaultNumber!, -5.0, accuracy: 0.001)
       XCTAssertEqual(test.elements[1].minimumValue!, -10.0, accuracy: 0.001)
@@ -622,6 +623,13 @@ class DialogTests: XCTestCase {
       XCTAssertEqual(test.elements[4].defaultInt!, 43)
       XCTAssertEqual(test.elements[4].minimumInt!, 12)
       XCTAssertEqual(test.elements[4].maximumInt!, 57)
+
+      XCTAssertNil(test.elements[5].defaultNumber)
+      XCTAssertNil(test.elements[5].minimumValue)
+      XCTAssertNil(test.elements[5].maximumValue)
+      XCTAssertNil(test.elements[5].defaultInt)
+      XCTAssertNil(test.elements[5].minimumInt)
+      XCTAssertNil(test.elements[5].maximumInt)
     }
   }
 
