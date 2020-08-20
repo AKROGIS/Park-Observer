@@ -30,24 +30,32 @@ struct SurveyItemView: View {
             }
             if isEditingName {
               HStack {
-                TextField(
-                  "", text: $editName,
-                  onEditingChanged: { gotFocus in
-                    if !gotFocus {
+                ZStack(alignment: .trailing) {
+                  TextField(
+                    "", text: $editName,
+                    onEditingChanged: { gotFocus in
+                      if !gotFocus {
+                        print("Done Editing; new name: \(self.editName)")
+                        self.updateTitle(self.editName)
+                        self.isEditingName = false
+                      }
+                    },
+                    onCommit: {
                       print("Done Editing; new name: \(self.editName)")
                       self.updateTitle(self.editName)
                       self.isEditingName = false
-                    }
-                  },
-                  onCommit: {
-                    print("Done Editing; new name: \(self.editName)")
-                    self.updateTitle(self.editName)
-                    self.isEditingName = false
 
-                  }
-                ).textFieldStyle(RoundedBorderTextFieldStyle())
-                Button(action: { self.isEditingName = false }) {
+                    }
+                  ).textFieldStyle(RoundedBorderTextFieldStyle())
                   Image(systemName: "xmark.circle.fill").foregroundColor(.secondary)
+                    .padding(.trailing, 5)
+                    .onTapGesture { self.editName = "" }
+                }
+                Button(action: {
+                  self.editName = self.info?.title ?? self.name
+                  self.isEditingName = false
+                }) {
+                  Image(systemName: "arrow.uturn.left.circle")
                 }.buttonStyle(BorderlessButtonStyle())
               }
             } else {
