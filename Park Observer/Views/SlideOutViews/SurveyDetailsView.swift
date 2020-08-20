@@ -44,7 +44,7 @@ struct SurveyDetailsView: View {
           Section {
             NavigationLink(
               destination: ProtocolDetailsView(
-                name: "Protocol file", url: FileManager.default.surveyProtocolURL(with: name))
+                name: "Protocol file", url: SurveyBundle(name: name).protocolURL)
             ) {
               Text("Protocol File")
             }

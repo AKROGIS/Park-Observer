@@ -889,8 +889,8 @@ extension SurveyController {
     // For a device use iTunes File Sharing (enable in the info.plist)
     // For the simulator - breakpoint on the next line, to see what the path is
     // This function does no I/O, so the name is not checked until mapView tries to load the map.
-    let path = FileManager.default.mapURL(with: name)
-    let cache = AGSTileCache(fileURL: path)
+    let url = AppFile(type: .map, name: name).url
+    let cache = AGSTileCache(fileURL: url)
     let layer = AGSArcGISTiledLayer(tileCache: cache)
     let basemap = AGSBasemap(baseLayer: layer)
     return AGSMap(basemap: basemap)

@@ -13,18 +13,6 @@
 import Foundation
 import Zip
 
-//MARK: - Discovering Files
-
-//TODO: Refactor around AppFile
-//TODO: Remove methods with multiple simimlar names, make generic in AppFileType
-//TODO: extensions should be raw value of AppFile.Type
-extension String {
-  static let surveyExtension = "obssurv"
-  static let surveyArchiveExtension = "poz"
-  static let surveyProtocolExtension = "obsprot"
-  static let tileCacheExtension = "tpk"
-}
-
 extension FileManager {
 
   func createNewTempDirectory() throws -> URL {
@@ -41,93 +29,7 @@ extension FileManager {
     urls(for: .libraryDirectory, in: .userDomainMask)[0]
   }
 
-  var archiveDirectory: URL {
-    return documentDirectory
-  }
-
-  var mapDirectory: URL {
-    return documentDirectory
-  }
-
-  var protocolDirectory: URL {
-    return documentDirectory
-  }
-
-  var surveyDirectory: URL {
-    return libraryDirectory.appendingPathComponent(.surveyDirectory, isDirectory: true)
-  }
-
-  var archiveNames: [String] {
-    return filenames(in: archiveDirectory, with: .surveyArchiveExtension)
-  }
-
-  var mapNames: [String] {
-    return filenames(in: mapDirectory, with: .tileCacheExtension)
-  }
-
-  var protocolNames: [String] {
-    return filenames(in: protocolDirectory, with: .surveyProtocolExtension)
-  }
-
-  var surveyNames: [String] {
-    return filenames(in: surveyDirectory, with: .surveyExtension)
-  }
-
-  func names(type: AppFileType) -> [String] {
-    switch type {
-    case .archive: return archiveNames
-    case .map: return mapNames
-    case .survey: return surveyNames
-    case .surveyProtocol: return protocolNames
-    }
-  }
-
-  func archiveURL(with name: String) -> URL {
-    return archiveDirectory.appendingPathComponent(name).appendingPathExtension(
-      .surveyArchiveExtension)
-  }
-
-  func mapURL(with name: String) -> URL {
-    return mapDirectory.appendingPathComponent(name).appendingPathExtension(
-      .tileCacheExtension)
-  }
-
-  func protocolURL(with name: String) -> URL {
-    return protocolDirectory.appendingPathComponent(name).appendingPathExtension(
-      .surveyProtocolExtension)
-  }
-
-  func surveyURL(with name: String) -> URL {
-    return surveyDirectory.appendingPathComponent(name).appendingPathExtension(
-      .surveyExtension)
-  }
-
-  func deleteArchive(with name: String) throws {
-    try removeItem(at: archiveURL(with: name))
-  }
-
-  func deleteMap(with name: String) throws {
-    try removeItem(at: mapURL(with: name))
-  }
-
-  func deleteProtocol(with name: String) throws {
-    try removeItem(at: protocolURL(with: name))
-  }
-
-  func deleteSurvey(with name: String) throws {
-    try removeItem(at: surveyURL(with: name))
-  }
-
-  func delete(file: AppFile) throws {
-    switch file.type {
-    case .archive:  try deleteArchive(with: file.name); break
-    case .map:  try deleteMap(with: file.name); break
-    case .survey: try deleteSurvey(with: file.name); break
-    case .surveyProtocol:  try deleteProtocol(with: file.name); break
-    }
-  }
-
-  private func filenames(in directory: URL, with pathExtension: String) -> [String] {
+  fileprivate func filenames(in directory: URL, with pathExtension: String) -> [String] {
     // Return an empty array if any errors are encountered
     if let contents = try? contentsOfDirectory(
       at: directory, includingPropertiesForKeys: [], options: [])
@@ -139,11 +41,7 @@ extension FileManager {
     }
   }
 
-}
-
-//MARK: - File Dates
-
-extension FileManager {
+  //MARK: - File Dates
 
   func modificationDate(url: URL) -> Date? {
     guard let attrs = try? attributesOfItem(atPath: url.path) else {
@@ -165,12 +63,11 @@ extension FileManager {
 
 extension String {
   // Name of private folder where survey bundles are kept
-  fileprivate static let surveyDirectory = "Surveys"
+  fileprivate static let surveyDirectoryName = "Surveys"
 
   // Filenames internal to a survey bundle; maintain for compatibility with legacy surveys
 
   fileprivate static let surveyInfoFilename = "properties.plist"
-
   fileprivate static let surveyProtocolFilename = "protocol.obsprot"
   fileprivate static let surveyOldDatabaseFilename = "survey.coredata/StoreContent/persistentStore"
   fileprivate static let surveyDatabaseFilename = "database.sqlite3"
@@ -179,28 +76,14 @@ extension String {
 extension FileManager {
 
   var hasSurveyDirectory: Bool {
-    fileExists(atPath: surveyDirectory.path)
+    let surveyDirectory = AppFileType.survey.directoryUrl.path
+    return fileExists(atPath: surveyDirectory)
   }
 
   func createSurveyDirectory() throws {
+    let surveyDirectory = AppFileType.survey.directoryUrl
     // Do not fail if surveyDirectory exists (withIntermediateDirectories == true)
     try createDirectory(at: surveyDirectory, withIntermediateDirectories: true, attributes: nil)
-  }
-
-  func surveyOldDatabaseURL(with name: String) -> URL {
-    return surveyURL(with: name).appendingPathComponent(.surveyOldDatabaseFilename)
-  }
-
-  func surveyDatabaseURL(with name: String) -> URL {
-    return surveyURL(with: name).appendingPathComponent(.surveyDatabaseFilename)
-  }
-
-  func surveyInfoURL(with name: String) -> URL {
-    return surveyURL(with: name).appendingPathComponent(.surveyInfoFilename)
-  }
-
-  func surveyProtocolURL(with name: String) -> URL {
-    return surveyURL(with: name).appendingPathComponent(.surveyProtocolFilename)
   }
 
   func mapInfoURL(with name: String) -> URL? {
@@ -224,29 +107,34 @@ enum ConflictResolution {
 }
 
 enum AppFileType: String {
-  case archive
-  case map
-  case surveyProtocol
-  case survey
+  // rawValue is file extension
+  case archive = "poz"
+  case map = "tpk"
+  case survey = "obssurv"
+  case surveyProtocol = "obsprot"
 
   fileprivate init?(from url: URL) {
-    switch url.pathExtension.lowercased() {
-    case "poz":
-      self = .archive
-      break
-    case "tpk":
-      self = .map
-      break
-    case "obsprot":
-      self = .surveyProtocol
-      break
-    case "obssurv":
-      self = .survey
-      break
+    self.init(rawValue: url.pathExtension.lowercased())
+  }
+
+  var pathExtension: String {
+    return self.rawValue
+  }
+
+  var directoryUrl: URL {
+    switch self {
+    case .survey:
+      let lib = FileManager.default.libraryDirectory
+      return lib.appendingPathComponent(.surveyDirectoryName, isDirectory: true)
     default:
-      return nil
+      return FileManager.default.documentDirectory
     }
   }
+
+  var existingNames: [String] {
+    return FileManager.default.filenames(in: self.directoryUrl, with: self.pathExtension)
+  }
+
 }
 
 struct AppFile {
@@ -261,39 +149,67 @@ extension AppFile {
     type = maybeType!
     name = url.deletingPathExtension().lastPathComponent
   }
+
+  var url: URL {
+    return self.type.directoryUrl
+      .appendingPathComponent(name)
+      .appendingPathExtension(self.type.pathExtension)
+  }
+
+  func delete() throws {
+    try FileManager.default.removeItem(at: self.url)
+  }
+
 }
+
+struct SurveyBundle {
+  let file: AppFile
+
+  init(name: String) {
+    self.file = AppFile(type: .survey, name: name)
+  }
+
+  var oldDatabaseURL: URL {
+    return file.url.appendingPathComponent(.surveyOldDatabaseFilename)
+  }
+
+  var databaseURL: URL {
+    return file.url.appendingPathComponent(.surveyDatabaseFilename)
+  }
+
+  var infoURL: URL {
+    return file.url.appendingPathComponent(.surveyInfoFilename)
+  }
+
+  var protocolURL: URL {
+    return file.url.appendingPathComponent(.surveyProtocolFilename)
+  }
+
+}
+
 
 extension FileManager {
 
   func addToApp(url: URL, conflict: ConflictResolution = .fail) throws -> AppFile {
+    // Creating an AppFile from a url only sets the type (from extension) and name
+    // The actual path (url) is determined by the app.
     guard let appFile = AppFile(from: url) else {
       throw ImportError.unknownType
     }
-    let newURL: URL = {
-      switch appFile.type {
-      case .archive:
-        return archiveURL(with: appFile.name)
-      case .map:
-        return mapURL(with: appFile.name)
-      case .survey:
-        return surveyURL(with: appFile.name)
-      case .surveyProtocol:
-        return protocolURL(with: appFile.name)
-      }
-    }()
+    let appURL = appFile.url
     do {
-      try copyItem(at: url, to: newURL)
+      try copyItem(at: url, to: appURL)
     } catch let error as NSError {
       if error.code == NSFileWriteFileExistsError {
         switch conflict {
         case .replace:
-          try removeItem(at: newURL)
-          try copyItem(at: url, to: newURL)
+          try removeItem(at: appURL)
+          try copyItem(at: url, to: appURL)
           break
         case .keepBoth:
-          let newURL = try copyUniqueItem(at: url, to: newURL)
-          let name = newURL.deletingPathExtension().lastPathComponent
-          return AppFile(type: appFile.type, name: name)
+          let newURL = try copyUniqueItem(at: url, to: appURL)
+          let newName = newURL.deletingPathExtension().lastPathComponent
+          return AppFile(type: appFile.type, name: newName)
         default:
           throw error
         }
@@ -304,24 +220,25 @@ extension FileManager {
     return appFile
   }
 
-  func importSurvey(from archive: String, conflict: ConflictResolution = .fail) throws -> String {
-    let zipURL = archiveURL(with: archive)
+  func importSurvey(from archiveName: String, conflict: ConflictResolution = .fail) throws -> String {
+    let zipURL = AppFile(type: .archive, name: archiveName).url
     let tempURL = try createNewTempDirectory()
+    let surveyExtension = AppFileType.survey.pathExtension
     defer {
       try? removeItem(at: tempURL)
     }
-    Zip.addCustomFileExtension(.surveyArchiveExtension)
+    Zip.addCustomFileExtension(AppFileType.archive.pathExtension)
     do {
       try Zip.unzipFile(zipURL, destination: tempURL, overwrite: true, password: nil, progress: nil)
     } catch ZipError.unzipFail {
       throw ImportError.invalidArchive
     }
-    let names = filenames(in: tempURL, with: .surveyExtension)
+    let names = filenames(in: tempURL, with: surveyExtension)
     guard names.count == 1 else {
       throw ImportError.invalidArchive
     }
     let name = names[0]
-    let surveyURL = tempURL.appendingPathComponent(name).appendingPathExtension(.surveyExtension)
+    let surveyURL = tempURL.appendingPathComponent(name).appendingPathExtension(surveyExtension)
     let appFile = try addToApp(url: surveyURL, conflict: conflict)
     return appFile.name
   }
@@ -369,7 +286,7 @@ extension FileManager {
       throw CreateError.noName
     }
     var newName = name.sanitizedFileName
-    let potentialUrl = surveyURL(with: newName)
+    let potentialUrl = AppFile(type: .survey, name: newName).url
     do {
       try createDirectory(at: potentialUrl, withIntermediateDirectories: false, attributes: nil)
     } catch let error as NSError {
@@ -382,7 +299,7 @@ extension FileManager {
         case .keepBoth:
           for counter in 2... {
             newName = "\(name.sanitizedFileName) \(counter)"
-            let potentialUrl = surveyURL(with: newName)
+            let potentialUrl = AppFile(type: .survey, name: newName).url
             do {
               try createDirectory(
                 at: potentialUrl, withIntermediateDirectories: false, attributes: nil)
@@ -411,7 +328,7 @@ extension FileManager {
   func archiveContents(of source: URL, to destination: URL) throws {
     let contents = try FileManager.default.contentsOfDirectory(
       at: source, includingPropertiesForKeys: [], options: [])
-    Zip.addCustomFileExtension(.surveyArchiveExtension)
+    Zip.addCustomFileExtension(AppFileType.archive.pathExtension)
     try Zip.zipFiles(paths: contents, zipFilePath: destination, password: nil, progress: nil)
   }
 }

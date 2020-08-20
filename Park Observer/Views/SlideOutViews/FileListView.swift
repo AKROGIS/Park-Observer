@@ -109,21 +109,21 @@ struct FileListView: View {
     guard let file = file else { return }
     surveyController.willDelete(file)
     do {
-      try FileManager.default.delete(file: file)
+      try file.delete()
     } catch {
       self.errorMessage = error.localizedDescription
     }
   }
 
   private func refreshList() {
-    fileNames = FileManager.default.names(type: fileType).sorted {
+    fileNames = fileType.existingNames.sorted {
       $0.localizedCompare($1) == .orderedAscending
     }
   }
 
   private func isSurveyWithChanges(_ file: AppFile) -> Bool {
     if file.type == .survey {
-      let infoUrl = FileManager.default.surveyInfoURL(with: file.name)
+      let infoUrl = SurveyBundle(name: file.name).infoURL
       if let info = try? SurveyInfo(fromURL: infoUrl) {
         return info.state == .modified
       }

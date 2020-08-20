@@ -39,7 +39,7 @@ class SurveyTests: XCTestCase {
         return
       }
       defer {
-        try? FileManager.default.deleteArchive(with: archive.name)
+        try? archive.delete()
       }
       // Unpack the POZ as a survey
       guard
@@ -82,7 +82,7 @@ class SurveyTests: XCTestCase {
       }
     }
     for name in surveysToDelete {
-      try? FileManager.default.deleteSurvey(with: name)
+      try? AppFile(type: .survey, name: name).delete()
     }
 
   }
@@ -91,32 +91,32 @@ class SurveyTests: XCTestCase {
     // Given:
     let surveyName = "My <Survey>"
     let protocolName = "My Protocol"
-    let protocolUrl = FileManager.default.protocolURL(with: protocolName)
+    let protocolUrl = AppFile(type: .surveyProtocol, name: protocolName).url
     // Protocol file content is not checked during creation
     let protocolData = "Protocol Data"
     try? protocolData.write(to: protocolUrl, atomically: false, encoding: .utf8)
     defer {
-      try? FileManager.default.deleteProtocol(with: protocolName)
+      try? AppFile(type: .surveyProtocol, name: protocolName).delete()
     }
 
     // When:
-    XCTAssertFalse(FileManager.default.surveyNames.contains(surveyName))
-    XCTAssertTrue(FileManager.default.protocolNames.contains(protocolName))
+    XCTAssertFalse(AppFileType.survey.existingNames.contains(surveyName))
+    XCTAssertTrue(AppFileType.surveyProtocol.existingNames.contains(protocolName))
     guard let newSurveyName = try? Survey.create(surveyName, from: protocolName) else {
       XCTAssertTrue(false)
       return
     }
     defer {
-      try? FileManager.default.deleteSurvey(with: newSurveyName)
+      try? AppFile(type: .survey, name: newSurveyName).delete()
     }
 
     // Then:
-    XCTAssertTrue(FileManager.default.surveyNames.contains(newSurveyName))
-    let protocolURL = FileManager.default.surveyProtocolURL(with: newSurveyName)
+    XCTAssertTrue(AppFileType.survey.existingNames.contains(newSurveyName))
+    let protocolURL = SurveyBundle(name: newSurveyName).protocolURL
     XCTAssertTrue(FileManager.default.fileExists(atPath: protocolURL.path))
     let newProtocolData = try? String(contentsOf: protocolURL)
     XCTAssertEqual(protocolData, newProtocolData)
-    let infoURL = FileManager.default.surveyInfoURL(with: newSurveyName)
+    let infoURL = SurveyBundle(name: newSurveyName).infoURL
     XCTAssertTrue(FileManager.default.fileExists(atPath: infoURL.path))
     let info = try? SurveyInfo(fromURL: infoURL)
     XCTAssertNotNil(info)
@@ -129,56 +129,56 @@ class SurveyTests: XCTestCase {
     let protocolName = "My Protocol"
 
     // When:
-    XCTAssertFalse(FileManager.default.surveyNames.contains(surveyName))
-    XCTAssertFalse(FileManager.default.protocolNames.contains(protocolName))
+    XCTAssertFalse(AppFileType.survey.existingNames.contains(surveyName))
+    XCTAssertFalse(AppFileType.surveyProtocol.existingNames.contains(protocolName))
 
     // Then:
     XCTAssertThrowsError(try Survey.create(surveyName, from: protocolName))
-    XCTAssertFalse(FileManager.default.surveyNames.contains(surveyName))
+    XCTAssertFalse(AppFileType.survey.existingNames.contains(surveyName))
   }
 
   func testCreateNewSurveyEmptyName() {
     // Given:
     let surveyName = ""
     let protocolName = "My Protocol"
-    let protocolUrl = FileManager.default.protocolURL(with: protocolName)
+    let protocolUrl = AppFile(type: .surveyProtocol, name: protocolName).url
     // Protocol file content is not checked during creation
     let protocolData = "Protocol Data"
     try? protocolData.write(to: protocolUrl, atomically: false, encoding: .utf8)
     defer {
-      try? FileManager.default.deleteProtocol(with: protocolName)
+      try? AppFile(type: .surveyProtocol, name: protocolName).delete()
     }
 
     // When:
-    XCTAssertFalse(FileManager.default.surveyNames.contains(surveyName))
-    XCTAssertTrue(FileManager.default.protocolNames.contains(protocolName))
+    XCTAssertFalse(AppFileType.survey.existingNames.contains(surveyName))
+    XCTAssertTrue(AppFileType.surveyProtocol.existingNames.contains(protocolName))
 
     // Then:
     XCTAssertThrowsError(try Survey.create(surveyName, from: protocolName))
-    XCTAssertFalse(FileManager.default.surveyNames.contains(surveyName))
+    XCTAssertFalse(AppFileType.survey.existingNames.contains(surveyName))
   }
 
   func testCreateNewSurveyConflictFail() {
     // Given:
     let surveyName = "My <Survey>"
     let protocolName = "My Protocol"
-    let protocolUrl = FileManager.default.protocolURL(with: protocolName)
+    let protocolUrl = AppFile(type: .surveyProtocol, name: protocolName).url
     // Protocol file content is not checked during creation
     let protocolData = "Protocol Data"
     try? protocolData.write(to: protocolUrl, atomically: false, encoding: .utf8)
     defer {
-      try? FileManager.default.deleteProtocol(with: protocolName)
+      try? AppFile(type: .surveyProtocol, name: protocolName).delete()
     }
 
     // When:
-    XCTAssertFalse(FileManager.default.surveyNames.contains(surveyName))
-    XCTAssertTrue(FileManager.default.protocolNames.contains(protocolName))
+    XCTAssertFalse(AppFileType.survey.existingNames.contains(surveyName))
+    XCTAssertTrue(AppFileType.surveyProtocol.existingNames.contains(protocolName))
     guard let newSurveyName = try? Survey.create(surveyName, from: protocolName) else {
       XCTAssertTrue(false)
       return
     }
     defer {
-      try? FileManager.default.deleteSurvey(with: newSurveyName)
+      try? AppFile(type: .survey, name: newSurveyName).delete()
     }
 
     // Then:
@@ -194,27 +194,27 @@ class SurveyTests: XCTestCase {
     // Given:
     let surveyName = "My <Survey>"
     let protocolName = "My Protocol"
-    let protocolUrl = FileManager.default.protocolURL(with: protocolName)
+    let protocolUrl = AppFile(type: .surveyProtocol, name: protocolName).url
     // Protocol file content is not checked during creation
     let protocolData = "Protocol Data"
     try? protocolData.write(to: protocolUrl, atomically: false, encoding: .utf8)
     defer {
-      try? FileManager.default.deleteProtocol(with: protocolName)
+      try? AppFile(type: .surveyProtocol, name: protocolName).delete()
     }
 
     // When:
-    XCTAssertFalse(FileManager.default.surveyNames.contains(surveyName))
-    XCTAssertTrue(FileManager.default.protocolNames.contains(protocolName))
+    XCTAssertFalse(AppFileType.survey.existingNames.contains(surveyName))
+    XCTAssertTrue(AppFileType.surveyProtocol.existingNames.contains(protocolName))
     guard let newSurveyName = try? Survey.create(surveyName, from: protocolName) else {
       XCTAssertTrue(false)
       return
     }
     defer {
-      try? FileManager.default.deleteSurvey(with: newSurveyName)
+      try? AppFile(type: .survey, name: newSurveyName).delete()
     }
 
     // Then:
-    XCTAssertTrue(FileManager.default.surveyNames.contains(newSurveyName))
+    XCTAssertTrue(AppFileType.survey.existingNames.contains(newSurveyName))
     guard
       let newerSurveyName = try? Survey.create(surveyName, from: protocolName, conflict: .keepBoth)
     else {
@@ -222,12 +222,12 @@ class SurveyTests: XCTestCase {
       return
     }
     defer {
-      try? FileManager.default.deleteSurvey(with: newerSurveyName)
+      try? AppFile(type: .survey, name: newerSurveyName).delete()
     }
-    XCTAssertTrue(FileManager.default.surveyNames.contains(newSurveyName))
-    XCTAssertTrue(FileManager.default.surveyNames.contains(newerSurveyName))
+    XCTAssertTrue(AppFileType.survey.existingNames.contains(newSurveyName))
+    XCTAssertTrue(AppFileType.survey.existingNames.contains(newerSurveyName))
     // The requested title should NOT be changed. It may or may not be duplicate, but it is what the user wants.
-    let infoURL = FileManager.default.surveyInfoURL(with: newSurveyName)
+    let infoURL = SurveyBundle(name: newSurveyName).infoURL
     XCTAssertTrue(FileManager.default.fileExists(atPath: infoURL.path))
     let info = try? SurveyInfo(fromURL: infoURL)
     XCTAssertNotNil(info)
@@ -249,19 +249,19 @@ class SurveyTests: XCTestCase {
     }
     let protocolName = file.name
     defer {
-      try? FileManager.default.deleteProtocol(with: protocolName)
+      try? AppFile(type: .surveyProtocol, name: protocolName).delete()
     }
 
     // When:
-    XCTAssertFalse(FileManager.default.surveyNames.contains(surveyName))
-    XCTAssertTrue(FileManager.default.protocolNames.contains(protocolName))
+    XCTAssertFalse(AppFileType.survey.existingNames.contains(surveyName))
+    XCTAssertTrue(AppFileType.surveyProtocol.existingNames.contains(protocolName))
     // Create Survey
     guard let newSurveyName = try? Survey.create(surveyName, from: protocolName) else {
       XCTAssertTrue(false)
       return
     }
     defer {
-      try? FileManager.default.deleteSurvey(with: newSurveyName)
+      try? AppFile(type: .survey, name: newSurveyName).delete()
     }
 
     // Then:
@@ -309,7 +309,7 @@ class SurveyTests: XCTestCase {
       return
     }
     defer {
-      try? FileManager.default.deleteArchive(with: archive.name)
+      try? archive.delete()
     }
     // Unpack the POZ as a survey
     guard
@@ -370,7 +370,7 @@ class SurveyTests: XCTestCase {
       }
     }
 
-    try? FileManager.default.deleteSurvey(with: surveyName)
+    try? AppFile(type: .survey, name: surveyName).delete()
   }
 
   func testCreateCSVFromMinimalProtocol() {
@@ -388,7 +388,7 @@ class SurveyTests: XCTestCase {
     }
     let name = protocolFile.name
     defer {
-      try? FileManager.default.deleteProtocol(with: name)
+      try? AppFile(type: .surveyProtocol, name: name).delete()
     }
     // Build a survey from the protocol
     guard let surveyName = try? Survey.create(name, from: name) else {
@@ -396,7 +396,7 @@ class SurveyTests: XCTestCase {
       return
     }
     defer {
-      try? FileManager.default.deleteSurvey(with: name)
+      try? AppFile(type: .survey, name: name).delete()
     }
 
     // When:
@@ -467,7 +467,7 @@ class SurveyTests: XCTestCase {
     }
     defer {
       print("deleting source archive: \(archive.name)")
-      try? FileManager.default.deleteArchive(with: archive.name)
+      try? archive.delete()
     }
 
     // Unpack the POZ as a survey
@@ -500,13 +500,13 @@ class SurveyTests: XCTestCase {
             print("closing source survey")
             survey.close()
             print("deleting source survey: \(surveyName)")
-            try? FileManager.default.deleteSurvey(with: surveyName)
+            try? AppFile(type: .survey, name: surveyName).delete()
           }
           if let error = error {
             print(error)
             XCTAssertTrue(false)
           } else {
-            let archives = FileManager.default.archiveNames
+            let archives = AppFileType.archive.existingNames
             // TODO: This test will fail if the device or simulator has existing archives.
             // until fixed, try deleting the archives and rerunning the test.
             XCTAssertEqual(archives.count, 2)
@@ -515,7 +515,7 @@ class SurveyTests: XCTestCase {
               // We can delete the archive at the end of this block, import is not async
               defer {
                 print("deleting new archive: \(newArchiveName)")
-                try? FileManager.default.deleteArchive(with: newArchiveName)
+                try? AppFile(type: .archive, name: newArchiveName).delete()
               }
               // Now the tricky part: Compare archives
               // The archives will be different - due to the updated state & export date in the
@@ -537,7 +537,7 @@ class SurveyTests: XCTestCase {
                       print("closing new survey")
                       survey2.close()
                       print("deleting new survey: \(surveyName2)")
-                      try? FileManager.default.deleteSurvey(with: surveyName2)
+                      try? AppFile(type: .survey, name: surveyName2).delete()
                     }
                     // Survey Loaded, let check some properties
                     let gpsPointCount = (try? survey2.viewContext.fetch(GpsPoints.fetchRequest))?

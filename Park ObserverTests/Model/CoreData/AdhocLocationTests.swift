@@ -27,14 +27,14 @@ class AdhocLocationTests: XCTestCase {
     }
     let protocolName = file.name
     defer {
-      try? FileManager.default.deleteProtocol(with: protocolName)
+      try? file.delete()
     }
     guard let newSurveyName = try? Survey.create(surveyName, from: protocolName) else {
       XCTAssertTrue(false)
       return
     }
     defer {
-      try? FileManager.default.deleteSurvey(with: newSurveyName)
+      try? AppFile(type: .survey, name: newSurveyName).delete()
     }
     //When:
     // survey created, lets try and load it

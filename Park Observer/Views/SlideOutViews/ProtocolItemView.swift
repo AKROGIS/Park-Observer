@@ -17,7 +17,7 @@ struct ProtocolItemView: View {
   @EnvironmentObject var surveyController: SurveyController
 
   var body: some View {
-    let url = FileManager.default.protocolURL(with: name)
+    let url = AppFile(type: .surveyProtocol, name: name).url
     let info = try? SurveyProtocol(fromURL: url, skipValidation: true)
 
     return VStack(alignment: .leading) {
@@ -42,7 +42,7 @@ struct ProtocolItemView: View {
             // on a device (13.6), so this minimizes the impact
             NavigationLink(
               destination: ProtocolDetailsView(
-                name: name, url: FileManager.default.protocolURL(with: name)
+                name: name, url: AppFile(type: .surveyProtocol, name: name).url
               ), tag: 1, selection: $navigationTag
             ) {
               EmptyView()

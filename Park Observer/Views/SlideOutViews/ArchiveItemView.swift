@@ -62,7 +62,7 @@ struct ArchiveItemView: View {
   }
 
   private func creationDate(for name: String) -> String {
-    let url = FileManager.default.archiveURL(with: name)
+    let url = AppFile(type: .archive, name: name).url
     if let date = FileManager.default.creationDate(url: url) {
       return "Created: \(date.mediumDate)"
     } else {

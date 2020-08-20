@@ -110,10 +110,11 @@ class SurveyInfoTests: XCTestCase {
       creationDate: creationDate, exportDate: exportDate, modificationDate: modificationDate,
       syncDate: syncDate, state: state, title: title, version: version)
     let surveyName = "NewSurvey"
-    let surveyURL = FileManager.default.surveyURL(with: surveyName)
+    let surveyFile = AppFile(type: .survey, name: surveyName)
+    let surveyURL = surveyFile.url
     try! FileManager.default.createDirectory(
       at: surveyURL, withIntermediateDirectories: false, attributes: nil)
-    let plistURL = FileManager.default.surveyInfoURL(with: surveyName)
+    let plistURL = SurveyBundle(name: surveyName).infoURL
     var newSurveyInfo: SurveyInfo? = nil
     do {
       try surveyInfo.write(to: plistURL)
@@ -135,7 +136,7 @@ class SurveyInfoTests: XCTestCase {
     }
 
     // Cleanup
-    try! FileManager.default.deleteSurvey(with: surveyName)
+    try! surveyFile.delete()
   }
 
   func testInitializer1() {

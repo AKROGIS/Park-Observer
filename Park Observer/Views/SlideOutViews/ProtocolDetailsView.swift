@@ -114,6 +114,6 @@ struct JsonItemView: View {
 
 struct ProtocolDetailsView_Previews: PreviewProvider {
   static var previews: some View {
-    ProtocolDetailsView(name: "protocol1", url: FileManager.default.protocolURL(with: "protocol1"))
+    ProtocolDetailsView(name: "protocol1", url: AppFile(type: .surveyProtocol, name: "protocol1").url)
   }
 }

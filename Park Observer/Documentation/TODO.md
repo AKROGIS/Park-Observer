@@ -195,7 +195,6 @@ These issues are in software provided by others (Apple, Esri). If they become a 
 
 ## Code Cleanup
 Maintainability issues in the code that are generally invisible to the user.
-  * Refactor Filesystem around appFile
   * Cleanup SurveyController
   * SurveyController should listen to ObservationPresenter.awaitingGPS then trigger Async GPS request.
   * Fix timestamp property in ObservationPresenter (should be optional, but ObservationSelectorView doesn't like that)

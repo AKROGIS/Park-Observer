@@ -56,7 +56,7 @@ extension MapInfo {
     {
       self = mapInfo
     } else {
-      let url = FileManager.default.mapURL(with: name)
+      let url = AppFile(type: .map, name: name).url
       let date = FileManager.default.modificationDate(url: url)
       self.init(
         author: "Unknown",

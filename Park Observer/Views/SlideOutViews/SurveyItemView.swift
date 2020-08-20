@@ -166,7 +166,7 @@ struct SurveyItemView: View {
   }
 
   private func loadInfo(_ name: String) -> SurveyInfo? {
-    return try? SurveyInfo(fromURL: FileManager.default.surveyInfoURL(with: name))
+    return try? SurveyInfo(fromURL: SurveyBundle(name: self.name).infoURL)
   }
 
   private func updateTitle(_ title: String) {
@@ -176,7 +176,7 @@ struct SurveyItemView: View {
       info = info?.with(title: title)
       if let info = info {
         do {
-          try info.write(to: FileManager.default.surveyInfoURL(with: name))
+          try info.write(to: SurveyBundle(name: self.name).infoURL)
         } catch {
           errorMessage = error.localizedDescription
         }
@@ -190,7 +190,7 @@ struct SurveyItemView: View {
     let archiveExist: Bool = {
       if let info = loadInfo(name) {
         let presumptiveArchiveName = info.title.sanitizedFileName
-        let path = FileManager.default.archiveURL(with: presumptiveArchiveName).path
+        let path = AppFile(type: .archive, name: presumptiveArchiveName).url.path
         return FileManager.default.fileExists(atPath: path)
       }
       return false

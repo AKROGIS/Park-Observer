@@ -66,17 +66,18 @@ extension Survey {
   {
     DispatchQueue.global(qos: .userInitiated).async {
       var result: Result<Survey, LoadError>
+      let surveyBundle = SurveyBundle(name: name)
       do {
-        var info = try SurveyInfo(fromURL: FileManager.default.surveyInfoURL(with: name))
+        var info = try SurveyInfo(fromURL: surveyBundle.infoURL)
         do {
           let skipValidation = info.version == 1  // Skip validation on legacy surveys
           let config = try SurveyProtocol(
-            fromURL: FileManager.default.surveyProtocolURL(with: name),
+            fromURL: surveyBundle.protocolURL,
             skipValidation: skipValidation)
           if let mom = config.managedObjectModel {
             let url = info.version == 1
-              ? FileManager.default.surveyOldDatabaseURL(with: name)
-              : FileManager.default.surveyDatabaseURL(with: name)
+              ? surveyBundle.oldDatabaseURL
+              : surveyBundle.databaseURL
             let psc = NSPersistentStoreCoordinator(managedObjectModel: mom)
             let context = NSManagedObjectContext(concurrencyType: .mainQueueConcurrencyType)
             context.persistentStoreCoordinator = psc
@@ -88,23 +89,23 @@ extension Survey {
               if info.state == .unborn {
                 info = info.with(state: .created)
                 // Save is optional; we can try again in the save() method
-                try? info.write(to: FileManager.default.surveyInfoURL(with: name))
+                try? info.write(to: surveyBundle.infoURL)
               }
               let survey = Survey(name: name, info: info, config: config, viewContext: context)
               result = .success(survey)
             } catch {
               info = info.with(state: .corrupt)
-              try info.write(to: FileManager.default.surveyInfoURL(with: name))
+              try info.write(to: surveyBundle.infoURL)
               result = .failure(.noDatabase(error: error))
             }
           } else {
             info = info.with(state: .corrupt)
-            try info.write(to: FileManager.default.surveyInfoURL(with: name))
+            try info.write(to: surveyBundle.infoURL)
             result = .failure(LoadError.noObjectModel)
           }
         } catch {
           info = info.with(state: .corrupt)
-          try info.write(to: FileManager.default.surveyInfoURL(with: name))
+          try info.write(to: surveyBundle.infoURL)
           result = .failure(.noProtocol(error: error))
         }
       } catch {
@@ -127,14 +128,14 @@ extension Survey {
     let newName = try FileManager.default.newSurveyDirectory(
       name.sanitizedFileName, conflict: conflict)
     do {
-      let sourceProtocolURL = FileManager.default.protocolURL(with: protocolFile)
-      let surveyProtocolURL = FileManager.default.surveyProtocolURL(with: newName)
+      let sourceProtocolURL = AppFile(type: .surveyProtocol, name: protocolFile).url
+      let surveyProtocolURL = SurveyBundle(name: newName).protocolURL
       try FileManager.default.copyItem(at: sourceProtocolURL, to: surveyProtocolURL)
-      let infoURL = FileManager.default.surveyInfoURL(with: newName)
+      let infoURL = SurveyBundle(name: newName).infoURL
       let info = SurveyInfo(named: name)
       try info.write(to: infoURL)
     } catch {
-      try? FileManager.default.deleteSurvey(with: newName)
+      try? AppFile(type: .survey, name: newName).delete()
       throw error
     }
     return newName
@@ -150,14 +151,14 @@ extension Survey {
     if viewContext.hasChanges {
       try viewContext.save()
       info = info.with(modificationDate: Date(), state: .modified)
-      try info.write(to: FileManager.default.surveyInfoURL(with: name))
+      try info.write(to: SurveyBundle(name: name).infoURL)
     }
   }
 
   func setTitle(_ title: String) {
     info = info.with(title: title)
     // This save to disk is optional, so don't try to hard
-    try? info.write(to: FileManager.default.surveyInfoURL(with: name))
+    try? info.write(to: SurveyBundle(name: name).infoURL)
   }
 
   func close() {
@@ -244,25 +245,26 @@ extension Survey {
       do {
         // Update the metadata
         self.info = self.info.with(exportDate: Date(), state: .saved)
-        try self.info.write(to: FileManager.default.surveyInfoURL(with: self.name))
+        try self.info.write(to: SurveyBundle(name: self.name).infoURL)
 
         // Create a staging area
         let tempDirectory = try FileManager.default.createNewTempDirectory()
         let archiveName = self.info.title.sanitizedFileName
+        let archiveExtension = AppFileType.archive.pathExtension
         let archiveURL = tempDirectory.appendingPathComponent(archiveName).appendingPathExtension(
-          .surveyArchiveExtension)
+          archiveExtension)
         let scratchDir = tempDirectory.appendingPathComponent(archiveName, isDirectory: true)
         try FileManager.default.createDirectory(
           at: scratchDir, withIntermediateDirectories: false, attributes: nil)
 
         // Copy the Survey
-        let surveyURL = FileManager.default.surveyURL(with: self.name)
+        let surveyURL = AppFile(type: .survey, name: self.name).url
         let surveyName = surveyURL.lastPathComponent
         let newSurveyURL = scratchDir.appendingPathComponent(surveyName, isDirectory: true)
         try FileManager.default.copyItem(at: surveyURL, to: newSurveyURL)
 
         // The POZ to FGDB tool expects to find the the protocol file at the root of the archive
-        let protocolURL = FileManager.default.surveyProtocolURL(with: self.name)
+        let protocolURL = SurveyBundle(name: self.name).protocolURL
         let protocolName = protocolURL.lastPathComponent
         let newProtocolURL = scratchDir.appendingPathComponent(protocolName, isDirectory: true)
         try FileManager.default.copyItem(at: protocolURL, to: newProtocolURL)
