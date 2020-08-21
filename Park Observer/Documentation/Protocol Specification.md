@@ -529,17 +529,21 @@ all GPS points are rendered as a blue 6 point circle.
 
 ## `totalizer`
 This property is optional. If provided it must be an object as defined below. There is no default.
-The totalizer object is used to define the parameters for collecting and displaying a Mission Totalizer.
-If the property is not provided, no totalizer will be shown on the map.
-The totalizer is used to provide information on how long the user has been recording and/or observing.
-The totalizer can be given an optional list of fields to monitor.  It one of the fields changes, then
-the totalizer will reset.  This it typically set to the transect id, so the totalizer will show the time or
-distance recording/observing on a given transect.  If fields are given, then the fields must be in
-the dialog (otherwise, they will never change). If an empty object is given to the totalizer,
-it will display how many kilometers you have been observing, and reset each time to stop/stop
-observing.
+The totalizer object is used to define the parameters displaying a totalizer which shows 
+information on how long the user has been track logging (recording) and/or observing (on-transect).
+If the property is not provided, no totalizer will be shown on the map.  The totalizer requires that
+track logging be enabled (i.e. the `tracklog` property must not be `none`). If an empty object is
+given to the totalizer, it will display how many kilometers the user has been observing on the
+current track log. The totalizer can be given an optional list of fields to monitor.  If `fields`  is empty,
+the totalizer resets to zero every time the user starts/stops track logging. If  `fields` is provided, then
+the totalizer never resets, but rather shows the total time/distance (for the entire survey) recording/
+observing for the current set of values for the provided fields.  When one or more of the fields
+changes, a different set of totals will be displayed. The fields must be in the mission attributes.
+`fields` is typically set to the transect id and the totalizer show the total time or
+distance recording/observing on the current transect.
 
 This property is ignored in versions of Park Observer before 0.9.8b.
+Prior to 2.0.0 no totalizer was shown unless fields had a valid value, and one of the _include_ properties was true.
 
 The `totalizer` has the following properties
 

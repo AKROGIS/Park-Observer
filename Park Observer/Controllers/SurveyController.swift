@@ -639,7 +639,6 @@ class SurveyController: NSObject, ObservableObject {
     //observationPresenter will create the mission property when it gets the next GPS location
     requestGpsPointAsync(for: observationPresenter)
     if showEditor {
-      totalizer?.propertyUpdatePending = true
       present(observationPresenter)
     } else {
       observationPresenter.autoAction = {
@@ -771,7 +770,6 @@ class SurveyController: NSObject, ObservableObject {
       self.selectedObservation = nil
       break
     default:  //.cancel, .delete
-      totalizer?.propertyUpdatePending = false
       self.selectedObservation = nil
       break
     }
@@ -813,9 +811,9 @@ class SurveyController: NSObject, ObservableObject {
       let id = missionProperty.objectID
       self.missionPropertyTemplate = context.object(with: id) as? MissionProperty
     }
-    if let totalizer = totalizer, totalizer.propertyUpdatePending {
-      totalizer.updateProperties(missionProperty)
-    }
+    // Update the totalizer, but save first so that the background tracklogs are complete
+    try? survey?.save()
+    totalizer?.updateProperties(missionProperty)
   }
 
   private func addNew(observation: Observation, feature: Feature) {

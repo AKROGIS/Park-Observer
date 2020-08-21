@@ -149,7 +149,8 @@ These issues are in software provided by others (Apple, Esri). If they become a 
 * Fixed bug where mission properties at touch location were mis drawn at gps location.
 * If you tap to select multiple features, and then delete one, it is removed from the list of selected features.
 * Undo button while editing survey name was confusing. Make it a "clear text" button and a new undo button.
-* Make the totalizer and info banner more visible 
+* Make the totalizer and info banner more visible
+* Make the totalizer with fields behave as old Park Observer (shows total for entire survey not just current track log)
 
 ## 2020-08-14: Beta2
 
