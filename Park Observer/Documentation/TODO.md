@@ -15,7 +15,6 @@ New functionality I want to implement.
   * User setting for turning on/off display of gps points and/or track logs
   * User setting for hit test area (small:11, medium:22, large:44) - default medium
   * Text alignment in Add feature at GPS button breaks down with accessible (larger) fonts
-  * Group features by type on the feature Selector view.
   * If GPS is denied when starting a track log or adding a feature, then raise "Go to settings" alert
   * Change footer in file pick lists when there are no files
   * Allow multiple concurrent messages. Close button to hide all or hide individuals
@@ -27,6 +26,7 @@ New functionality I want to implement.
 
 ## Considering
 Potential features than need additional consideration.
+  * Rename "Mission Properties to "Survey Info" (only in the UI)
   * Warn when deleting archives?
   * Scale bar fade in/out after zoom?
   * Color the add observation button to match observation symbology?
@@ -82,6 +82,8 @@ These bugs limit required functionality.
 
 ## Nice to fix
 These bugs can be worked around or ignored.
+  * Getting Error: unable to add point (...) to tracklog: wrongMission (when loading a survey, i.e. building tracklogs)
+  * When waiting on GPS (i.e. exceeds allowable error), hide edit, show cancel, disallow save.
   * Do not show attribute editor if no dialog _and_ not angleDistance
   * Canceling a mission property dialog when launched from tracklogging or observing button does not cancel operation only attribute editing.
   * Getting the most recent Mission Property (for default) from database does not consider adhoc locations
