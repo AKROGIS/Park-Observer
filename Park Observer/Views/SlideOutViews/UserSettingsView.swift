@@ -19,6 +19,21 @@ struct UserSettingsView: View {
       set: { self.userSettings.mapControlsSize = $0 }
     )
 
+    let hasGpsAccuracyFilter = Binding<Bool>(
+      get: { return self.userSettings.gpsAccuracyFilter > 0.0 },
+      set: { self.userSettings.gpsAccuracyFilter = $0 ? 5.0 : 0.0 }
+    )
+
+    let hasGpsDistanceFilter = Binding<Bool>(
+      get: { return self.userSettings.gpsDistanceFilter > 0.0 },
+      set: { self.userSettings.gpsDistanceFilter = $0 ? 1.0 : 0.0 }
+    )
+
+    let hasGpsDurationFilter = Binding<Bool>(
+      get: { return self.userSettings.gpsDurationFilter > 0.0 },
+      set: { self.userSettings.gpsDurationFilter = $0 ? 1.0 : 0.0 }
+    )
+
     return Form {
       Section(header: Text("MAP CONTROLS")) {
         Toggle(isOn: $userSettings.darkMapControls) {
@@ -85,14 +100,54 @@ struct UserSettingsView: View {
       }
 
       Section(header: Text("GPS SETTINGS")) {
-        Slider(
-          value: $userSettings.gpsAccuracy, in: 5.0...200.0, minimumValueLabel: Text("5m"),
-          maximumValueLabel: Text("200m")
-        ) {
-          Text("Accuracy")
+        VStack {
+          Toggle(isOn: hasGpsAccuracyFilter) {
+            VStack(alignment: .leading) {
+              Text("Use accuracy filter")
+              Text("Set an accuracy standard for GPS points").font(.caption).foregroundColor(
+                .secondary)
+            }
+          }
+          if hasGpsAccuracyFilter.wrappedValue {
+            HStack {
+              Slider(value: $userSettings.gpsAccuracyFilter, in: 5.0...200.0)
+              Text("±\(Int(userSettings.gpsAccuracyFilter)) meters")
+            }
+          }
         }
-        Text("Frequency - time")
-        Text("Frequency - distance")
+        VStack {
+          Toggle(isOn: hasGpsDistanceFilter) {
+            VStack(alignment: .leading) {
+              Text("Use distance filter")
+              Text("Set a minimum distance between tracklog points").font(.caption).foregroundColor(
+                .secondary)
+            }
+          }
+          if hasGpsDistanceFilter.wrappedValue {
+            HStack {
+              Slider(value: $userSettings.gpsDistanceFilter, in: 1.0...500.0)
+              Text("\(Int(userSettings.gpsDistanceFilter)) meters")
+            }
+          }
+        }
+        VStack {
+          Toggle(isOn: hasGpsDurationFilter) {
+            VStack(alignment: .leading) {
+              Text("Use duration filter")
+              Text("Set a minimum time span between tracklog points").font(.caption)
+                .foregroundColor(.secondary)
+            }
+          }.disabled(surveyController.isGpsIntervalDefinedByProtocol)
+          if surveyController.isGpsIntervalDefinedByProtocol {
+            Text("Locked by the survey configuration").font(.caption).foregroundColor(.red)
+          }
+          if hasGpsDurationFilter.wrappedValue {
+            HStack {
+              Slider(value: $userSettings.gpsDurationFilter, in: 1.0...60.0)
+              Text("\(Int(userSettings.gpsDurationFilter)) seconds")
+            }
+          }
+        }
       }
     }
   }

@@ -108,7 +108,7 @@ class SurveyController: NSObject, ObservableObject {
       }
     }
   }
-
+  @Published var isGpsIntervalDefinedByProtocol = false
   @Published var slideOutMenuWidth: CGFloat = 300.0
   @Published var message: Message? = nil
   @Published var observationsLocatableWithTouch = [ObservationClass]()
@@ -142,6 +142,7 @@ class SurveyController: NSObject, ObservableObject {
     didSet {
       updateMapReference()
       updateSurveyControls()
+      isGpsIntervalDefinedByProtocol = survey?.config.gpsInterval != nil
       if let survey = survey {
         missionPropertyTemplate = MissionProperties.fetchLast(in: survey.viewContext)
         initializeUniqueIds()
@@ -182,6 +183,10 @@ class SurveyController: NSObject, ObservableObject {
       self?.isShowingInfoBanner = show && !(self?.infoBannerText.isEmpty ?? true)
     }
     cancellables.append(cancellable2)
+    let cancellable3 = userSettings.$gpsDistanceFilter.sink { [weak self] _ in
+      self?.setGpsDistanceFilter()
+    }
+    cancellables.append(cancellable3)
   }
 
   //MARK: - Load Map/Survey
@@ -496,7 +501,8 @@ class SurveyController: NSObject, ObservableObject {
   }
 
   private func startGpsStreaming() {
-    //TODO: set minimum distance, frequency and accuracy properties on locationManager
+    // After the location delegate gets the first acceptable point it will setupLocationManagerForStreaming()
+    setupLocationManagerForImmediatePoint()
     locationManager.startUpdatingLocation()
   }
 
@@ -509,11 +515,61 @@ class SurveyController: NSObject, ObservableObject {
     requestGpsPointAsync()
   }
 
+  private var indexOfGpsError: Int? = nil {
+    didSet {
+      if indexOfGpsError == nil {
+        //TODO: message[indexOfGpsError] = nil
+        message = nil
+      }
+    }
+  }
+
+  private var requestingImmediatePoint = false
+
+  private var gpsTimeGap: Double {
+    if requestingImmediatePoint { return 0 }
+    return survey?.config.gpsInterval ?? userSettings.gpsDurationFilter
+  }
+
   private func requestGpsPointAsync() {
     // Cycle the Location Manager to get the current location
     // Should Ignore time/distance gaps, but not accuracy requirements
+
     locationManager.stopUpdatingLocation()
+    // After the location delegate gets the next acceptable point it will setupLocationManagerForStreaming()
+    setupLocationManagerForImmediatePoint()
+    locationManager.distanceFilter = kCLDistanceFilterNone
     locationManager.startUpdatingLocation()
+  }
+
+  private func setupLocationManagerForImmediatePoint() {
+    requestingImmediatePoint = true
+    locationManager.distanceFilter = kCLDistanceFilterNone
+    setupLocationManager()
+  }
+
+  private func setupLocationManagerForStreaming() {
+    requestingImmediatePoint = false
+    setupLocationManager()
+    setGpsDistanceFilter()
+  }
+
+  private func setGpsDistanceFilter() {
+    if userSettings.gpsDistanceFilter > 0.0 {
+      locationManager.distanceFilter = userSettings.gpsDistanceFilter
+    } else {
+      locationManager.distanceFilter = kCLDistanceFilterNone
+    }
+  }
+
+  private func setupLocationManager() {
+    locationManager.activityType = .otherNavigation
+    locationManager.pausesLocationUpdatesAutomatically = false
+    if userSettings.gpsAccuracyFilter > 0.0 {
+      locationManager.desiredAccuracy = userSettings.gpsAccuracyFilter
+    } else {
+      locationManager.desiredAccuracy = kCLLocationAccuracyBest
+    }
   }
 
   //MARK: - Background Locations
@@ -915,11 +971,10 @@ extension SurveyController {
 extension SurveyController: CLLocationManagerDelegate {
 
   func locationManager(_ manager: CLLocationManager, didFailWithError error: Error) {
+    indexOfGpsError = 0
     message = Message.warning(error.localizedDescription)
-    //TODO: - Clear when GPS is back
-    // use private var showingGpsError: Bool; set true here; when we get a GPS point set to false and set message = nil
-    // if using a list of messages then
-    // use private var indexOfGpsError: Int?; set here; when we get a GPS point set message[indexOfGpsError] = nil and and set indexOfGpsError = nil
+    //TODO: indexOfGpsError = Message.count
+    //message[indexOfGpsError] = Message.warning(error.localizedDescription)
   }
 
   func locationManager(
@@ -953,13 +1008,45 @@ extension SurveyController: CLLocationManagerDelegate {
 
   func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
     for location in locations {
-      //TODO: validate: meets accuracy criteria set by survey.config or user settings
-      let delta = location.timestamp.distance(to: Date())
-      if delta < 1.0 {
-        // addGpsLocation() does no validation and assumes location has passed all appropriate tests
-        addGpsLocation(location)
-      } else {
-        print("skipping stale location. Age: \(delta)")
+      print("Got location @ \(Date()): \(location)")
+      guard location.horizontalAccuracy > 0.0 else {
+        print(
+          "  Skipping location without location. Horizontal Accuracy: \(location.horizontalAccuracy)"
+        )
+        break
+      }
+      if userSettings.gpsAccuracyFilter > 0.0 {
+        if userSettings.gpsAccuracyFilter < location.horizontalAccuracy {
+          indexOfGpsError = 0
+          message = Message.warning(
+            "GPS error (±\(Int(userSettings.gpsAccuracyFilter)) m) too large")
+          print("  Skipping location with too much error: \(location.horizontalAccuracy)")
+          break
+        }
+      }
+      let age = location.timestamp.distance(to: Date())
+      guard age < 1.0 else {
+        print("  Skipping stale location. Age: \(age)")
+        break
+      }
+      if let lastTimestamp = previousGpsPoint?.timestamp {
+        let interval = lastTimestamp.distance(to: location.timestamp)
+        if interval < gpsTimeGap {
+          if gpsTimeGap == 0.0 {
+            // Rare but potential problem with location services (reportedly)
+            print("  Skipping location (out of sequence)")
+          } else {
+            print("  Skipping location (too new): \(interval) < \(gpsTimeGap)")
+          }
+          break
+        }
+      }
+      print("  Location accepted")
+      // Clear any GPS errors
+      indexOfGpsError = nil
+      addGpsLocation(location)
+      if requestingImmediatePoint {
+        setupLocationManagerForStreaming()
       }
     }
   }

@@ -20,7 +20,20 @@ class UserSettings: ObservableObject {
   @Published var darkMapControls = false
 
   /// Minimum required accuracy (in meters) of the GPS points
-  @Published var gpsAccuracy = 0.0
+  ///
+  /// A value of 0.0 mean no accuracy requirements, otherwise the locations's horizontal error
+  /// must be less than gpsAccuracy
+  @Published var gpsAccuracyFilter = 0.0
+
+  /// Preferred distance gap (in meters) between GPS points in the track log
+  ///
+  /// A value of 0.0 will put all GPS points in the tracklog
+  @Published var gpsDistanceFilter = 0.0
+
+  /// Preferred time gap (in seconds) between GPS points in the track log
+  ///
+  /// A value of 0.0 will put all GPS points in the tracklog
+  @Published var gpsDurationFilter = 0.0
 
   /// Map Controls can be made larger for bumpy scenarios
   @Published var mapControlsSize: MapControlSize = .small
@@ -59,7 +72,9 @@ class UserSettings: ObservableObject {
     alarmInterval = Defaults.alarmInterval.readDouble()
     attributeButtonsOnTop = Defaults.attributeButtonsOnTop.readBool()
     darkMapControls = Defaults.darkMapControls.readBool()
-    gpsAccuracy = Defaults.gpsAccuracy.readDouble()
+    gpsAccuracyFilter = Defaults.gpsAccuracyFilter.readDouble()
+    gpsDistanceFilter = Defaults.gpsDistanceFilter.readDouble()
+    gpsDurationFilter = Defaults.gpsDurationFilter.readDouble()
     mapControlsSize = Defaults.mapControlsSize.readMapControlSize()
     showAlarmClock = Defaults.showAlarmClock.readBool()
     showInfoBanner = Defaults.showInfoBanner.readBool()
@@ -76,7 +91,9 @@ class UserSettings: ObservableObject {
     Defaults.alarmInterval.write(alarmInterval)
     Defaults.attributeButtonsOnTop.write(attributeButtonsOnTop)
     Defaults.darkMapControls.write(darkMapControls)
-    Defaults.gpsAccuracy.write(gpsAccuracy)
+    Defaults.gpsAccuracyFilter.write(gpsAccuracyFilter)
+    Defaults.gpsDistanceFilter.write(gpsDistanceFilter)
+    Defaults.gpsDurationFilter.write(gpsDurationFilter)
     Defaults.mapControlsSize.write(mapControlsSize)
     Defaults.showAlarmClock.write(showAlarmClock)
     Defaults.showInfoBanner.write(showInfoBanner)

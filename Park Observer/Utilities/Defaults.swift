@@ -37,11 +37,23 @@ enum Defaults: String {
   /// A Boolean value; default is false
   case darkMapControls
 
-  /// The minimum required accuracy (in meters) of the GPS points
+  /// The minimum required horizontal accuracy (in meters) of the GPS points
   ///
   /// A Double value; default is 0.0
-  /// Zero indicates no value is set and a more reasonable default will be assigned
-  case gpsAccuracy
+  /// Zero indicates no value is set and GPS points will not be rejected based on accuracy
+  case gpsAccuracyFilter
+
+  /// Preferred distance gap (in meters) between GPS points in the track log
+  ///
+  /// A Double value; default is 0.0
+  /// A value of 0.0 will put all GPS points in the tracklog
+  case gpsDistanceFilter
+
+  /// Preferred time gap (in seconds) between GPS points in the track log
+  ///
+  /// A Double value; default is 0.0
+  /// A value of 0.0 will put all GPS points in the tracklog
+  case gpsDurationFilter
 
   /// The user's current auto pan mode (i.e. follow gps)
   ///
@@ -154,8 +166,8 @@ extension Defaults {
   /// Read a double value from the defaults database
   func readDouble() -> Double {
     switch self {
-    case .alarmInterval, .gpsAccuracy, .mapCenterLat, .mapCenterLon, .mapRotation, .mapScale,
-      .slideOutMenuWidth:
+    case .alarmInterval, .gpsAccuracyFilter, .gpsDistanceFilter, .gpsDurationFilter,
+      .mapCenterLat, .mapCenterLon, .mapRotation, .mapScale, .slideOutMenuWidth:
       return UserDefaults.standard.double(forKey: self.rawValue)
     default:
       print("Error: Double not a valid type for \(self.rawValue) in defaults; returning 0")

@@ -12,7 +12,6 @@ Functionality I plan to implement for parity with Park Observer 1.0.
 
 ## Priority 3
 New functionality I want to implement.
-  * User (and/or protocol) settings for GPS accuracy and frequency (time and/or distance)
   * User setting for turning on/off display of gps points and/or track logs
   * User setting for hit test area (small:11, medium:22, large:44) - default medium
   * Text alignment in Add feature at GPS button breaks down with accessible (larger) fonts
@@ -152,6 +151,8 @@ These issues are in software provided by others (Apple, Esri). If they become a 
 * Make the totalizer and info banner more visible
 * Make the totalizer with fields behave as old Park Observer (shows total for entire survey not just current track log)
 * Feature selector/presenter show the map label in the title when defined
+* Support the gps_interval property in the protocol file
+* Provide user settings for GPS filters: accuracy, distance, and duration.
 
 ## 2020-08-14: Beta2
 
