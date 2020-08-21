@@ -1008,40 +1008,31 @@ extension SurveyController: CLLocationManagerDelegate {
 
   func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
     for location in locations {
-      print("Got location @ \(Date()): \(location)")
       guard location.horizontalAccuracy > 0.0 else {
-        print(
-          "  Skipping location without location. Horizontal Accuracy: \(location.horizontalAccuracy)"
-        )
+        indexOfGpsError = 0
+        message = Message.warning("GPS error: location unavailable")
         break
       }
       if userSettings.gpsAccuracyFilter > 0.0 {
         if userSettings.gpsAccuracyFilter < location.horizontalAccuracy {
           indexOfGpsError = 0
-          message = Message.warning(
-            "GPS error (±\(Int(userSettings.gpsAccuracyFilter)) m) too large")
-          print("  Skipping location with too much error: \(location.horizontalAccuracy)")
+          let error = String(format: "±%0.2f", location.horizontalAccuracy)
+          message = Message.warning("GPS error (\(error) m) too large")
           break
         }
       }
       let age = location.timestamp.distance(to: Date())
       guard age < 1.0 else {
-        print("  Skipping stale location. Age: \(age)")
+        //print("  Skipping stale location. Age: \(age)")
         break
       }
       if let lastTimestamp = previousGpsPoint?.timestamp {
         let interval = lastTimestamp.distance(to: location.timestamp)
         if interval < gpsTimeGap {
-          if gpsTimeGap == 0.0 {
-            // Rare but potential problem with location services (reportedly)
-            print("  Skipping location (out of sequence)")
-          } else {
-            print("  Skipping location (too new): \(interval) < \(gpsTimeGap)")
-          }
+          //print("  Skipping location (too new): \(interval) < \(gpsTimeGap)")
           break
         }
       }
-      print("  Location accepted")
       // Clear any GPS errors
       indexOfGpsError = nil
       addGpsLocation(location)
