@@ -96,7 +96,6 @@ final class ObservationPresenter: ObservableObject {
   }
 
   //TODO: SurveyController could listen to awaitingGps - remove gpsRequestor: from init()
-  //TODO: Cleanup/Improve Title (add label or id or timestamp)
   //TODO: Verify canceling Mission Property creation is done right
   //TODO: Error handling needs more work (clear error, set isEditing/isEditable)
   //TODO?: The timestamp should be optional, but ObservationSelectorView doesn't like that
@@ -760,17 +759,24 @@ extension ObservationPresenter {
     // depends on name, fields, entity
     if let name = name {
       title = name
-      let fields = self.fields ?? [Attribute]()
-      //If feature has a map label defined, use that (it may be the id)
-      if let idFieldName = fields.first(where: { $0.type == .id })?.name,
-        let id = entity?.value(forKey: .attributePrefix + idFieldName) as? Int
-      {
-        title = "\(name) #\(id)"
+      if let entity = entity {
+        // Look for a simple label; note if label is set with an esri labelDefinition, the
+        // label may be a complicated expression on multiple fields and we can't grok it
+        if case let .feature(feature) = observationClass, let labelField = feature.label?.field {
+          if let label = entity.value(forKey: .attributePrefix + labelField) {
+            title = "\(name) - \(label)"
+            return
+          }
+        }
+        let fields = self.fields ?? [Attribute]()
+        if let idFieldName = fields.first(where: { $0.type == .id })?.name,
+          let id = entity.value(forKey: .attributePrefix + idFieldName) as? Int
+        {
+          title = "\(name) #\(id)"
+        }
       }
-      //If feature has no label or id, then use Timestamp
     }
   }
-
 }
 
 //MARK: - Computed Properties

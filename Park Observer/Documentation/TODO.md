@@ -16,7 +16,6 @@ New functionality I want to implement.
   * User setting for turning on/off display of gps points and/or track logs
   * User setting for hit test area (small:11, medium:22, large:44) - default medium
   * Text alignment in Add feature at GPS button breaks down with accessible (larger) fonts
-  * Feature selector/presenter should show map label when defined otherwise the id if defined
   * Group features by type on the feature Selector view.
   * If GPS is denied when starting a track log or adding a feature, then raise "Go to settings" alert
   * Change footer in file pick lists when there are no files
@@ -102,6 +101,7 @@ These bugs can be worked around or ignored.
   * Transects "required" property should trump the features "allow off transect" property
   * Mission Properties are not created when start/stop observing, and tracklog = none
   * The default mission property "display editor" properties are not appropriate for all cases (i.e. tracklog = none)
+  * ObservationPresenter/Selector title needs to be updated if the feature has a label field and it is edited.
  
 ## Annoying
 These bugs are related to potential functionality (so while incorrect, they have no impact yet).
@@ -151,6 +151,7 @@ These issues are in software provided by others (Apple, Esri). If they become a 
 * Undo button while editing survey name was confusing. Make it a "clear text" button and a new undo button.
 * Make the totalizer and info banner more visible
 * Make the totalizer with fields behave as old Park Observer (shows total for entire survey not just current track log)
+* Feature selector/presenter show the map label in the title when defined
 
 ## 2020-08-14: Beta2
 
