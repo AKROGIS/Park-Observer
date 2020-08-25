@@ -1,10 +1,14 @@
-Protocol Specification
-======================
+Protocol Specification -- 2.0
+=============================
 
-_If you just want a protocol for a new survey, please start with the [tutorial instructions](https://akrgis.nps.gov/Observer/new_survey.html) and [examples](https://akrgis.nps.gov/Observer/protocols/)._
+*This document is for Park Observer 2.0.  If you are still using Park Observer 1.x
+please see [this version](Protocol_Specification_V1.html).* 
+
+*If you just want a protocol for a new survey, please start with the
+[tutorial instructions](../new_survey.html) and [examples](../protocols/).*
 
 This document is a technical reference for the structure and accepted content of the Park Observer protocol file.
-A more general reference can be found in the [Protocol Guide](Protocol_Guide.html)
+A more general reference can be found in the [Protocol Guide](Protocol_Guide_V2.html)
 
 This specification describes version 1 (v1) and 2 (v2) of the protocol file.
 Items that were introduced in version 2 are marked (v2).
@@ -37,8 +41,10 @@ for how to fix invalid JSON.
 
 A JSON linter will only check for valid JSON, it will not check for compliance with
 this document. For that you will need to use a Schema Validator.
-This specification is also defined in a machine readable form in `protocol.v1.schema.json`
-and `protocol.v2.schema.json`.  These schemas are also JSON files in the
+This specification is also defined in a machine readable form in
+[`protocol.v1.schema.json`](protocol.v1.schema.json)
+and [`protocol.v2.schema.json`](protocol.v2.schema.json).
+These schemas are also JSON files in the
 [JSON Schema](http://json-schema.org/) format.
 These schema files can be used to validate a protocol file to ensure that it is not just valid
 JSON, but meets the requirements of this specification.
@@ -54,20 +60,20 @@ The JSON object in the protocol file understands properties with the following n
 Properties can appear in any order, but usually in the order shown.
 Properties marked with an (o) are optional; the others are required.
 
-* [`meta-name`](#meta-name)
-* [`meta-version`](#meta-version)
-* [`name`](#name)
-* [`version`](#version)
-* [`date`](#date) (o)
-* [`description`](#description) (o)
-* [`observing`](#observing) (o)(v2)
-* [`notobserving`](#notobserving) (o)(v2)
-* [`status_message_fontsize`](#status_message_fontsize) (o)(v2)
-* [`cancel_on_top`](#cancel_on_top) (o)(v2)
-* [`gps_interval`](#gps_interval) (o)(v2)
-* [`mission`](#mission) (o)
-* [`features`](#features)
-* [`csv`](#csv) (o)
+* [`meta-name`](#-meta-name-)
+* [`meta-version`](#-meta-version-)
+* [`name`](#-name-)
+* [`version`](#-version-)
+* [`date`](#-date-) (o)
+* [`description`](#-description-) (o)
+* [`observing`](#-observing-) (o)(v2)
+* [`notobserving`](-notobserving-) (o)(v2)
+* [`status_message_fontsize`](#-status_message_fontsize-) (o)(v2)
+* [`cancel_on_top`](#-cancel_on_top-) (o)(v2)
+* [`gps_interval`](#-gps_interval-) (o)(v2)
+* [`mission`](#-mission-) (o)
+* [`features`](#-features-)
+* [`csv`](#-csv-) (o)
 
 Each of these properties are defined in the following sections.
 
@@ -87,7 +93,7 @@ This is a short moniker used to reference this protocol.
 It will be used in lists to choose among different protocols.
 
 Names do not need to be unique, but having two protocols with the same name can cause confusion.
-Protocols can evolve (see [`version`](#version) and [`date`](#date)).
+Protocols can evolve (see [`version`](#-version-) and [`date`](#-date-)).
 The same name should be used for different version of the same protocol.
 
 Technically, a name is not required by the Park Observer application.
@@ -191,18 +197,18 @@ It also describes the look and feel of the editing form and when the attributes 
 
 A `mission` object has the following properties:
 
-* [`attributes`](#attributes) (o)
-* [`dialog`](#dialog) (o)
-* `edit_at_start_recording` (o)(v2)
-* `edit_at_start_first_observing` (o)(v2)
-* `edit_at_start_reobserving` (o)(v2)
-* `edit_prior_at_stop_observing` (o)(v2)
-* `edit_at_stop_observing` (o)(v2)
-* `symbology`
-* `on-symbology` (o)
-* `off-symbology` (o)
-* `gps-symbology` (o)(v2)
-* `totalizer` (o)(v2)
+* [`attributes`](#-attributes-) (o)
+* [`dialog`](#-dialog-) (o)
+* [`edit_at_start_recording`](#-edit_at_start_recording-) (o)(v2)
+* [`edit_at_start_first_observing`](#-edit_at_start_first_observing-) (o)(v2)
+* [`edit_at_start_reobserving`](#-edit_at_start_reobserving-)(o)(v2)
+* [`edit_prior_at_stop_observing`](#-edit_prior_at_stop_observing-) (o)(v2)
+* [`edit_at_stop_observing`](#-edit_at_stop_observing-) (o)(v2)
+* [`symbology`](#-symbology-)
+* [`on-symbology`](#-on-symbology`-) (o)
+* [`off-symbology`](#-off-symbology-) (o)
+* [`gps-symbology`](#-gps-symbology-) (o)(v2)
+* [`totalizer`](#-totalizer-) (o)(v2)
 
 Each of these properties are defined in the following sections.
 
@@ -614,12 +620,12 @@ It should be short and descriptive.
 An optional list of attributes to collect for this feature.
 A Feature with no attributes only collects a location and the name of the feature.
 
-See the [`mission.attributes`](#attributes) section for details.
+See the [`mission.attributes`](#-attributes-) section for details.
 
 ## `dialog`
 An optional property that describes the format of the editing form for this feature's attributes.
 
-See the [`mission.dialog`](#dialog) section for details.
+See the [`mission.dialog`](#-dialog-) section for details.
 
 ## `allow_off_transect_observations`
 This property is optional. If provided it must be a boolean. The default is false.
@@ -657,7 +663,7 @@ used in new protocol files, but may still exist in older files.
 **Important:** Providing multiple locations with the same type is not prohibited,
  but it is discouraged as the behavior is undefined.
 
-See the [Protocol Guide](Protocol_Guide.html) for details on how the user interface behaves with
+See the [Protocol Guide](Protocol_Guide_V2.html) for details on how the user interface behaves with
 different location types.
 
 ### `allow`
@@ -736,7 +742,7 @@ Currently the format of the CSV files output by Park Observer is hard coded.
 This part of the protocol file is ignored by Park Observer, and only used
 by tools that convert the CSV data to an ESRI file geo-databases.
 
-If provided it must be a object identical to [`csv.json`](https://akrgis.nps.gov/observer/syncserver/csv.json).  If provided, it will be used by post processing tools like the POZ to FGDB translator to understand how the CSV export files are formatted. If it is not provided, the upload server, and the POZ to FGDB translator will use [`csv.json`](https://akrgis.nps.gov/observer/syncserver/csv.json).
+If provided it must be a object identical to [`csv.json`](csv.json).  If provided, it will be used by post processing tools like the POZ to FGDB translator to understand how the CSV export files are formatted. If it is not provided, the upload server, and the POZ to FGDB translator will use [`csv.json`](csv.json).
 
 A future version of Park Observer may use this property to allow users to configure the format of the exported CSV files.
 
@@ -923,8 +929,8 @@ Changes implemented in 2.0 which effect the processing of version 1 and 2 protoc
  * `status_message_fontsize` is ignored - Set font size in Settings App Accessibility -> Display & Font Size
 
 New root properties:
-* [`tracklogs`](#tracklogs) (o)(v3)
-* [`transects`](#transects) (o)(v3)
+* [`tracklogs`](#-tracklogs-) (o)(v3)
+* [`transects`](#-transects-) (o)(v3)
 
 # `tracklogs`
 This property is optional. If provided it must be one of the following stings.  The default is `"required"`.

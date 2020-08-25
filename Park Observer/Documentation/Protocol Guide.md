@@ -1,5 +1,8 @@
-Protocol Files for Park Observer
-================================
+Protocol Files -- 2.0
+=====================
+
+*This document is for Park Observer 2.0.  If you are still using Park Observer 1.x
+please see [this version](Protocol_Guide_V1.html).* 
 
 A protocol file is required to use the Park Observer.  It provides the standard for a data collection effort,
 and defines the schema for the GIS database on the server.
@@ -8,7 +11,7 @@ and it is easier (and recommended) to get help from the AKR GIS Team.
 
 This document discusses some of the considerations in making a protocol file suitable for your survey needs.
 It is not the definitive guide to exactly what is allowed in the content and
-format of a protocol file.  For that, see the [Protocol Specifications](ProtocolSpecificationV2.html).
+format of a protocol file.  For that, see the [Protocol Specifications](Protocol_Specification_V2.html).
 
 Basic Definition
 ----------------
@@ -20,7 +23,7 @@ appropriate protocol for their survey.  Contact information for the primary user
 
 The protocol defines the list of attributes tracked during a mission (called mission properties)
 
-The protocol defines the list of features (and their attributes) that are observered during a survey.
+The protocol defines the list of features (and their attributes) that are observed during a survey.
 Most survey are limited to a single feature (animal).
 
 Name and Version
