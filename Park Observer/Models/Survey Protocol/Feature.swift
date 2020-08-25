@@ -152,9 +152,9 @@ extension Feature {
           throw corruptError(message: message)
         }
         if let field = label.field, label.definition == nil {
-          let attributeNames = attributes.map { $0.name.lowercased() }
+          let attributeNames = attributes.map { $0.name }
 
-          if !attributeNames.contains(field.lowercased()) {
+          if !attributeNames.contains(field) {
             let message =
               "Cannot initialize feature when label field \(field) is not in attributes \(attributeNames)"
             throw corruptError(message: message)
