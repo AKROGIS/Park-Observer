@@ -167,9 +167,6 @@
                     "$ref": "#/definitions/Totalizer"
                 }
             },
-            "required": [
-                "symbology"
-            ],
             "dependencies": {
                 "dialog": ["attributes"]
             },
@@ -223,8 +220,7 @@
             },
             "required": [
                 "name",
-                "locations",
-                "symbology"
+                "locations"
             ],
             "dependencies": {
                 "dialog": ["attributes"]

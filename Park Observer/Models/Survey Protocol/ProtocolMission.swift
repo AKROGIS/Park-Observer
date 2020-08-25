@@ -157,14 +157,14 @@ extension ProtocolMission {
             )
           )
         }
-        // Validate attributes: unique elements (based on type)
+        // Validate attributes: unique elements (based on name)
         let attributeNames = attributes.map { $0.name.lowercased() }
         if Set(attributeNames).count != attributeNames.count {
           throw DecodingError.dataCorrupted(
             DecodingError.Context(
               codingPath: decoder.codingPath,
               debugDescription:
-                "Cannot initialize locations with duplicate names in the list \(attributes)"
+                "Cannot initialize attributes with duplicate names in the list \(attributes)"
             )
           )
         }

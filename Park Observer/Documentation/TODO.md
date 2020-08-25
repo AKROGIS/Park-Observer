@@ -26,6 +26,7 @@ New functionality I want to implement.
 
 ## Considering
 Potential features than need additional consideration.
+  * For gps-intervals greater than a few seconds, set a timer, and only turn on the GPS when the timer goes off.
   * Rename "Mission Properties to "Survey Info" (only in the UI)
   * Warn when deleting archives?
   * Scale bar fade in/out after zoom?
