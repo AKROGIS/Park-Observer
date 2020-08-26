@@ -73,15 +73,15 @@ Properties marked with an (o) are optional; the others are required.
 * [`date`](#-date-) (o)
 * [`description`](#-description-) (o)
 * [`observing`](#-observing-) (o)(v2)
-* [`notobserving`](-notobserving-) (o)(v2)
+* [`notobserving`](#-notobserving-) (o)(v2)
 * [`status_message_fontsize`](#-status_message_fontsize-) (o)(v2)
 * [`cancel_on_top`](#-cancel_on_top-) (o)(v2)
 * [`gps_interval`](#-gps_interval-) (o)(v2)
+* [`tracklogs`](#-tracklogs-) (o)(v2)
+* [`transects`](#-transects-) (o)(v2)
 * [`mission`](#-mission-) (o)
 * [`features`](#-features-)
 * [`csv`](#-csv-) (o)
-* [`tracklogs`](#-tracklogs-) (o)(v2)
-* [`transects`](#-transects-) (o)(v2)
 
 Each of these properties are defined in the following sections.
 
@@ -237,22 +237,22 @@ It also describes the look and feel of the editing form and when the attributes 
 
 A `mission` object has the following properties:
 
-* [`attributes`](#-attributes-) (o)
-* [`dialog`](#-dialog-) (o)
+* [`attributes`](#-mission-attributes-) (o)
+* [`dialog`](#-mission-dialog-) (o)
 * [`edit_at_start_recording`](#-edit_at_start_recording-) (o)(v2)
 * [`edit_at_start_first_observing`](#-edit_at_start_first_observing-) (o)(v2)
 * [`edit_at_start_reobserving`](#-edit_at_start_reobserving-)(o)(v2)
 * [`edit_prior_at_stop_observing`](#-edit_prior_at_stop_observing-) (o)(v2)
 * [`edit_at_stop_observing`](#-edit_at_stop_observing-) (o)(v2)
-* [`symbology`](#-symbology-) (o)
-* [`on-symbology`](#-on-symbology`-) (o)
+* [`symbology`](#-mission-symbology-) (o)
+* [`on-symbology`](#-on-symbology-) (o)
 * [`off-symbology`](#-off-symbology-) (o)
 * [`gps-symbology`](#-gps-symbology-) (o)(v2)
 * [`totalizer`](#-totalizer-) (o)(v2)
 
 Each of these properties are defined in the following sections.
 
-## `attributes`
+## `mission.attributes`
 An optional list of attribute objects.
 The attributes are descriptive characteristics for each segment of the survey.
 A mission with no attributes only collects the location where the the user
@@ -267,11 +267,11 @@ All attributes, except the `id` will never change unless you also have a `dialog
 If there is an attribute list then there must be at least one valid attribute object in it.
 Each `attribute` has the following properties:
 
-* `name`
-* `type`
-* `required` (o)(v2)
+* [`name`](#-attributes-name-)
+* [`type`](#-type-)
+* [`required`](#-required-) (o)(v2)
 
-### `name`
+### `attributes.name`
 A required string identifying the attribute.  This will be the name of the column in an exported
 CSV file, or a field in an ArcGIS geo-database.
 The name must start with a letter or underscore (`_`), and be followed by zero or more letters, numbers,
@@ -316,7 +316,7 @@ matching element in the dialog property (in order to provide a value)
 
 This property is ignored in versions of Park Observer before 2.0.0.
 
-## `dialog`
+## `mission.dialog`
 This property is optional.  If provided it must be an object.  There is no default.
 The dialog property describes the format of the editing form for the mission's attributes.
 A dialog is not required, but the mission attributes cannot be edited without one.
@@ -329,9 +329,9 @@ A dialog is not required because it is possible that the only attribute is a seq
 not editable and requires no dialog, or that the database schema is defined
 by other drivers, and some attributes are not collected in the survey.
 
- * `title`
- * `grouped` (o)
- * `sections`
+ * [`title`](#-title-)
+ * [`grouped`](#-grouped-) (o)
+ * [`sections`](#-sections-)
 
 ### `title`
 This property is required and must be a text string.  It can be empty (`""`)
@@ -348,10 +348,10 @@ This property is requires and must be a list of one or section objects.
 A dialog form is made up of one or more sections which group the editing controls
 into logical collections. Each section object has the following properties.
 
-* `title` (o)
-* `elements`
+* [`title`](#-sections-title-) (o)
+* [`elements`](#-elements-)
 
-#### `title`
+#### `sections.title`
 This property is optional.  If provided it must be a string.  There is no default.
 This text is placed as a title at the top of the section.
 
@@ -363,29 +363,29 @@ on/off switches, and pick lists. Each element has the following properties.  Som
 properties are only relevant for certain types of elements.
 Each element object has the following properties.
 
- * `title` (o)
- * `type`
- * `bind` (o)
- * `items` (o)
- * `selected` (o)
- * `boolValue` (o)
- * `minimumValue` (o)
- * `maximumValue` (o)
- * `numberValue` (o)
- * `placeholder` (o)
- * `fractionDigits` (o)
- * `keyboardType` (o)
- * `autocorrectionType` (o)
- * `autocapitalizationType` (o)
- * `key` (o)
+ * [`title`](#-elements-title-) (o)
+ * [`type`](#-elements-type-)
+ * [`bind`](#-bind-) (o)
+ * [`items`](#-items-) (o)
+ * [`selected`](#-selected-) (o)
+ * [`boolValue`](#-boolvalue-) (o)
+ * [`minimumValue`](#-minimumvalue-) (o)
+ * [`maximumValue`](#-maximumvalue-) (o)
+ * [`numberValue`](#-numbervalue-) (o)
+ * [`placeholder`](#-placeholder-) (o)
+ * [`fractionDigits`](#-fractiondigits-) (o)
+ * [`keyboardType`](#-keyboardtype-) (o)
+ * [`autocorrectionType`](#-autocorrectiontype-) (o)
+ * [`autocapitalizationType`](#-autocapitalizationtype-) (o)
+ * [`key`](#-key-) (o)
 
-##### `title`
+##### `elements.title`
 This property is optional.  If provided it must be a string.  There is no default.
 This is a name/prompt that describes the data in this form element.  This usually appears to
 the left of the attribute value in a different font. This is often the
 only property used by a `QLabelElement`.
 
-##### `type`
+##### `elements.type`
 This property is requires and must be one of the following text strings.
 It describes the display and editing properties for the form element.  Park Observer
 only supports the following types.  These are case sensitive.
@@ -461,7 +461,7 @@ done in post processing without losing the fact that no observation was actually
 This property is optional.  If provided it must be a text string.  There is no default.
 This is the background text to put in a text box to suggest to the user what to enter.
 
-##### fractionDigits
+##### `fractionDigits`
 This property is optional.  If provided it must be an integer.   There is no default.
 This is a limit on the number of digits to be shown after the decimal point. It is only
 used by `QDecimalElement`.
@@ -550,7 +550,7 @@ If both are set to true, `edit_prior_at_stop_observing` is ignored.
 
 This property is ignored in versions of Park Observer before 1.2.0.
 
-## `symbology`
+## `mission.symbology`
 An optional object as defined in the [symbology](#symbology) section at the end of this document.
 This object defines how a mission properties point is drawn on the map.  This point occurs
 when starting recording, starting/stopping observing, and when editing the mission attributes.
@@ -595,12 +595,12 @@ Prior to 2.0.0 no totalizer was shown unless fields had a valid value, and one o
 
 The `totalizer` has the following properties
 
-* `fields` (o)
-* `fontsize` (o)
-* `includeon` (o)
-* `includeoff` (o)
-* `includetotal` (o)
-* `units` (o)
+* [`fields`](#-fields-) (o)
+* [`fontsize`](#-fontsize-) (o)
+* [`includeon`](#-includeon-) (o)
+* [`includeoff`](#-includeoff-) (o)
+* [`includetotal`](#-includetotal-) (o)
+* [`units`](#-units-) (o)
 
 ### `fields`
 This property is optional. If provided it must be a list of one or more strings.
@@ -649,14 +649,14 @@ focused and easier to manage.
 
 Each feature is an object with the following properties
 
-* `name`
-* `attributes` (o)
-* `dialog` (o)
-* `allow_off_transect_observations` (o)
-* `locations`
-* `symbology` (o)
+* [`name`](#-features-name-)
+* [`attributes`](#-features-attributes-) (o)
+* [`dialog`](#-features-dialog-) (o)
+* [`allow_off_transect_observations`](#-allow_off_transect_observations-) (o)
+* [`locations`](#-locations-)
+* [`symbology`](#-features-symbology-) (o)
 
-## `name`
+## `features.name`
 This property is required and must be a non-empty text string.
 Each feature name must be unique name. The name is used in the interface to let the
 user choose among different feature types. All the observation in one feature will
@@ -664,16 +664,16 @@ be exported in a CSV file with this name, and a geo-database table with this nam
 It should be short and descriptive.
 Starting with Park Observer 2.0.0, this string must be 10 characters or less.
 
-## `attributes`
+## `features.attributes`
 An optional list of attributes to collect for this feature.
 A Feature with no attributes only collects a location and the name of the feature.
 
-See the [`mission.attributes`](#-attributes-) section for details.
+See the [`mission.attributes`](#-mission-attributes-) section for details.
 
-## `dialog`
+## `features.dialog`
 An optional property that describes the format of the editing form for this feature's attributes.
 
-See the [`mission.dialog`](#-dialog-) section for details.
+See the [`mission.dialog`](#-mission-dialog-) section for details.
 
 ## `allow_off_transect_observations`
 This property is optional. If provided it must be a boolean. The default is false.
@@ -686,15 +686,15 @@ This property is required and must be an array of one or more location objects.
 A location is an object that describes the permitted techniques for specifying
 the location of an observation. A location is defined by the following properties:
 
-* `type`
-* `allow` (o)
-* `default` (o)
-* `deadAhead` (o)
-* `baseline` (deprecated)
-* `direction` (o)
-* `units` (o)
+* [`type`](#-locations.type-)
+* [`allow`](#-allow-) (o)
+* [`default`](#-default-) (o)
+* [`deadAhead`](#-deadAhead-) (o)
+* [`baseline`](#-baseline-) (deprecated)
+* [`direction`](#-direction-) (o)
+* [`units`](#-locations-units-) (o)
 
-### `type`
+### `locations.type`
 This property is required and must be one of the following strings:
 
  * `gps` - locates the observation at the devices GPS location
@@ -738,7 +738,8 @@ This property is optional. If provided it must be a number between 0.0 and 360.0
 The numeric value provided is the angle measurement in degrees that means the feature is dead ahead
 (i.e. on course or trajectory of the device per the GPS)
 
-### `baseline` (deprecated)
+### `baseline`
+**Deprecated**
 This property is a deprecated synonym for `deadAhead`.
 Its use is discouraged, but it may be found in older protocol files.
 `baseline` is ignored if `deadAhead` is provided.
@@ -748,12 +749,12 @@ This property is optional. If provided it must be one of `cw` or `ccw`. The defa
 With `cw`, angles for the `angleDistance` location type will increase in the clockwise direction,
 otherwise they increase in the counter-clockwise direction.
 
-### `units`
+### `locations.units`
 This property is optional. If provided it must be one of "feet" or "meters" or "yards". The default is "meters".
 With "meters", distances for the `angleDistance` location type will be assumed to be in meters.
 Otherwise they will be in feet or yards.
 
-## `symbology`
+## `features.symbology`
 An optional object as defined in the [symbology](#symbology) section at the end of this document.
 This object defines how an observation of this feature is drawn on the map.
 
@@ -763,11 +764,11 @@ The label object defines how the feature will be labeled on the map.
 
 This `label` object has the following properties:
 
-* `field` (o)
-* `color` (o)
-* `size` (o)
-* `symbol` (o)
-* `definition` (o)
+* [`field`](#-field-) (o)
+* [`color`](#-color-) (o)
+* [`size`](#-size-) (o)
+* [`symbol`](#-symbol-) (o)
+* [`definition`](#-definition-) (o) (v2)
 
 ### `field`
 This property is optional. If provided it must be a non-empty text string.
@@ -820,25 +821,25 @@ the format of the exported CSV files.
 
 The CSV object has the following properties.  All are required.
 
-* `features`
-* `gps_points`
-* `track_logs`
+* [`features`](#-csv-features-)
+* [`gps_points`](#-gps_points-)
+* [`track_logs`](#-track_logs-)
 
-## `features`
+## `csv.features`
 An object that describes how to build the observer and feature point feature classes from the CSV
 file containing the observed features. The features object has the following properties.
 All are required.
 
- * `feature_field_map`
- * `feature_field_names`
- * `feature_field_types`
- * `feature_key_indexes`
- * `header`
- * `obs_field_map`
- * `obs_field_names`
- * `obs_field_types`
- * `obs_key_indexes`
- * `obs_name`
+ * [`feature_field_map`](#-feature_field_map-)
+ * [`feature_field_names`](#-feature_field_names-)
+ * [`feature_field_types`](#-feature_field_types-)
+ * [`feature_key_indexes`](#-feature_key_indexes-)
+ * [`header`](#-header-)
+ * [`obs_field_map`](#-obs_field_map-)
+ * [`obs_field_names`](#-obs_field_names-)
+ * [`obs_field_types`](#-obs_field_types-)
+ * [`obs_key_indexes`](#-obs_key_indexes-)
+ * [`obs_name`](#-obs_name-)
 
 ### `feature_field_map`
 A list of integer column indices from the CSV header, starting with zero, for the columns containing the data for the observed feature tables.
@@ -874,10 +875,10 @@ The name of the table in the ESRI geo-database that will contain the data for th
 An object that describes how to build the GPS point feature class from the CSV file containing the GPS points. The `gps_points` object has the following properties.
 All are required.
 
- * `field_names`
- * `field_types`
- * `key_indexes`
- * `name`
+ * [`field_names`](#-field_names-)
+ * [`field_types`](#-field_types-)
+ * [`key_indexes`](#-key_indexes-)
+ * [`name`](#-gps_points-name-)
 
 ### `field_names`
 A list of the field names in the header of the CSV file in order.
@@ -888,29 +889,29 @@ A list of the field types in the columns of the CSV file in order.
 ### `key_indexes`
 A list of 3 integer column indices, starting with zero, for the columns containing the time, x and y coordinates of the point.
 
-### `name`
+### `gps_points.name`
 The name of the CSV file, and the table in the ESIR geo-database.
 
 ## `track_logs`
 An object that describes how to build the GPS point feature class from the CSV file containing the track logs and mission properties. The track_logs object has the following properties.
 All are required.
 
- * `end_key_indexes`
- * `field_names`
- * `field_types`
- * `name`
- * `start_key_indexes`
+ * [`end_key_indexes`](#-end_key_indexes-)
+ * [`field_names`](#-track_logs-field_names-)
+ * [`field_types`](#-track_logs-field_types-)
+ * [`name`](#-track_logs-name-)
+ * [`start_key_indexes`](#-start_key_indexes-)
 
 ### `end_key_indexes`
 A list of 3 integer column indices, starting with zero, for the columns containing the time, x and y coordinates of the first point in the track log.
 
-### `field_names`
+### `track_logs.field_names`
 A list of the field names in the header of the CSV file in order.
 
-### `field_types`
+### `track_logs.field_types`
 A list of the field types in the columns of the CSV file in order.
 
-### `name`
+### `track_logs.name`
 The name of the CSV file, and the table in the ESRI geo-database.
 
 ### `start_key_indexes`
@@ -930,10 +931,10 @@ property is missing, empty or incomplete then Park Observer will use the default
 specified in the individual objects above. The version 1 symbology object has the following
 properties:
 
-* `color`
-* `size`
+* [`color`](#-symbology-color-)
+* [`size`](#-symbology-size-)
 
-### `color`
+### `symbology.color`
 This property is optional. If provided it must be a text string. There is no default.
 The color element is a string in the form "#FFFFFF"
 where F is a hexadecimal digit (0-9,A-F).
@@ -941,7 +942,7 @@ The hex pairs represent the intensity of Red, Green, and Blue respectively.
 Starting with Park Observer 2.0.0 a malformed color string is an error.
 If the property is missing, then the default is determined by the object being rendered.
 
-### `size`
+### `symbology.size`
 This property is optional. If provided it must be a non-negative number. There is no default.
 The size is a number for the diameter in points of the simple circle marker symbol,
 or the width of a simple solid line.
