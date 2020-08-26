@@ -369,6 +369,9 @@
                 },
                 "symbol": {
                     "description": "An esri text symbol object, see https://developers.arcgis.com/documentation/common-data-types/symbol-objects.htm"
+                },
+                "definition": {
+                    "description": "An esri label definition object, see https://developers.arcgis.com/web-map-specification/objects/labelingInfo/"
                 }
             },
             "required": [
