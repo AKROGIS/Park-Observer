@@ -295,13 +295,13 @@ These numbers (with the exception of 0) correspond with NSAttributeType in the i
 -	100 -> 16bit integer
 -	200 -> 32bit integer
 -	300 -> 64bit integer
--	400 -> NSDecimal (currently not supported by ESRI)
+-	400 -> NSDecimal (currently not supported by esri)
 -	500 -> double precision floating point number
 -	600 -> single precision floating point number
 -	700 -> string
--	800 -> boolean (converts to an ESRI integer 0 = NO, 1 = YES)
+-	800 -> boolean (converts to an esri integer; true => 1, false =>  0)
 -	900 -> DateTime
--	1000 -> binary blob (? no UI support, check on ESRI support)
+-	1000 -> binary blob (not supported)
 
 The type 0 is ignored in versions of Park Observer before 0.9.8.
 Only one attribute can have a type of 0.
@@ -321,22 +321,28 @@ This property is optional.  If provided it must be an object.  There is no defau
 The dialog property describes the format of the editing form for the mission's attributes.
 A dialog is not required, but the mission attributes cannot be edited without one.
 If the dialog property is provided then the `attributes` property is required.
-If a dialog is provided, there must be at least one section in the dialog and one element in that section.
+If a dialog is provided, there must be at least one section in the dialog and one element in each section.
 All elements in the dialog except labels must refer to an attribute in the list of mission attributes.
-It is an error if a dialog element refers to an attribute that is not in the list.
+It is an error if a dialog element refers to an attribute that is not in the list
+or if the type of the attribute does not match the type of the dialog element.
 
-A dialog is not required because it is possible that the only attribute is a sequential Id which is
-not editable and requires no dialog, or that the database schema is defined
-by other drivers, and some attributes are not collected in the survey.
+A dialog is not required even if attributes are provided.
+It is possible that the only attribute is a sequential Id which is
+not editable and requires no dialog
+It is possible that attribute list is defined to match an external database schema
+but some of those attributes are not collected in the survey
+(and do not have matching elements in the dialog).
 
- * [`title`](#-title-)
+ * [`title`](#-title-) (o)
  * [`grouped`](#-grouped-) (o)
  * [`sections`](#-sections-)
 
 ### `title`
-This property is required and must be a text string.  It can be empty (`""`)
+This property is optional.  If provided it must be a string.  There is no default.
 This text is placed as a title at the top of the editing form.
-It is typically either `"Mission Properties"`or the name of the feature.
+
+Starting with Park Observer 2.0, this property is ignored.
+The text on the top of the attribute editor is set by the observation being edited.
 
 ### `grouped`
 This property is optional.  If provided it must be a boolean.  The default is `false`.
@@ -344,7 +350,7 @@ Starting with Park Observer 2.0.0, this property has no effect (sections are vis
 and `grouped` does not render any differently).
 
 ### `sections`
-This property is requires and must be a list of one or section objects.
+This property is required and must be a list of one or more section objects.
 A dialog form is made up of one or more sections which group the editing controls
 into logical collections. Each section object has the following properties.
 
@@ -356,12 +362,11 @@ This property is optional.  If provided it must be a string.  There is no defaul
 This text is placed as a title at the top of the section.
 
 #### `elements`
-This property is requires and must be a list of one or element objects.
+This property is required and must be a list of one or more element objects.
 Elements make up the interesting parts of the form.  They are usually tied to an attribute
 and determine how the attribute can be edited.  Examples of form elements are text boxes,
 on/off switches, and pick lists. Each element has the following properties.  Some
 properties are only relevant for certain types of elements.
-Each element object has the following properties.
 
  * [`title`](#-elements-title-) (o)
  * [`type`](#-elements-type-)
@@ -381,31 +386,31 @@ Each element object has the following properties.
 
 ##### `elements.title`
 This property is optional.  If provided it must be a string.  There is no default.
-This is a name/prompt that describes the data in this form element.  This usually appears to
+This is a name/prompt that names the data in this form element.  This usually appears to
 the left of the attribute value in a different font. This is often the
 only property used by a `QLabelElement`.
 
 ##### `elements.type`
-This property is requires and must be one of the following text strings.
+This property is required and must be one of the following text strings.
 It describes the display and editing properties for the form element.  Park Observer
 only supports the following types.  These are case sensitive.
 
 * `QBooleanElement` - an on/off switch, defaults to off.
 * `QDecimalElement` - a "real" number editor with a limited number of digits after the decimal.
 * `QEntryElement` - a single line text box.
-* `QIntegerElement` - an integer input box with stepper (+1/-1) buttons.
+* `QIntegerElement` - an integer input box with stepper (+/-) buttons.
 * `QLabelElement` - non-editable text on its own line in the form.
 * `QMultilineElement` - a multi-line text box.
-* `QRadioElement` - A single selection pick list (as a vertical list of titles)
+* `QRadioElement` - A single selection pick list (as a vertical list of items in a sub form)
 * `QSegmentedElement` - A single selection pick list (as a horizontal row of buttons)
 
 
 ##### `bind`
-This property is required for all types except `QLabelElement` when it is optional.
+This property is required for all types except `QLabelElement` (where it is optional).
 If provided it must be a specially formatted string.  There is no default.
 This string encodes the type and attribute name of the data for this element.
 `QLabelElement` only uses the `value:` type when
-displaying a unique feature id).  The bind value must start with one of the following:
+displaying a unique feature id.  The bind value must start with one of the following:
 
  * `boolValue:` - a boolean (true or false) value
  * `numberValue:`
@@ -414,48 +419,61 @@ displaying a unique feature id).  The bind value must start with one of the foll
  * `textValue:`
  * `value:` - used for Unique ID Attributes (Attribute Type = 0)
 
-and be followed by an attribute name from the list of Attributes.
+and be followed by an attribute name from the list of attributes.
 This will determine the type of value extracted from the form element,
 and which attribute it is tied to (i.e. read from and saved to).
 It is important that the type above matches the type of the attribute in
-the Attributes section.  Note that the will always be a colon (:) in the
-bind string separating the type from the name.
-The attribute name in the bind property must be in the list of attributes.
+the attributes section.  Note that there must always be a colon (`:`) in the
+bind string separating the type from the name. It is an error if the
+attribute name in the bind property is not in the list of attributes.
 
 ##### `items`
 This property is optional.  If provided it must be a list of one or more strings.  There is no default.
-This property provides a list of choices for pick list type elements.
+This property provides the list of choices for pick list type elements.
 It is required for `QRadioElement` and `QSegmentedElement`, and ignored for all other types.
 
 ##### `selected`
 This property is optional.  If provided it must be an integer.  There is no default.
-It is the zero based index of the initially selected item from the list of items.
+If provided it sets the default value for the related attribute,
+otherwise the default value is null (i.e. nothing is selected).
+It is the zero based index of the default selection in the list of items.
 If not provided, nothing is selected initially.
+
+Protocol authors are discouraged from using this property to set an initial value,
+as it causes confusion regarding whether the observer actually observed the default value,
+or if the observer failed to make an observation (and it might not have been the default)
+Having no default value will set the attribute to null if no observation was made.
+If a default value is desired when there was no observation this can be done in post
+processing without losing the fact that no observation was actually made.
 
 ##### `boolValue`
 This property is optional.  If provided it must be an integer value of 0 or 1.  There is no default.
-This property is the initial value for the `QBooleanElement`. It is ignored by all other types.
+If provided it sets the default value for the related attribute
+otherwise the default value is null (i.e. neither true nor false).
+This property sets the default value for the `QBooleanElement`. It is ignored by all other types.
+
+Protocol authors are discouraged from using this property to set an initial value,
+see the discussion for [`selected`](#-selected-).
 
 ##### `minimumValue`
-This property is optional.  If provided it must be number.
+This property is optional.  If provided it must be a number.
 This is the minimum value allowed in `QIntegerElement` or `QDecimalElement`.
 The default is 0 if `type` is `QIntegerElement`, otherwise there is no default
 and the minimum value is determined by the `attribute.type`.
 
 ##### `maximumValue`
-This property is optional.  If provided it must be number.
+This property is optional.  If provided it must be a number.
 This is the maximum value allowed in `QIntegerElement` or `QDecimalElement`.
 The default is 100 if `type` is `QIntegerElement`, otherwise there is no default
-and the minimum value is determined by the `attribute.type`.
+and the maximum value is determined by the `attribute.type`.
 
 ##### `numberValue`
-This property is optional.  If provided it must be number.   There is no default.
-This is the initial value for `QIntegerElement` or `QDecimalElement`.
-There is no default; that is the initial value is null. Protocol authors are discouraged
-from using an initial value, as it causes confusion regarding whether there was an
-observation of the default value, or there was no observation.  Leaving as null removes
-the ambiguity.  If a default value is desired when there was no observation this can be
-done in post processing without losing the fact that no observation was actually made.
+This property is optional.  If provided it must be a number.   There is no default.
+If provided it sets the default value for the related attribute.
+This sets the initial value in `QIntegerElement` or `QDecimalElement`.
+
+Protocol authors are discouraged from using this property to set an initial value,
+see the discussion for [`selected`](#-selected-).
 
 ##### `placeholder`
 This property is optional.  If provided it must be a text string.  There is no default.
@@ -554,18 +572,17 @@ This property is ignored in versions of Park Observer before 1.2.0.
 An optional object as defined in the [symbology](#symbology) section at the end of this document.
 This object defines how a mission properties point is drawn on the map.  This point occurs
 when starting recording, starting/stopping observing, and when editing the mission attributes.
+The default is a 12 point solid green circle.
 
 ## `on-symbology`
 An optional object as defined in the [symbology](#symbology) section at the end of this document.
 This object defines the look of the track log line when observing (i.e. on-transect).
-The default in version 1 was a 1 point wide solid black line.
-The default in version 2 was a 3 point wide solid red line.
+The default is a 3 point wide solid red line.
 
 ## `off-symbology`
 An optional object as defined in the [symbology](#symbology) section at the end of this document.
 This object defines the look of the track log line when not observing (i.e. off-transect).
-The default in version 1 was a 1 point wide solid black line.
-The default in version 2 was a 1.5 point wide solid gray line.
+The default is a 1.5 point wide solid gray line.
 
 ## `gps-symbology`
 An optional object as defined in the [symbology](#symbology) section at the end of this document.
@@ -655,6 +672,7 @@ Each feature is an object with the following properties
 * [`allow_off_transect_observations`](#-allow_off_transect_observations-) (o)
 * [`locations`](#-locations-)
 * [`symbology`](#-features-symbology-) (o)
+* [`label`](#-label-)
 
 ## `features.name`
 This property is required and must be a non-empty text string.
@@ -715,6 +733,7 @@ Starting with Park Observer 2.0.0:
  * providing multiple locations with the same type is an error.
  * multiple locations cannot `allow` both type = `angleDistance` and type = `azimuthDistance`
  * `gps` is ignored if `angleDistance` exists and is `allowed`
+ * `gps` is ignored if `azimuthDistance` exists and is `allowed`
 
 See the [Protocol Guide](Protocol_Guide_V2.html) for details on how the user interface behaves with
 different location types.
@@ -745,18 +764,20 @@ Its use is discouraged, but it may be found in older protocol files.
 `baseline` is ignored if `deadAhead` is provided.
 
 ### `direction`
-This property is optional. If provided it must be one of `cw` or `ccw`. The default is `cw`.
-With `cw`, angles for the `angleDistance` location type will increase in the clockwise direction,
+This property is optional. If provided it must be one of `"cw"` or `"ccw"`. The default is `"cw"`.
+With `"cw"`, angles for the `angleDistance` location type will increase in the clockwise direction,
 otherwise they increase in the counter-clockwise direction.
 
 ### `locations.units`
-This property is optional. If provided it must be one of "feet" or "meters" or "yards". The default is "meters".
-With "meters", distances for the `angleDistance` location type will be assumed to be in meters.
-Otherwise they will be in feet or yards.
+This property is optional. If provided it must be one of `"feet"`, `"meters"` or `"yards"`.
+The default is `"meters"`.
+With `"meters"`, distances for the `angleDistance` or `azimuthDistance` location types
+will be in meters. Otherwise they will be in feet or yards.
 
 ## `features.symbology`
 An optional object as defined in the [symbology](#symbology) section at the end of this document.
 This object defines how an observation of this feature is drawn on the map.
+The default is a 14 point solid red circle.
 
 ## `label`
 This property is optional. If provided it must be an object.  There is no default.
@@ -772,31 +793,31 @@ This `label` object has the following properties:
 
 ### `field`
 This property is optional. If provided it must be a non-empty text string.
-The string must match one of the attribute names for this feature.
+The string must match one of the [attribute names](#-attributes-name-) for this feature.
 It is an error to provide both `field` and `definition` properties.
 
 ### `color`
 This property is optional. If provided it must be an string.  The default is "#FFFFFF" (white)
-The color property is discussed in more detail in the [symbology](#symbology) section at the end of this document.
+See [symbology.color](#-symbology-color-) for more details.
 This property is ignored if the `symbol` or `definition` property is provided.
 
 ### `size`
-This property is optional. If provided it must be an positive number.  The default is 14.0
+This property is optional. If provided it must be an positive number.  The default is 14.0.
 It specifies the size in points of the label text.
-The size property is discussed in more detail in the [symbology](#symbology) section at the end of this document.
+See [symbology.size](#-symbology-size-) for more details.
 This property is ignored if the `symbol` or `definition` property is provided.
 
 ### `symbol`
-This property is optional. If provided it must be an object.  There is no default
-The symbol is a Esri text symbol JSON object.
+This property is optional. If provided it must be an object.  There is no default.
+The symbol is a esri text symbol JSON object.
 See the section on [Esri Objects](#esri-objects) below for more information.
 It is an error if the JSON object is malformed or unrecognized.
 This property is ignored if the `definition` property is provided.
 
 
 ### `definition`
-This property is optional. If provided it must be an object.  There is no default
-The definition is a Esri label definition JSON object.
+This property is optional. If provided it must be an object.  There is no default.
+The definition is a esri label definition JSON object.
 See the section on [Esri Objects](#esri-objects) below for more information.
 It is an error if the JSON object is malformed or unrecognized.
 It is an error to provide both `field` and `definition` properties.
@@ -804,17 +825,17 @@ It is an error to provide both `field` and `definition` properties.
 
 # `csv`
 
-This property is optional. If provided it must be an object.  There is no default
+This property is optional. If provided it must be an object.  There is no default.
 
 This object describes the format of the CSV exported survey data.
 Currently the format of the CSV files output by Park Observer is hard coded.
 This part of the protocol file is ignored by Park Observer, and only used
-by tools that convert the CSV data to an ESRI file geo-databases.
+by tools that convert the CSV data to an esri feature classes.
 
-If provided it must be a object identical to [`csv.json`](csv.json).  If provided, 
-it will be used by post processing tools like the POZ to FGDB translator to understand 
-how the CSV export files are formatted. If it is not provided, the upload server, and 
-the POZ to FGDB translator will use [`csv.json`](csv.json).
+If provided it must be a object identical to [`csv.json`](csv.json).
+It is used by post processing tools like the POZ to FGDB translator to understand 
+how the CSV export files are formatted. If it is not provided, post processing tools  
+will use [`csv.json`](csv.json).
 
 A future version of Park Observer may use this property to allow users to configure 
 the format of the exported CSV files.
@@ -842,22 +863,27 @@ All are required.
  * [`obs_name`](#-obs_name-)
 
 ### `feature_field_map`
-A list of integer column indices from the CSV header, starting with zero, for the columns containing the data for the observed feature tables.
+A list of integer column indices from the CSV header, starting with zero,
+for the columns containing the data for the observed feature tables.
 
 ### `feature_field_names`
-A list of the string field names from the CSV header that will create the observed feature tables.
+A list of the string field names from the CSV header that will create
+the observed feature tables.
 
 ### `feature_field_types`
-A list of the string field types for each column listed in the 'feature_field_names' property.
+A list of the string field types for each column listed in
+the `feature_field_names` property.
 
 ### `feature_key_indexes`
-A list of 3 integer column indices, starting with zero, for the columns containing the time, x and y coordinates of the feature.
+A list of 3 integer column indices, starting with zero, for the columns
+containing the time, x and y coordinates of the feature.
 
 ### `header`
-The header of the CSV file; a list of the column names in order.
+The header of the CSV file; a text string with the column names in order separated by a comma(`,`).
 
 ### `obs_field_map`
-A list of integer column indices from the CSV header, starting with zero, for the columns containing the data for the observer table.
+A list of integer column indices from the CSV header, starting with zero,
+for the columns containing the data for the observer table.
 
 ### `obs_field_names`
 A list of the field names from the CSV header that will create the observed feature table.
@@ -866,13 +892,17 @@ A list of the field names from the CSV header that will create the observed feat
 A list of the field types for each column listed in the `obs_field_names` property.
 
 ### `obs_key_indexes`
-A list of 3 integer column indices, starting with zero, for the columns containing the time, x and y coordinates of the observer.
+A list of 3 integer column indices, starting with zero, for the columns
+containing the time, x and y coordinates of the observer.
 
 ### `obs_name`
-The name of the table in the ESRI geo-database that will contain the data for the observer of the features.
+The name of the table in the esri geo-database that will contain the data
+for the observer of the features.
 
 ## `gps_points`
-An object that describes how to build the GPS point feature class from the CSV file containing the GPS points. The `gps_points` object has the following properties.
+An object that describes how to build the GPS point feature class
+from the CSV file containing the GPS points. The `gps_points` object
+has the following properties.
 All are required.
 
  * [`field_names`](#-field_names-)
@@ -887,13 +917,16 @@ A list of the field names in the header of the CSV file in order.
 A list of the field types in the columns of the CSV file in order.
 
 ### `key_indexes`
-A list of 3 integer column indices, starting with zero, for the columns containing the time, x and y coordinates of the point.
+A list of 3 integer column indices, starting with zero, for the columns
+containing the time, x and y coordinates of the point.
 
 ### `gps_points.name`
-The name of the CSV file, and the table in the ESIR geo-database.
+The name of the CSV file, and the table in the esri geo-database.
 
 ## `track_logs`
-An object that describes how to build the GPS point feature class from the CSV file containing the track logs and mission properties. The track_logs object has the following properties.
+An object that describes how to build the GPS point feature class
+from the CSV file containing the track logs and mission properties.
+The track_logs object has the following properties.
 All are required.
 
  * [`end_key_indexes`](#-end_key_indexes-)
@@ -903,7 +936,8 @@ All are required.
  * [`start_key_indexes`](#-start_key_indexes-)
 
 ### `end_key_indexes`
-A list of 3 integer column indices, starting with zero, for the columns containing the time, x and y coordinates of the first point in the track log.
+A list of 3 integer column indices, starting with zero, for the
+columns containing the time, x and y coordinates of the first point in the track log.
 
 ### `track_logs.field_names`
 A list of the field names in the header of the CSV file in order.
@@ -912,10 +946,11 @@ A list of the field names in the header of the CSV file in order.
 A list of the field types in the columns of the CSV file in order.
 
 ### `track_logs.name`
-The name of the CSV file, and the table in the ESRI geo-database.
+The name of the CSV file, and the table in the esri geo-database.
 
 ### `start_key_indexes`
-A list of 3 integer column indices, starting with zero, for the columns containing the time, x and y coordinates of the last point in the track log.
+A list of 3 integer column indices, starting with zero, for the
+columns containing the time, x and y coordinates of the last point in the track log.
 
 
 
@@ -950,14 +985,14 @@ Starting with Park Observer 2.0.0 an invalid size is an error.
 If the property is missing, then the default is determined by the object being rendered.
 
 ## `"meta-version": 2`
-With version 2, the symbology object can be an ESRI Renderers JSON object. 
+With version 2, the symbology object can be an esri Renderers JSON object. 
 See the section on [Esri Objects](#esri-objects) below for more information.
 It is an error if the object has a `type` property of either `"simple"`,
 `classBreaks"`, or `"uniqueValue"` and does not produce a valid renderer object.
-If the symbology object is not ESRI renderer object, but is empty, or has
+If the symbology object is not esri renderer object, but is empty, or has
 one of the version 1 properties, it is treated as a version 1 symbology object.
 
-When using an ESRI Renderer, it is on you to verify you are using the right type
+When using an esri Renderer, it is on you to verify you are using the right type
 of symbol for the object being rendered (i.e a marker symbols like `esriSMS` for
 points and the line symbol `esriSLM` for track logs).
 
@@ -969,23 +1004,22 @@ with either 0 size, or a fully transparent color.
 # Esri Objects
 
 This section describes the esri JSON objects used in the protocol specification,
-mostly by linking to the online documentation provided by Esri.  However at the time
+mostly by linking to the online documentation provided by esri.  However at the time
 of writing, there are some gaps, particularly with regard to default values.
 These gaps were closed with some testing that is documented below.  These tests are
 valid for Park Observer 2.0.0 which uses version 100.8 of the esri SDK.  I expect that
-these default will remain stable, but since Esri has not documented them, they may
+these default will remain stable, but since esri has not documented them, they may
 change.  If a particular value is important to you it is best to specify it explicitly
 rather than relying on the undocumented default behavior.
 
 ## Text Symbol
 
-The feature label can specify the label format with an Esri text symbol
+The feature label can specify the label format with an esri text symbol
 JSON object as described in the
 [text symbol section of the ArcGIS ReST API](http://resources.arcgis.com/en/help/arcgis-rest-api/#/Symbol_Objects/02r3000000n5000000/).
 
 The minimal text symbol is:
 ```
-
 {
   "type": "esriTS"
 }
@@ -993,7 +1027,6 @@ The minimal text symbol is:
 
 Which comes with the following default values:
 ```
-
 "color": [0, 0, 0, 255]          // opaque black
 "backgroundColor": [0, 0, 0, 0]  // transparent black
 "borderLineSize": 0.0
@@ -1017,26 +1050,23 @@ Which comes with the following default values:
 ```
 
 The runtime SDK has the following text symbol properties
-that are not settable in JSON but have the following defaults:
+that cannot be set in JSON but have the following defaults:
 ```
-
 "angleAlignment": "AGSMarkerSymbolAngleAlignmentScreen"
 "leaderOffsetX": 0.0
 "leaderOffsetY": 0.0
-"outline" : { "style": "esriSLSSolid" }
+"outline": { "style": "esriSLSSolid" }
 ```
-
-Documented text symbol properties not supported in the SDK
+The following documented text symbol property is supported in the Runtime SDK
 ```
-
 "rightToLeft": false
 ```
 
 ## Label Definition
-The feature label can specify the label format with an Esri label definition
+The feature label can specify the label format with an esri label definition
 JSON object as defined in the
 [Web map specification](https://developers.arcgis.com/web-map-specification/objects/labelingInfo/)
-for label definition.
+for labelingInfo.
 **NOTE:** "In order to provide a more accurate representation
 of labels created in ArcGIS Pro (for a mobile map package, for example), ArcGIS
 Runtime defines additional JSON properties that are not included in the Web map
@@ -1051,36 +1081,35 @@ and https://developers.arcgis.com/ios/latest/api-reference/interface_a_g_s_label
 
 A simple example which labels the feature with the id number if it is greater than 10.
 Using the default text symbol (see above), and the default labeling properties
-(text above and right of the point)
+(see references)
 ```
 {
   "labelExpression": "[id]",
-  "where" : "id > 10"
+  "where": "id > 10"
 }
 ```
 
-Using Arcade which labels the feature a capitalized first letter of the name.
+Using Arcade which labels the feature with the capitalized first letter of the name.
 ```
-
 {
-  "labelExpressionInfo": {"expression": "Upper(Left($feature.name, 1))"},
+  "labelExpressionInfo": {"expression": "Upper(Left($feature.name, 1))"}
 }
 ```
 
-Using a simple expression to concatenate multiple values with static text and a newline.
+Using a simple expression to concatenate multiple values with static text and a newline.  A test symbol is used to increase the font size.
 ```
-
 {
   "labelExpression":  "\"Name: \" CONCAT [name] CONCAT NEWLINE CONCAT \"id: \" CONCAT [id]",
+  "symbol": { "type": "esriTS", "font": {"size": 18} }
 }
 ```
 
 
 ## Renderers
 
-Features and several properties of the mission can specify the symbology format with an Esri renderer
-JSON object as described in the
-[renderer object in the ArcGIS ReST API](https://developers.arcgis.com/documentation/common-data-types/renderer-objects.htm).
+Features and several properties of the mission can specify the symbology format with an esri renderer
+JSON object as described in
+[Renderer objects in the ArcGIS ReST API](https://developers.arcgis.com/documentation/common-data-types/renderer-objects.htm).
 Each renderer has a `"type"` property which is required and must be one of 
 
 * `"simple"` for a simple (single symbol) renderer
@@ -1090,7 +1119,6 @@ Each renderer has a `"type"` property which is required and must be one of
 ### Simple Renderer
 The minimal simple renderer is:
 ```
-
 {
   "type": "simple"
 }
@@ -1098,7 +1126,6 @@ The minimal simple renderer is:
 
 Which comes with the following default values:
 ```
-
 "symbol": null
 "label": ""
 "description": ""
@@ -1107,12 +1134,11 @@ Which comes with the following default values:
 ```
 
 This renderer is useless, as it has no symbol.  An appropriate symbol (as discussed below)
-needs to be provided for the appropriate geometry type of the feature being symbolized.
+needs to be provided to match the geometry of the feature being symbolized.
 
 ### Unique Value Renderer:
 Similarly, the minimal (although useless) unique value renderer is:
 ```
-
 {
   "type": "uniqueValue"
 }
@@ -1120,7 +1146,6 @@ Similarly, the minimal (although useless) unique value renderer is:
 
 Which comes with the following default values:
 ```
-
 "field1": null
 "field2": null
 "field3": null
@@ -1134,7 +1159,6 @@ Which comes with the following default values:
 
 A more useful example is:
 ```
-
 {
   "type": "uniqueValue",
   "field1": "name",
@@ -1160,15 +1184,14 @@ A more useful example is:
 The defaults in this case are:
 
 ```
-
 "field3": null
 "defaultLabel": ""
 "rotationType": "geographic"
 "rotationExpression": ""
 ```
+
 And for each item in the `uniqueValueInfos` list the defaults are 
 ```
-
 "label": ""
 "description": ""
 ```
@@ -1176,13 +1199,12 @@ And for each item in the `uniqueValueInfos` list the defaults are
 **NOTE:** `uniqueValueInfos.value` is a single string regardless of the number or type
 of fields used. If more than 1 field is used, then `fieldDelimiter` is required and must
 be included in the `uniqueValueInfos.value` string to separate the values.  There must
-be same number of values as there are fields defined. 
+be same number of values in the `uniqueValueInfos.value` string as there are fields defined. 
 
 
 ### Class Breaks Renderer:
 Similarly, the minimal valid (although useless) class breaks renderer is:
 ```
-
 {
   "type": "classBreaks"
 }
@@ -1190,7 +1212,6 @@ Similarly, the minimal valid (although useless) class breaks renderer is:
 
 This has the following defaults:
 ```
-
 "field": null
 "classificationMethod": "esriClassifyManual"
 "normalizationType": "esriNormalizeNone"
@@ -1206,8 +1227,8 @@ This has the following defaults:
 ```
 
 While not defined in https://developers.arcgis.com/documentation/common-data-types/renderer-objects.htm
-the known classification methods in the SDK are. Only `esriClassifyManual` (the default) is mentioned
-in the documentation.
+the known classification methods in the SDK are listed here.
+Only `esriClassifyManual` (the default) is mentioned in the documentation.
 
 * `esriClassifyDefinedInterval`
 * `esriClassifyEqualInterval`
@@ -1219,11 +1240,10 @@ in the documentation.
 
 A more useful minimal example is:
 ```
-
 {
   "type": "classBreaks",
   "field": "age",
-  "minValue" : 0,
+  "minValue": 0,
   "defaultSymbol": {"type":"esriSMS", "size": 5},
   "classBreakInfos": [{
     "classMaxValue": 25,
@@ -1237,7 +1257,6 @@ A more useful minimal example is:
 
 The defaults in this case are:
 ```
-
 "classificationMethod": "esriClassifyManual"
 "normalizationType": "esriNormalizeNone"
 "normalizationField": null
@@ -1250,7 +1269,6 @@ The defaults in this case are:
 
 And for each item in the `classBreakInfos` list the defaults are 
 ```
-
 "classMinValue": null (NaN)
 "label": ""
 "description": ""
@@ -1267,7 +1285,6 @@ and the [Runtime SDK Documentation](https://developers.arcgis.com/documentation/
 ### Simple Marker Symbol
 The minimal simple marker symbol (for points) is:
 ```
-
 {
   "type": "esriSMS"
 }
@@ -1275,9 +1292,9 @@ The minimal simple marker symbol (for points) is:
 
 Which comes with the following default values:
 ```
-
 "style": "esriSMSCircle"
 "color":  [211, 211, 211, 255] // Light Gray (82% white); Opaque
+"outline": null
 "size": 8.0
 "angle": 0.0
 "xoffset": 0.0
@@ -1294,26 +1311,23 @@ With a minimal outline, it is:
 
 The `outline` object comes with the following default values:
 ```
-
-"width": 1.0
-"color": [211, 211, 211, 255]
+"color": [211, 211, 211, 255] // Light Gray (82% white); Opaque
 "style": "esriSLSSolid"
+"width": 1.0
 ```
 
 The runtime SDK has the following simple marker symbol properties
-that are not settable in JSON but have the following defaults:
+that cannot be set in JSON but have the following defaults:
 ```
-
 "angleAlignment": "AGSMarkerSymbolAngleAlignmentScreen"
 "leaderOffsetX": 0.0
 "leaderOffsetY": 0.0
-"outline" : { "style": "esriSLSSolid" }
+"outline": { "style": "esriSLSSolid" }
 ```
 
 ### Simple Line Symbol
 The minimal simple line symbol is:
 ```
-
 {
   "type": "esriSLS"
 }
@@ -1321,16 +1335,14 @@ The minimal simple line symbol is:
 
 Which comes with the following default values:
 ```
-
-"style": "esriSLSSolid"
 "color": [211, 211, 211, 255] // Light Gray (82% white); Opaque
+"style": "esriSLSSolid"
 "width": 1.0
 ```
 
 The runtime SDK has the following simple line symbol properties
-that are not settable in JSON but have the following defaults:
+that cannot be set in JSON but have the following defaults:
 ```
-
 "antialias": false
 "markerPlacement": "AGSSimpleLineSymbolMarkerPlacementEnd"
 "markerStyle": "AGSSimpleLineSymbolMarkerStyleNone"
@@ -1339,7 +1351,6 @@ that are not settable in JSON but have the following defaults:
 ### Picture Marker Symbol
 The minimal picture marker symbol is:
 ```
-
 {
 "type": "esriPMS"
 }
@@ -1353,7 +1364,6 @@ must be available when running the app, or the image will not display.
 
 The minimal picture marker symbol comes with the following default values:
 ```
-
 "url": ""
 "imageData": ""
 "contentType": ""
@@ -1365,9 +1375,8 @@ The minimal picture marker symbol comes with the following default values:
 ```
 
 The runtime SDK has the following simple line symbol properties
-that are not settable in JSON but have the following defaults:
+that cannot be set in JSON but have the following defaults:
 ```
-
 "angleAlignment": "AGSMarkerSymbolAngleAlignmentScreen"
 "leaderOffsetX": 0.0
 "leaderOffsetY": 0.0

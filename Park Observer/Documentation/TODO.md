@@ -129,7 +129,6 @@ These issues are in software provided by others (Apple, Esri). If they become a 
 
 # Documentation
   * Post new specs and schema to existing website.
-  * Edit/Cleanup the Park Observer 2.0 section of specs in the new project
   * Create a simple how to document with screenshots
   * Contributing guidelines - step by step processes for:
     - fixing bugs
