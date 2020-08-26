@@ -795,6 +795,7 @@ This `label` object has the following properties:
 This property is optional. If provided it must be a non-empty text string.
 The string must match one of the [attribute names](#-attributes-name-) for this feature.
 It is an error to provide both `field` and `definition` properties.
+It is an error if neither a `field` nor `definition` property is provided.
 
 ### `color`
 This property is optional. If provided it must be an string.  The default is "#FFFFFF" (white)
@@ -814,13 +815,13 @@ See the section on [Esri Objects](#esri-objects) below for more information.
 It is an error if the JSON object is malformed or unrecognized.
 This property is ignored if the `definition` property is provided.
 
-
 ### `definition`
 This property is optional. If provided it must be an object.  There is no default.
 The definition is a esri label definition JSON object.
 See the section on [Esri Objects](#esri-objects) below for more information.
 It is an error if the JSON object is malformed or unrecognized.
 It is an error to provide both `field` and `definition` properties.
+It is an error if neither a `field` nor `definition` property is provided.
 
 
 # `csv`

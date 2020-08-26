@@ -646,6 +646,11 @@ extension Label: Codable {
         let message = "Cannot initialize label; one of field or definition must be provided"
         throw corruptError(message: message)
       }
+      // field and definition cannot both be provided
+      if field != nil && definition != nil {
+        let message = "Cannot initialize label; do not provide both field and definition"
+        throw corruptError(message: message)
+      }
     }
 
     self.init(

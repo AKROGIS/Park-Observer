@@ -962,16 +962,6 @@ class FeatureTests: XCTestCase {
       """
       {
         "label": {
-          "field": "Count",
-          "color": "#FF0000",
-          "size": 45.6,
-          "symbol": {
-            "type": "esriTS",
-            "color": [0,255,0,255],
-            "font": {
-              "size": 15,
-            }
-          },
           "definition": {
             "labelPlacement": "esriServerPointLabelPlacementAboveRight",
             "labelExpression": "[Count]",
@@ -1000,6 +990,51 @@ class FeatureTests: XCTestCase {
       // for testing.  We have to trust the decoder to ensure that if it is not
       // nil then it is valid.
     }
+  }
+
+  func testFeatureLabelErrorDefinitionAndField() {
+    // Given:
+    struct TestJson: Codable {
+      let label: Label
+    }
+    let jsonData = Data(
+      """
+      {
+        "label": {
+          "field": "Count",
+          "definition": {
+            "labelExpression": "[Count]"
+          }
+        }
+      }
+      """.utf8)
+
+    // When:
+    let json = try? JSONDecoder().decode(TestJson.self, from: jsonData)
+
+    // Then:
+    XCTAssertNil(json)
+  }
+
+  func testFeatureLabelErrorNoDefinitionNoField() {
+    // Given:
+    struct TestJson: Codable {
+      let label: Label
+    }
+    let jsonData = Data(
+      """
+      {
+        "label": {
+          "color": "#FF0000"
+        }
+      }
+      """.utf8)
+
+    // When:
+    let json = try? JSONDecoder().decode(TestJson.self, from: jsonData)
+
+    // Then:
+    XCTAssertNil(json)
   }
 
   //MARK: - Feature Attributes
