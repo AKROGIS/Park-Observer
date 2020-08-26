@@ -4,10 +4,11 @@ Protocol Specification -- 2.0
 *This document is for Park Observer 2.0.  If you are still using Park Observer 1.x
 please see [this version](Protocol_Specification_V1.html).* 
 
-*If you just want a protocol for a new survey, please start with the
+*If you are new to Park Observer, please start with the
 [tutorial instructions](../new_survey.html) and [examples](../protocols/).*
 
-This document is a technical reference for the structure and accepted content of the Park Observer protocol file.
+This document is a technical reference for the structure and accepted content of the
+Park Observer protocol file,
 A more general reference can be found in the [Protocol Guide](Protocol_Guide_V2.html)
 
 This specification describes version 1 (v1) and 2 (v2) of the protocol file.
@@ -56,6 +57,11 @@ This specification and the related schema documents, define the proper format of
 For example Park Observer might provide default values when a required value is missing,
 or accept different spellings, but that behavior is subject to change without notice.
 
+Starting with Park Observer 2.0, creating a new survey will use strict validation
+rules on the `obsprot` file.  This may cause the survey creation to fail, even though
+an existing survey will still load with the same `obsprot` file. An `obsprot` file that
+fails validation must be corrected before it can be used in a new survey.
+
 The JSON object in the protocol file understands properties with the following names.
 Properties can appear in any order, but usually in the order shown.
 Properties marked with an (o) are optional; the others are required.
@@ -74,6 +80,8 @@ Properties marked with an (o) are optional; the others are required.
 * [`mission`](#-mission-) (o)
 * [`features`](#-features-)
 * [`csv`](#-csv-) (o)
+* [`tracklogs`](#-tracklogs-) (o)(v2)
+* [`transects`](#-transects-) (o)(v2)
 
 Each of these properties are defined in the following sections.
 
@@ -158,19 +166,24 @@ application is recording __but not__ observing (i.e. off-transect).
 This property is ignored in versions of Park Observer before 0.9.8b.
 
 # `status_message_fontsize`
-This property is optional. If provided it must be a number. If omitted or invalid it will default to `16.0`.
-This property specifies the size (in points, i.e. 1/72 of an inch) of the `notobserving` text.
-The `observing` text will always be 2.0 points larger, bold, and red.
-This property is ignored if `notobserving` and `observing` are not provided.
+This property is optional. If provided it must be a positive number.
+If omitted or invalid it will default to `16.0`.
+This property specifies the size (in points, i.e. 1/72 of an inch) of
+the `notobserving` and `observing` text.
 
 This property is ignored in versions of Park Observer before 1.2.0.
+Starting with Park Observer 2.0.0 this property is ignored.  The font
+size is determined by the standard system font which can be managed with
+the settings app. 
 
 # `cancel_on_top`
 This property is optional.  If provided it must be `true` or `false`. The default is `false`.
-If `true` the attribute editors will put the **Cancel/Delete** button on the top of
-the attribute editing forms, otherwise the button will be on the bottom of the form.
+If `true` the attribute editors will put the buttons (Cancel, Delete, Move, Save, ...) on the
+top of the attribute editing forms, otherwise the button will be on the bottom of the form.
 
 This property is ignored in versions of Park Observer before 0.9.8b.
+Starting with Park Observer 2.0.0, this property is ignored.  It can be set by the
+user in the settings.
 
 # `gps_interval`
 This property is optional.  If provided it must be a positive number.  There is no default.
@@ -185,6 +198,33 @@ Using an interval greater than the GPS can support may reduce battery consumptio
 
 This property is ignored in versions of Park Observer before 0.9.8b.
 
+# `tracklogs`
+This property is optional. If provided it must be one of the following stings.  The default is `"required"`.
+This property determines if a track log is desired or required.
+
+This property is ignored in versions of Park Observer before 2.0.
+
+ * `none` - The start/stop track log button is not available, and track logs are never collected.
+ * `optional` - The user can start/stop observing regardless of the state of track logging.
+ * `required` - The user must start a track log before they can start observing.
+
+# `transects`
+This property is optional. If provided it must be one of the following stings.  The default is `"per-feature"`.
+This property determines the requirements for making an observation.
+If `"tracklogs": "required"`, then observations can only be made when track logging despite the state
+of this property.
+
+This property is ignored in versions of Park Observer before 2.0.
+
+ * `none` - The start/stop survey (observing/transect) button is not available;
+   It is assumed that the user is always observing, and observations can be made any time
+   This sets the `allow_off_transect_observations` property of all features to `true`
+ * `optional` - The user can add an observation at any time, regardless of the state of surveying (observing/transect).
+   This sets the `allow_off_transect_observations` property of all features to `true`
+ * `required` - The user must start a survey (observing/transect) before they can add an observation.
+   This sets the `allow_off_transect_observations` property of all features to `false`
+ * `per-feature` - The user can add an observation of a feature based on the state of the feature's
+   `allow_off_transect_observations` property.
 
 
 # `mission`
@@ -192,7 +232,7 @@ This property is ignored in versions of Park Observer before 0.9.8b.
 This property is optional.  If provided it must be an object.  There is no default.
 This object describes the attributes and symbology of the survey mission.
 The attributes are things that may be constant for the entire survey, i.e. observer name, as
-well as dynamic attributes like the weather.
+well as dynamic attributes like the weather that may apply to many observations.
 It also describes the look and feel of the editing form and when the attributes should be edited.
 
 A `mission` object has the following properties:
@@ -204,7 +244,7 @@ A `mission` object has the following properties:
 * [`edit_at_start_reobserving`](#-edit_at_start_reobserving-)(o)(v2)
 * [`edit_prior_at_stop_observing`](#-edit_prior_at_stop_observing-) (o)(v2)
 * [`edit_at_stop_observing`](#-edit_at_stop_observing-) (o)(v2)
-* [`symbology`](#-symbology-)
+* [`symbology`](#-symbology-) (o)
 * [`on-symbology`](#-on-symbology`-) (o)
 * [`off-symbology`](#-off-symbology-) (o)
 * [`gps-symbology`](#-gps-symbology-) (o)(v2)
@@ -220,10 +260,9 @@ stopped and started observing (i.e. went on/off transect). The mission
 attributes are often things like the names of the observers, and the weather.
 
 All the attributes default to a value of `null` until they are edited.
-The exceptions are boolean attributes which defaults to `false`, and `id` attributes which default to `1`.
+The exception is the `id` attribute which starts at `1` and increments by `1` for each each observation.
+The `id` attribute can provide each observation with an automatic, unique, and sequential identifier.
 All attributes, except the `id` will never change unless you also have a `dialog` property.
-An Attribute of type `id` only applies to features, and is incremented for each observation.
-This can provide each feature with an automatic, unique, and sequential identifier.
 
 If there is an attribute list then there must be at least one valid attribute object in it.
 Each `attribute` has the following properties:
@@ -265,6 +304,7 @@ These numbers (with the exception of 0) correspond with NSAttributeType in the i
 -	1000 -> binary blob (? no UI support, check on ESRI support)
 
 The type 0 is ignored in versions of Park Observer before 0.9.8.
+Only one attribute can have a type of 0.
 
 ### `required`
 This property is optional. If provided it must be `true` or `false`. The default is `false`.
@@ -289,11 +329,6 @@ A dialog is not required because it is possible that the only attribute is a seq
 not editable and requires no dialog, or that the database schema is defined
 by other drivers, and some attributes are not collected in the survey.
 
-The dialog properties are based on the [QuickDialog](https://github.com/escoz/QuickDialog) as
-the form editor. While QuickDialog may have supported more properties than defined
-below, the following are the only ones typically used by Park Observer and the only
-ones that will be supported in the future.
-
  * `title`
  * `grouped` (o)
  * `sections`
@@ -305,8 +340,8 @@ It is typically either `"Mission Properties"`or the name of the feature.
 
 ### `grouped`
 This property is optional.  If provided it must be a boolean.  The default is `false`.
-This property determines if the sections in this form are grouped
-(i.e. There is visual separation between sections).
+Starting with Park Observer 2.0.0, this property has no effect (sections are visually distinct,
+and `grouped` does not render any differently).
 
 ### `sections`
 This property is requires and must be a list of one or section objects.
@@ -398,16 +433,20 @@ It is the zero based index of the initially selected item from the list of items
 If not provided, nothing is selected initially.
 
 ##### `boolValue`
-This property is optional.  If provided it must be an integer value of 0 or 1.  The default is 0 (false).
+This property is optional.  If provided it must be an integer value of 0 or 1.  There is no default.
 This property is the initial value for the `QBooleanElement`. It is ignored by all other types.
 
 ##### `minimumValue`
-This property is optional.  If provided it must be number.  The default is 0.
-This is the minimum value allowed in `QIntegerElement`.
+This property is optional.  If provided it must be number.
+This is the minimum value allowed in `QIntegerElement` or `QDecimalElement`.
+The default is 0 if `type` is `QIntegerElement`, otherwise there is no default
+and the minimum value is determined by the `attribute.type`.
 
 ##### `maximumValue`
-This property is optional.  If provided it must be number.  The default is 100.
-This is the maximum value allowed in `QIntegerElement`.
+This property is optional.  If provided it must be number.
+This is the maximum value allowed in `QIntegerElement` or `QDecimalElement`.
+The default is 100 if `type` is `QIntegerElement`, otherwise there is no default
+and the minimum value is determined by the `attribute.type`.
 
 ##### `numberValue`
 This property is optional.  If provided it must be number.   There is no default.
@@ -424,11 +463,12 @@ This is the background text to put in a text box to suggest to the user what to 
 
 ##### fractionDigits
 This property is optional.  If provided it must be an integer.   There is no default.
-This is a limit on the number of digits to be shown after the decimal point. Only
+This is a limit on the number of digits to be shown after the decimal point. It is only
 used by `QDecimalElement`.
 
 ##### `keyboardType`
-This property is optional.  If provided it must be one of the text strings below (**It must match in capitalization**).  The default is `"Default"`.
+This property is optional.  If provided it must be one of the text strings below.
+The default is `"Default"`.
 This determines what kind of keyboard will appear when text editing is required.
 
  * `Default`
@@ -444,9 +484,10 @@ This determines what kind of keyboard will appear when text editing is required.
  * `Alphabet`
 
 ##### `autocorrectionType`
-This property is optional.  If provided it must be one of the text strings below (**It must match in capitalization**).  The default is `"Default"`.
+This property is optional.  If provided it must be one of the text strings below.
+The default is `"Default"`.
 This determines if a text box will auto correct (fix spelling) the user's typing.
-`Default` allows iOS to decide when to apply autocorrection.  If you have a preference, choose
+`Default` allows iOS to decide when to apply auto correction.  If you have a preference, choose
 one of the other options.
 
  * `Default`
@@ -454,7 +495,8 @@ one of the other options.
  * `Yes`
 
 ##### `autocapitalizationType`
-This property is optional.  If provided it must be one of the text strings below (**It must match in capitalization**).  The default is `"None"`.
+This property is optional.  If provided it must be one of the text strings below.
+The default is `"None"`.
 This determines if and how a text box will auto capitalize the user's typing.
 
  * `None`
@@ -509,9 +551,9 @@ If both are set to true, `edit_prior_at_stop_observing` is ignored.
 This property is ignored in versions of Park Observer before 1.2.0.
 
 ## `symbology`
-A required object as defined in the [symbology](#symbology) section at the end of this document.
+An optional object as defined in the [symbology](#symbology) section at the end of this document.
 This object defines how a mission properties point is drawn on the map.  This point occurs
-when starting recording, starting/stoping recording, and when editing the mission attributes.
+when starting recording, starting/stopping observing, and when editing the mission attributes.
 
 ## `on-symbology`
 An optional object as defined in the [symbology](#symbology) section at the end of this document.
@@ -561,14 +603,19 @@ The `totalizer` has the following properties
 * `units` (o)
 
 ### `fields`
-This property is optional. If provided it must be a list of one or more strings. There is no default.
-The list contains attribute names. When any of the attribute in this list change, a different total is displayed.
-The attributes in the list must be in referenced in the
-mission dialog (so that it can be changed -- monitoring a unchanging field is pointless).
+This property is optional. If provided it must be a list of one or more strings.
+There is no default. The list contains attribute names. When any of the attribute 
+in this list change, a different total is displayed. The attributes in the list must 
+be in referenced in the mission dialog (so that it can be changed -- monitoring a 
+unchanging field is pointless).  The names in the list must be unique.
 
 ### `fontsize`
-This property is optional. If provided it must be a number. The default is 14.0.
+This property is optional. If provided it must be a positive number. The default is 14.0.
 This property indicates the size (in points) of the totalizer text.
+
+Starting with Park Observer 2.0.0 this property is ignored.  The font
+size is determined by the standard system font which can be managed with
+the settings app.
 
 ### `includeon`
 This property is optional. If provided it must be a boolean. The default is true.
@@ -584,9 +631,9 @@ This property is optional. If provided it must be a boolean. The default is fals
 This property indicates if the total regardless of "observing" status should be displayed.
 
 ### `units`
-This property is optional. If provided it must be a string. The default is "kilometers".
+This property is optional. If provided it must be a string. The default is `"kilometers"`.
 The property indicates the kind of total to display.
-It must be one of "kilometers", "miles" or "minutes".
+It must be one of `"kilometers"`, `"miles"` or `"minutes"`.
 
 
 
@@ -607,7 +654,7 @@ Each feature is an object with the following properties
 * `dialog` (o)
 * `allow_off_transect_observations` (o)
 * `locations`
-* `symbology`
+* `symbology` (o)
 
 ## `name`
 This property is required and must be a non-empty text string.
@@ -615,6 +662,7 @@ Each feature name must be unique name. The name is used in the interface to let 
 user choose among different feature types. All the observation in one feature will
 be exported in a CSV file with this name, and a geo-database table with this name.
 It should be short and descriptive.
+Starting with Park Observer 2.0.0, this string must be 10 characters or less.
 
 ## `attributes`
 An optional list of attributes to collect for this feature.
@@ -635,7 +683,8 @@ This property is ignored in versions of Park Observer before 1.2.0.
 
 ## `locations`
 This property is required and must be an array of one or more location objects.
-A location is an object that describes the permitted techniques for specifying the location of an observation. A location is defined by the following properties:
+A location is an object that describes the permitted techniques for specifying
+the location of an observation. A location is defined by the following properties:
 
 * `type`
 * `allow` (o)
@@ -660,8 +709,12 @@ used in new protocol files, but may still exist in older files.
 
 `azimuthDistance` is ignored in versions of Park Observer before 2.0.0.
 
-**Important:** Providing multiple locations with the same type is not prohibited,
- but it is discouraged as the behavior is undefined.
+Starting with Park Observer 2.0.0:
+
+ * `mapTarget` is ignored (there is no map target).
+ * providing multiple locations with the same type is an error.
+ * multiple locations cannot `allow` both type = `angleDistance` and type = `azimuthDistance`
+ * `gps` is ignored if `angleDistance` exists and is `allowed`
 
 See the [Protocol Guide](Protocol_Guide_V2.html) for details on how the user interface behaves with
 different location types.
@@ -677,6 +730,9 @@ This is used to determine which "allowed" non-touch location method should be us
 by default (until the user specifies their preference).
 Only one non-touch locations should have a true value, otherwise the behavior is undefined.
 
+Starting with Park Observer 2.0.0, this property is ignored.  With the removal of `mapTarget`,
+there is no longer confusion as to which location type applies in a given situation.
+
 ### `deadAhead`
 This property is optional. If provided it must be a number between 0.0 and 360.0. The default is 0.0.
 The numeric value provided is the angle measurement in degrees that means the feature is dead ahead
@@ -685,6 +741,7 @@ The numeric value provided is the angle measurement in degrees that means the fe
 ### `baseline` (deprecated)
 This property is a deprecated synonym for `deadAhead`.
 Its use is discouraged, but it may be found in older protocol files.
+`baseline` is ignored if `deadAhead` is provided.
 
 ### `direction`
 This property is optional. If provided it must be one of `cw` or `ccw`. The default is `cw`.
@@ -697,7 +754,7 @@ With "meters", distances for the `angleDistance` location type will be assumed t
 Otherwise they will be in feet or yards.
 
 ## `symbology`
-A required object as defined in the [symbology](#symbology) section at the end of this document.
+An optional object as defined in the [symbology](#symbology) section at the end of this document.
 This object defines how an observation of this feature is drawn on the map.
 
 ## `label`
@@ -706,31 +763,42 @@ The label object defines how the feature will be labeled on the map.
 
 This `label` object has the following properties:
 
-* `field`
+* `field` (o)
 * `color` (o)
 * `size` (o)
 * `symbol` (o)
+* `definition` (o)
 
 ### `field`
-This property is required and must be a non-empty text string.
+This property is optional. If provided it must be a non-empty text string.
 The string must match one of the attribute names for this feature.
-If the `field` is not provided, or can't be found in the feature attributes, no label is shown.
+It is an error to provide both `field` and `definition` properties.
 
 ### `color`
 This property is optional. If provided it must be an string.  The default is "#FFFFFF" (white)
 The color property is discussed in more detail in the [symbology](#symbology) section at the end of this document.
+This property is ignored if the `symbol` or `definition` property is provided.
 
 ### `size`
-This property is optional. If provided it must be an number.  The default is 14.0
+This property is optional. If provided it must be an positive number.  The default is 14.0
 It specifies the size in points of the label text.
 The size property is discussed in more detail in the [symbology](#symbology) section at the end of this document.
+This property is ignored if the `symbol` or `definition` property is provided.
 
 ### `symbol`
 This property is optional. If provided it must be an object.  There is no default
-The symbol is a JSON object as described in the Text Symbol section of the ArcGIS ReST API (http://resources.arcgis.com/en/help/arcgis-rest-api/#/Symbol_Objects/02r3000000n5000000/)
-If the JSON object is malformed or unrecognized, then it is ignored in deference to the color and size properties.
-If the symbol is valid, then the `size` and `color` properties  of `label` are ignored.
+The symbol is a Esri text symbol JSON object.
+See the section on [Esri Objects](#esri-objects) below for more information.
+It is an error if the JSON object is malformed or unrecognized.
+This property is ignored if the `definition` property is provided.
 
+
+### `definition`
+This property is optional. If provided it must be an object.  There is no default
+The definition is a Esri label definition JSON object.
+See the section on [Esri Objects](#esri-objects) below for more information.
+It is an error if the JSON object is malformed or unrecognized.
+It is an error to provide both `field` and `definition` properties.
 
 
 # `csv`
@@ -742,9 +810,13 @@ Currently the format of the CSV files output by Park Observer is hard coded.
 This part of the protocol file is ignored by Park Observer, and only used
 by tools that convert the CSV data to an ESRI file geo-databases.
 
-If provided it must be a object identical to [`csv.json`](csv.json).  If provided, it will be used by post processing tools like the POZ to FGDB translator to understand how the CSV export files are formatted. If it is not provided, the upload server, and the POZ to FGDB translator will use [`csv.json`](csv.json).
+If provided it must be a object identical to [`csv.json`](csv.json).  If provided, 
+it will be used by post processing tools like the POZ to FGDB translator to understand 
+how the CSV export files are formatted. If it is not provided, the upload server, and 
+the POZ to FGDB translator will use [`csv.json`](csv.json).
 
-A future version of Park Observer may use this property to allow users to configure the format of the exported CSV files.
+A future version of Park Observer may use this property to allow users to configure 
+the format of the exported CSV files.
 
 The CSV object has the following properties.  All are required.
 
@@ -849,16 +921,14 @@ A list of 3 integer column indices, starting with zero, for the columns containi
 # Symbology
 The symbology that Park Observer understands changed at 0.9.8.  Before that, only version 1
 symbology was understood.  After that it depended on which `meta-version` the document
-specified.
+specified.  Starting with Park Observer 2.0.0, both versions of the symbology are
+understood correctly, regardless of the `meta-version` of the document.
 
 ## `"meta-version": 1`
 In version 1, the symbology object had only two optional properties.  If the symbology
-property was missing in versions of Park Observer before 2.0, then there would be no
-symbology for that item and it would not be drawn on the map.  However if an empty object
-was provided, then Park Observer would use the default values specified in the individual
-symbology properties.  The default values would also be provided if any of the following
-properties were missing or invalid.  The version 1 symbology object has the following
-properties
+property is missing, empty or incomplete then Park Observer will use the default symbology
+specified in the individual objects above. The version 1 symbology object has the following
+properties:
 
 * `color`
 * `size`
@@ -867,329 +937,221 @@ properties
 This property is optional. If provided it must be a text string. There is no default.
 The color element is a string in the form "#FFFFFF"
 where F is a hexadecimal digit (0-9,A-F).
-The Hex pairs represent the Red, Green, and Blue respectively.
-If the string is missing, or malformed, then the ESRI mapping framework was free to choose
-a default value.  Typically this was black.
+The hex pairs represent the intensity of Red, Green, and Blue respectively.
+Starting with Park Observer 2.0.0 a malformed color string is an error.
+If the property is missing, then the default is determined by the object being rendered.
 
 ### `size`
-This property is optional. If provided it must be a number. There is no default.
+This property is optional. If provided it must be a non-negative number. There is no default.
 The size is a number for the diameter in points of the simple circle marker symbol,
 or the width of a simple solid line.
-If the number is missing, or invalid, then the ESRI mapping framework was free to choose
-a default value at one point this was 6 points for diameter, and 1 point for width.
+Starting with Park Observer 2.0.0 an invalid size is an error.
+If the property is missing, then the default is determined by the object being rendered.
 
 ## `"meta-version": 2`
-With version 2, the symbology object was specified by the JSON format for ESRI Renderers
-as defined in the [renderer object in the ArcGIS ReST API](https://developers.arcgis.com/documentation/common-data-types/renderer-objects.htm).
-This is the format that ESRI uses when building web maps for AGOL.
-Depending on which version of the ESRI mapping SDK that Park Observer is using,
-some of the properties may be optional (the `type` property is always required).
-However the default value provided may vary with different versions. To be
-safest, do not rely on default values, and always test your symbology before
-distributing your protocol file.
+With version 2, the symbology object can be an ESRI Renderers JSON object. 
+See the section on [Esri Objects](#esri-objects) below for more information.
+It is an error if the object has a `type` property of either `"simple"`,
+`classBreaks"`, or `"uniqueValue"` and does not produce a valid renderer object.
+If the symbology object is not ESRI renderer object, but is empty, or has
+one of the version 1 properties, it is treated as a version 1 symbology object.
 
-When using version2 symbology, it is on you to verify you are using the right type
-of symbol (marker symbols like `esriSMS` for points and `esriSLM` for lines).
-
-If the symbol object was invalid, a 12 point green circle was provided for points.
-The default line symbol by property in the mission property.
+When using an ESRI Renderer, it is on you to verify you are using the right type
+of symbol for the object being rendered (i.e a marker symbols like `esriSMS` for
+points and the line symbol `esriSLM` for track logs).
 
 If you wish to not draw the track logs or GPS points, then you need to provide valid symbology
 with either 0 size, or a fully transparent color.
 
 
 
-# Park Observer 2.0
+# Esri Objects
 
-Changes implemented in 2.0 which effect the processing of version 1 and 2 protocol files.
+This section describes the esri JSON objects used in the protocol specification,
+mostly by linking to the online documentation provided by Esri.  However at the time
+of writing, there are some gaps, particularly with regard to default values.
+These gaps were closed with some testing that is documented below.  These tests are
+valid for Park Observer 2.0.0 which uses version 100.8 of the esri SDK.  I expect that
+these default will remain stable, but since Esri has not documented them, they may
+change.  If a particular value is important to you it is best to specify it explicitly
+rather than relying on the undocumented default behavior.
 
- * Additional testing and validation of Attribute names and types
- * Removed support for undocumented synonyms in Locations
-   - except `adhocTouch`, `adhocTarget` and `baseline`, which were present in existing published protocols.
-     These synonyms have been deprecated and are no longer present in published protocols.
-     Please remove from private protocols.
-   - If `baseline` and `deadAhead` are both provided, `baseline` is ignored.
- * Symbology is no longer required, and a few bugs in providing defaults have been fixed.
- * Negative font and symbology sizes are rejected with an error.
- * Bad color strings in symbology are rejected with an error.
- * feature names are limited to 10 characters.
- * Additional constraints and testing of the fields in Totalizer.
- * feature.location.type must be unique
- * feature.locations cannot `allow` both type = `angleDistance` and type = `azimuthDistance`
- * Version 1 and version 2 symbology are both supported in both versions of the protocol file.
- * Added an optional `definition` property to feature label to support ESRI label definition JSON.
- * Made label.field optional. It will be ignored and can be omitted if label.definition is provided. Size, color, and symbol will also be ignored if label.definition is provided.
- * some properties of dialog elements are no longer case sensitive: autocapitalizationType, autocorrectionType, and keyboardType
- * Dialog.grouped is ignored (sections are visually distinct, and `grouped` does not render any differently)
- * feature.locations.type = "mapTarget" is not supported
- * feature.locations.default is ignored
- * feature.locations.type = "gps" is ignored if feature.locations.type = "angleDistance" exists and allowed
- * if feature has multiple location objects with the same locations.type, an error is thrown (new surveys); last one is used (existing surveys)
- * `cancel_on_top` is ignored - set in user settings
- * `status_message_fontsize` is ignored - Set font size in Settings App Accessibility -> Display & Font Size
+## Text Symbol
 
-New root properties:
-* [`tracklogs`](#-tracklogs-) (o)(v3)
-* [`transects`](#-transects-) (o)(v3)
+The feature label can specify the label format with an Esri text symbol
+JSON object as described in the
+[text symbol section of the ArcGIS ReST API](http://resources.arcgis.com/en/help/arcgis-rest-api/#/Symbol_Objects/02r3000000n5000000/).
 
-# `tracklogs`
-This property is optional. If provided it must be one of the following stings.  The default is `"required"`.
-This property determines if a track log is desired or required.
-This property is ignored in versions of Park Observer before 2.0.
-
- * `none` - The start/stop track log button is not available, and track logs are never collected.
- * `optional` - The user can start/stop observing regardless of the state of track logging.
- * `required` - The user must start a track log before they can start observing.
-
-# `transects`
-This property is optional. If provided it must be one of the following stings.  The default is `"per-feature"`.
-This property determines the requirements for making an observation.
-If `"tracklogs": "required"`, then observations can only be made when track logging despite the state
-of this property.
-This property is ignored in versions of Park Observer before 2.0.
-
- * `none` - The start/stop survey (observing/transect) button is not available;
-   It is assumed that the user is always observing, and observations can be made any time
-   This sets the `allow_off_transect_observations` property of all features to `true`
- * `optional` - The user can add an observation at any time, regardless of the state of surveying (observing/transect).
-   This sets the `allow_off_transect_observations` property of all features to `true`
- * `required` - The user must start a survey (observing/transect) before they can add an observation.
-   This sets the `allow_off_transect_observations` property of all features to `false`
- * `per-feature` - The user can add an observation of a feature based on the state of the feature's
-   `allow_off_transect_observations` property.
-
-
-label definitions:
-from https://developers.arcgis.com/ios/latest/objective-c/guide/add-labels.htm
-A label definition is constructed as a JSON string using the syntax defined in the [Web map specification](https://developers.arcgis.com/web-map-specification/objects/labelingInfo/) for label definition. In order to provide a more accurate representation of labels created in ArcGIS Pro (for a mobile map package, for example), ArcGIS Runtime defines additional JSON properties that are not included in the Web map specification. Refer to the [JSON label class properties](https://developers.arcgis.com/ios/latest/objective-c/guide/json-label-class-properties.htm) topic for a description of the available properties, their expected values, and the defaults used for each.
-
-## Label Definition Defaults
-https://developers.arcgis.com/documentation/common-data-types/labeling-objects.htm
-
-The AGSLabelDefinition object has no properties to inspect.
-There is no way to be sure of which properties are optional except by testing.
-A guess can be made based on the defaults for the other objects above.
-
-See https://developers.arcgis.com/ios/latest/swift/guide/json-label-class-properties.htm
-and https://developers.arcgis.com/web-map-specification/objects/labelingInfo/
-and https://developers.arcgis.com/ios/latest/api-reference/interface_a_g_s_label_definition.html
-//let labelText = "\"You are here\""
-//let labelText = "[\(field)] CONCAT \" Street\""
-//let labelText = "[\(field)]"
-//let value = "{\(field)} Street"
-let value = "{\(field)}"
-//let expression = "return $Feature.\(field);"
-let symbolJSON = try symbol.toJSON()
-let labelJSONObject: [String: Any] = [
-//"labelExpression": labelText,
-"labelExpressionInfo": ["value": value],
-//"labelExpressionInfo": ["expression": expression],
-"symbol": symbolJSON
-]
-
-
-
-TODO: test that field name in label.field and label.definition are case-insensitive with attributes
-TODO: Verify: If an empty object is given to the totalizer, it will display how many kilometers you have been observing, and reset each time to stop/stop observing.
-TODO: Only one non-touch locations should have a true value, otherwise the behavior is undefined.
-
-
-## Symbols
-https://developers.arcgis.com/documentation/common-data-types/symbol-objects.htm
-
-## Simple Marker Symbol Defaults:
-minimal simple marker symbol is:
-```
-{
-  "type": "esriSMS"
-}
-```
-With the following defaults (as of 100.7.0)
-```
-style: esriSMSCircle
-color:  [211, 211, 211, 255] // Light Gray (82% white); Opaque
-size: 8.0
-angle: 0.0
-xoffset: 0.0
-yoffset: 0.0
-```
-With a minimal outline, it is:
-```
-{
-  "type": "esriSMS",
-  "outline": {}
-}
-```
-With the following defaults (as of 100.7.0)
-```
-style: esriSMSCircle
-color:  [211, 211, 211, 255] // Light Gray (82% white); Opaque
-size: 8.0
-angle: 0.0
-xoffset: 0.0
-yoffset: 0.0
-outline.width: 1.0
-outline.color: [211, 211, 211, 255]
-outline.style: esriSLSSolid
+The minimal text symbol is:
 ```
 
-Properties not settable in JSON
- * angleAlignment: `AGSMarkerSymbolAngleAlignmentScreen`
- * leaderOffsetX: 0.0
- * leaderOffsetY: 0.0
- * outline.style: `esriSLSSolid`
-
-## Picture Marker Symbol Defaults:
-minimal picture marker symbol is:
-```
-{
-"type": "esriPMS"
-}
-```
-But this is is useless, as there is no image to display.
-Suggest that you use the contentType and imageData properties to provide a base64 encoded image.  If you use a URL, it must be a
-full network URL, and the network must be available when running the app, or the image will not display.
-
-With the following defaults (as of 100.7.0)
-```
-
-AGSPictureMarkerSymbol properties
-url: nil
-imageData: nil
-contentType: nil
-width: 0.0
-height: 0.0
-angle: 0.0
-xoffset: 0.0
-yoffset: 0.0
-```
-Properties not settable in JSON
-angleAlignment: AGSMarkerSymbolAngleAlignmentScreen
-leaderOffsetX: 0.0
-leaderOffsetY: 0.0
-opacity: 1.0
-
-## Simple Line Symbol Defaults:
-minimal text symbol is:
-```
-{
-  "type": "esriSLS"
-}
-```
-With the following defaults (as of 100.7.0)
-```
-style: esriSLSSolid
-color: [211, 211, 211, 255] // Light Gray (82% white); Opaque
-width: 1.0
-```
-Properties not settable in JSON
- * antialias: false
- * markerPlacement: AGSSimpleLineSymbolMarkerPlacementEnd
- * markerStyle: AGSSimpleLineSymbolMarkerStyleNone
-
-## Text Symbol defaults:
-minimal text symbol is:
-```
 {
   "type": "esriTS"
 }
 ```
-With the following defaults (as of 100.7.0)
 
-```
-color:  [0, 0, 0, 255] // opaque black
-backgroundColor: [0, 0, 0, 0] // transparent black
-borderLineSize: 0.0
-borderLineColor: [0, 0, 0, 0]
-haloSize: 0.0
-haloColor: [0, 0, 0, 0]
-verticalAlignment: middle
-horizontalAlignment: center
-angle: 0.0
-xoffset: 0.0
-yoffset: 0.0
-kerning: false
-font.family: ""
-font.size: 8.0
-font.style: normal
-font.weight: normal
-font.decoration: none
-text: ""
+Which comes with the following default values:
 ```
 
-Properties not settable in JSON
-* angleAlignment: `AGSMarkerSymbolAngleAlignmentScreen`
-* leaderOffsetX: 0.0
-* leaderOffsetY: 0.0
-* outline.style: `esriSLSSolid`
+"color": [0, 0, 0, 255]          // opaque black
+"backgroundColor": [0, 0, 0, 0]  // transparent black
+"borderLineSize": 0.0
+"borderLineColor": [0, 0, 0, 0]
+"haloSize": 0.0
+"haloColor": [0, 0, 0, 0]
+"verticalAlignment": "middle"
+"horizontalAlignment": "center"
+"angle": 0.0
+"xoffset": 0.0
+"yoffset": 0.0
+"kerning": false
+"font": {
+  "family": ""
+  "size": 8.0
+  "style": "normal"
+  "weight": "normal"
+  "decoration": "none"
+}
+"text: ""
+```
 
-JSON Properties not supported in SDK
- * rightToLeft
+The runtime SDK has the following text symbol properties
+that are not settable in JSON but have the following defaults:
+```
+
+"angleAlignment": "AGSMarkerSymbolAngleAlignmentScreen"
+"leaderOffsetX": 0.0
+"leaderOffsetY": 0.0
+"outline" : { "style": "esriSLSSolid" }
+```
+
+Documented text symbol properties not supported in the SDK
+```
+
+"rightToLeft": false
+```
+
+## Label Definition
+The feature label can specify the label format with an Esri label definition
+JSON object as defined in the
+[Web map specification](https://developers.arcgis.com/web-map-specification/objects/labelingInfo/)
+for label definition.
+**NOTE:** "In order to provide a more accurate representation
+of labels created in ArcGIS Pro (for a mobile map package, for example), ArcGIS
+Runtime defines additional JSON properties that are not included in the Web map
+specification. Refer to the
+[JSON label class properties](https://developers.arcgis.com/ios/latest/swift/guide/json-label-class-properties.htm) topic for a description of the available properties, their expected values, and
+the defaults used for each."
+from https://developers.arcgis.com/ios/latest/swift/guide/add-labels.htm
+
+Additional references: 
+https://developers.arcgis.com/documentation/common-data-types/labeling-objects.htm
+and https://developers.arcgis.com/ios/latest/api-reference/interface_a_g_s_label_definition.html
+
+A simple example which labels the feature with the id number if it is greater than 10.
+Using the default text symbol (see above), and the default labeling properties
+(text above and right of the point)
+```
+{
+  "labelExpression": "[id]",
+  "where" : "id > 10"
+}
+```
+
+Using Arcade which labels the feature a capitalized first letter of the name.
+```
+
+{
+  "labelExpressionInfo": {"expression": "Upper(Left($feature.name, 1))"},
+}
+```
+
+Using a simple expression to concatenate multiple values with static text and a newline.
+```
+
+{
+  "labelExpression":  "\"Name: \" CONCAT [name] CONCAT NEWLINE CONCAT \"id: \" CONCAT [id]",
+}
+```
+
 
 ## Renderers
-https://developers.arcgis.com/documentation/common-data-types/renderer-objects.htm
 
-## Simple renderer defaults:
-minimal text symbol is:
+Features and several properties of the mission can specify the symbology format with an Esri renderer
+JSON object as described in the
+[renderer object in the ArcGIS ReST API](https://developers.arcgis.com/documentation/common-data-types/renderer-objects.htm).
+Each renderer has a `"type"` property which is required and must be one of 
+
+* `"simple"` for a simple (single symbol) renderer
+* `"classBreaks"` for a class breaks renderer
+* `"uniqueValue"` for a unique value renderer
+
+### Simple Renderer
+The minimal simple renderer is:
 ```
+
 {
-"type": "simple"
+  "type": "simple"
 }
 ```
-With the following defaults (as of 100.7.0).  This is useless, as it has no symbol.
 
-```
-symbol: nil
-label: ""
-description: ""
-rotationType: geographic
-rotationExpression: ""
+Which comes with the following default values:
 ```
 
-Properties not settable in JSON
-sceneProperties
+"symbol": null
+"label": ""
+"description": ""
+"rotationType": "geographic"
+"rotationExpression": ""
+```
 
-With the following, you get a "AGSUnsupportedSymbol", which will not display.  You need to provide a minimal (or more) symbol from above.
-The symbol type should match the geometry of the objects in the layer.
+This renderer is useless, as it has no symbol.  An appropriate symbol (as discussed below)
+needs to be provided for the appropriate geometry type of the feature being symbolized.
+
+### Unique Value Renderer:
+Similarly, the minimal (although useless) unique value renderer is:
 ```
-{
-  "type": "simple",
-  "symbol": {}
-}
-```
-## Unique value renderer defaults:
-minimal valid (although useless) unique value renderer is:
-```
+
 {
   "type": "uniqueValue"
 }
 ```
 
-This has the following defaults
-```
-field1: null
-field2: null
-field3: null
-fieldDelimiter: not used
-defaultSymbol: null
-defaultLabel: ""
-rotationType: geographic
-rotationExpression: ""
-uniqueValueInfos count: 0
+Which comes with the following default values:
 ```
 
-A more useful minimal example is:
+"field1": null
+"field2": null
+"field3": null
+"fieldDelimiter": ""
+"defaultSymbol": null
+"defaultLabel": ""
+"rotationType": "geographic"
+"rotationExpression": ""
+"uniqueValueInfos": []
 ```
+
+A more useful example is:
+```
+
 {
   "type": "uniqueValue",
   "field1": "name",
-  "defaultSymbol": {"type":"esriSMS", "size": 5},
+  "field2": "id",
+  "fieldDelimiter": ",",
+  "defaultSymbol": {"type":"esriSMS", "size": 10},
   "uniqueValueInfos": [{
-    "value": "bob",
-    "symbol": {"type":"esriSMS", "size": 10}
+    "value": "bob,0",
+    "symbol": {"type":"esriSMS", "size": 20, "color": [255,255,255,255]}
   },{
-    "value": "BOB",
-    "symbol": {"type":"esriSMS", "size": 20}
+    "value": "BOB,0",
+    "symbol": {"type":"esriSMS", "size": 30, "color": [255,255,255,255]}
+  },{
+    "value": "bob,1",
+    "symbol": {"type":"esriSMS", "size": 20, "color": [0,0,0,255]}
+  },{
+    "value": "BOB,1",
+    "symbol": {"type":"esriSMS", "size": 30, "color": [0,0,0,255]}
   }]
 }
 ```
@@ -1197,58 +1159,55 @@ A more useful minimal example is:
 The defaults in this case are:
 
 ```
-type: uniqueValue
-field1: "name"
-field2: null
-field3: null
-fieldDelimiter: not used
-defaultSymbol: <AGSSimpleMarkerSymbol>
-defaultLabel: ""
-rotationType: geographic
-rotationExpression: ""
-uniqueValue #1
-  value: [bob]
-  label: ""
-  description: ""
-  symbol: <AGSSimpleMarkerSymbol>
-uniqueValue #2
-  value: [BOB]
-  label: ""
-  description: ""
-  symbol: <AGSSimpleMarkerSymbol>
-```
-Note that `uniqueValueInfos.value` is a list that would presumably have 1,2, or 3
-values for the 1,2, or 3 field names provided.  However the REST API does not specify
-how to provide multiple values.  If a 2nd or 3rd field is provided, then anything in `value` is ignored,
-and an empty list is returned.  Providing a list to `value` generates an error, and
-properties `value1` .. `value3` are also ignored.
 
-At this time, it is only safe to provide a unique value renderer on 1 field.
-
-## Class breaks renderer defaults:
-minimal valid (although useless) class breaks renderer is:
+"field3": null
+"defaultLabel": ""
+"rotationType": "geographic"
+"rotationExpression": ""
 ```
+And for each item in the `uniqueValueInfos` list the defaults are 
+```
+
+"label": ""
+"description": ""
+```
+
+**NOTE:** `uniqueValueInfos.value` is a single string regardless of the number or type
+of fields used. If more than 1 field is used, then `fieldDelimiter` is required and must
+be included in the `uniqueValueInfos.value` string to separate the values.  There must
+be same number of values as there are fields defined. 
+
+
+### Class Breaks Renderer:
+Similarly, the minimal valid (although useless) class breaks renderer is:
+```
+
 {
   "type": "classBreaks"
 }
 ```
 
-This has the following defaults
+This has the following defaults:
 ```
-field: null
-classificationMethod: esriClassifyManual
-normalizationType: esriNormalizeNone
-normalizationField: null
-normalizationTotal: nan
-defaultSymbol: null
-defaultLabel: null
-backgroundFillSymbol: null
-minValue: nan
-rotationType: geographic
-rotationExpression: null
-classBreakInfos: empty list
+
+"field": null
+"classificationMethod": "esriClassifyManual"
+"normalizationType": "esriNormalizeNone"
+"normalizationField": null
+"normalizationTotal": null (NaN)
+"defaultSymbol": null
+"defaultLabel": ""
+"backgroundFillSymbol": null
+"minValue": null (NaN)
+"rotationType": "geographic"
+"rotationExpression": ""
+"classBreakInfos": []
 ```
-While not defined in https://developers.arcgis.com/documentation/common-data-types/renderer-objects.htm the classification methods are
+
+While not defined in https://developers.arcgis.com/documentation/common-data-types/renderer-objects.htm
+the known classification methods in the SDK are. Only `esriClassifyManual` (the default) is mentioned
+in the documentation.
+
 * `esriClassifyDefinedInterval`
 * `esriClassifyEqualInterval`
 * `esriClassifyGeometricalInterval`
@@ -1259,6 +1218,7 @@ While not defined in https://developers.arcgis.com/documentation/common-data-typ
 
 A more useful minimal example is:
 ```
+
 {
   "type": "classBreaks",
   "field": "age",
@@ -1275,30 +1235,140 @@ A more useful minimal example is:
 ```
 
 The defaults in this case are:
-
 ```
-type: simple
-field: age
-classificationMethod: esriClassifyManual
-normalizationType: esriNormalizeNone
-normalizationField: null
-normalizationTotal: nan
-defaultSymbol: <AGSSimpleMarkerSymbol>
-defaultLabel: null
-backgroundFillSymbol: null
-minValue: 0.0
-rotationType: geographic
-rotationExpression:
-classBreak #1
-  classMinValue: nan
-  classMaxValue: 25.0
-  label:
-  description:
-  symbol: <AGSSimpleMarkerSymbol>
-classBreak #2
-  classMinValue: nan
-  classMaxValue: 100.0
-  label: null
-  description: null
-  symbol: <AGSSimpleMarkerSymbol>
+
+"classificationMethod": "esriClassifyManual"
+"normalizationType": "esriNormalizeNone"
+"normalizationField": null
+"normalizationTotal": null (NaN)
+"defaultLabel": ""
+"backgroundFillSymbol": null
+"rotationType": "geographic"
+"rotationExpression": ""
+```
+
+And for each item in the `classBreakInfos` list the defaults are 
+```
+
+"classMinValue": null (NaN)
+"label": ""
+"description": ""
+```
+
+
+## Symbols
+
+The renderers require a symbol that matches the geometry type of the feature
+being rendered. The JSON object for symbols is described in the
+[ArcGIS ReST API](http://resources.arcgis.com/en/help/arcgis-rest-api/#/Symbol_Objects/02r3000000n5000000/)
+and the [Runtime SDK Documentation](https://developers.arcgis.com/documentation/common-data-types/symbol-objects.htm).
+
+### Simple Marker Symbol
+The minimal simple marker symbol (for points) is:
+```
+
+{
+  "type": "esriSMS"
+}
+```
+
+Which comes with the following default values:
+```
+
+"style": "esriSMSCircle"
+"color":  [211, 211, 211, 255] // Light Gray (82% white); Opaque
+"size": 8.0
+"angle": 0.0
+"xoffset": 0.0
+"yoffset": 0.0
+```
+
+With a minimal outline, it is:
+```
+{
+  "type": "esriSMS",
+  "outline": {}
+}
+```
+
+The `outline` object comes with the following default values:
+```
+
+"width": 1.0
+"color": [211, 211, 211, 255]
+"style": "esriSLSSolid"
+```
+
+The runtime SDK has the following simple marker symbol properties
+that are not settable in JSON but have the following defaults:
+```
+
+"angleAlignment": "AGSMarkerSymbolAngleAlignmentScreen"
+"leaderOffsetX": 0.0
+"leaderOffsetY": 0.0
+"outline" : { "style": "esriSLSSolid" }
+```
+
+### Simple Line Symbol
+The minimal simple line symbol is:
+```
+
+{
+  "type": "esriSLS"
+}
+```
+
+Which comes with the following default values:
+```
+
+"style": "esriSLSSolid"
+"color": [211, 211, 211, 255] // Light Gray (82% white); Opaque
+"width": 1.0
+```
+
+The runtime SDK has the following simple line symbol properties
+that are not settable in JSON but have the following defaults:
+```
+
+"antialias": false
+"markerPlacement": "AGSSimpleLineSymbolMarkerPlacementEnd"
+"markerStyle": "AGSSimpleLineSymbolMarkerStyleNone"
+```
+
+### Picture Marker Symbol
+The minimal picture marker symbol is:
+```
+
+{
+"type": "esriPMS"
+}
+```
+
+But this is is useless, as there is no image to display.
+If you want to use a graphic image for your marker symbol, it is best to use
+the `contentType` and `imageData` properties to provide a base64 encoded image.
+If you use the `url` property, it must be a full network URL, and the network
+must be available when running the app, or the image will not display.
+
+The minimal picture marker symbol comes with the following default values:
+```
+
+"url": ""
+"imageData": ""
+"contentType": ""
+"width": 0.0
+"height": 0.0
+"angle": 0.0
+"xoffset": 0.0
+"yoffset": 0.0
+```
+
+The runtime SDK has the following simple line symbol properties
+that are not settable in JSON but have the following defaults:
+```
+
+"angleAlignment": "AGSMarkerSymbolAngleAlignmentScreen"
+"leaderOffsetX": 0.0
+"leaderOffsetY": 0.0
+"opacity": 1.0
 ```
