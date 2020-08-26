@@ -55,6 +55,35 @@ class DialogTests: XCTestCase {
     }
   }
 
+  func testDialogTitle() {
+    // Given:
+    struct Test: Codable {
+      let dialogs: [Dialog]
+    }
+    let jsonData = Data(
+      """
+      {
+        "dialogs": [
+          {              "sections": [{"elements": [{"type": "QLabelElement"}]}]},
+          {"title": "a", "sections": [{"elements": [{"type": "QLabelElement"}]}]}
+        ]
+      }
+      """.utf8)
+
+    // When:
+    let test = try? JSONDecoder().decode(Test.self, from: jsonData)
+
+    // Then:
+    XCTAssertNotNil(test)
+    if let test = test {
+      XCTAssertNil(test.dialogs[0].title)
+      XCTAssertNotNil(test.dialogs[1].title)
+      if let title = test.dialogs[1].title {
+        XCTAssertEqual(title, "a")
+      }
+    }
+  }
+
   //MARK: - Dialog Section
 
   func testSectionNoDuplicateAttributeNames() {

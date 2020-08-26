@@ -230,7 +230,7 @@ extension Dialog {
 
   func form(with data: NSObject, fields: [Attribute]) -> AttributeFormDefinition {
     return AttributeFormDefinition(
-      title: title, sections: sections.map { $0.formSection(with: data, fields: fields) })
+      title: title ?? "", sections: sections.map { $0.formSection(with: data, fields: fields) })
   }
 
 }

@@ -401,8 +401,7 @@
                 }
             },
             "required": [
-                "sections",
-                "title"
+                "sections"
             ],
             "title": "Dialog"
         },

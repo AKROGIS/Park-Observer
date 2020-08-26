@@ -22,8 +22,8 @@ struct Dialog: Codable {
   /// A list of form elements collected into a single section.
   let sections: [DialogSection]
 
-  /// The text (title) at the top of the editing form.
-  let title: String
+  /// The text (title) at the top of the editing form. No longer used.
+  let title: String?
 
   enum CodingKeys: String, CodingKey {
     case groupedOptional = "grouped"
