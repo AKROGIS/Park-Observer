@@ -4,25 +4,17 @@
   "name":"Sample Survey",
   "version": 1.0,
   "date":"2020-08-17",
-  "description":"This is a simple sample survey to for practicing with Park Observer",
+  "description":"This is a simple sample survey for practicing with Park Observer",
   "transects": "none",
   "mission":{
     "attributes":[
       {"name":"Observer",  "type":700},
       {"name":"Visibility", "type":100}
     ],
-    "dialog":{
-      "title":"Environment",
-      "sections":[
-        {
-          "elements":[
-            {"type":"QEntryElement", "bind":"textValue:Observer",   "title":"Observer", "placeholder":"Initials", "autocorrectionType":"No", "autocapitalizationType":"AllCharacters"},
-            {"type":"QRadioElement", "bind":"selected:Visibility",   "title":"Visibility",  "items":["Poor", "Fair", "Good"]}
-          ]
-        }
-      ]
-    },
-    "symbology": {}
+    "dialog":{ "sections":[ { "elements":[
+      {"type":"QEntryElement", "bind":"textValue:Observer",   "title":"Observer", "placeholder":"Initials", "autocorrectionType":"No", "autocapitalizationType":"AllCharacters"},
+      {"type":"QRadioElement", "bind":"selected:Visibility",   "title":"Visibility",  "items":["Poor", "Fair", "Good"]}
+    ] } ] },
   },
   "features":[
     {
@@ -31,20 +23,13 @@
         {"name":"count",     "type":100, "required": true},
         {"name":"activity",  "type":700}
        ],
+      "dialog":{ "sections":[ { "elements":[
+        {"type":"QIntegerElement", "bind":"numberValue:count", "title":"Count"},
+        {"type":"QSegmentedElement", "bind":"selectedItem:activity", "items":["Flying", "Fighting", "Other"]}
+      ] } ] },
       "locations":[
         {"type":"azimuthDistance", "units":"feet" }
       ],
-      "dialog":{
-        "title":"Ravens",
-        "sections":[
-          {
-            "elements":[
-              {"type":"QIntegerElement", "bind":"numberValue:count", "title":"Count"},
-              {"type":"QSegmentedElement", "bind":"selectedItem:activity", "items":["Flying", "Fighting", "Other"]}
-            ]
-          }
-        ]
-      },
       "symbology":{
         "color": "#F8DC70",
         "size": 15
@@ -57,22 +42,14 @@
         {"name":"name", "type":700},
         {"name":"roof", "type":800}
        ],
+      "dialog":{ "sections":[ { "elements":[
+        {"type":"QEntryElement",   "bind":"textValue:name", "title":"Name", "placeholder":"Optional"},
+        {"type":"QBooleanElement", "bind":"boolValue:roof", "title":"Has A Roof"}
+      ] } ] },
       "locations":[
         {"type":"gps"},
         {"type":"mapTouch"}
       ],
-      "dialog":{
-        "title":"Cabin",
-        "grouped":true,
-        "sections":[
-          {
-            "elements":[
-              {"type":"QEntryElement",   "bind":"textValue:name", "title":"Name", "placeholder":"Optional"},
-              {"type":"QBooleanElement", "bind":"boolValue:roof", "title":"Has A Roof"}
-            ]
-          }
-        ]
-      },
       "label":{
         "field":"id",
         "symbol":{
