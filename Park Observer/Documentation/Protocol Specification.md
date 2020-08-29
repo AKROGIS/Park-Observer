@@ -226,6 +226,13 @@ This property is ignored in versions of Park Observer before 2.0.
  * `"per-feature"` - The user can add an observation of a feature based on the state of the feature's
    `allow_off_transect_observations` property.
 
+# `transect-label`
+This property is optional. If provided it must be a sting.  The default is `"Transect"`.
+Other appropriate choices might be `"Observing"`, `"Survey"`, or `"Trail"`.  This text is
+used with `▶️` as the label in the start/stop observing button.
+Also, the attribute editor will be titled `{transect-label} Info` e.g. `Survey Info`.
+instead of `Mission Properties` as in previous versions.
+
 
 # `mission`
 

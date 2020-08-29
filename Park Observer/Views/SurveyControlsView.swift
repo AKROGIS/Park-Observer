@@ -36,10 +36,7 @@ struct SurveyControlsView: View {
               } else {
                 HStack {
                   Image(systemName: "play.fill").font(.headline).padding(.leading)
-                  Text("Tracklog").fontWeight(.bold).padding(.trailing)
-                  //Text("Track Log").fontWeight(.bold).padding(.trailing)
-                  //Text("Start Tracklog").fontWeight(.bold).padding()
-                  //Text("▶️ Tracklog").fontWeight(.bold).padding()
+                  Text(surveyController.trackLogLabel).fontWeight(.bold).padding(.trailing)
                 }
               }
             }
@@ -59,8 +56,7 @@ struct SurveyControlsView: View {
               } else {
                 HStack {
                   Image(systemName: "play.fill").font(.headline).padding(.leading)
-                  Text("Survey").fontWeight(.bold).padding(.trailing)
-                  //Text("Start Survey").fontWeight(.bold).padding()
+                  Text(surveyController.transectLabel).fontWeight(.bold).padding(.trailing)
                 }
               }
             }

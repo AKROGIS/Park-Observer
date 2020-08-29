@@ -65,6 +65,9 @@ struct SurveyProtocol {
   /// Determines if being on-transect (observing) is required to make an observation.
   let transects: TransectPreference
 
+  /// Determines if being on-transect (observing) is required to make an observation.
+  let transectLabel: String
+
   /// The version of this named protocol.
   private let version: Double
 
@@ -77,6 +80,7 @@ extension SurveyProtocol {
   static var defaultStatusMessageFontsize: Double { 16.0 }
   static var defaultTracklogs: TracklogPreference { .required }
   static var defaultTransects: TransectPreference { .perFeature }
+  static var defaultTransectLabel: String { "Transect" }
 }
 
 //MARK: SurveyProtocol - Codable
@@ -99,6 +103,7 @@ extension SurveyProtocol: Codable {
     case statusMessageFontsize = "status_message_fontsize"
     case tracklogs = "tracklogs"
     case transects = "transects"
+    case transectLabel = "transect-label"
     case version = "version"
   }
 
@@ -152,6 +157,7 @@ extension SurveyProtocol: Codable {
       Double.self, forKey: .statusMessageFontsize)
     let tracklogs = try container.decodeIfPresent(TracklogPreference.self, forKey: .tracklogs)
     let transects = try container.decodeIfPresent(TransectPreference.self, forKey: .transects)
+    let transectLabel = try container.decodeIfPresent(String.self, forKey: .transectLabel)
     let version = try container.decode(Double.self, forKey: .version)
 
     // Parse Date  (note the DateDecoding Strategy does not work when implementing a custom decoder)
@@ -215,6 +221,7 @@ extension SurveyProtocol: Codable {
       statusMessageFontsize: statusMessageFontsize ?? SurveyProtocol.defaultStatusMessageFontsize,
       tracklogs: tracklogs ?? SurveyProtocol.defaultTracklogs,
       transects: transects ?? SurveyProtocol.defaultTransects,
+      transectLabel: transectLabel ?? SurveyProtocol.defaultTransectLabel,
       version: version)
   }
 

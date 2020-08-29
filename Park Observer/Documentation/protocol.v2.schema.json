@@ -55,6 +55,11 @@
             ],
             "default": "per-feature"
         },
+        "transect-label": {
+            "description": "An optional label for the start/stop observing (transect/survey) button.",
+            "type": "string",
+            "default": "Transect"
+        },
         "observing": {
             "description": "An optional message to display on screen when observing (on transect).",
             "type": "string"

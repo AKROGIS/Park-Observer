@@ -27,7 +27,6 @@ New functionality I want to implement.
 ## Considering
 Potential features than need additional consideration.
   * For gps-intervals greater than a few seconds, set a timer, and only turn on the GPS when the timer goes off.
-  * Rename "Mission Properties to "Survey Info" (only in the UI)
   * Warn when deleting archives?
   * Scale bar fade in/out after zoom?
   * Color the add observation button to match observation symbology?
@@ -128,7 +127,6 @@ These issues are in software provided by others (Apple, Esri). If they become a 
 
 
 # Documentation
-  * Post new specs and schema to existing website.
   * Create a simple how to document with screenshots
   * Contributing guidelines - step by step processes for:
     - fixing bugs
@@ -136,6 +134,10 @@ These issues are in software provided by others (Apple, Esri). If they become a 
     - publishing new versions
 
 # Change Log
+
+## Beta4
+  * Added an option in the protocol file to specify label for the start/stop observing button (i.e. "Survey", "Transect")
+  * Replaced "Mission Properties" with "{observing label} Info", e.g. "Survey Info" in attribute editor
 
 ## 2020-08-21: Beta3
 

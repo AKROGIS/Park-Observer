@@ -432,8 +432,8 @@ extension ObservationPresenter {
 
   private func initWith(_ graphic: AGSGraphic) {
     self.graphic = graphic
-    self.name = graphic.graphicsOverlay?.overlayID
     self.observationClass = graphic.asObservationClass(in: survey)
+    updateName(with: self.observationClass)
     updateTimestamp(with: graphic)
     updateEntity(from: editContext, with: self.timestamp)
     updateLocationProperties(from: entity)
@@ -737,7 +737,8 @@ extension ObservationPresenter {
     }
     switch observationClass {
     case .mission:
-      name = .entityNameMissionProperty
+      let transectName = survey?.config.transectLabel ?? SurveyProtocol.defaultTransectLabel
+      name = "\(transectName) Info"
     case .feature(let feature):
       name = feature.name
     }

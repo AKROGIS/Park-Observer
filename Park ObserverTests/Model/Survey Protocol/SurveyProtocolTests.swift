@@ -71,6 +71,7 @@ class SurveyProtocolTests: XCTestCase {
       XCTAssertEqual(sp.cancelOnTop, SurveyProtocol.defaultCancelOnTop)
       XCTAssertEqual(sp.tracklogs, SurveyProtocol.defaultTracklogs)
       XCTAssertEqual(sp.transects, SurveyProtocol.defaultTransects)
+      XCTAssertEqual(sp.transectLabel, SurveyProtocol.defaultTransectLabel)
       XCTAssertEqual(sp.statusMessageFontsize, SurveyProtocol.defaultStatusMessageFontsize, accuracy: 0.001)
 
       XCTAssertNil(sp.features[0].attributes)

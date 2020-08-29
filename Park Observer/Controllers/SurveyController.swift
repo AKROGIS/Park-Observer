@@ -87,6 +87,9 @@ class SurveyController: NSObject, ObservableObject {
     }
   }
 
+  @Published var trackLogLabel = "Tracklog"
+  @Published var transectLabel = SurveyProtocol.defaultTransectLabel
+
   @Published var showingTrackLogButton = false
   @Published var showingObserveButton = false
   @Published var showingMissionPropertiesButton = false
@@ -367,6 +370,7 @@ class SurveyController: NSObject, ObservableObject {
         }
         return true
       }()
+      transectLabel = config.transectLabel
     }
   }
 
