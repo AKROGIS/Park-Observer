@@ -138,6 +138,8 @@ These issues are in software provided by others (Apple, Esri). If they become a 
 ## Beta4
   * Added an option in the protocol file to specify label for the start/stop observing button (i.e. "Survey", "Transect")
   * Replaced "Mission Properties" with "{observing label} Info", e.g. "Survey Info" in attribute editor
+  * Protocol property dialog.title was not used, so it is now optional in the protocol file.
+  * Fixed bug: protocol feature.label.field must **case_sensitive**_** match one of feature.attribute.name
 
 ## 2020-08-21: Beta3
 
