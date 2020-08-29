@@ -70,6 +70,15 @@ struct SurveyProtocol {
 
 }
 
+//MARK: SurveyProtocol - Defaults
+
+extension SurveyProtocol {
+  static var defaultCancelOnTop: Bool { false }
+  static var defaultStatusMessageFontsize: Double { 16.0 }
+  static var defaultTracklogs: TracklogPreference { .required }
+  static var defaultTransects: TransectPreference { .perFeature }
+}
+
 //MARK: SurveyProtocol - Codable
 
 extension SurveyProtocol: Codable {
@@ -191,7 +200,7 @@ extension SurveyProtocol: Codable {
     }
 
     self.init(
-      cancelOnTop: cancelOnTop ?? false,
+      cancelOnTop: cancelOnTop ?? SurveyProtocol.defaultCancelOnTop,
       csv: csv,
       date: date,
       protocolDescription: protocolDescription,
@@ -203,9 +212,9 @@ extension SurveyProtocol: Codable {
       name: name,
       notObservingMessage: notObservingMessage,
       observingMessage: observingMessage,
-      statusMessageFontsize: statusMessageFontsize ?? 16.0,
-      tracklogs: tracklogs ?? .required,
-      transects: transects ?? .perFeature,
+      statusMessageFontsize: statusMessageFontsize ?? SurveyProtocol.defaultStatusMessageFontsize,
+      tracklogs: tracklogs ?? SurveyProtocol.defaultTracklogs,
+      transects: transects ?? SurveyProtocol.defaultTransects,
       version: version)
   }
 

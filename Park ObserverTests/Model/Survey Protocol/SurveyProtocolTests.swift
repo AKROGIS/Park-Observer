@@ -68,8 +68,10 @@ class SurveyProtocolTests: XCTestCase {
       XCTAssertNil(sp.observingMessage)
       XCTAssertNil(sp.notObservingMessage)
       XCTAssertNil(sp.csv)
-      XCTAssertFalse(sp.cancelOnTop)
-      XCTAssertEqual(sp.statusMessageFontsize, 16.0, accuracy: 0.001)
+      XCTAssertEqual(sp.cancelOnTop, SurveyProtocol.defaultCancelOnTop)
+      XCTAssertEqual(sp.tracklogs, SurveyProtocol.defaultTracklogs)
+      XCTAssertEqual(sp.transects, SurveyProtocol.defaultTransects)
+      XCTAssertEqual(sp.statusMessageFontsize, SurveyProtocol.defaultStatusMessageFontsize, accuracy: 0.001)
 
       XCTAssertNil(sp.features[0].attributes)
       XCTAssertNil(sp.features[0].dialog)
@@ -96,7 +98,7 @@ class SurveyProtocolTests: XCTestCase {
         "name": "My Protocol",
         "version": 3.2,
         "features": [
-          {"name": "Cabins", "locations": [ {"type": "mapTouch"} ], "symbology": {} }
+          {"name": "Cabins", "locations": [ {"type": "mapTouch"} ] }
         ]
       }
       """
