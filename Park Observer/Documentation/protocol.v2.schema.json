@@ -18,8 +18,7 @@
         },
         "name": {
             "description": "An identifier (name) for this protocol.",
-            "type": "string",
-            "default": "No Title"
+            "type": "string"
         },
         "version": {
             "description": "The version of this named protocol.",
@@ -80,8 +79,7 @@
         },
         "gps_interval": {
             "description": "The number of seconds between saving successive GPS points to the tracklog.",
-            "type": "number",
-            "default": 0
+            "type": "number"
         },
         "mission": {
             "description": "An object for describing segments of the survey.",
