@@ -14,7 +14,7 @@
     "dialog":{ "sections":[ { "elements":[
       {"type":"QEntryElement", "bind":"textValue:Observer",   "title":"Observer", "placeholder":"Initials", "autocorrectionType":"No", "autocapitalizationType":"AllCharacters"},
       {"type":"QRadioElement", "bind":"selected:Visibility",   "title":"Visibility",  "items":["Poor", "Fair", "Good"]}
-    ] } ] },
+    ] } ] }
   },
   "features":[
     {
