@@ -79,6 +79,7 @@ Properties marked with an (o) are optional; the others are required.
 * [`gps_interval`](#-gps_interval-) (o)(v2)
 * [`tracklogs`](#-tracklogs-) (o)(v2)
 * [`transects`](#-transects-) (o)(v2)
+* [`transect-label`](#-transect-label-) (o)(v2)
 * [`mission`](#-mission-) (o)
 * [`features`](#-features-)
 * [`csv`](#-csv-) (o)
@@ -166,8 +167,7 @@ application is recording __but not__ observing (i.e. off-transect).
 This property is ignored in versions of Park Observer before 0.9.8b.
 
 # `status_message_fontsize`
-This property is optional. If provided it must be a positive number.
-If omitted or invalid it will default to `16.0`.
+This property is optional. If provided it must be a positive number. The default is `16.0`.
 This property specifies the size (in points, i.e. 1/72 of an inch) of
 the `notobserving` and `observing` text.
 
@@ -673,7 +673,7 @@ Each `feature` is an object with the following properties
 * [`allow_off_transect_observations`](#-feature-allow_off_transect_observations-) (o)
 * [`locations`](#-feature-locations-)
 * [`symbology`](#-feature-symbology-) (o)
-* [`label`](#-feature-label-)
+* [`label`](#-feature-label-) (o)
 
 ## `feature.name`
 This property is required and must be a non-empty text string.
