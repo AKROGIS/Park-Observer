@@ -5,7 +5,7 @@ Protocol Specification -- 2.0
 please see [this version](Protocol_Specification_V1.html).* 
 
 *If you are new to Park Observer, please start with the
-[tutorial instructions](../new_survey.html) and [examples](../protocols/).*
+[help documents](../help2) and [example protocols](../protocols2/).*
 
 This document is a technical reference for the structure and accepted content of the
 Park Observer protocol file,
