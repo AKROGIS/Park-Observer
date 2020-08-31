@@ -143,15 +143,16 @@ extension Feature {
         throw corruptError(message: message)
       }
 
-      // Validate 1) if we have a label, we must have attributes
-      // 2) if definition is not provided, then field is in attributes
+      // Validate:
+      // 1) label.field is in attributes
+      // Atrributes are not required for label definition, as it could be a constant
       // (label will not decode if both field and definition are missing)
       if let label = label {
-        guard let attributes = attributes else {
-          let message = "Cannot initialize feature with label \(label) and no attributes"
-          throw corruptError(message: message)
-        }
         if let field = label.field, label.definition == nil {
+          guard let attributes = attributes else {
+            let message = "Cannot initialize feature with label \(label) and no attributes"
+            throw corruptError(message: message)
+          }
           let attributeNames = attributes.map { $0.name }
 
           if !attributeNames.contains(field) {

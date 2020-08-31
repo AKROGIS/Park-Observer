@@ -140,6 +140,7 @@ These issues are in software provided by others (Apple, Esri). If they become a 
   * Replaced "Mission Properties" with "{observing label} Info", e.g. "Survey Info" in attribute editor.
   * Protocol property dialog.title was not used, so it is now optional in the protocol file.
   * Fixed bug: protocol feature.label.field must **case_sensitive** match one of feature.attribute.name.
+  * Allow protocol with label definition and no attributes (label could be a constant)
 
 ## 2020-08-21: Beta3
 
