@@ -53,14 +53,6 @@ struct GpsDetailsView: View {
           }
         }
         VStack(alignment: .leading) {
-          Text("Vertical Accuracy").font(.caption).foregroundColor(.secondary)
-          if gpsPoint.verticalAccuracy < 0 {
-            Text("Unknown")
-          } else {
-            Text(String.formatOptional(format: "± %0.1f meters", value: gpsPoint.verticalAccuracy))
-          }
-        }
-        VStack(alignment: .leading) {
           Text("Course").font(.caption).foregroundColor(.secondary)
           if gpsPoint.course < 0 {
             Text("Unknown")

@@ -14,14 +14,14 @@ Functionality I plan to implement for parity with Park Observer 1.0.
 New functionality I want to implement.
   * User setting for turning on/off display of gps points and/or track logs
   * User setting for hit test area (small:11, medium:22, large:44) - default medium
+  * Highlight the selected feature(s)
+  * Add a graphic for the observers location (set symbology in mission) - New option in protocol file
   * Text alignment in Add feature at GPS button breaks down with accessible (larger) fonts
   * If GPS is denied when starting a track log or adding a feature, then raise "Go to settings" alert
   * Change footer in file pick lists when there are no files
   * Allow multiple concurrent messages. Close button to hide all or hide individuals
-  * Option to choose "Survey" or "Transect" for the observing button - New option in protocol file
   * Get MapInfo data from user and encode in a json file.
   * Format CSV per protocol definition
-  * Add a graphic for the observers location (set symbology in mission) - New option in protocol file
   * Dynamic sized text in scale bar
 
 ## Considering
@@ -82,6 +82,8 @@ These bugs limit required functionality.
 
 ## Nice to fix
 These bugs can be worked around or ignored.
+  * Ensure the Add Feature buttons conform to the protocol documentation for the "transects" property
+  * Defaults for when to display of the edit  dialog is confusing for some combinations of the tracklogs/transects properties.
   * Getting Error: unable to add point (...) to tracklog: wrongMission (when loading a survey, i.e. building tracklogs)
   * When waiting on GPS (i.e. exceeds allowable error), hide edit, show cancel, disallow save.
   * Do not show attribute editor if no dialog _and_ not angleDistance
@@ -140,7 +142,8 @@ These issues are in software provided by others (Apple, Esri). If they become a 
   * Replaced "Mission Properties" with "{observing label} Info", e.g. "Survey Info" in attribute editor.
   * Protocol property dialog.title was not used, so it is now optional in the protocol file.
   * Fixed bug: protocol feature.label.field must **case_sensitive** match one of feature.attribute.name.
-  * Allow protocol with label definition and no attributes (label could be a constant)
+  * Allow protocol with label definition and no attributes (label could be a constant).
+  * Removed second vertical accuracy line from GPS details form.
 
 ## 2020-08-21: Beta3
 
