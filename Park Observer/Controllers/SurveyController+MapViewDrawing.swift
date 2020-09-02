@@ -125,11 +125,22 @@ extension AGSMapView {
 
   func addLayers(for survey: Survey) {
     let missionRenderers: [(String, AGSRenderer?)] = [
-      (.layerNameGpsPoints, survey.config.mission?.gpsSymbology),
+      (
+        .layerNameGpsPoints,
+        survey.config.mission?.gpsSymbology ?? AGSSimpleRenderer(for: .gps)),
       // TODO: Use one layer with a Unique Value Renderer
-      (.layerNameTrackLogsOn, survey.config.mission?.onSymbology),
-      (.layerNameTrackLogsOff, survey.config.mission?.offSymbology),
-      (.layerNameMissionProperties, survey.config.mission?.symbology),
+      (
+        .layerNameTrackLogsOn,
+        survey.config.mission?.onSymbology ?? AGSSimpleRenderer(for: .onTransect)
+      ),
+      (
+        .layerNameTrackLogsOff,
+        survey.config.mission?.offSymbology ?? AGSSimpleRenderer(for: .offTransect)
+      ),
+      (
+        .layerNameMissionProperties,
+        survey.config.mission?.symbology ?? AGSSimpleRenderer(for: .mission)
+      ),
     ]
     let featureRenderers: [(String, AGSRenderer?)] = survey.config.features.map {
       ($0.name, $0.symbology)
