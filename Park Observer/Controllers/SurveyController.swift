@@ -68,15 +68,19 @@ class SurveyController: NSObject, ObservableObject {
     didSet {
       if trackLogging {
         let showEditor: Bool = {
+          guard let mission = survey?.config.mission else {
+            return false
+          }
+          if mission.attributes == nil { return false }
           if observing {
             if reObserving {
-              return survey?.config.mission?.editAtStartReobserving ?? true
+              return mission.editAtStartReobserving
             } else {
               reObserving = true
-              return survey?.config.mission?.editAtStartFirstObserving ?? true
+              return mission.editAtStartFirstObserving
             }
           } else {
-            return survey?.config.mission?.editAtStopObserving ?? true
+            return mission.editAtStopObserving
           }
         }()
         totalizer?.observing = observing
