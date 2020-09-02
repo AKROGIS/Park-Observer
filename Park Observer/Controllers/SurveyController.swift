@@ -491,7 +491,13 @@ class SurveyController: NSObject, ObservableObject {
     startNewMission()
     startGpsStreaming()
     reObserving = false  // The next "start transect/observing" will be the first for this trackLog
-    let showEditor = survey.config.mission?.editAtStartRecording ?? true
+    let showEditor: Bool = {
+      guard let mission = survey.config.mission else {
+        return false
+      }
+      if mission.attributes == nil { return false }
+      return mission.editAtStartRecording
+    }()
     addMissionPropertyAtGps(showEditor: showEditor)
   }
 
