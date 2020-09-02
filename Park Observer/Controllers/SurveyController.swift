@@ -384,6 +384,7 @@ class SurveyController: NSObject, ObservableObject {
       return allowAddFeature(feature)
     case .mission:
       if let config = survey?.config {
+        if config.mission?.attributes == nil { return false }
         return trackLogging || config.tracklogs != .required
       }
       return false

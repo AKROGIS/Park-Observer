@@ -144,6 +144,7 @@ These issues are in software provided by others (Apple, Esri). If they become a 
   * Fixed bug: protocol feature.label.field must **case_sensitive** match one of feature.attribute.name.
   * Allow protocol with label definition and no attributes (label could be a constant).
   * Removed second vertical accuracy line from GPS details form.
+  * Do not show mission property button or editor when no mission or mission.attributes defined in protocol.
 
 ## 2020-08-21: Beta3
 
