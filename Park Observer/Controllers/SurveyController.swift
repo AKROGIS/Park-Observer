@@ -71,7 +71,7 @@ class SurveyController: NSObject, ObservableObject {
           guard let mission = survey?.config.mission else {
             return false
           }
-          if mission.attributes == nil { return false }
+          if mission.dialog == nil { return false }
           if observing {
             if reObserving {
               return mission.editAtStartReobserving
@@ -384,7 +384,7 @@ class SurveyController: NSObject, ObservableObject {
       return allowAddFeature(feature)
     case .mission:
       if let config = survey?.config {
-        if config.mission?.attributes == nil { return false }
+        if config.mission?.dialog == nil { return false }
         return trackLogging || config.tracklogs != .required
       }
       return false
@@ -496,7 +496,7 @@ class SurveyController: NSObject, ObservableObject {
       guard let mission = survey.config.mission else {
         return false
       }
-      if mission.attributes == nil { return false }
+      if mission.dialog == nil { return false }
       return mission.editAtStartRecording
     }()
     addMissionPropertyAtGps(showEditor: showEditor)
