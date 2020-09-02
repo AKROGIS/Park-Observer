@@ -76,12 +76,16 @@ class MapViewTouchDelegate: NSObject, AGSGeoViewTouchDelegate {
   }
 
   private func displayInfo(for graphic: AGSGraphic) {
+    // Always show observationView (even if no editable attributes) user may want to see
+    // timestamp or location details; may want to delete or move an observation
     surveyController.selectedObservation = surveyController.observationPresenter(for: graphic)
     surveyController.showingObservationEditor = true
     surveyController.slideOutMenuVisible = true
   }
 
   private func displaySelector(for graphics: [AGSGraphic]) {
+    // Show all graphics in observationSelector (even if no editable attributes)
+    // User may want to see timestamp or location details; may want to delete or move an observation
     surveyController.selectedObservations = graphics.map {
       surveyController.observationPresenter(for: $0)
     }

@@ -709,13 +709,7 @@ class SurveyController: NSObject, ObservableObject {
       template: missionPropertyTemplate, observing: observing)
     //observationPresenter will create the mission property when it gets the next GPS location
     requestGpsPointAsync(for: observationPresenter)
-    if showEditor {
-      present(observationPresenter)
-    } else {
-      observationPresenter.autoAction = {
-        self.closeObservationView(observationPresenter)
-      }
-    }
+    present(observationPresenter, showEditor: showEditor)
   }
 
   /// Tap the Add Feature Button - for locate at GPS _or_ AngleDIstance
@@ -731,7 +725,8 @@ class SurveyController: NSObject, ObservableObject {
       survey: survey, mission: mission, observationClass: .feature(feature))
     //selectedObservation will create the observation when it gets the next GPS location
     requestGpsPointAsync(for: observationPresenter)
-    present(observationPresenter)
+    let showEditor = feature.dialog != nil || feature.allowAngleDistance || feature.allowAzimuthDistance
+    present(observationPresenter, showEditor: showEditor)
   }
 
   /// Tap the map to add a feature (or mission property if not) at the map location
@@ -758,34 +753,57 @@ class SurveyController: NSObject, ObservableObject {
     }
 
     if observationsLocatableWithTouch.count == 1 {
-      observationPresenter.setObservationClass(observationClass: observationsLocatableWithTouch[0])
-      present(observationPresenter)
+      let observationClass = observationsLocatableWithTouch[0]
+      observationPresenter.setObservationClass(observationClass: observationClass)
+      present(observationPresenter, showEditor: showEditor(for: observationClass, isTouch: true))
     } else {
-      selectedObservation = observationPresenter
+      presenterAwaitingFeatureSelection = observationPresenter
       showMapTouchSelectionSheet = true  //ActionSheet is in SurveyControlsView
     }
   }
 
+  var presenterAwaitingFeatureSelection: ObservationPresenter? = nil
+
   func viewDidSelectObservationClass(_ observation: ObservationClass?) {
     guard let observation = observation else {
       print("Map Touch Observation Selector Canceled")
-      // selectedObservation never got an ObservationClass so it never
+      // the observationPresenter never got an ObservationClass so it never
       // created any entities, so there is nothing to undo
-      selectedObservation = nil
+      presenterAwaitingFeatureSelection = nil
       return
     }
     print("Map Touch Observation Selector selected \(observation.name)")
-    if let selected = selectedObservation, selected.awaitingFeature {
-      selected.setObservationClass(observationClass: observation)
-      present(selected)
+    if let presenter = presenterAwaitingFeatureSelection, presenter.awaitingFeature {
+      presenter.setObservationClass(observationClass: observation)
+      presenterAwaitingFeatureSelection = nil
+      present(presenter, showEditor: showEditor(for: observation, isTouch: true))
     }
   }
 
-  private func present(_ observationPresenter: ObservationPresenter) {
-    selectedObservation = observationPresenter
-    observationPresenter.autoAction = nil
-    showingObservationEditor = true
-    slideOutMenuVisible = true
+  private func showEditor(for observationClass: ObservationClass, isTouch: Bool) -> Bool {
+    switch observationClass {
+    case .mission:
+      return survey?.config.mission?.dialog != nil
+    case .feature(let feature):
+      if isTouch {
+        return feature.dialog != nil
+      } else {
+        return feature.dialog != nil || feature.allowAngleDistance || feature.allowAzimuthDistance
+      }
+    }
+  }
+
+  private func present(_ observationPresenter: ObservationPresenter, showEditor: Bool) {
+    if showEditor {
+      selectedObservation = observationPresenter
+      observationPresenter.autoAction = nil
+      showingObservationEditor = true
+      slideOutMenuVisible = true
+    } else {
+      observationPresenter.autoAction = {
+        self.closeObservationView(observationPresenter)
+      }
+    }
   }
 
   func slideOutClosedActions() {
@@ -827,7 +845,7 @@ class SurveyController: NSObject, ObservableObject {
         }
         self.selectedObservation = nil
       } else {
-        present(selectedObservation)
+        present(selectedObservation, showEditor: true)
       }
       break
     case .move:
