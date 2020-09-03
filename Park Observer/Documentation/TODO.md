@@ -206,8 +206,6 @@ These issues are in software provided by others (Apple, Esri). If they become a 
 
 ### UI (or interactive) Testing
   * Test Gps failure condition and correct resumption of data collection
-  * Test computed and multi-value labels
-  * Test the size of form controls when large dynamic fonts are used
   * Test lists of features addable with/without touch based on state of config/trackLogging/observing
   * Test switch to background mode when creating a new observation (may request GPS in foreground and get it in background)
 
@@ -222,7 +220,6 @@ Maintainability issues in the code that are generally invisible to the user.
   * Create doc strings for all public members
   * Replace print statements with unified logging
   * Remove magic numbers and static strings
-  * Use a single Track logs layer
   * Simplify building ranges in Attribute Form Definition
   * Search for use of forced unwrapping (!) and replace with try do catch
   * Search for array access by index and verify index in bounds

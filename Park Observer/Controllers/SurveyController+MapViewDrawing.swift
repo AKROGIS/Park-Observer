@@ -6,13 +6,18 @@
 //  Copyright © 2020 Alaska Region GIS Team. All rights reserved.
 //
 
+// NOTE: The protoocol file has separate renderers for on transect (observing) and off transect
+// (not observing). These could both be unique value renderers, so there needs to be two different
+// layers.  They cannot be combined into a single layer with a unique value renderer on the
+// observing attribute unless the protocol file is changed to have a single renderer definition
+// for all tracklogs
+
 import ArcGIS  // for AGSGraphic, AGSPoint, AGSMapView, AGSRenderer, AGSGraphicsOverlay, AGSPolyline
 
 /// Well known layer names
 extension String {
   static let layerNameGpsPoints = "GpsPoints"
   static let layerNameMissionProperties = "Mission Properties"
-  //TODO: Use a single Tracklogs layer
   static let layerNameTrackLogsOn = "TrackLogsOn"
   static let layerNameTrackLogsOff = "TrackLogsOff"
 }
@@ -129,7 +134,6 @@ extension AGSMapView {
         .layerNameGpsPoints,
         survey.config.mission?.gpsSymbology ?? AGSSimpleRenderer(for: .gps)
       ),
-      // TODO: Use one layer with a Unique Value Renderer
       (
         .layerNameTrackLogsOn,
         survey.config.mission?.onSymbology ?? AGSSimpleRenderer(for: .onTransect)

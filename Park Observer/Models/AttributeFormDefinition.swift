@@ -312,7 +312,6 @@ extension DialogElement {
 
   //TODO: Simplify: Building ranges is too complicated (only really needed for stepper)
   //It is very,very unlikely that anyone would put in a limit approaching the extremes
-  //TODO: check lower < upper
   fileprivate func doubleRange(lowerBound: Double?, upperBound: Double?, isFloat: Bool)
     -> ClosedRange<Double>?
   {
