@@ -149,7 +149,14 @@ final class ObservationPresenter: ObservableObject {
   //I'm using these public setters so I can differentiate
   //when the properties are set from outside or inside the class
 
-  var autoAction: (() -> Void)? = nil
+  var autoAction: (() -> Void)? = nil {
+    didSet {
+      // This may get set after the object has gotten the gps and the class
+      if let autoAction = autoAction, !awaitingGps, !awaitingFeature, !awaitingGpsForMove {
+        autoAction()
+      }
+    }
+  }
 
   /// Set the observation class when it becomes known
   func setObservationClass(observationClass: ObservationClass?) {
