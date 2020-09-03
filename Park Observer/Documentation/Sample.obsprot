@@ -2,9 +2,9 @@
   "meta-name":"NPS-Protocol-Specification",
   "meta-version":2,
   "name":"Sample Survey",
-  "version": 1.0,
-  "date":"2020-08-17",
-  "description":"This is a simple sample survey for practicing with Park Observer",
+  "version": 1.1,
+  "date":"2020-09-03",
+  "description":"This is a simple sample survey for practicing with Park Observer 2.0",
   "transects": "none",
   "mission":{
     "attributes":[
@@ -27,13 +27,8 @@
         {"type":"QIntegerElement", "bind":"numberValue:count", "title":"Count"},
         {"type":"QSegmentedElement", "bind":"selectedItem:activity", "items":["Flying", "Fighting", "Other"]}
       ] } ] },
-      "locations":[
-        {"type":"azimuthDistance", "units":"feet" }
-      ],
-      "symbology":{
-        "color": "#F8DC70",
-        "size": 15
-      }
+      "locations":[ {"type":"azimuthDistance", "units":"feet" } ],
+      "symbology":{ "color": "#F8DC70", "size": 15 }
     },
     {
       "name":"Cabins",
@@ -46,20 +41,11 @@
         {"type":"QEntryElement",   "bind":"textValue:name", "title":"Name", "placeholder":"Optional"},
         {"type":"QBooleanElement", "bind":"boolValue:roof", "title":"Has A Roof"}
       ] } ] },
-      "locations":[
-        {"type":"gps"},
-        {"type":"mapTouch"}
-      ],
-      "label":{
-        "field":"id",
-        "symbol":{
-          "type": "esriTS",
-          "color": [255,255,0,255],
-          "font": {
-            "size": 14
-          }
-        }
-      },
+      "locations":[ {"type":"gps"}, {"type":"mapTouch"} ],
+      "label": { "definition": {
+        "labelExpression":  "[id]",
+        "symbol": { "type": "esriTS", "color": [255,255,0,255], "font": {"size": 12} }
+      }},
       "symbology":{
         "type": "uniqueValue",
         "field1": "roof",
@@ -67,7 +53,7 @@
           "type": "esriSMS",
           "style": "esriSMSSquare",
           "color": [142,68,173,255],
-          "size": 15,
+          "size": 14,
           "outline": {
             "color": [74,35,90,255],
             "width": 2
@@ -75,12 +61,12 @@
         },
         "uniqueValueInfos": [
           {
-            "value": "1",
+            "value": true,
             "symbol": {
               "type": "esriSMS",
               "style": "esriSMSDiamond",
               "color": [215,189,226,255],
-              "size": 13,
+              "size": 18,
               "outline": {
                 "color": [74,35,90,255],
                 "width": 2
