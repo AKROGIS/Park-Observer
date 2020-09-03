@@ -769,9 +769,9 @@ class FileManagerTests: XCTestCase {
     guard
       let newSurveyName = try? FileManager.default.newSurveyDirectory(
         desiredName, conflict: .keepBoth)
-      else {
-        XCTAssertTrue(false)
-        return
+    else {
+      XCTAssertTrue(false)
+      return
     }
     defer {
       try? AppFile(type: .survey, name: newSurveyName).delete()
@@ -781,9 +781,9 @@ class FileManagerTests: XCTestCase {
     guard
       let newSurveyName2 = try? FileManager.default.newSurveyDirectory(
         desiredName, conflict: .keepBoth)
-      else {
-        XCTAssertTrue(false)
-        return
+    else {
+      XCTAssertTrue(false)
+      return
     }
     defer {
       try? AppFile(type: .survey, name: newSurveyName2).delete()

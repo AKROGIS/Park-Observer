@@ -338,8 +338,8 @@
 			isa = PBXGroup;
 			children = (
 				749DE9B32469D6DC003D433A /* FileManagerTests.swift */,
-				7416799A2482188E00FF353C /* LicenseManagerTests.swift */,
 				741679A22482244500FF353C /* FormatterTests.swift */,
+				7416799A2482188E00FF353C /* LicenseManagerTests.swift */,
 			);
 			path = Utilities;
 			sourceTree = "<group>";
