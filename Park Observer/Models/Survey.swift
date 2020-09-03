@@ -75,7 +75,8 @@ extension Survey {
             fromURL: surveyBundle.protocolURL,
             skipValidation: skipValidation)
           if let mom = config.managedObjectModel {
-            let url = info.version == 1
+            let url =
+              info.version == 1
               ? surveyBundle.oldDatabaseURL
               : surveyBundle.databaseURL
             let psc = NSPersistentStoreCoordinator(managedObjectModel: mom)
@@ -178,7 +179,10 @@ extension Survey {
   /// Exports a survey to an archive file
   /// The archive name is determined from the survey name
   /// If archive exists, the conflict parameter decides how to resolve the conflict.
-  static func export(_ name: String, conflict: ConflictResolution = .replace, _ completionHandler: @escaping (Error?) -> Void) {
+  static func export(
+    _ name: String, conflict: ConflictResolution = .replace,
+    _ completionHandler: @escaping (Error?) -> Void
+  ) {
     Self.load(name) { result in
       switch result {
       case .success(let survey):

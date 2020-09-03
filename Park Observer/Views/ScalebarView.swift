@@ -30,9 +30,11 @@ struct ScalebarView: UIViewRepresentable {
 
   func updateUIView(_ view: Scalebar, context: Context) {
     view.textColor = userSettings.darkMapControls ? UIColor.black : UIColor.white
-    view.textShadowColor = (userSettings.darkMapControls ? UIColor.white : UIColor.black).withAlphaComponent(0.80)
+    view.textShadowColor = (userSettings.darkMapControls ? UIColor.white : UIColor.black)
+      .withAlphaComponent(0.80)
     view.lineColor = userSettings.darkMapControls ? UIColor.black : UIColor.white
-    view.shadowColor = (userSettings.darkMapControls ? UIColor.white : UIColor.black).withAlphaComponent(0.80)
+    view.shadowColor = (userSettings.darkMapControls ? UIColor.white : UIColor.black)
+      .withAlphaComponent(0.80)
   }
 }
 

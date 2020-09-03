@@ -50,11 +50,11 @@ struct Message {
   var color: some View {
     switch self.kind {
     case .error:
-      return Color(red: 192.0/255.0, green: 57.0/255.0, blue: 43.0/255.0)
+      return Color(red: 192.0 / 255.0, green: 57.0 / 255.0, blue: 43.0 / 255.0)
     case .warning:
-      return Color(red: 244.0/255.0, green: 208.0/255.0, blue: 63.0/255.0)
+      return Color(red: 244.0 / 255.0, green: 208.0 / 255.0, blue: 63.0 / 255.0)
     case .info:
-      return Color(red: 30.0/255.0, green: 132.0/255.0, blue: 73.0/255.0)
+      return Color(red: 30.0 / 255.0, green: 132.0 / 255.0, blue: 73.0 / 255.0)
     }
   }
 

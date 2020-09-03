@@ -187,7 +187,6 @@ struct SurveyBundle {
 
 }
 
-
 extension FileManager {
 
   func addToApp(url: URL, conflict: ConflictResolution = .fail) throws -> AppFile {
@@ -220,7 +219,8 @@ extension FileManager {
     return appFile
   }
 
-  func importSurvey(from archiveName: String, conflict: ConflictResolution = .fail) throws -> String {
+  func importSurvey(from archiveName: String, conflict: ConflictResolution = .fail) throws -> String
+  {
     let zipURL = AppFile(type: .archive, name: archiveName).url
     let tempURL = try createNewTempDirectory()
     let surveyExtension = AppFileType.survey.pathExtension

@@ -38,8 +38,8 @@ enum MapControlSize: CGFloat, CaseIterable, Hashable, Identifiable {
     }
   }
 
-  var id: MapControlSize {self}
-  
+  var id: MapControlSize { self }
+
 }
 
 extension View {
@@ -108,12 +108,12 @@ extension Publishers {
     let willShow = NotificationCenter.default.publisher(
       for: UIApplication.keyboardWillShowNotification
     )
-      .map { $0.keyboardHeight }
+    .map { $0.keyboardHeight }
 
     let willHide = NotificationCenter.default.publisher(
       for: UIApplication.keyboardWillHideNotification
     )
-      .map { _ in CGFloat(0) }
+    .map { _ in CGFloat(0) }
 
     return MergeMany(willShow, willHide).eraseToAnyPublisher()
   }

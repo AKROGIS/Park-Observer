@@ -154,7 +154,7 @@ extension Observation {
 
     // Map Touch Fields
     var mapFields = ["", "", ""]
-    if let map:MapReference = adhocLocation?.map {
+    if let map: MapReference = adhocLocation?.map {
       mapFields = [
         map.name ?? "",
         map.author ?? "",

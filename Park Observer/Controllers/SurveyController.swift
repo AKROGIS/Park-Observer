@@ -725,7 +725,8 @@ class SurveyController: NSObject, ObservableObject {
       survey: survey, mission: mission, observationClass: .feature(feature))
     //selectedObservation will create the observation when it gets the next GPS location
     requestGpsPointAsync(for: observationPresenter)
-    let showEditor = feature.dialog != nil || feature.allowAngleDistance || feature.allowAzimuthDistance
+    let showEditor =
+      feature.dialog != nil || feature.allowAngleDistance || feature.allowAzimuthDistance
     present(observationPresenter, showEditor: showEditor)
   }
 

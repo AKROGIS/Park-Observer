@@ -127,7 +127,8 @@ extension AGSMapView {
     let missionRenderers: [(String, AGSRenderer?)] = [
       (
         .layerNameGpsPoints,
-        survey.config.mission?.gpsSymbology ?? AGSSimpleRenderer(for: .gps)),
+        survey.config.mission?.gpsSymbology ?? AGSSimpleRenderer(for: .gps)
+      ),
       // TODO: Use one layer with a Unique Value Renderer
       (
         .layerNameTrackLogsOn,

@@ -20,7 +20,7 @@ struct MapControlsView: View {
       Spacer()
       if userSettings.showAlarmClock {
         AlarmView()
-        .mapButton(darkMode: userSettings.darkMapControls, size: userSettings.mapControlsSize)
+          .mapButton(darkMode: userSettings.darkMapControls, size: userSettings.mapControlsSize)
       }
       if viewPointController.rotation != 0 {
         Button(
@@ -28,10 +28,11 @@ struct MapControlsView: View {
             //withAnimation(Animation.easeOut(duration: 0.5).delay(0.5)) {
             self.viewPointController.rotation = 0.0
             //}
-        }) {
-          CompassView(rotation: -1 * viewPointController.rotation, darkMode: userSettings.darkMapControls)
-        }
-        .mapButton(darkMode: userSettings.darkMapControls, size: userSettings.mapControlsSize)
+          }) {
+            CompassView(
+              rotation: -1 * viewPointController.rotation, darkMode: userSettings.darkMapControls)
+          }
+          .mapButton(darkMode: userSettings.darkMapControls, size: userSettings.mapControlsSize)
         //.transition(AnyTransition.scale.combined(with:.opacity))
       }
       LocationButtonView(controller: locationButtonController)
