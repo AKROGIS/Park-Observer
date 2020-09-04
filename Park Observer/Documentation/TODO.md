@@ -82,6 +82,9 @@ These bugs limit required functionality.
 
 ## Nice to fix
 These bugs can be worked around or ignored.
+  * Date in protocol list is different than date in protocol details.  UTC v. Local
+  * Totalizer shows ?? for field value for the first tracklog in a survey even after setting the field value
+  * The info message "touch map to move observation" disappears when tracklogging (works correcty when not tracklogging)
   * Ensure the Add Feature buttons conform to the protocol documentation for the "transects" property
   * Defaults for when to display of the edit  dialog is confusing for some combinations of the tracklogs/transects properties.
   * Getting Error: unable to add point (...) to tracklog: wrongMission (when loading a survey, i.e. building tracklogs)
