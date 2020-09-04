@@ -82,7 +82,6 @@ These bugs limit required functionality.
 
 ## Nice to fix
 These bugs can be worked around or ignored.
-  * Totalizer shows ?? for field value for the first tracklog in a survey even after setting the field value
   * The info message "touch map to move observation" disappears when tracklogging (works correcty when not tracklogging)
   * Ensure the Add Feature buttons conform to the protocol documentation for the "transects" property
   * Defaults for when to display of the edit  dialog is confusing for some combinations of the tracklogs/transects properties.
@@ -150,6 +149,7 @@ These issues are in software provided by others (Apple, Esri). If they become a 
   * Fixed bug where gps points, mission property points and track logs did not draw on map when there was no mission defined in protocol.
   * Fixed bug where features with no dialog were not added to map at map touch (when multiple allowed)
   * Fixed bug where protocol date in list was 1 day earlier than the date in the protocol details view.
+  * Fixed bug where totalizer shows ?? for field value for the first tracklog in a survey even after setting the field value
 
 ## 2020-08-21: Beta3
 

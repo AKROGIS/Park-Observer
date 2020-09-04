@@ -93,7 +93,17 @@ final class Totalizer: ObservableObject {
   }
 
   private func reloadTotals(_ missionProperty: MissionProperty?) {
-    guard let missionProperty = missionProperty else { return }
+    // The very first missionProperty object of a survey will be nil
+    // If we return here, then the we will not initialize the properties (set currentFieldValues)
+    // and all checks for updates will fail until we start the next tracklog
+    // instead, if missionProperties is nil then set all field values to nil
+    guard let missionProperty = missionProperty else {
+      for field in definition.fields ?? [] {
+        let key = .attributePrefix + field
+        currentFieldValues[key] = nil as Any?  // Just nil will remove the key from the dictionary
+      }
+      return
+    }
     initializeProperties(missionProperty)
     guard let context = missionProperty.managedObjectContext else { return }
     // Read the tracklogs in the background and then find matching segments and update the totals
