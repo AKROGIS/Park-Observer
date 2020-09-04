@@ -30,13 +30,13 @@ struct MessageView: View {
     }.overlay(
       message.color
         .opacity(0.3).onTapGesture {
-          withAnimation { self.surveyController.message = nil }
+          withAnimation { self.surveyController.messages.remove(self.message.id) }
         })
   }
 
 }
 
-struct Message {
+struct Message: Identifiable {
 
   enum Kind {
     case error
@@ -44,6 +44,7 @@ struct Message {
     case info
   }
 
+  let id = UUID()
   let kind: Kind
   let text: String
 

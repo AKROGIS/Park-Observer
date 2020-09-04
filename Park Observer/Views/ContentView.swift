@@ -17,9 +17,7 @@ struct ContentView: View {
       ZStack(alignment: .topTrailing) {
         MapView().edgesIgnoringSafeArea(.all)
         VStack {
-          if surveyController.message != nil {
-            MessageView(message: surveyController.message!)
-          }
+          MessagesView()
           if surveyController.isShowingTotalizer && surveyController.totalizer != nil {
             TotalizerView(totalizer: surveyController.totalizer!)
           }

@@ -117,7 +117,7 @@ class SurveyController: NSObject, ObservableObject {
   }
   @Published var isGpsIntervalDefinedByProtocol = false
   @Published var slideOutMenuWidth: CGFloat = 300.0
-  @Published var message: Message? = nil
+  @Published var messages = Messages()
   @Published var observationsLocatableWithTouch = [ObservationClass]()
   @Published var featuresLocatableWithoutTouch = [Feature]()
   @Published var gpsAuthorization = GpsAuthorization.unknown
@@ -236,7 +236,7 @@ class SurveyController: NSObject, ObservableObject {
 
   func loadSurvey(name: String? = nil) {
     guard let name = name ?? surveyName ?? Defaults.surveyName.readString() else {
-      message = Message.warning("No survey loaded. Use the menu to select a survey.")
+      messages.append(.warning("No survey loaded. Use the menu to select a survey."))
       return
     }
     unloadCurrentSurvey()
@@ -257,7 +257,7 @@ class SurveyController: NSObject, ObservableObject {
         }
         break
       case .failure(let error):
-        self.message = Message.error("Error loading survey: \(error)")
+        self.messages.append(.error("Error loading survey: \(error)"))
         break
       }
     }
@@ -354,7 +354,7 @@ class SurveyController: NSObject, ObservableObject {
     do {
       try survey.save()
     } catch {
-      message = Message.error("Unable to save survey: \(error.localizedDescription)")
+      messages.append(.error("Unable to save survey: \(error.localizedDescription)"))
     }
   }
 
@@ -463,7 +463,7 @@ class SurveyController: NSObject, ObservableObject {
       mission = Mission.new(in: context)
     }
     if mission == nil {
-      message = Message.error("Unable to initialize survey: survey or mission undefined")
+      messages.append(.error("Unable to initialize survey: survey or mission undefined"))
     }
   }
 
@@ -478,14 +478,14 @@ class SurveyController: NSObject, ObservableObject {
 
   func startTrackLogging() {
     guard let survey = survey else {
-      message = Message.error("No survey selected, or survey is corrupt.")
+      messages.append(.error("No survey selected, or survey is corrupt."))
       return
     }
     updateFeatureLocatableWithoutTouch()
     if waitingToAuthorizeGps(callback: { self.startTrackLogging() }) { return }
     if gpsAuthorization == .denied {
       //TODO: raise alert with option to go to settings.  See Location Button
-      message = Message.info("App is not authorized to obtain your location. Enable in setttings.")
+      messages.append(.info("App is not authorized to obtain your location. Enable in setttings."))
       trackLogging = false
       return
     }
@@ -530,11 +530,11 @@ class SurveyController: NSObject, ObservableObject {
     requestGpsPointAsync()
   }
 
-  private var indexOfGpsError: Int? = nil {
-    didSet {
-      if indexOfGpsError == nil {
-        //TODO: message[indexOfGpsError] = nil
-        message = nil
+  private var idOfGpsError: UUID? = nil {
+    willSet {
+      // remove the old GPS message
+      if let id = idOfGpsError {
+        messages.remove(id)
       }
     }
   }
@@ -639,12 +639,12 @@ class SurveyController: NSObject, ObservableObject {
       return
     }
     guard let survey = self.survey else {
-      message = Message.error("No active survey.")
+      messages.append(.error("No active survey."))
       return
     }
     if mission == nil { startNewMission() }
     guard let mission = self.mission else {
-      message = Message.error("No active mission.")
+      messages.append(.error("No active mission."))
       return
     }
     let redundant: Bool = {
@@ -699,7 +699,8 @@ class SurveyController: NSObject, ObservableObject {
       return
     }
     if gpsAuthorization == .denied {
-      message = Message.error("App is not authorized to obtain your location. Enable in setttings.")
+      let message = "App is not authorized to obtain your location. Enable in setttings."
+      messages.append(.error(message))
       return
     }
     print("Adding Mission Property at GPS")
@@ -716,7 +717,8 @@ class SurveyController: NSObject, ObservableObject {
   func addObservationAtGps(feature: Feature) {
     if waitingToAuthorizeGps(callback: { self.addObservationAtGps(feature: feature) }) { return }
     if gpsAuthorization == .denied {
-      message = Message.error("App is not authorized to obtain your location. Enable in setttings.")
+      let message = "App is not authorized to obtain your location. Enable in setttings."
+      messages.append(.error(message))
       return
     }
     print("Adding \(feature.name) at \(feature.allowAngleDistance ? "AngleDistance" : "GPS")")
@@ -851,7 +853,9 @@ class SurveyController: NSObject, ObservableObject {
       break
     case .move:
       self.movingObservation = selectedObservation
-      message = .info("Tap on the map at the new location for the observation")
+      let message = Message.info("Tap on the map at the new location for the observation")
+      idOfMoveMessage = message.id
+      messages.append(message)
       // TODO: Can I set up a modal to prevent any other events?
       movingGraphic = true
       self.selectedObservation = nil
@@ -865,12 +869,21 @@ class SurveyController: NSObject, ObservableObject {
     }
   }
 
+  private var idOfMoveMessage: UUID? = nil {
+    willSet {
+      // remove old Move message
+      if let id = idOfMoveMessage {
+        messages.remove(id)
+      }
+    }
+  }
+
   func moveGraphic(to mapPoint: AGSPoint) {
     do {
       try movingObservation?.moveGraphic(to: mapPoint)
-      message = nil
+      idOfMoveMessage = nil
     } catch {
-      message = .error(error.localizedDescription)
+      messages.append(.error(error.localizedDescription))
     }
     movingObservation = nil
     movingGraphic = false
@@ -1005,10 +1018,9 @@ extension SurveyController {
 extension SurveyController: CLLocationManagerDelegate {
 
   func locationManager(_ manager: CLLocationManager, didFailWithError error: Error) {
-    indexOfGpsError = 0
-    message = Message.warning(error.localizedDescription)
-    //TODO: indexOfGpsError = Message.count
-    //message[indexOfGpsError] = Message.warning(error.localizedDescription)
+    let message = Message.warning(error.localizedDescription)
+    idOfGpsError = message.id
+    messages.append(message)
   }
 
   func locationManager(
@@ -1043,15 +1055,17 @@ extension SurveyController: CLLocationManagerDelegate {
   func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
     for location in locations {
       guard location.horizontalAccuracy > 0.0 else {
-        indexOfGpsError = 0
-        message = Message.warning("GPS error: location unavailable")
+        let message = Message.warning("GPS error: location unavailable")
+        idOfGpsError = message.id
+        messages.append(message)
         break
       }
       if userSettings.gpsAccuracyFilter > 0.0 {
         if userSettings.gpsAccuracyFilter < location.horizontalAccuracy {
-          indexOfGpsError = 0
           let error = String(format: "±%0.2f", location.horizontalAccuracy)
-          message = Message.warning("GPS error (\(error) m) too large")
+          let message = Message.warning("GPS error (\(error) m) too large")
+          idOfGpsError = message.id
+          messages.append(message)
           break
         }
       }
@@ -1068,7 +1082,7 @@ extension SurveyController: CLLocationManagerDelegate {
         }
       }
       // Clear any GPS errors
-      indexOfGpsError = nil
+      idOfGpsError = nil
       addGpsLocation(location)
       if requestingImmediatePoint {
         setupLocationManagerForStreaming()

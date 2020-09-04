@@ -39,6 +39,7 @@
 		59C8283024DB33770082BED2 /* MultiLineTextView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 59C8282F24DB33770082BED2 /* MultiLineTextView.swift */; };
 		59C8283224DB40FC0082BED2 /* ActivityIndicatorView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 59C8283124DB40FC0082BED2 /* ActivityIndicatorView.swift */; };
 		59C8283424DB7E1D0082BED2 /* AlarmView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 59C8283324DB7E1D0082BED2 /* AlarmView.swift */; };
+		59CAA5BD2502FDCB00491A94 /* MessagesView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 59CAA5BC2502FDCB00491A94 /* MessagesView.swift */; };
 		7401743A24CB82010005555E /* TotalizerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7401743924CB82010005555E /* TotalizerView.swift */; };
 		7401743C24CB83850005555E /* Totalizer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7401743B24CB83850005555E /* Totalizer.swift */; };
 		740D5AC1246DB3420018A684 /* Legacy Archives in Resources */ = {isa = PBXBuildFile; fileRef = 740D5AC0246DB3420018A684 /* Legacy Archives */; };
@@ -184,6 +185,7 @@
 		59C8282F24DB33770082BED2 /* MultiLineTextView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MultiLineTextView.swift; sourceTree = "<group>"; };
 		59C8283124DB40FC0082BED2 /* ActivityIndicatorView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ActivityIndicatorView.swift; sourceTree = "<group>"; };
 		59C8283324DB7E1D0082BED2 /* AlarmView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AlarmView.swift; sourceTree = "<group>"; };
+		59CAA5BC2502FDCB00491A94 /* MessagesView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MessagesView.swift; sourceTree = "<group>"; };
 		7401743924CB82010005555E /* TotalizerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TotalizerView.swift; sourceTree = "<group>"; };
 		7401743B24CB83850005555E /* Totalizer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Totalizer.swift; sourceTree = "<group>"; };
 		740D5AC0246DB3420018A684 /* Legacy Archives */ = {isa = PBXFileReference; lastKnownFileType = folder; path = "Legacy Archives"; sourceTree = "<group>"; };
@@ -467,6 +469,7 @@
 				74716632243E5B4200A9C960 /* LocationButtonView.swift */,
 				7471663F243F933700A9C960 /* MapControlsView.swift */,
 				74716628243C487300A9C960 /* MapView.swift */,
+				59CAA5BC2502FDCB00491A94 /* MessagesView.swift */,
 				7423E4CA249BE18300195DBB /* MessageView.swift */,
 				74716637243E854800A9C960 /* Scalebar.swift */,
 				7471663D243E859A00A9C960 /* ScalebarView.swift */,
@@ -802,6 +805,7 @@
 				7471663A243E854800A9C960 /* Scalebar.swift in Sources */,
 				59A11CF724E4B42300061B36 /* GpsDetailsView.swift in Sources */,
 				74D85B5C246F1EB60091EA8E /* Observation.swift in Sources */,
+				59CAA5BD2502FDCB00491A94 /* MessagesView.swift in Sources */,
 				74716639243E854800A9C960 /* Coalescer.swift in Sources */,
 				598932A12499DE6900A7C346 /* MainMenuView.swift in Sources */,
 				7423E4CB249BE18300195DBB /* MessageView.swift in Sources */,

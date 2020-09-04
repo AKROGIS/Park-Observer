@@ -19,7 +19,6 @@ New functionality I want to implement.
   * Text alignment in Add feature at GPS button breaks down with accessible (larger) fonts
   * If GPS is denied when starting a track log or adding a feature, then raise "Go to settings" alert
   * Change footer in file pick lists when there are no files
-  * Allow multiple concurrent messages. Close button to hide all or hide individuals
   * Get MapInfo data from user and encode in a json file.
   * Format CSV per protocol definition
   * Dynamic sized text in scale bar
@@ -82,7 +81,6 @@ These bugs limit required functionality.
 
 ## Nice to fix
 These bugs can be worked around or ignored.
-  * The info message "touch map to move observation" disappears when tracklogging (works correcty when not tracklogging)
   * Ensure the Add Feature buttons conform to the protocol documentation for the "transects" property
   * Defaults for when to display of the edit  dialog is confusing for some combinations of the tracklogs/transects properties.
   * Getting Error: unable to add point (...) to tracklog: wrongMission (when loading a survey, i.e. building tracklogs)
@@ -147,9 +145,11 @@ These issues are in software provided by others (Apple, Esri). If they become a 
   * Removed second vertical accuracy line from GPS details form.
   * Do not show mission property button or editor when no mission or mission.attributes defined in protocol.
   * Fixed bug where gps points, mission property points and track logs did not draw on map when there was no mission defined in protocol.
-  * Fixed bug where features with no dialog were not added to map at map touch (when multiple allowed)
+  * Fixed bug where features with no dialog were not added to map at map touch (when multiple allowed).
   * Fixed bug where protocol date in list was 1 day earlier than the date in the protocol details view.
-  * Fixed bug where totalizer shows ?? for field value for the first tracklog in a survey even after setting the field value
+  * Fixed bug where totalizer shows ?? for field value for the first tracklog in a survey even after setting the field value.
+  * Fixed bug where the info message "touch map to move observation" disappears when track logging.
+  * Added capability to have multiple error/warning and info messages at the same time.
 
 ## 2020-08-21: Beta3
 
