@@ -80,7 +80,7 @@ struct ProtocolItemView: View {
 
   private func details(for info: SurveyProtocol) -> String {
     let version = "\(info.majorVersion).\(info.minorVersion)"
-    let date = info.date == nil ? "Unknown" : info.date!.mediumDate
+    let date = info.date == nil ? "Unknown" : info.date!.mediumIsoDate
     return "Version: \(version), Date: \(date)"
   }
 

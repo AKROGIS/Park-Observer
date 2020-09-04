@@ -59,6 +59,15 @@ fileprivate class DateFormattingHelper {
     return dateFormatter
   }()
 
+  private let mediumIsoDateFormatter: DateFormatter = {
+    let dateFormatter = DateFormatter()
+    dateFormatter.locale = Locale(identifier: "en_US_POSIX")
+    dateFormatter.timeZone = TimeZone(secondsFromGMT: 0)
+      dateFormatter.dateStyle = .medium
+    dateFormatter.timeStyle = .none
+    return dateFormatter
+  }()
+
   private let mediumTimeFormatter: DateFormatter = {
     let dateFormatter = DateFormatter()
     dateFormatter.locale = Locale.current
@@ -81,6 +90,10 @@ fileprivate class DateFormattingHelper {
 
   func formatMediumDate(_ date: Date) -> String {
     return mediumDateFormatter.string(from: date)
+  }
+
+  func formatMediumIsoDate(_ date: Date) -> String {
+    return mediumIsoDateFormatter.string(from: date)
   }
 
   func formatMediumTime(_ date: Date) -> String {
@@ -136,6 +149,10 @@ extension Date {
 
   var mediumDate: String {
     return DateFormattingHelper.shared.formatMediumDate(self)
+  }
+
+  var mediumIsoDate: String {
+    return DateFormattingHelper.shared.formatMediumIsoDate(self)
   }
 
 }
