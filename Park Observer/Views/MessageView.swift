@@ -27,11 +27,12 @@ struct MessageView: View {
       Image(systemName: "xmark.circle.fill")
         .foregroundColor(userSettings.darkMapControls ? .black : .white)
         .padding(.trailing)
-    }.overlay(
-      message.color
-        .opacity(0.3).onTapGesture {
-          withAnimation { self.surveyController.messages.remove(self.message.id) }
-        })
+    }.background(
+      message.color.opacity(0.7)
+    )
+      .onTapGesture {
+        withAnimation { self.surveyController.messages.remove(self.message.id) }
+    }
   }
 
 }

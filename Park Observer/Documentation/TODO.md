@@ -150,6 +150,7 @@ These issues are in software provided by others (Apple, Esri). If they become a 
   * Fixed bug where totalizer shows ?? for field value for the first tracklog in a survey even after setting the field value.
   * Fixed bug where the info message "touch map to move observation" disappears when track logging.
   * Added capability to have multiple error/warning and info messages at the same time.
+  * Improve contrast in error(red), warning(yellow), and info(green) messages.
 
 ## 2020-08-21: Beta3
 
