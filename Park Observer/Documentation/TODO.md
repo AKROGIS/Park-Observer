@@ -16,7 +16,6 @@ New functionality I want to implement.
   * User setting for hit test area (small:11, medium:22, large:44) - default medium
   * Highlight the selected feature(s)
   * Add a graphic for the observers location (set symbology in mission) - New option in protocol file
-  * Text alignment in Add feature at GPS button breaks down with accessible (larger) fonts
   * If GPS is denied when starting a track log or adding a feature, then raise "Go to settings" alert
   * Change footer in file pick lists when there are no files
   * Get MapInfo data from user and encode in a json file.
@@ -151,6 +150,7 @@ These issues are in software provided by others (Apple, Esri). If they become a 
   * Fixed bug where the info message "touch map to move observation" disappears when track logging.
   * Added capability to have multiple error/warning and info messages at the same time.
   * Improve contrast in error(red), warning(yellow), and info(green) messages.
+  * Fixed text alignment in *Add feature at GPS button* with larger (accessible) fonts
 
 ## 2020-08-21: Beta3
 

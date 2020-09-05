@@ -79,13 +79,12 @@ struct SurveyControlsView: View {
           Button(action: {
             self.surveyController.addObservationAtGps(feature: feature)
           }) {
-            ZStack(alignment: .bottomTrailing) {
+            ZStack(alignment: .center) {
               Image(systemName: "plus").font(.largeTitle)
               Text("\(String(feature.name.prefix(1)))")
-                .font(.caption).bold()
-                //TODO: Make sure this offset works in all cases + dynamic font sizes
-                //  maybe best to fix the font size for both "plus" and feature code
-                .offset(x: -1, y: 4.0)
+                .font(.callout).bold()
+                .alignmentGuide(HorizontalAlignment.center) { d in d[.leading] - d.width*0.25  }
+                .alignmentGuide(VerticalAlignment.center) { d in d[.top] }
             }
           }
           .mapButton(
