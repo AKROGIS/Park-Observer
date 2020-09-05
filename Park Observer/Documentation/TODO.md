@@ -135,7 +135,7 @@ These issues are in software provided by others (Apple, Esri). If they become a 
 
 # Change Log
 
-## 2020-08-21: Beta4
+## 2020-09-04: Beta4
 
   * Added an option in the protocol file to specify label for the start/stop observing button (i.e. "Survey", "Transect").
   * Replaced "Mission Properties" with "{observing label} Info", e.g. "Survey Info" in attribute editor.
@@ -155,40 +155,44 @@ These issues are in software provided by others (Apple, Esri). If they become a 
 
 ## 2020-08-21: Beta3
 
-  * On first launch select an online map for the default.
-  * On first launch create sample survey and set it as the default.
-  * Fixed bug that failed to update label and rendering when changing attribute from null to non-null
-  * Fixed display glitch with disclosure angle for details view in survey and protocol lists.
-  * Fixed bug where editor was not presented when creating a new feature at the map touch location
-  * Fixed bug where the track log properties editor was not displayed at the proper times
-  * Add default limits of 0..100 on the stepper control (for legacy compatibility)
-  * Disable save button when there are no changes
-  * Fixed bug where mission properties at touch location were mis drawn at gps location.
-  * If you tap to select multiple features, and then delete one, it is removed from the list of selected features.
-  * Undo button while editing survey name was confusing. Make it a "clear text" button and a new undo button.
-  * Make the totalizer and info banner more visible
-  * Make the totalizer with fields behave as old Park Observer (shows total for entire survey not just current track log)
-  * Feature selector/presenter show the map label in the title when defined
-  * Support the gps_interval property in the protocol file
-  * Provide user settings for GPS filters: accuracy, distance, and duration.
+  * On first launch the app selects an online map for the default.
+  * On first launch the app creates a sample survey and set it as the default.
+  * Fixed a bug that failed to update labels and symbology when changing attributes from null to non-null
+  * Fixed a display glitch with the disclosure angle for the details view in survey and protocol lists.
+  * Fixed a bug where the editor was not presented when creating a new feature at the map touch location.
+  * Fixed a bug where the track log properties editor was not displayed at the proper times.
+  * Add default limits of 0..100 on the stepper control (for legacy compatibility).
+  * Disable the save button when there are no changes.
+  * Fixed a bug where mission properties at touch location were incorrectly drawn at the gps location.
+  * Now if you tap to select multiple features, and then delete one, it is removed from the list of selected
+    features.
+  * The undo button while editing the survey name was confusing. It is now a "clear text" button and
+    a new undo button was added.
+  * Made the totalizer and info banner more visible
+  * Made the totalizer with fields behave like the old Park Observer (shows total for entire survey not just
+    current track log)
+  * The feature selector/presenter now shows the feature id in the title.
+  * Added support for the gps_interval property in the protocol file
+  * Provided user settings for GPS filters: accuracy, distance, and duration.
 
 ## 2020-08-14: Beta2
 
-  * Fix Bugs in totalizer
-  * Properly disable background tracklogging
-  * Add alarm interval to settings
-  * Add "required" property to attributes.  UI Forces user to provide non-null attribute value
-  * Add "azimuth/distance" option to location methods (angle is relative to north, not course)
-  * Fix bugs with angle/distance forms (start with null, make required and validate)
-  * Show warning when angle is behind you (based on course; only for angle/distance)
-  * Make [github repo](https://github.com/regan-sarwas/park-observer) public
-  * Add user setting to put attribute buttons on top of form (instead of bottom)
-  * Add confirmation alert when deleting an observation
-  * Add an optional time and location of observation to the attribute form
-  * Support editing of survey names
-  * Add forms showing details/structure of survey protocol
-  * Add form showing details of survey
-  * Survey protocol files and archives can be opened with Park Observer from email and files app (no UI yet)
+  * Fixed bugs in totalizer.
+  * Fixed bug with disabling background track logging.
+  * Added alarm interval to settings.
+  * Added "required" property to attributes. UI Forces user to provide non-null attribute value.
+  * Added "azimuth/distance" option to location methods (angle is relative to north, not course).
+  * Fixed bugs with angle/distance forms (start with null, make required and validate).
+  * App shows a warning when angle is behind you (based on course; only for angle/distance).
+  * Made the [github repo](https://github.com/regan-sarwas/park-observer) public.
+  * Added user setting to put attribute buttons on top of form (instead of bottom).
+  * Added confirmation alert when deleting an observation.
+  * Added an optional time and location of observation to the attribute form.
+  * Added support for editing survey names.
+  * Added form showing details/structure of survey protocol.
+  * Added form showing details of the survey.
+  * Survey protocol files and archives can now be opened with Park Observer from email and files app (however
+    there is no UI yet).
 
 ## 2020-08-07: Beta1
 
