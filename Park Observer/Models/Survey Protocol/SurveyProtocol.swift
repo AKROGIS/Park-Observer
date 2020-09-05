@@ -80,7 +80,7 @@ extension SurveyProtocol {
   static var defaultStatusMessageFontsize: Double { 16.0 }
   static var defaultTracklogs: TracklogPreference { .required }
   static var defaultTransects: TransectPreference { .perFeature }
-  static var defaultTransectLabel: String { "Transect" }
+  static var defaultTransectLabel: String { "Survey" }
 }
 
 //MARK: SurveyProtocol - Codable

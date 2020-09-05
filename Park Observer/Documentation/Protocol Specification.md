@@ -227,8 +227,8 @@ This property is ignored in versions of Park Observer before 2.0.
    `allow_off_transect_observations` property.
 
 # `transect-label`
-This property is optional. If provided it must be a sting.  The default is `"Transect"`.
-Other appropriate choices might be `"Observing"`, `"Survey"`, or `"Trail"`.  This text is
+This property is optional. If provided it must be a sting.  The default is `"Survey"`.
+Other appropriate choices might be `"Observing"`, `"Transect"`, or `"Trail"`.  This text is
 used with `▶️` as the label in the start/stop observing button.
 Also, the attribute editor will be titled `{transect-label} Info` e.g. `Survey Info`.
 instead of `Mission Properties` as in previous versions.
