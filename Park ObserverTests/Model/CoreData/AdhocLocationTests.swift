@@ -45,16 +45,40 @@ class AdhocLocationTests: XCTestCase {
         do {
 
           // Then:
-          let point = GpsPoint.new(in: survey.viewContext)
+
+          // Test AdhocLocation.location getter
+          let adhoc = AdhocLocation.new(in: survey.viewContext)
+          XCTAssertNil(adhoc.latitude)
+          XCTAssertNil(adhoc.longitude)
+          XCTAssertNil(adhoc.location)
           let lat = 62.1234
           let lon = -154.3210
-          point.latitude = lat
-          point.longitude = lon
-          let loc = point.location
-          XCTAssertNotNil(loc)
-          if let loc = loc {
+          adhoc.latitude = lat
+          XCTAssertNotNil(adhoc.latitude)
+          XCTAssertNil(adhoc.longitude)
+          XCTAssertNil(adhoc.location)
+          adhoc.longitude = lon
+          XCTAssertNotNil(adhoc.latitude)
+          XCTAssertNotNil(adhoc.longitude)
+          XCTAssertNotNil(adhoc.location)
+          if let loc = adhoc.location {
             XCTAssertEqual(loc.latitude, lat, accuracy: 0.0001)
             XCTAssertEqual(loc.longitude, lon, accuracy: 0.0001)
+          }
+
+          // Test AdhocLocation.location setter
+          adhoc.latitude = nil
+          adhoc.longitude = nil
+          XCTAssertNil(adhoc.latitude)
+          XCTAssertNil(adhoc.longitude)
+          XCTAssertNil(adhoc.location)
+          let location = Location(latitude: lat, longitude: lon)
+          adhoc.location = location
+          XCTAssertNotNil(adhoc.latitude)
+          XCTAssertNotNil(adhoc.longitude)
+          if let alat = adhoc.latitude, let alon = adhoc.longitude {
+            XCTAssertEqual(alat, lat, accuracy: 0.0001)
+            XCTAssertEqual(alon, lon, accuracy: 0.0001)
           }
 
           survey.close()  // So we can delete it without errors
