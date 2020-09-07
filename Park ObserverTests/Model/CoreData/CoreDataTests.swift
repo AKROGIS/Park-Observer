@@ -147,7 +147,12 @@ class CoreDataTests: XCTestCase {
 
           // Mission
 
+          let n0 = try? survey.viewContext.count(for: Mission.fetchAll)
+          XCTAssertEqual(n0, 0)
           let mission = Mission.new(in: survey.viewContext)
+          let n1 = try? survey.viewContext.count(for: Mission.fetchAll)
+          XCTAssertEqual(n1, 1)
+
           // No attributes - ergo no defaults or constraints to test
           // Relationships should exist and be empty
           XCTAssertNotNil(mission.gpsPoints)
