@@ -4,6 +4,6 @@
   "name": "Minimal Protocol",
   "version": 1.3,
   "features": [
-    {"name": "Cabins", "locations": [ {"type": "mapTouch"} ], "symbology": {} }
+    {"name": "Cabins", "locations": [ {"type": "mapTouch"} ] }
   ]
 }

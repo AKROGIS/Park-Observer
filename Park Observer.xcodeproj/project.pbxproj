@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		5907D9722506D23500E92E43 /* MapReferenceTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5907D9712506D23500E92E43 /* MapReferenceTests.swift */; };
 		5935172924A68A8800A4CD45 /* OnlineBaseMaps.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5935172824A68A8800A4CD45 /* OnlineBaseMaps.swift */; };
 		5935172B24AAFC3700A4CD45 /* SurveyController+MapViewDrawing.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5935172A24AAFC3700A4CD45 /* SurveyController+MapViewDrawing.swift */; };
 		5935172D24ABC99A00A4CD45 /* MapViewTouchDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5935172C24ABC99A00A4CD45 /* MapViewTouchDelegate.swift */; };
@@ -151,6 +152,7 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		5907D9712506D23500E92E43 /* MapReferenceTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MapReferenceTests.swift; sourceTree = "<group>"; };
 		5935172824A68A8800A4CD45 /* OnlineBaseMaps.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnlineBaseMaps.swift; sourceTree = "<group>"; };
 		5935172A24AAFC3700A4CD45 /* SurveyController+MapViewDrawing.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "SurveyController+MapViewDrawing.swift"; sourceTree = "<group>"; };
 		5935172C24ABC99A00A4CD45 /* MapViewTouchDelegate.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MapViewTouchDelegate.swift; sourceTree = "<group>"; };
@@ -365,6 +367,7 @@
 				7416799E248223FE00FF353C /* AngleDistanceHelperTests.swift */,
 				74D85B68246F89730091EA8E /* CoreDataTests.swift */,
 				74ABE13D2489747E0047017C /* GpsPointTests.swift */,
+				5907D9712506D23500E92E43 /* MapReferenceTests.swift */,
 				74ABE13F248975630047017C /* ObservationTests.swift */,
 			);
 			path = CoreData;
@@ -852,6 +855,7 @@
 				74ABE140248975640047017C /* ObservationTests.swift in Sources */,
 				74A25FC324522B48006D82CE /* SurveyProtocolTests.swift in Sources */,
 				744C9B36247482700099D414 /* SurveyTests.swift in Sources */,
+				5907D9722506D23500E92E43 /* MapReferenceTests.swift in Sources */,
 				74A25FD3245360A5006D82CE /* SymbologyTests.swift in Sources */,
 				74A25FDA2453B469006D82CE /* TotalizerTests.swift in Sources */,
 				74D85B69246F89730091EA8E /* CoreDataTests.swift in Sources */,

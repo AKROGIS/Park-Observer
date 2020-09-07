@@ -54,19 +54,18 @@ extension MapReference {
     return NSFetchRequest<MapReference>(entityName: .entityNameMap)
   }
 
-  static func mapInfoFilter(info: MapInfo) -> NSPredicate {
+  static private func mapInfoFilter(info: MapInfo) -> NSPredicate {
     if let date = info.date {
       let filter = "author == %@ AND date == %@ AND name == %@"
       return NSPredicate(
         format: filter, info.author as CVarArg, date as CVarArg, info.title as CVarArg)
-    } else {
-      let filter = "author == %@ AND date = nil AND name == %@"
-      return NSPredicate(
-        format: filter, info.author as CVarArg, info.title as CVarArg)
     }
+    let filter = "author == %@ AND date = nil AND name == %@"
+    return NSPredicate(
+      format: filter, info.author as CVarArg, info.title as CVarArg)
   }
 
-  static func fetchFirst(matching info: MapInfo, in context: NSManagedObjectContext)
+  static private func fetchFirst(matching info: MapInfo, in context: NSManagedObjectContext)
     -> MapReference?
   {
     let request: NSFetchRequest<MapReference> = fetchRequest
