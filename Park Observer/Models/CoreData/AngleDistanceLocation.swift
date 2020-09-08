@@ -197,20 +197,41 @@ struct AngleDistanceHelper {
     }
   }
 
+  // Public so we can test it.
+  func utmZoneWKID(location: Location) -> Int {
+    // Does not check the latitude bounds (UTM grids stop at 84°N and 80°S)
+    // Does not account for weirdness of UTM at Norway (see https://en.wikipedia.org/wiki/Universal_Transverse_Mercator_coordinate_system)
+    let zone = utmZone(longitude: location.longitude)
+    return location.latitude < 0 ? 32700 + zone : 32600 + zone
+  }
+
+  // Public so we can test it.
+  func utmZone(longitude: Double) -> Int {
+    // 60 zones 6° wide in 360°
+    // with unbounded wrap around:
+    // for n:int in -∞..+∞; -177 +/- 3° + 360*n => 1
+    // for n:int in -∞..+∞;  177 +/- 3° + 360*n => 60
+    let boundedLongitude = (longitude > 180 || longitude < -180) ?
+      longitude - floor((longitude + 180.0 ) / 360.0) * 360.0 : longitude
+    let zone = (boundedLongitude + 180) / 6
+    return 1 + Int(zone)
+  }
+
   func featureLocationFromUserLocation(_ location: Location) -> Location? {
     guard let geoAngle = absoluteAngle, let distance = distanceInMeters else {
       return nil
     }
     //Find the UTM zone based on our lat/long, then use AGS to create a LL point
     // project to UTM, do angle/distance offset, then project new UTM point to LL
-    let zone = 1 + Int((180 + location.longitude) / 6.0)
-    let wkid = location.latitude < 0 ? 32700 + zone : 32600 + zone
+    let wkid = utmZoneWKID(location: location)
     guard let utm = AGSSpatialReference(wkid: wkid) else {
+      // Should be impossible
       return nil
     }
     let wgs84 = AGSSpatialReference.wgs84()
     let startLL = AGSPoint(clLocationCoordinate2D: location)
     guard let startUTM = AGSGeometryEngine.projectGeometry(startLL, to: utm) as? AGSPoint else {
+      // Should be impossible
       return nil
     }
     //geoAngle is clockwise from North, convert to math angle: counterclockwise from East = 0
@@ -218,10 +239,14 @@ struct AngleDistanceHelper {
     let deltaX = distance * cos(radians)
     let deltaY = distance * sin(radians)
     let endUTM = AGSPoint(x: startUTM.x + deltaX, y: startUTM.y + deltaY, spatialReference: utm)
-    if let endLL = AGSGeometryEngine.projectGeometry(endUTM, to: wgs84) as? AGSPoint {
-      return Location(latitude: endLL.y, longitude: endLL.x)
+    guard let endLL = AGSGeometryEngine.projectGeometry(endUTM, to: wgs84) as? AGSPoint else {
+      // Should be impossible
+      return nil
     }
-    return nil
+    if endLL.x.isNaN || endLL.y.isNaN {
+      return nil
+    }
+    return Location(latitude: endLL.y, longitude: endLL.x)
   }
 
   var perpendicularMeters: Double? {

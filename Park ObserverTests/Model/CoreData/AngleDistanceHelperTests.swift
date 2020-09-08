@@ -36,11 +36,18 @@ class AngleDistanceHelperTests: XCTestCase {
 
     XCTAssertNil(ad.distanceInMeters)
     XCTAssertNil(ad.distanceInUserUnits)
+    ad.distanceInMeters = nil
+    XCTAssertNil(ad.distanceInMeters)
+    XCTAssertNil(ad.distanceInUserUnits)
     ad.distanceInMeters = 75.0
     XCTAssertNotNil(ad.distanceInMeters)
     if let distance = ad.distanceInMeters {
       XCTAssertEqual(distance, 75.0, accuracy: 0.001)
     }
+    ad.distanceInUserUnits = nil
+    XCTAssertNil(ad.distanceInMeters)
+    XCTAssertNil(ad.distanceInUserUnits)
+    ad.distanceInUserUnits = 75.0
     // We can convert distances without config or heading
     // default user distance is meters
     XCTAssertNotNil(ad.distanceInUserUnits)
@@ -403,6 +410,78 @@ class AngleDistanceHelperTests: XCTestCase {
   }
 
   // MARK: - Other Properties
+
+  func testUtmZone() {
+    let ad = AngleDistanceHelper(config: nil, heading: 0.0)
+    let longitudes:[Double] = [ -177, -171, -9, -3, 3, 9, 171, 177]
+    let zones:[Int] = [ 1, 2, 29, 30, 31, 32, 59, 60]
+    let offsets:[Double] = [-720, -360, 0, 360, 720]
+    for offset in offsets {
+      for (i, v) in longitudes.enumerated() {
+        XCTAssertEqual(zones[i], ad.utmZone(longitude: v + offset))
+      }
+    }
+  }
+
+  func testUtmZoneWKID() {
+    let ad = AngleDistanceHelper(config: nil, heading: 0.0)
+    XCTAssertEqual(32701, ad.utmZoneWKID(location: Location(latitude: -91, longitude: -177)))
+    XCTAssertEqual(32702, ad.utmZoneWKID(location: Location(latitude: -89, longitude: -171)))
+    XCTAssertEqual(32729, ad.utmZoneWKID(location: Location(latitude: -1, longitude: -9)))
+    XCTAssertEqual(32632, ad.utmZoneWKID(location: Location(latitude: 1, longitude: 9)))
+    XCTAssertEqual(32659, ad.utmZoneWKID(location: Location(latitude: 89, longitude: 171)))
+    XCTAssertEqual(32660, ad.utmZoneWKID(location: Location(latitude: 91, longitude: 177)))
+  }
+
+  func testFeatureLocationFromUserLocation() {
+    var ad = AngleDistanceHelper(config: nil, heading: 0.0)
+    // newLoc is nil if absoluteAngle or distanceInMeters is nil
+    XCTAssertNil(ad.absoluteAngle)
+    var loc = Location(latitude: 0.0, longitude: 0.0)
+    var newLoc = ad.featureLocationFromUserLocation(loc)
+    XCTAssertNil(newLoc)
+    ad.absoluteAngle = 0
+    XCTAssertNil(ad.distanceInMeters)
+    newLoc = ad.featureLocationFromUserLocation(loc)
+    XCTAssertNil(newLoc)
+    ad.distanceInMeters = 0
+    XCTAssertNotNil(ad.absoluteAngle)
+    XCTAssertNotNil(ad.distanceInMeters)
+    newLoc = ad.featureLocationFromUserLocation(loc)
+    XCTAssertNotNil(newLoc)
+
+    // invalid lat/long should return nul
+    loc = Location(latitude: -90.1, longitude: 0.0)
+    newLoc = ad.featureLocationFromUserLocation(loc)
+    XCTAssertNil(newLoc)
+    loc = Location(latitude: -89.9, longitude: 0.0)
+    newLoc = ad.featureLocationFromUserLocation(loc)
+    XCTAssertNotNil(newLoc)
+    loc = Location(latitude: -0.0, longitude: 0.0)
+    newLoc = ad.featureLocationFromUserLocation(loc)
+    XCTAssertNotNil(newLoc)
+    loc = Location(latitude: 89.9, longitude: 0.0)
+    newLoc = ad.featureLocationFromUserLocation(loc)
+    XCTAssertNotNil(newLoc)
+    loc = Location(latitude: 90.1, longitude: 0.0)
+    newLoc = ad.featureLocationFromUserLocation(loc)
+    XCTAssertNil(newLoc)
+    loc = Location(latitude: 0.0, longitude: -180.1) // Wraps to 179.9
+    newLoc = ad.featureLocationFromUserLocation(loc)
+    XCTAssertNotNil(newLoc)
+    loc = Location(latitude: 0.0, longitude: -179.9)
+    newLoc = ad.featureLocationFromUserLocation(loc)
+    XCTAssertNotNil(newLoc)
+    loc = Location(latitude: 0.0, longitude: -0.0)
+    newLoc = ad.featureLocationFromUserLocation(loc)
+    XCTAssertNotNil(newLoc)
+    loc = Location(latitude: 0.0, longitude: 179.9)
+    newLoc = ad.featureLocationFromUserLocation(loc)
+    XCTAssertNotNil(newLoc)
+    loc = Location(latitude: 0.0, longitude: 180.1) // wraps to -179.9
+    newLoc = ad.featureLocationFromUserLocation(loc)
+    XCTAssertNotNil(newLoc)
+  }
 
   func testPerp_Location_Default() {
     // Given:
