@@ -68,23 +68,28 @@ class FileManagerTests: XCTestCase {
   // FileManager.default.hasSurveyDirectory
   // FileManager.default.createSurveyDirectory()
 
-  func testSurveyDirectory() {
-    // NOTE: the survey directory may already exist
-    let removeSurveyDirectory = !FileManager.default.hasSurveyDirectory
-    // It doesn't hurt to try and create it if iti exists
-    XCTAssertNotNil(try FileManager.default.createSurveyDirectory())
-    XCTAssertTrue(FileManager.default.hasSurveyDirectory)
-    XCTAssertNotNil(try FileManager.default.removeItem(at: AppFileType.survey.directoryUrl))
-    XCTAssertFalse(FileManager.default.hasSurveyDirectory)
-    XCTAssertNotNil(try FileManager.default.createSurveyDirectory())
-    XCTAssertTrue(FileManager.default.hasSurveyDirectory)
-    XCTAssertNotNil(try FileManager.default.createSurveyDirectory())
-    XCTAssertTrue(FileManager.default.hasSurveyDirectory)
-    if removeSurveyDirectory {
-      XCTAssertNotNil(try FileManager.default.removeItem(at: AppFileType.survey.directoryUrl))
-    }
+  // A SurveyDirectory test is done in AppDelegateTests.
+  // If they are done here (and if these tests delete the survey directory)
+  // the app delegate tests will fail; and the app folder will be left in an invalid
+  // state. i.e. default sample survey will be missing.
 
-  }
+//  func testSurveyDirectory() {
+//    // NOTE: the survey directory may already exist
+//    let removeSurveyDirectory = !FileManager.default.hasSurveyDirectory
+//    // It doesn't hurt to try and create it if iti exists
+//    XCTAssertNotNil(try FileManager.default.createSurveyDirectory())
+//    XCTAssertTrue(FileManager.default.hasSurveyDirectory)
+//    XCTAssertNotNil(try FileManager.default.removeItem(at: AppFileType.survey.directoryUrl))
+//    XCTAssertFalse(FileManager.default.hasSurveyDirectory)
+//    XCTAssertNotNil(try FileManager.default.createSurveyDirectory())
+//    XCTAssertTrue(FileManager.default.hasSurveyDirectory)
+//    XCTAssertNotNil(try FileManager.default.createSurveyDirectory())
+//    XCTAssertTrue(FileManager.default.hasSurveyDirectory)
+//    if removeSurveyDirectory {
+//      XCTAssertNotNil(try FileManager.default.removeItem(at: AppFileType.survey.directoryUrl))
+//    }
+//
+//  }
 
   // MARK: - File lists
 
