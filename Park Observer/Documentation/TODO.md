@@ -81,10 +81,10 @@ These bugs limit required functionality.
 ## Nice to fix
 These bugs can be worked around or ignored.
   * Ensure the Add Feature buttons conform to the protocol documentation for the "transects" property
-  * Defaults for when to display of the edit  dialog is confusing for some combinations of the tracklogs/transects properties.
+  * Transects "required" property should trump the features "allow off transect" property
+  * Defaults for when to display of the edit dialog is confusing for some combinations of the tracklogs/transects properties.
   * Getting Error: unable to add point (...) to tracklog: wrongMission (when loading a survey, i.e. building tracklogs)
   * When waiting on GPS (i.e. exceeds allowable error), hide edit, show cancel, disallow save.
-  * Do not show attribute editor if no dialog _and_ not angleDistance
   * Canceling a mission property dialog when launched from tracklogging or observing button does not cancel operation only attribute editing.
   * Getting the most recent Mission Property (for default) from database does not consider adhoc locations
   * Problem with Mission Properties with required values and no editing on start tracklog (values will be null)
@@ -92,14 +92,12 @@ These bugs can be worked around or ignored.
   * When exporting, the export date is updated before we know if the export succeeds.  If it fails, we need to undo the export date.
   * When returning from background addGpsLocation can be called from cache and from locationManager out of order
   * Chaos may ensue if the user does not tap on the map when "Moving to map location"; start modal mode?
-  * Need to be able to delete status messages when they no longer apply.
   * Slide out view does not check width on device rotation (limit to maxWidth as % of screenwidth)
   * Refresh the current file list if the slide out is hidden and re-shown
   * Alarm does not play alert sound when app is active
   * Add notice to turn on notification in settings if denied for alarm setting
   * User can provide a unique value renderer for track logs and or gps points, but graphics do not have the necessary attributes
   * The safe area (on devices with safe area - iPhone X and 11) mucks with styling of slide out view
-  * Transects "required" property should trump the features "allow off transect" property
   * Mission Properties are not created when start/stop observing, and tracklog = none
   * The default mission property "display editor" properties are not appropriate for all cases (i.e. tracklog = none)
   * ObservationPresenter/Selector title needs to be updated if the feature has a label field and it is edited.
