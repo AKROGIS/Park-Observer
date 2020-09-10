@@ -21,5 +21,5 @@ Building documentation under development.  In the meantime, see the
 ## Usage
 
 Usage documentation under development.  In the meantime, see the
-[documentation](https://github.com/regan-sarwas/Observer/tree/master/website)
-from the original version of Park Observer.
+[getting started](https://github.com/regan-sarwas/Park-Observer-Website/blob/master/help2/index.md)
+documentation from the Park Observer 2.0 website.

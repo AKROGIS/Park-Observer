@@ -125,11 +125,12 @@ These issues are in software provided by others (Apple, Esri). If they become a 
 
 
 # Documentation
-  * Create a simple how to document with screenshots
-  * Contributing guidelines - step by step processes for:
-    - fixing bugs
-    - adding features
-    - publishing new versions
+  * Finish Readme.md
+  * Finish Documentation/Protocol Guide.md
+  * Finish Documentation/Contributing.md
+  * Finish website help/index.md
+  * Finish website help/user_guide.md
+
 
 # Change Log
 
