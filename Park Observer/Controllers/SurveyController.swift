@@ -257,7 +257,23 @@ class SurveyController: NSObject, ObservableObject {
         }
         break
       case .failure(let error):
-        self.messages.append(.error("Error loading survey: \(error)"))
+        let message: String = {
+          switch error {
+          case .noObjectModel:
+            return "Unable to create object model from protocol."
+          case .noDatabase(let error):
+            return "No Database: \(error.localizedDescription)"
+          case .noProtocol(let error):
+            if let error = error as? DecodingError {
+              return "Protocol File \(error.errorDescription). \(error.failureReason) \(error.recoverySuggestion)"
+            } else {
+              return "No Protocol: \(error.localizedDescription)"
+            }
+          case .noInfo(let error):
+            return "No Metadata: \(error.localizedDescription)"
+          }
+        }()
+        self.messages.append(.error("Error loading survey: \(message)"))
         break
       }
     }

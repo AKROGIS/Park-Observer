@@ -134,6 +134,9 @@ These issues are in software provided by others (Apple, Esri). If they become a 
 
 # Change Log
 
+## Beta5
+  * Improve clarity of error message when survey does not load.
+
 ## 2020-09-04: Beta4
 
   * Added an option in the protocol file to specify label for the start/stop observing button (i.e. "Survey", "Transect").

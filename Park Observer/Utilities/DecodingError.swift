@@ -27,15 +27,16 @@ extension DecodingError {
     }
   }
 
-  public var failureReason: String? {
+  public var failureReason: String {
     switch self {
     case .dataCorrupted(let context):
       let location = path(for: context)
       let locationMessage = "\(context.debugDescription) at \(location)."
       return location.isEmpty ? context.debugDescription : locationMessage
     case .keyNotFound(let key, let context):
+      let property = name(of: key)
       let location = path(for: context)
-      return "\"\(key)\" missing at \(location.isEmpty ? "top of document" : location )."
+      return "\"\(property)\" missing in \(location.isEmpty ? "top of document" : location )."
     case .typeMismatch(_, let context):
       let location = path(for: context)
       let locationMessage = "\(context.debugDescription) at \(location)."
@@ -45,12 +46,17 @@ extension DecodingError {
       let locationMessage = "\(context.debugDescription) at \(location)."
       return location.isEmpty ? context.debugDescription : locationMessage
     @unknown default:
-      return nil
+      return "Reason unknown"
     }
   }
 
   var recoverySuggestion: String {
     return "Fix the error in the file and reload."
+  }
+
+  private func name(of key: CodingKey) -> String {
+    if let value = key.intValue { return "Item #\(value)" }
+    return key.stringValue
   }
 
   private func path(for context: Context) -> String {
