@@ -80,10 +80,7 @@ These bugs limit required functionality.
 
 ## Nice to fix
 These bugs can be worked around or ignored.
-  * Ensure the Add Feature buttons conform to the protocol documentation for the "transects" property
-  * Transects "required" property should trump the features "allow off transect" property
   * Defaults for when to display of the edit dialog is confusing for some combinations of the tracklogs/transects properties.
-  * Getting Error: unable to add point (...) to tracklog: wrongMission (when loading a survey, i.e. building tracklogs)
   * When waiting on GPS (i.e. exceeds allowable error), hide edit, show cancel, disallow save.
   * Canceling a mission property dialog when launched from tracklogging or observing button does not cancel operation only attribute editing.
   * Getting the most recent Mission Property (for default) from database does not consider adhoc locations
