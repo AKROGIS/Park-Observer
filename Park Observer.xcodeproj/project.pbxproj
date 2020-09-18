@@ -25,6 +25,7 @@
 		598932A12499DE6900A7C346 /* MainMenuView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 598932A02499DE6900A7C346 /* MainMenuView.swift */; };
 		5996046124FA1A400042738A /* AppDelegateTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5996046024FA1A400042738A /* AppDelegateTests.swift */; };
 		5996F58A24D3282D008C0E32 /* ObservationClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5996F58924D3282D008C0E32 /* ObservationClass.swift */; };
+		599C3C39250F03150043E4C2 /* MissionPropertyTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 599C3C38250F03150043E4C2 /* MissionPropertyTests.swift */; };
 		59A11CF324E1FDD900061B36 /* DurationPicker.swift in Sources */ = {isa = PBXBuildFile; fileRef = 59A11CF224E1FDD900061B36 /* DurationPicker.swift */; };
 		59A11CF724E4B42300061B36 /* GpsDetailsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 59A11CF624E4B42300061B36 /* GpsDetailsView.swift */; };
 		59A11CF924E59B5C00061B36 /* MapItemView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 59A11CF824E59B5C00061B36 /* MapItemView.swift */; };
@@ -170,6 +171,7 @@
 		598932A02499DE6900A7C346 /* MainMenuView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainMenuView.swift; sourceTree = "<group>"; };
 		5996046024FA1A400042738A /* AppDelegateTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegateTests.swift; sourceTree = "<group>"; };
 		5996F58924D3282D008C0E32 /* ObservationClass.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ObservationClass.swift; sourceTree = "<group>"; };
+		599C3C38250F03150043E4C2 /* MissionPropertyTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MissionPropertyTests.swift; sourceTree = "<group>"; };
 		59A11CF224E1FDD900061B36 /* DurationPicker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DurationPicker.swift; sourceTree = "<group>"; };
 		59A11CF624E4B42300061B36 /* GpsDetailsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GpsDetailsView.swift; sourceTree = "<group>"; };
 		59A11CF824E59B5C00061B36 /* MapItemView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MapItemView.swift; sourceTree = "<group>"; };
@@ -368,6 +370,7 @@
 				74D85B68246F89730091EA8E /* CoreDataTests.swift */,
 				74ABE13D2489747E0047017C /* GpsPointTests.swift */,
 				5907D9712506D23500E92E43 /* MapReferenceTests.swift */,
+				599C3C38250F03150043E4C2 /* MissionPropertyTests.swift */,
 				74ABE13F248975630047017C /* ObservationTests.swift */,
 			);
 			path = CoreData;
@@ -850,6 +853,7 @@
 				7416799F248223FE00FF353C /* AngleDistanceHelperTests.swift in Sources */,
 				74A25FD52453B3FD006D82CE /* MissionTests.swift in Sources */,
 				74ABE144248AB05C0047017C /* AdhocLocationTests.swift in Sources */,
+				599C3C39250F03150043E4C2 /* MissionPropertyTests.swift in Sources */,
 				74D0B0D22458DC5A00624FE9 /* ArcGISSymbolDefaultTests.swift in Sources */,
 				741679A32482244500FF353C /* FormatterTests.swift in Sources */,
 				74ABE140248975640047017C /* ObservationTests.swift in Sources */,

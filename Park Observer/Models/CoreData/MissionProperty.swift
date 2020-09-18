@@ -127,7 +127,7 @@ extension MissionProperty {
   }
 
   var location: Location? {
-    return adhocLocation?.location ?? gpsPoint?.location
+    return gpsPoint?.location ?? adhocLocation?.location
   }
 
 }
