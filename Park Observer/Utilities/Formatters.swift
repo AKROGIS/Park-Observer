@@ -24,7 +24,7 @@ import Foundation  // For Calendar, Date and DateFormatter
 /// The state is immutable and private (except singleton instance which can only be accessed
 /// by the date extensions in this file)
 
-fileprivate class DateFormattingHelper {
+private class DateFormattingHelper {
 
   static let shared = DateFormattingHelper()
 
@@ -63,7 +63,7 @@ fileprivate class DateFormattingHelper {
     let dateFormatter = DateFormatter()
     dateFormatter.locale = Locale(identifier: "en_US_POSIX")
     dateFormatter.timeZone = TimeZone(secondsFromGMT: 0)
-      dateFormatter.dateStyle = .medium
+    dateFormatter.dateStyle = .medium
     dateFormatter.timeStyle = .none
     return dateFormatter
   }()

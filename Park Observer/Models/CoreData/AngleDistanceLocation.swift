@@ -211,8 +211,9 @@ struct AngleDistanceHelper {
     // with unbounded wrap around:
     // for n:int in -∞..+∞; -177 +/- 3° + 360*n => 1
     // for n:int in -∞..+∞;  177 +/- 3° + 360*n => 60
-    let boundedLongitude = (longitude > 180 || longitude < -180) ?
-      longitude - floor((longitude + 180.0 ) / 360.0) * 360.0 : longitude
+    let boundedLongitude =
+      (longitude > 180 || longitude < -180)
+      ? longitude - floor((longitude + 180.0) / 360.0) * 360.0 : longitude
     let zone = (boundedLongitude + 180) / 6
     return 1 + Int(zone)
   }

@@ -83,7 +83,7 @@ struct SurveyControlsView: View {
               Image(systemName: "plus").font(.largeTitle)
               Text("\(String(feature.name.prefix(1)))")
                 .font(.callout).bold()
-                .alignmentGuide(HorizontalAlignment.center) { d in d[.leading] - d.width*0.25  }
+                .alignmentGuide(HorizontalAlignment.center) { d in d[.leading] - d.width * 0.25 }
                 .alignmentGuide(VerticalAlignment.center) { d in d[.top] }
             }
           }

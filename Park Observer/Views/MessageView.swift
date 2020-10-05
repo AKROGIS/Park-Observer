@@ -30,8 +30,8 @@ struct MessageView: View {
     }.background(
       message.color.opacity(0.7)
     )
-      .onTapGesture {
-        withAnimation { self.surveyController.messages.remove(self.message.id) }
+    .onTapGesture {
+      withAnimation { self.surveyController.messages.remove(self.message.id) }
     }
   }
 

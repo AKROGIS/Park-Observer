@@ -265,7 +265,8 @@ class SurveyController: NSObject, ObservableObject {
             return "No Database: \(error.localizedDescription)"
           case .noProtocol(let error):
             if let error = error as? DecodingError {
-              return "Protocol File \(error.errorDescription). \(error.failureReason) \(error.recoverySuggestion)"
+              return
+                "Protocol File \(error.errorDescription). \(error.failureReason) \(error.recoverySuggestion)"
             } else {
               return "No Protocol: \(error.localizedDescription)"
             }
