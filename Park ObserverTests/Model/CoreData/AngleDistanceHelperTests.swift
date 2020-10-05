@@ -413,9 +413,9 @@ class AngleDistanceHelperTests: XCTestCase {
 
   func testUtmZone() {
     let ad = AngleDistanceHelper(config: nil, heading: 0.0)
-    let longitudes:[Double] = [ -177, -171, -9, -3, 3, 9, 171, 177]
-    let zones:[Int] = [ 1, 2, 29, 30, 31, 32, 59, 60]
-    let offsets:[Double] = [-720, -360, 0, 360, 720]
+    let longitudes: [Double] = [-177, -171, -9, -3, 3, 9, 171, 177]
+    let zones: [Int] = [1, 2, 29, 30, 31, 32, 59, 60]
+    let offsets: [Double] = [-720, -360, 0, 360, 720]
     for offset in offsets {
       for (i, v) in longitudes.enumerated() {
         XCTAssertEqual(zones[i], ad.utmZone(longitude: v + offset))
@@ -466,7 +466,7 @@ class AngleDistanceHelperTests: XCTestCase {
     loc = Location(latitude: 90.1, longitude: 0.0)
     newLoc = ad.featureLocationFromUserLocation(loc)
     XCTAssertNil(newLoc)
-    loc = Location(latitude: 0.0, longitude: -180.1) // Wraps to 179.9
+    loc = Location(latitude: 0.0, longitude: -180.1)  // Wraps to 179.9
     newLoc = ad.featureLocationFromUserLocation(loc)
     XCTAssertNotNil(newLoc)
     loc = Location(latitude: 0.0, longitude: -179.9)
@@ -478,7 +478,7 @@ class AngleDistanceHelperTests: XCTestCase {
     loc = Location(latitude: 0.0, longitude: 179.9)
     newLoc = ad.featureLocationFromUserLocation(loc)
     XCTAssertNotNil(newLoc)
-    loc = Location(latitude: 0.0, longitude: 180.1) // wraps to -179.9
+    loc = Location(latitude: 0.0, longitude: 180.1)  // wraps to -179.9
     newLoc = ad.featureLocationFromUserLocation(loc)
     XCTAssertNotNil(newLoc)
   }

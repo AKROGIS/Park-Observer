@@ -205,7 +205,6 @@ class GpsPointTests: XCTestCase {
       }
     }
 
-
     // Test Fetch lastPoint
 
     let last = try? survey.viewContext.fetch(GpsPoints.lastPoint)

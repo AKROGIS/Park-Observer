@@ -85,7 +85,6 @@ class MissionPropertyTests: XCTestCase {
           mp.gpsPoint = nil
           XCTAssertNil(mp.location)
 
-
           // Test MissionProperty.timestamp getter (no setter)
           // MP will only have adhoc if there is no GPS, however
           // gps timestamp trumps adhoc timestamp if Mission Property has both
@@ -105,7 +104,6 @@ class MissionPropertyTests: XCTestCase {
           XCTAssertEqual(mp.timestamp, date2)
           mp.gpsPoint = nil
           XCTAssertNil(mp.timestamp)
-
 
           survey.close()  // So we can delete it without errors
           expectation1.fulfill()
