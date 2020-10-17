@@ -28,9 +28,11 @@ struct CompassView: View {
         Triangle()
           .fill(Color(.red))
           .frame(width: geometry.size.width * 0.2, height: geometry.size.height * 0.34)
+          .position(x: geometry.size.width / 2, y: geometry.size.height / 2)
           .offset(x: 0.0, y: -0.17 * geometry.size.height)
         Triangle()
           .frame(width: geometry.size.width * 0.2, height: geometry.size.height * 0.34)
+          .position(x: geometry.size.width / 2, y: geometry.size.height / 2)
           .offset(x: 0.0, y: -0.17 * geometry.size.height)
           .rotationEffect(Angle(degrees: 180.0))
       }

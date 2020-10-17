@@ -77,8 +77,6 @@ These bugs create errors in stored data.
 
 ## Important
 These bugs limit required functionality.
-
-  * With iOS 14.0, the compass rose is no longer centered in the CompassView Button
   * With iOS 14.0, the slideout view will automatically resize to accommodate the keyboard (iOS 13 did not), so now there is a large gap on iOS 14
   * With iOS 14.0, the TextField in View/SlideOutViews/AttributeFormView.swift no longer works. Every new character is erased after entry (but last character typed is added to the text when focus is lost).
   * With iOS 14.0, the MultilineTextView in View/SlideOutViews no longer works. Similar to the TextField
@@ -142,6 +140,7 @@ These issues are in software provided by others (Apple, Esri). If they become a 
 
 ## Beta5
   * Improve clarity of error message when survey does not load.
+  * Bug fix for incorrect drawing of compass rose button With iOS 14.0
 
 ## 2020-09-04: Beta4
 
