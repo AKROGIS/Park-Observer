@@ -280,7 +280,7 @@ extension DialogElement {
         let range = intRange(
           lowerBound: minimumValue, upperBound: maximumValue, type: attribute.type)
         return IntElement(
-          label: title, placeholder: placeholder ?? "", keyboard: keyboardType, showStepper: true,
+          label: title, placeholder: placeholder ?? "", keyboard: keyboardType, showStepper: false,
           range: range, key: key,
           data: data, validator: validator)
       default:

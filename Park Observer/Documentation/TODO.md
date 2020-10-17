@@ -80,10 +80,11 @@ These bugs limit required functionality.
   * With iOS 14.0, the slideout view will automatically resize to accommodate the keyboard (iOS 13 did not), so now there is a large gap on iOS 14
   * With iOS 14.0, the TextField in View/SlideOutViews/AttributeFormView.swift no longer works. Every new character is erased after entry (but last character typed is added to the text when focus is lost).
   * With iOS 14.0, the MultilineTextView in View/SlideOutViews no longer works. Similar to the TextField
-  * With iOS 14.0, the DoubleEditView in View/SlideOutViews/AttributeFormView.swift no longer works. Similar to the TextField (however the IntEditView in the stepper is working correctly)
+  * With iOS 14.0, the DoubleEditView in View/SlideOutViews/AttributeFormView.swift no longer works. Similar to the TextField
+  * With iOS 14.0, the IntEditView in View/SlideOutViews/AttributeFormView.swift no longer works. Similar to the TextField (however the IntEditView in the stepper is working correctly)
   * With iOS 14.0, the OptionalToggle in View/SlideOutViews/AttributeFormView.swift no longer works. Will toggle once, but not twice, clearing toggle seems to work.
-  * DecimalEntry should not show stepper when the attribute type is an int.
   * DecimalEntry with attribute type of Int fails to initialize unless fraction digits is explicitly set to 0 (should be assumed), however fractiondigits <> 0 should be an error.
+  * DecimalEntry with attribute type of Float/Double does not truncate fraction digits instead it appends zeros out to 6 decimal places
 
 ## Nice to fix
 These bugs can be worked around or ignored.
@@ -140,7 +141,8 @@ These issues are in software provided by others (Apple, Esri). If they become a 
 
 ## Beta5
   * Improve clarity of error message when survey does not load.
-  * Bug fix for incorrect drawing of compass rose button With iOS 14.0
+  * Fixed bug for incorrect drawing of compass rose button on iOS 14.0.
+  * Fixed bug where DecimalEntry incorrectly added a stepper when the attribute type was an Int16/Int32/Int64.
 
 ## 2020-09-04: Beta4
 
