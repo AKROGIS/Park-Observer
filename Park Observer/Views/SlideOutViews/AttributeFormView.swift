@@ -56,7 +56,7 @@ struct AttributeFormView: View {
 
   func build(_ e: DoubleElement) -> some View {
     let stringFormat: String = {
-      if let digits = e.decimals, digits > 0, digits < 15 {
+      if let digits = e.decimals, digits >= 0, digits < 15 {
         return "%.\(digits)f"
       }
       return "%f"
