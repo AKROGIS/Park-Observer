@@ -193,7 +193,7 @@ These issues are in software provided by others (Apple, Esri). If they become a 
   * Added "azimuth/distance" option to location methods (angle is relative to north, not course).
   * Fixed bugs with angle/distance forms (start with null, make required and validate).
   * App shows a warning when angle is behind you (based on course; only for angle/distance).
-  * Made the [github repo](https://github.com/regan-sarwas/park-observer) public.
+  * Made the [github repo](https://github.com/AKROGIS/Park-Observer) public.
   * Added user setting to put attribute buttons on top of form (instead of bottom).
   * Added confirmation alert when deleting an observation.
   * Added an optional time and location of observation to the attribute form.
