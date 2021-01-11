@@ -1,0 +1,16 @@
+{
+  "meta-name": "NPS-Protocol-Specification",
+  "meta-version": 2,
+  "name": "Totalizer Test 5: on:off; off:on",
+  "version": 1.5,
+  "mission": {
+    "symbology": {},
+    "totalizer": {
+      "includeon": false,
+      "includeoff": true
+    }
+  },
+  "features": [
+    {"name": "Cabins", "locations": [ {"type": "mapTouch"} ], "symbology": {} }
+  ]
+}

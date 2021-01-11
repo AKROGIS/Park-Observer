@@ -1,0 +1,31 @@
+{
+  "meta-name":"NPS-Protocol-Specification",
+  "meta-version":2,
+  "name":"Test T/O defaults",
+  "description": "Implicit Defaults",
+  "version": 1.0,
+  "mission":{ "symbology": {} },
+  "features":[
+    {
+      "name":"Angles",
+      "symbology": {},
+      "locations":[{"type":"azimuthDistance", "units":"feet" }]
+    },
+    {
+      "name":"Boats",
+      "symbology": {},
+      "locations":[{"type":"mapTouch"}]
+    },
+    {
+      "name":"Cabins",
+      "symbology": {},
+      "locations":[{"type":"gps"},{"type":"mapTouch"}]
+    },
+    {
+      "name":"Dogs",
+      "symbology": {},
+      "allow_off_transect_observations": true,
+      "locations":[{"type":"gps"},{"type":"mapTouch"}]
+    }
+  ]
+}

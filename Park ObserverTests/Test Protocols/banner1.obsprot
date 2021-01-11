@@ -1,0 +1,15 @@
+{
+  "meta-name": "NPS-Protocol-Specification",
+  "meta-version": 2,
+  "name": "Banner Test 1; both defined + totalizer",
+  "version": 1.1,
+  "mission": {
+    "symbology": {},
+    "totalizer": {}
+  },
+  "observing": "Observing",
+  "notobserving": "NOT ON TRANSECT",
+  "features": [
+    {"name": "Cabins", "locations": [ {"type": "mapTouch"} ], "symbology": {} }
+  ]
+}

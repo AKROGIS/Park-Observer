@@ -1,0 +1,13 @@
+{
+  "meta-name": "NPS-Protocol-Specification",
+  "meta-version": 2,
+  "name": "Banner Test 2; observing defined",
+  "version": 1.2,
+  "mission": {
+    "symbology": {}
+  },
+  "observing": "Observing",
+  "features": [
+    {"name": "Cabins", "locations": [ {"type": "mapTouch"} ], "symbology": {} }
+  ]
+}

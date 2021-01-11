@@ -1,0 +1,37 @@
+{
+  "meta-name": "NPS-Protocol-Specification",
+  "meta-version": 2,
+  "name": "UniqueValue Render Test",
+  "version": 1.0,
+  "tracklogs":"optional",
+  "transects":"none",
+  "features": [{
+    "name": "Cabins",
+    "attributes": [{"type":100, "name":"id"},{"type":700, "name":"name"}],
+    "dialog": {"title":"Cabins", "sections":[{"elements":[
+      {"type":"QIntegerElement", "bind":"numberValue:id", "title":"id"},
+      {"type":"QEntryElement", "bind":"textValue:name", "title":"name"}
+    ]}]},
+    "locations": [ {"type": "mapTouch"} ],
+    "symbology": {
+      "type": "uniqueValue",
+      "field1": "name",
+      "field2": "id",
+      "fieldDelimiter": ",",
+      "defaultSymbol": {"type":"esriSMS", "size": 10},
+      "uniqueValueInfos": [{
+        "value": "bob,0",
+        "symbol": {"type":"esriSMS", "size": 20, "color": [255,255,255,255]}
+      },{
+        "value": "BOB,0",
+        "symbol": {"type":"esriSMS", "size": 30, "color": [255,255,255,255]}
+      },{
+        "value": "bob,1",
+        "symbol": {"type":"esriSMS", "size": 20, "color": [0,0,0,255]}
+      },{
+        "value": "BOB,1",
+        "symbol": {"type":"esriSMS", "size": 30, "color": [0,0,0,255]}
+      }]
+    } 
+  }]
+}

@@ -1,0 +1,17 @@
+{
+  "meta-name": "NPS-Protocol-Specification",
+  "meta-version": 2,
+  "name": "Totalizer Test 2: on:on/off; units:miles",
+  "version": 1.2,
+  "mission": {
+    "symbology": {},
+    "totalizer": {
+      "includeon": true,
+      "includeoff": true,
+      "units": "miles"
+    }
+  },
+  "features": [
+    {"name": "Cabins", "locations": [ {"type": "mapTouch"} ], "symbology": {} }
+  ]
+}

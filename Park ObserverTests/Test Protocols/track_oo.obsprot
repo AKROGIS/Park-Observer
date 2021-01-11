@@ -1,0 +1,34 @@
+{
+  "meta-name":"NPS-Protocol-Specification",
+  "meta-version":2,
+  "name":"Test T/O OO",
+  "description": "tracklogs = optional, transects = optional, dogs allowed",
+  "version": 1.0,
+  "tracklogs": "optional",
+  "transects": "optional",
+  "mission":{ "symbology": {} },
+  "features":[
+    {
+      "name":"Angles",
+      "symbology": {},
+      "locations":[{"type":"azimuthDistance", "units":"feet" }]
+    },
+    {
+      "name":"Boats",
+      "symbology": {},
+      "locations":[{"type":"mapTouch"}]
+    },
+    {
+      "name":"Cabins",
+      "symbology": {},
+      "allow_off_transect_observations": false,
+      "locations":[{"type":"gps"},{"type":"mapTouch"}]
+    },
+    {
+      "name":"Dogs",
+      "symbology": {},
+      "allow_off_transect_observations": true,
+      "locations":[{"type":"gps"},{"type":"mapTouch"}]
+    }
+  ]
+}

@@ -1,0 +1,13 @@
+{
+  "meta-name": "NPS-Protocol-Specification",
+  "meta-version": 2,
+  "name": "Banner Test 3; Not observing defined",
+  "version": 1.3,
+  "mission": {
+    "symbology": {}
+  },
+  "notobserving": "NOT ON TRANSECT",
+  "features": [
+    {"name": "Cabins", "locations": [ {"type": "mapTouch"} ], "symbology": {} }
+  ]
+}

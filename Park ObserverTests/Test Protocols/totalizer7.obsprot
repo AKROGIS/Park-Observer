@@ -1,0 +1,31 @@
+{
+  "meta-name": "NPS-Protocol-Specification",
+  "meta-version": 2,
+  "name": "Totalizer Test 7: on:all, units:min; 2fields",
+  "version": 1.7,
+  "mission": {
+    "attributes":[ {"name":"Transect", "type":700}, {"name":"Observer", "type":700} ],
+    "dialog":{
+      "title":"Mission Properties",
+      "sections":[
+        {
+          "elements":[
+            {"type":"QEntryElement", "bind":"textValue:Transect", "title":"Transect"},
+            {"type":"QEntryElement", "bind":"textValue:Observer", "title":"Observer"}
+          ]
+        }
+      ]
+    },
+    "symbology": {},
+    "totalizer": {
+      "fields":["Transect", "Observer"],
+      "includeon": true,
+      "includeoff": true,
+      "includetotal": true,
+      "units": "minutes"
+    }
+  },
+  "features": [
+    {"name": "Cabins", "locations": [ {"type": "mapTouch"} ], "symbology": {} }
+  ]
+}

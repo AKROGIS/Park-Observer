@@ -1,0 +1,48 @@
+{
+  "meta-name":"NPS-Protocol-Specification",
+  "meta-version":2,
+  "name":"Test Attributes",
+  "version": 1.0,
+  "features":[
+    {
+      "name":"Cabins",
+      "locations":[{"type":"mapTouch"}],
+      "attributes":[
+        {"name":"Id",        "type":0},
+        {"name":"Int16s",    "type":100},
+        {"name":"Int32s",    "type":200},
+        {"name":"Int32s2",   "type":200},
+        {"name":"Int32",     "type":200},
+        {"name":"Int64",     "type":300},
+        {"name":"Double0",   "type":500},
+        {"name":"Double4",   "type":500},
+        {"name":"Float2",    "type":600},
+        {"name":"Text",      "type":700},
+        {"name":"MultiLine", "type":700},
+        {"name":"Toggle",    "type":800},
+        {"name":"Picker1",   "type":100},
+        {"name":"Picker2",   "type":700},
+        {"name":"Picker3",   "type":100},
+        {"name":"Picker4",   "type":700}
+      ],
+      "dialog":{ "sections":[ { "elements":[
+        {"type":"QLabelElement",     "bind":"value:Id",              "title":"Id"},
+        {"type":"QIntegerElement",   "bind":"numberValue:Int16s",    "title":"0..100"}, 
+        {"type":"QIntegerElement",   "bind":"numberValue:Int32s",    "title":"-5..5",      "minimumValue":-5, "maximumValue":5},
+        {"type":"QIntegerElement",   "bind":"numberValue:Int32s2",   "title":"25..999",    "minimumValue":25, "maximumValue":999},
+        {"type":"QDecimalElement",   "bind":"numberValue:Int32",     "title":"Int32",      "fractionDigits":0},
+        {"type":"QDecimalElement",   "bind":"numberValue:Int64",     "title":"Int64",      "fractionDigits":0},
+        {"type":"QDecimalElement",   "bind":"numberValue:Double0",   "title":"Double0",    "fractionDigits":0}, 
+        {"type":"QDecimalElement",   "bind":"numberValue:Double4",   "title":"Double4",    "fractionDigits":4}, 
+        {"type":"QDecimalElement",   "bind":"numberValue:Float2",    "title":"Float2",     "fractionDigits":2}, 
+        {"type":"QEntryElement",     "bind":"textValue:Text",        "title":"Text:",      "placeholder":"What?", "autocorrectionType":"No", "autocapitalizationType":"Words"},
+        {"type":"QMultilineElement", "bind":"textValue:MultiLine",   "title":"MultiLine"},
+        {"type":"QBooleanElement",   "bind":"boolValue:Toggle",      "title":"Toggle"},
+        {"type":"QRadioElement",     "bind":"selected:Picker1",      "title":"Picker1",    "items":["new", "good", "fair", "poor", "failed"]},
+        {"type":"QRadioElement",     "bind":"selectedItem:Picker2",  "title":"Picker2",    "items":["New", "Good", "Fair", "Poor", "Failed"]},
+        {"type":"QSegmentedElement", "bind":"selected:Picker3",      "title":"Picker3",    "items":["good", "fair", "poor"]},
+        {"type":"QSegmentedElement", "bind":"selectedItem:Picker4",  "title":"Picker4",    "items":["Good", "Fair", "Poor"]}
+      ] } ] }
+    }
+  ]
+}

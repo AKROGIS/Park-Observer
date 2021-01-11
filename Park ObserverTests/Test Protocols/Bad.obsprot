@@ -1,0 +1,7 @@
+{
+  "meta-name":"NPS-Protocol-Specification",
+  "meta-version":2,
+  "name":"Test Minimal",
+  "version": 1.0,
+  "features":[]
+}

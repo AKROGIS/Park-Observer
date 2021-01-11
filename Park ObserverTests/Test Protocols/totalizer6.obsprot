@@ -1,0 +1,30 @@
+{
+  "meta-name": "NPS-Protocol-Specification",
+  "meta-version": 2,
+  "name": "Totalizer Test 6: on:off/total; off:on; units:miles; field:Plot",
+  "version": 1.6,
+  "mission": {
+    "attributes":[ {"name":"Plot",       "type":700} ],
+    "dialog":{
+      "title":"Mission Properties",
+      "sections":[
+        {
+          "elements":[
+            {"type":"QEntryElement", "bind":"textValue:Plot", "title":"Plot #"}
+          ]
+        }
+      ]
+    },
+    "symbology": {},
+    "totalizer": {
+      "fields":["Plot"],
+      "includeon": false,
+      "includeoff": true,
+      "includetotal": true,
+      "units": "miles"
+    }
+  },
+  "features": [
+    {"name": "Cabins", "locations": [ {"type": "mapTouch"} ], "symbology": {} }
+  ]
+}

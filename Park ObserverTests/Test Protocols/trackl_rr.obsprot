@@ -1,0 +1,34 @@
+{
+  "meta-name":"NPS-Protocol-Specification",
+  "meta-version":2,
+  "name":"Test T/O RR",
+  "description": "Explicit Defaults: tracklogs/transects = required, allow_off_transect_observations = false",
+  "version": 1.0,
+  "tracklogs": "required",
+  "transects": "required",
+  "mission":{ "symbology": {} },
+  "features":[
+    {
+      "name":"Angles",
+      "symbology": {},
+      "locations":[{"type":"azimuthDistance", "units":"feet" }]
+    },
+    {
+      "name":"Boats",
+      "symbology": {},
+      "locations":[{"type":"mapTouch"}]
+    },
+    {
+      "name":"Cabins",
+      "symbology": {},
+      "allow_off_transect_observations": false,
+      "locations":[{"type":"gps"},{"type":"mapTouch"}]
+    },
+    {
+      "name":"Dogs",
+      "symbology": {},
+      "allow_off_transect_observations": true,
+      "locations":[{"type":"gps"},{"type":"mapTouch"}]
+    }
+  ]
+}

@@ -1,0 +1,17 @@
+{
+  "meta-name": "NPS-Protocol-Specification",
+  "meta-version": 2,
+  "name": "Totalizer Test 4: on:total; off:on; units:min",
+  "version": 1.4,
+  "mission": {
+    "symbology": {},
+    "totalizer": {
+      "includeon": false,
+      "includetotal": true,
+      "units": "minutes"
+    }
+  },
+  "features": [
+    {"name": "Cabins", "locations": [ {"type": "mapTouch"} ], "symbology": {} }
+  ]
+}

@@ -1,0 +1,44 @@
+{
+  "meta-name": "NPS-Protocol-Specification",
+  "meta-version": 2,
+  "name": "Label Definition Test",
+  "version": 1.0,
+  "tracklogs":"optional",
+  "transects":"none",
+  "features": [{
+    "name": "BigIds",
+    "attributes": [{"type":100, "name":"id"}],
+    "dialog": {"title":"BigIds", "sections":[{"elements":[
+      {"type":"QIntegerElement", "bind":"numberValue:id", "title":"id"}
+    ]}]},
+    "locations": [ {"type": "mapTouch"} ],
+    "label": {"definition": {
+      "labelExpression": "[id]",
+      "symbol": { "type": "esriTS", "font": {"size": 18}},
+      "where" : "id > 10"
+    }}
+  },{
+    "name": "Initial",
+    "attributes": [{"type":700, "name":"name"}],
+    "dialog": {"title":"Initial", "sections":[{"elements":[
+      {"type":"QEntryElement", "bind":"textValue:name", "title":"name"}
+    ]}]},
+    "locations": [ {"type": "mapTouch"} ],
+    "label": {"definition": {
+      "labelExpressionInfo": {"expression": "Upper(Left($feature.name, 1))"},
+      "symbol": { "type": "esriTS", "font": {"size": 18}}
+    }}
+  },{
+    "name": "TwoLines",
+    "attributes": [{"type":100, "name":"id"},{"type":700, "name":"name"}],
+    "dialog": {"title":"TwoLines", "sections":[{"elements":[
+      {"type":"QIntegerElement", "bind":"numberValue:id", "title":"id"},
+      {"type":"QEntryElement", "bind":"textValue:name", "title":"name"}
+    ]}]},
+    "locations": [ {"type": "mapTouch"} ],
+    "label": {"definition": {
+      "labelExpression":  "\"Name: \" CONCAT [name] CONCAT NEWLINE CONCAT \"id: \" CONCAT [id]",
+    }}
+
+  }]
+}

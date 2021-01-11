@@ -1,0 +1,13 @@
+{
+  "meta-name": "NPS-Protocol-Specification",
+  "meta-version": 2,
+  "name": "Azimuth Distance Test 1",
+  "version": 1.1,
+  "mission": {
+    "symbology": {}
+  },
+  "features": [
+    {"name": "Cabins", "locations": [ {"type": "angleDistance"} ], "symbology": {"color": "#00FFFF"} },
+    {"name": "Zebras", "locations": [ {"type": "azimuthDistance"} ], "symbology": {"color": "#FFFF00"} }
+  ]
+}
