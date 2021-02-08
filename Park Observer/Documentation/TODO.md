@@ -143,6 +143,7 @@ These issues are in software provided by others (Apple, Esri). If they become a 
   * Fixed bug for incorrect drawing of compass rose button on iOS 14.0.
   * Fixed bug where DecimalEntry incorrectly added a stepper when the attribute type was an Int16/Int32/Int64.
   * DecimalEntry with fractionDigits = 0 now correctly display no decimals instead of 6.
+  * Upgraded to version 100.10.0 of the esri ArcGIS Runtime API for iOS.
 
 ## 2020-09-04: Beta4
 
