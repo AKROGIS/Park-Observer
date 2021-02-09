@@ -56,7 +56,7 @@ struct AttributeFormView: View {
 
   func build(_ e: DoubleElement) -> some View {
     let stringFormat: String = {
-      if let digits = e.decimals, digits > 0, digits < 15 {
+      if let digits = e.decimals, digits >= 0, digits < 15 {
         return "%.\(digits)f"
       }
       return "%f"
@@ -156,12 +156,20 @@ struct AttributeFormView: View {
       } else {
         VStack(alignment: .leading) {
           OptionalTextView(e.label)
-          // with ios14 use https://developer.apple.com/documentation/swiftui/texteditor
-          MultilineTextField(e.placeholder, text: e.binding, onCommit: { self.editCount += 1 })
-            .keyboardType(e.keyboard)
-            .autocapitalization(e.autoCapitalization)
-            .disableAutocorrection(e.disableAutoCorrect)
-            .textFieldStyle(RoundedBorderTextFieldStyle())
+          if #available(iOS 14.0, *) {
+            TextEditor(text: e.binding)
+              .keyboardType(e.keyboard)
+              .autocapitalization(e.autoCapitalization)
+              .disableAutocorrection(e.disableAutoCorrect)
+              .overlay(RoundedRectangle(cornerRadius: 10)
+                        .stroke(Color.secondary, lineWidth: 1))
+          } else {
+            MultilineTextField(e.placeholder, text: e.binding, onCommit: { self.editCount += 1 })
+              .keyboardType(e.keyboard)
+              .autocapitalization(e.autoCapitalization)
+              .disableAutocorrection(e.disableAutoCorrect)
+              .textFieldStyle(RoundedBorderTextFieldStyle())
+          }
         }
       }
     }

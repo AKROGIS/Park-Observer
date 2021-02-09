@@ -23,6 +23,7 @@ enum LicenseManager {
     do {
       let result = try AGSArcGISRuntimeEnvironment.setLicenseKey(.licenseKey)
       //print("ArcGIS Runtime license request result: \(result.licenseStatus)")
+      AGSArcGISRuntimeEnvironment.apiKey = "AAPK56fcabe739724af4bc8f858d7ebb430cY_wpFe-Pobgp2nvG8sMEp6Z6tv5NUvQP0FDy05LCSbjd1d8BJ_0thkWg4Q49EFzo"
       return result.licenseStatus == .valid
     } catch {
       // Do not throw or abort.

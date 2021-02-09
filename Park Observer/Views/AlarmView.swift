@@ -105,7 +105,11 @@ class AlarmControl: NSObject, UNUserNotificationCenterDelegate {
     willPresent notification: UNNotification,
     withCompletionHandler completionHandler: @escaping (UNNotificationPresentationOptions) -> Void
   ) {
-    completionHandler(.alert)
+    if #available(iOS 14.0, *) {
+      completionHandler([.banner, .list])
+    } else {
+      completionHandler(.alert)
+    }
   }
 
 }

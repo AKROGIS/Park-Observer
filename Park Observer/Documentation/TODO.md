@@ -77,14 +77,8 @@ These bugs create errors in stored data.
 
 ## Important
 These bugs limit required functionality.
-  * With iOS 14.0, the slideout view will automatically resize to accommodate the keyboard (iOS 13 did not), so now there is a large gap on iOS 14
-  * With iOS 14.0, the TextField in View/SlideOutViews/AttributeFormView.swift no longer works. Every new character is erased after entry (but last character typed is added to the text when focus is lost).
-  * With iOS 14.0, the MultilineTextView in View/SlideOutViews no longer works. Similar to the TextField
-  * With iOS 14.0, the DoubleEditView in View/SlideOutViews/AttributeFormView.swift no longer works. Similar to the TextField
-  * With iOS 14.0, the IntEditView in View/SlideOutViews/AttributeFormView.swift no longer works. Similar to the TextField (however the IntEditView in the stepper is working correctly)
-  * With iOS 14.0, the OptionalToggle in View/SlideOutViews/AttributeFormView.swift no longer works. Will toggle once, but not twice, clearing toggle seems to work.
+  * With iOS 14.0-4, the OptionalToggle in View/SlideOutViews/AttributeFormView.swift no longer works. Will toggle once, but not twice, clearing toggle seems to work.
   * DecimalEntry with attribute type of Int fails to initialize unless fraction digits is explicitly set to 0 (should be assumed), however fractiondigits <> 0 should be an error.
-  * DecimalEntry with attribute type of Float/Double does not truncate fraction digits instead it appends zeros out to 6 decimal places
 
 ## Nice to fix
 These bugs can be worked around or ignored.
@@ -106,6 +100,7 @@ These bugs can be worked around or ignored.
   * Mission Properties are not created when start/stop observing, and tracklog = none
   * The default mission property "display editor" properties are not appropriate for all cases (i.e. tracklog = none)
   * ObservationPresenter/Selector title needs to be updated if the feature has a label field and it is edited.
+  * Doubt that .ignoresSafeArea() is being used correctly on modern devices and with keyboard appearance.
  
 ## Annoying
 These bugs are related to potential functionality (so while incorrect, they have no impact yet).
@@ -127,6 +122,9 @@ These issues are in software provided by others (Apple, Esri). If they become a 
     The user should be able to navigate to next/previous Text/Number field with a next/prev key on the on-screen keyboard, or
     the tab (shift-tab) keys on a bluetooth keyboard.  Unfortunately, this is not supported in SwiftUI (iOS 13 and 14_beta).
     See https://developer.apple.com/forums/thread/650263
+  * In iOS 14.0 and 14.1 the TextField (including Decimal and Int Text boxes) in View/SlideOutViews/AttributeFormView.swift 
+    no longer works. Every new character is erased after entry (but last character typed is added to the text when focus is lost).
+    This bug did not exist in iOS 13.x and was fixed in iOS 14.2+
 
 
 # Documentation
@@ -143,6 +141,12 @@ These issues are in software provided by others (Apple, Esri). If they become a 
   * Improve clarity of error message when survey does not load.
   * Fixed bug for incorrect drawing of compass rose button on iOS 14.0.
   * Fixed bug where DecimalEntry incorrectly added a stepper when the attribute type was an Int16/Int32/Int64.
+  * DecimalEntry with fractionDigits = 0 now correctly display no decimals instead of 6.
+  * Upgraded to version 100.10.0 of the esri ArcGIS Runtime API for iOS.
+  * Upgraded to the new basemap styles in version 100.10
+  * Fix iOS 14 issue with keyboard appearance shrinking height of slideout menu
+  * Fix iOS 14 multiline text field
+  
 
 ## 2020-09-04: Beta4
 

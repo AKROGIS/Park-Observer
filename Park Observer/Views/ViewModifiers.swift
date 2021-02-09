@@ -95,10 +95,15 @@ extension View {
 struct KeyboardAdaptive: ViewModifier {
   @State private var keyboardHeight: CGFloat = 0
 
-  func body(content: Content) -> some View {
-    content
-      .padding(.bottom, keyboardHeight)
-      .onReceive(Publishers.keyboardHeight) { self.keyboardHeight = $0 }
+  @ViewBuilder func body(content: Content) -> some View {
+    if #available(iOS 14, *) {
+      content
+        .ignoresSafeArea(.keyboard)
+    } else {
+      content
+        .padding(.bottom, keyboardHeight)
+        .onReceive(Publishers.keyboardHeight) { self.keyboardHeight = $0 }
+    }
   }
 }
 
