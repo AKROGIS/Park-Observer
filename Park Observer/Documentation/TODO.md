@@ -77,8 +77,9 @@ These bugs create errors in stored data.
 
 ## Important
 These bugs limit required functionality.
-  * With iOS 14.0-4, the OptionalToggle in View/SlideOutViews/AttributeFormView.swift no longer works. Will toggle once, but not twice, clearing toggle seems to work.
+  * With iOS 14.0-4, the OptionalToggle in View/SlideOutViews/AttributeFormView.swift no longer works. Once the toggle is set, the view will not change (even though the underlying state does change - and can be seen by closing the form and opening it again). Clearing toggle work correctly. But it is difficult to set the toggle to explicitly off.
   * DecimalEntry with attribute type of Int fails to initialize unless fraction digits is explicitly set to 0 (should be assumed), however fractiondigits <> 0 should be an error.
+  * Deprication warning for locationManager autorization status in iOS14.
 
 ## Nice to fix
 These bugs can be worked around or ignored.
