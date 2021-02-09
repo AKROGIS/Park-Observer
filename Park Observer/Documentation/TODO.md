@@ -77,12 +77,11 @@ These bugs create errors in stored data.
 
 ## Important
 These bugs limit required functionality.
-  * With iOS 14.0, the slideout view will automatically resize to accommodate the keyboard (iOS 13 did not), so now there is a large gap on iOS 14
-  * With iOS 14.0, the TextField in View/SlideOutViews/AttributeFormView.swift no longer works. Every new character is erased after entry (but last character typed is added to the text when focus is lost).
-  * With iOS 14.0, the MultilineTextView in View/SlideOutViews no longer works. Similar to the TextField
-  * With iOS 14.0, the DoubleEditView in View/SlideOutViews/AttributeFormView.swift no longer works. Similar to the TextField
-  * With iOS 14.0, the IntEditView in View/SlideOutViews/AttributeFormView.swift no longer works. Similar to the TextField (however the IntEditView in the stepper is working correctly)
-  * With iOS 14.0, the OptionalToggle in View/SlideOutViews/AttributeFormView.swift no longer works. Will toggle once, but not twice, clearing toggle seems to work.
+    * With iOS 14.0/1, the TextField in View/SlideOutViews/AttributeFormView.swift no longer works. Every new character is erased after entry (but last character typed is added to the text when focus is lost).
+  * With iOS 14.0-1, the MultilineTextView in View/SlideOutViews no longer works. Similar to the TextField
+  * With iOS 14.0/1, the DoubleEditView in View/SlideOutViews/AttributeFormView.swift no longer works. Similar to the TextField
+  * With iOS 14.0/1, the IntEditView in View/SlideOutViews/AttributeFormView.swift no longer works. Similar to the TextField (however the IntEditView in the stepper is working correctly)
+  * With iOS 14.0-4, the OptionalToggle in View/SlideOutViews/AttributeFormView.swift no longer works. Will toggle once, but not twice, clearing toggle seems to work.
   * DecimalEntry with attribute type of Int fails to initialize unless fraction digits is explicitly set to 0 (should be assumed), however fractiondigits <> 0 should be an error.
 
 ## Nice to fix
@@ -105,6 +104,7 @@ These bugs can be worked around or ignored.
   * Mission Properties are not created when start/stop observing, and tracklog = none
   * The default mission property "display editor" properties are not appropriate for all cases (i.e. tracklog = none)
   * ObservationPresenter/Selector title needs to be updated if the feature has a label field and it is edited.
+  * Doubt that .ignoresSafeArea() is being used correctly on modern devices and with keyboard appearance.
  
 ## Annoying
 These bugs are related to potential functionality (so while incorrect, they have no impact yet).
@@ -145,6 +145,8 @@ These issues are in software provided by others (Apple, Esri). If they become a 
   * DecimalEntry with fractionDigits = 0 now correctly display no decimals instead of 6.
   * Upgraded to version 100.10.0 of the esri ArcGIS Runtime API for iOS.
   * Upgraded to the new basemap styles in version 100.10
+  * Fix iOS 14 issue with keyboard appearance shrinking height of slideout menu
+  
 
 ## 2020-09-04: Beta4
 
