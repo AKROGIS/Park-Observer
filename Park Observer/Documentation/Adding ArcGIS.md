@@ -1,7 +1,7 @@
 #  Adding the ArcGIS SDK
 This project has a dependency on the ArcGIS Runtime SDK for iOS
-100.7.0 or greater (previous versions of 100.x may work, but version
-10.2.5 definitely does not work). This document describes a manual
+100.10.0 or greater (previous versions of 100.x will not work, and version
+10.2.5 will definitely not work). This document describes a manual
 installation process for this project that does not require any 3rd party
 package managers.
 

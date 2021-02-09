@@ -1022,10 +1022,10 @@ extension SurveyController {
   }
 
   private func getEsriBasemap(for name: String) -> AGSMap? {
-    guard let basemap = OnlineBaseMaps.esri[name] else {
+    guard let style = OnlineBaseMaps.esri[name] else {
       return nil
     }
-    return AGSMap(basemap: basemap())
+    return AGSMap(basemap: AGSBasemap(style: style))
   }
 
 }
