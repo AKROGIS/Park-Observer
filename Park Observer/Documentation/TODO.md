@@ -77,8 +77,6 @@ These bugs create errors in stored data.
 
 ## Important
 These bugs limit required functionality.
-  * With iOS 14.0-4, the MultilineTextView in View/SlideOutViews no longer works.
-    Every new character is erased after entry (but last character typed is added to the text when focus is lost).
   * With iOS 14.0-4, the OptionalToggle in View/SlideOutViews/AttributeFormView.swift no longer works. Will toggle once, but not twice, clearing toggle seems to work.
   * DecimalEntry with attribute type of Int fails to initialize unless fraction digits is explicitly set to 0 (should be assumed), however fractiondigits <> 0 should be an error.
 
@@ -147,6 +145,7 @@ These issues are in software provided by others (Apple, Esri). If they become a 
   * Upgraded to version 100.10.0 of the esri ArcGIS Runtime API for iOS.
   * Upgraded to the new basemap styles in version 100.10
   * Fix iOS 14 issue with keyboard appearance shrinking height of slideout menu
+  * Fix iOS 14 multiline text field
   
 
 ## 2020-09-04: Beta4
