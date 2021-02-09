@@ -77,10 +77,8 @@ These bugs create errors in stored data.
 
 ## Important
 These bugs limit required functionality.
-    * With iOS 14.0/1, the TextField in View/SlideOutViews/AttributeFormView.swift no longer works. Every new character is erased after entry (but last character typed is added to the text when focus is lost).
-  * With iOS 14.0-1, the MultilineTextView in View/SlideOutViews no longer works. Similar to the TextField
-  * With iOS 14.0/1, the DoubleEditView in View/SlideOutViews/AttributeFormView.swift no longer works. Similar to the TextField
-  * With iOS 14.0/1, the IntEditView in View/SlideOutViews/AttributeFormView.swift no longer works. Similar to the TextField (however the IntEditView in the stepper is working correctly)
+  * With iOS 14.0-4, the MultilineTextView in View/SlideOutViews no longer works.
+    Every new character is erased after entry (but last character typed is added to the text when focus is lost).
   * With iOS 14.0-4, the OptionalToggle in View/SlideOutViews/AttributeFormView.swift no longer works. Will toggle once, but not twice, clearing toggle seems to work.
   * DecimalEntry with attribute type of Int fails to initialize unless fraction digits is explicitly set to 0 (should be assumed), however fractiondigits <> 0 should be an error.
 
@@ -126,6 +124,9 @@ These issues are in software provided by others (Apple, Esri). If they become a 
     The user should be able to navigate to next/previous Text/Number field with a next/prev key on the on-screen keyboard, or
     the tab (shift-tab) keys on a bluetooth keyboard.  Unfortunately, this is not supported in SwiftUI (iOS 13 and 14_beta).
     See https://developer.apple.com/forums/thread/650263
+  * In iOS 14.0 and 14.1 the TextField (including Decimal and Int Text boxes) in View/SlideOutViews/AttributeFormView.swift 
+    no longer works. Every new character is erased after entry (but last character typed is added to the text when focus is lost).
+    This bug did not exist in iOS 13.x and was fixed in iOS 14.2+
 
 
 # Documentation
