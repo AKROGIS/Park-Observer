@@ -254,7 +254,7 @@ struct OptionalPickerView: View {
           }
         }
       ) {
-        ForEach(0..<choices.count) {
+        ForEach(choices.indices, id: \.self) {
           Text(self.choices[$0])
         }
       }
@@ -291,7 +291,7 @@ struct OptionalSegmentedPickerView: View {
       OptionalTextView(label)
       HStack {
         Picker("", selection: proxy) {
-          ForEach(0..<choices.count) {
+          ForEach(choices.indices, id: \.self) {
             Text(self.choices[$0])
           }
         }.pickerStyle(SegmentedPickerStyle())
