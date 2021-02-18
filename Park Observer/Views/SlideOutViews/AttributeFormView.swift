@@ -161,8 +161,9 @@ struct AttributeFormView: View {
               .keyboardType(e.keyboard)
               .autocapitalization(e.autoCapitalization)
               .disableAutocorrection(e.disableAutoCorrect)
-              .overlay(RoundedRectangle(cornerRadius: 10)
-                        .stroke(Color.secondary, lineWidth: 1))
+              .overlay(
+                RoundedRectangle(cornerRadius: 10)
+                  .stroke(Color.secondary, lineWidth: 1))
           } else {
             MultilineTextField(e.placeholder, text: e.binding, onCommit: { self.editCount += 1 })
               .keyboardType(e.keyboard)
@@ -323,9 +324,9 @@ struct TriStateToggle: View {
   let isOn: Binding<Bool?>
   let onEditingChanged: () -> Void
 
-  @ObservedObject var model: TriStateToggleModel // = TriStateToggleModel()
+  @ObservedObject var model: TriStateToggleModel  // = TriStateToggleModel()
 
-  init(label:String, isOn:Binding<Bool?>, onEditingChanged:@escaping () -> Void) {
+  init(label: String, isOn: Binding<Bool?>, onEditingChanged: @escaping () -> Void) {
     //print("Init TriStateToggle")
     self.label = label
     self.isOn = isOn
@@ -364,14 +365,17 @@ class TriStateToggleModel: ObservableObject {
 
   init(_ state: Binding<Bool?>) {
     self.state = state
-    if let s = state.wrappedValue { isSet = true; isOn = s }
+    if let s = state.wrappedValue {
+      isSet = true
+      isOn = s
+    }
   }
 
   @Published var isOn: Bool = false {
     didSet {
       //print("did set OptionalToggleViewModel isOn \(isOn)")
       state.wrappedValue = isOn
-      if isOn { isSet = true } // only change on isOn to prevent a loop
+      if isOn { isSet = true }  // only change on isOn to prevent a loop
     }
   }
   @Published var isSet: Bool = false {
