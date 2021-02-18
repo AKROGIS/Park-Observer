@@ -93,7 +93,7 @@ struct JsonListView: View {
 
   var body: some View {
     List {
-      ForEach(list.indices) { i in
+      ForEach(list.indices, id: \.self) { i in
         JsonView(key: "Item #\(i+1)", json: self.list[i])
       }
     }

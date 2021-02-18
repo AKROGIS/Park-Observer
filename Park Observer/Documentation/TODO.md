@@ -77,8 +77,8 @@ These bugs create errors in stored data.
 
 ## Important
 These bugs limit required functionality.
-  * With iOS 14.0-4, the OptionalToggle in View/SlideOutViews/AttributeFormView.swift no longer works. Will toggle once, but not twice, clearing toggle seems to work.
-  * DecimalEntry with attribute type of Int fails to initialize unless fraction digits is explicitly set to 0 (should be assumed), however fractiondigits <> 0 should be an error.
+   * DecimalEntry with attribute type of Int fails to initialize unless fraction digits is explicitly set to 0 (should be assumed), however fractiondigits <> 0 should be an error.
+  * Deprication warning for locationManager autorization status in iOS14.
 
 ## Nice to fix
 These bugs can be worked around or ignored.
@@ -146,7 +146,7 @@ These issues are in software provided by others (Apple, Esri). If they become a 
   * Upgraded to the new basemap styles in version 100.10
   * Fix iOS 14 issue with keyboard appearance shrinking height of slideout menu
   * Fix iOS 14 multiline text field
-  
+  * Fix iOS 14 bug where tristate toggle would only change between nil and On (could not set to Off).
 
 ## 2020-09-04: Beta4
 

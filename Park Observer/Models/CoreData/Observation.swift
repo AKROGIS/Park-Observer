@@ -20,6 +20,19 @@ public class Observation: NSManagedObject {
   @NSManaged public var gpsPoint: GpsPoint?
   @NSManaged public var mission: Mission?
 
+//  Debugging help to see when an observation attribute is read/written
+//  public override func value(forKey key: String) -> Any? {
+//    print("Observation: getting value for \(key)")
+//    let v = super.value(forKey: key)
+//    print("Observation: returning \(String(describing: v))")
+//    return v
+//  }
+//
+//  public override func setValue(_ value: Any?, forKey key: String) {
+//    print("Observation: setting \(key) to \(String(describing: value))")
+//    super.setValue(value, forKey: key)
+//  }
+
 }
 
 typealias Observations = [Observation]

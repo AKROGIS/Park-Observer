@@ -176,10 +176,10 @@ struct AttributeFormView: View {
 
   }
 
-  func build(_ e: ToggleElement) -> OptionalToggle {
-    OptionalToggle(
-      label: e.label, isOn: e.binding, toggleSet: e.binding.wrappedValue != nil,
-      onChanged: { self.editCount += 1 })
+  func build(_ e: ToggleElement) -> TriStateToggle {
+    TriStateToggle(
+      label: e.label, isOn: e.binding,
+      onEditingChanged: { self.editCount += 1 })
   }
 
 }
@@ -254,7 +254,7 @@ struct OptionalPickerView: View {
           }
         }
       ) {
-        ForEach(0..<choices.count) {
+        ForEach(choices.indices, id: \.self) {
           Text(self.choices[$0])
         }
       }
@@ -291,7 +291,7 @@ struct OptionalSegmentedPickerView: View {
       OptionalTextView(label)
       HStack {
         Picker("", selection: proxy) {
-          ForEach(0..<choices.count) {
+          ForEach(choices.indices, id: \.self) {
             Text(self.choices[$0])
           }
         }.pickerStyle(SegmentedPickerStyle())
@@ -311,67 +311,77 @@ struct OptionalSegmentedPickerView: View {
 
 }
 
-/// An optional tristate Toggle
-struct OptionalToggle: View {
-  let label: String
-  @Binding var isOn: Bool?
+// NOTE: It appears that if a binding is declared in a View the SwiftUI will query the
+// binding when a redraw might be required to see if there are changes that warrant a
+// redraw even if the binding is not used in the body of the view.
+// for example isOn is TriStateToggle() is not used in the body, but if you put
+// break on the get in the binding, it is always called before getting the body.
 
-  @State var toggleSet: Bool {
-    didSet {
-      onChanged()
-    }
-  }
-  let onChanged: () -> Void
-  @State private var toggleState = false {
-    didSet {
-      onChanged()
-    }
+/// A tristate Toggle where isOn is Bool?
+struct TriStateToggle: View {
+  let label: String
+  let isOn: Binding<Bool?>
+  let onEditingChanged: () -> Void
+
+  @ObservedObject var model: TriStateToggleModel // = TriStateToggleModel()
+
+  init(label:String, isOn:Binding<Bool?>, onEditingChanged:@escaping () -> Void) {
+    //print("Init TriStateToggle")
+    self.label = label
+    self.isOn = isOn
+    self.onEditingChanged = onEditingChanged
+    model = TriStateToggleModel(self.isOn)
   }
 
   var body: some View {
-    // Intermediate Bindings to manage the view state
-    let toggleSet1 = Binding<Bool>(
-      get: {
-        if self.isOn == nil { return false } else { return true }
-      },
-      set: {
-        //print("Optional Toggle set Set to \($0)")
-        if $0 { self.isOn = self.toggleState } else { self.isOn = nil }
-        self.toggleSet = $0
-      }
-    )
-    let toggleState1 = Binding<Bool>(
-      get: {
-        if self.isOn == nil { return false } else { return self.isOn! }
-      },
-      set: {
-        //print("Optional Toggle set State to \($0)")
-        self.isOn = $0
-        self.toggleSet = true
-      }
-    )
-    //print("Building View")
-    return HStack {
+    //let _ = print("get TriStateToggle.body")
+    HStack {
       VStack(alignment: .leading) {
         Text(label)
-        if !toggleSet1.wrappedValue {
+        if !model.isSet {
           Text("Value is undefined (not set)").font(.caption).foregroundColor(.secondary)
         }
       }
       Spacer()
-      if toggleSet1.wrappedValue {
+      if model.isSet {
         Image(systemName: "xmark.circle.fill")
           .resizable()
           .frame(width: 22, height: 22)
           .padding([.trailing], 11)
           .foregroundColor(.secondary)
           .onTapGesture {
-            toggleSet1.wrappedValue = false
+            model.isSet = false
           }
       }
-      Toggle("", isOn: toggleState1).labelsHidden()
+      Toggle("", isOn: $model.isOn).labelsHidden()
     }
 
+  }
+}
+
+class TriStateToggleModel: ObservableObject {
+  let state: Binding<Bool?>
+
+  init(_ state: Binding<Bool?>) {
+    self.state = state
+    if let s = state.wrappedValue { isSet = true; isOn = s }
+  }
+
+  @Published var isOn: Bool = false {
+    didSet {
+      //print("did set OptionalToggleViewModel isOn \(isOn)")
+      state.wrappedValue = isOn
+      if isOn { isSet = true } // only change on isOn to prevent a loop
+    }
+  }
+  @Published var isSet: Bool = false {
+    didSet {
+      //print("did set OptionalToggleViewModel isSet \(isSet)")
+      if !isSet {
+        isOn = false
+        state.wrappedValue = nil
+      }
+    }
   }
 }
 
