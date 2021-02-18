@@ -77,7 +77,6 @@ These bugs create errors in stored data.
 
 ## Important
 These bugs limit required functionality.
-   * DecimalEntry with attribute type of Int fails to initialize unless fraction digits is explicitly set to 0 (should be assumed), however fractiondigits <> 0 should be an error.
   * Deprication warning for locationManager autorization status in iOS14.
 
 ## Nice to fix
@@ -147,6 +146,8 @@ These issues are in software provided by others (Apple, Esri). If they become a 
   * Fix iOS 14 issue with keyboard appearance shrinking height of slideout menu
   * Fix iOS 14 multiline text field
   * Fix iOS 14 bug where tristate toggle would only change between nil and On (could not set to Off).
+  * Fix Bug that required fractiondigits = 0 with DecimalEntry with attribute type of Int. No franctionDigits = 0 is assumed
+    Other values are ignored - could be an error, but I decided otherwise.
 
 ## 2020-09-04: Beta4
 
