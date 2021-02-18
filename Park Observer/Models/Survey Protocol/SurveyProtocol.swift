@@ -176,7 +176,7 @@ extension SurveyProtocol: Codable {
       // Validate feature names are unique across features
       if features.count == 0 {
         throw DecodingError.dataCorruptedError(
-          forKey: .metaVersion, in: container,
+          forKey: .features, in: container,
           debugDescription:
             "Cannot initialize SurveyProtocol with an empty features list")
       }
@@ -184,7 +184,7 @@ extension SurveyProtocol: Codable {
       let featureNames = features.map { $0.name.lowercased() }
       if Set(featureNames).count != featureNames.count {
         throw DecodingError.dataCorruptedError(
-          forKey: .metaVersion, in: container,
+          forKey: .features, in: container,
           debugDescription:
             "Cannot initialize SurveyProtocol with duplicate feature names")
       }
@@ -198,7 +198,7 @@ extension SurveyProtocol: Codable {
       let problems = dict.filter { (_, value) in value.count > 1 }
       if problems.count > 0 {
         throw DecodingError.dataCorruptedError(
-          forKey: .metaVersion, in: container,
+          forKey: .features, in: container,
           debugDescription:
             "Cannot initialize SurveyProtocol; duplicate feature names \(problems.keys) must have the same type"
         )
