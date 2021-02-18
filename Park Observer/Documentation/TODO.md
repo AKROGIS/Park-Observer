@@ -136,7 +136,9 @@ These issues are in software provided by others (Apple, Esri). If they become a 
 
 # Change Log
 
-## Beta5
+## Beta6
+
+## 2021-02-18: Beta5
   * Improve clarity of error message when survey does not load.
   * Fixed bug for incorrect drawing of compass rose button on iOS 14.0.
   * Fixed bug where DecimalEntry incorrectly added a stepper when the attribute type was an Int16/Int32/Int64.

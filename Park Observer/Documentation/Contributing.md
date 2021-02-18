@@ -54,8 +54,27 @@ If you see other things that should be fixed, create new issues in GitHub for fu
 # Publishing an Update
 1) Make sure the version number is different than the last published version
 2) Create an archive
+  * Set device to "Any IOS Device"
+  * Menu: Product -> Archive
 3) Create an ipa
+  * In the Archive Window, select new archive (should be named for the new version number)
+  * Click the blue "Distribute App" button
+  * Select `Enterprise` then `Next`
+    * App Thinnning: None
+    * Rebuild from Bitcode: uncheck
+    * Include Manifest: uncheck
+    * click `Next`
+  * Select `Automatically manage Signing` then `Next` (You may need to authenticate)
+  * Review the summary and click `Export`
+    * Select a location to save the export file
+    * Rename the `ipa` as `ParkObserver2.0.0.beta4.ipa` or similar
 4) Update the web site
+  * Copy the `ipa` to the teams drive and to the website downloads folder
+  * Edit the following files in <https://github.com/AKROGIS/Park-Observer-Website>
+    * Downloads2/Changelog.html - Create a new section for this release and summarize the changes
+    * Downloads2/versionlist.json - copy/paste/edit a new entry for the new version
+    * Downloads2/ParkObserver2.plist - update the paths to reflect the new version (2 places)
+    * Commit the changes, and copy to the published website folder.
 
 # Setting up a Mac
 * Certificates
