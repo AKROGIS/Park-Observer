@@ -77,7 +77,11 @@ These bugs create errors in stored data.
 
 ## Important
 These bugs limit required functionality.
-  * Deprication warning for locationManager autorization status in iOS14.
+  * Deprecation warning for locationManager autorization status in iOS14.
+  * Deprecation warning for testing in iOS14
+  * Multiline sometime collapses to height of zero in Form
+  * A specific attribute survey crashes app (EXC_BAD_ACCESS) in apple coredata code when closing survey
+    I can still load it, edit it and save it without problem.
 
 ## Nice to fix
 These bugs can be worked around or ignored.
