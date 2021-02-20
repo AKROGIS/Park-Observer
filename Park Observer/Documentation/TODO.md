@@ -79,7 +79,6 @@ These bugs create errors in stored data.
 These bugs limit required functionality.
   * Deprecation warning for locationManager autorization status in iOS14.
   * Deprecation warning for testing in iOS14
-  * Multiline sometime collapses to height of zero in Form
   * A specific attribute survey crashes app (EXC_BAD_ACCESS) in apple coredata code when closing survey
     I can still load it, edit it and save it without problem.
 
@@ -141,6 +140,7 @@ These issues are in software provided by others (Apple, Esri). If they become a 
 # Change Log
 
 ## Beta6
+  * Add minimum height to multiline text fields to prevent collapsing to zero height in attribute form.
 
 ## 2021-02-18: Beta5
   * Improve clarity of error message when survey does not load.

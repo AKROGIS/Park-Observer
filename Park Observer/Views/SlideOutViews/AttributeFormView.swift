@@ -161,6 +161,8 @@ struct AttributeFormView: View {
               .keyboardType(e.keyboard)
               .autocapitalization(e.autoCapitalization)
               .disableAutocorrection(e.disableAutoCorrect)
+              .lineLimit(6)
+              .frame(minHeight:32)
               .overlay(
                 RoundedRectangle(cornerRadius: 10)
                   .stroke(Color.secondary, lineWidth: 1))
