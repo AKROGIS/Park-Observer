@@ -688,7 +688,6 @@ Each feature name must be unique name. The name is used in the interface to let 
 user choose among different feature types. All the observation in one feature will
 be exported in a CSV file with this name, and a geo-database table with this name.
 It should be short and descriptive.
-Starting with Park Observer 2.0.0, this string must be 10 characters or less.
 
 ## `feature.attributes`
 An optional list of attributes to collect for this feature.

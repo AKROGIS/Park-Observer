@@ -96,8 +96,8 @@ extension Feature {
 
     if validationEnabled {
       // Validate name
-      if name.count == 0 || name.count > 10 {
-        let message = "Cannot initialize name with an invalid value \(name)"
+      if name.count == 0 {
+        let message = "Cannot initialize feature with an empty name"
         throw corruptError(message: message)
       }
       // Validate attributes

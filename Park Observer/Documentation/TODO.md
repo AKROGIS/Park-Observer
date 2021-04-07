@@ -139,8 +139,12 @@ These issues are in software provided by others (Apple, Esri). If they become a 
 
 # Change Log
 
-## Beta6
+## Beta7
+  * Removed 10 character limit on feature names in protocol file.
+
+## 2021-03-29 Beta6
   * Add minimum height to multiline text fields to prevent collapsing to zero height in attribute form.
+  * Rebuilt with a new developer profile, (expires 3/29/2022)
 
 ## 2021-02-18: Beta5
   * Improve clarity of error message when survey does not load.

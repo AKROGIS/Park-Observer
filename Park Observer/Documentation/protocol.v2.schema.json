@@ -182,8 +182,7 @@
                 "name": {
                     "description": "A short unique identifier for this feature, i.e. the item being observed.",
                     "type": "string",
-                    "minLength": 1,
-                    "maxLength": 10
+                    "minLength": 1
                 },
                 "attributes": {
                     "description": "A list of the feature's attributes.",
