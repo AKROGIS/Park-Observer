@@ -60,7 +60,7 @@ Features ideas open for discussion, but no plans/time to implement.
 * Delete mission property points
 * Browse and download tile caches (*.tpk) from ArcGIS Online
 * Browse and download protocol files (*.obsprot) from GitHub
-* Hi speed KIMU interface. Coded string like a180d100k4w which is decoded into the appropriate attributes
+* High speed Murrelet interface. Coded string like a180d100k4w which is decoded into the appropriate attributes
 * Load feature classes like nests or transects and use an attribute (i.e. nest ID or transect ID) of
     the closest feature to populate observation (NOTE: This is much easier to do in post processing)
 * Protocol V3 - complete re-write.
@@ -89,32 +89,32 @@ These bugs create errors in stored data.
 
 These bugs limit required functionality.
 
-* Deprecation warning for locationManager autorization status in iOS14.
+* Deprecation warning for locationManager authorization status in iOS14.
 * Deprecation warning for testing in iOS14
-* A specific attribute survey crashes app (EXC_BAD_ACCESS) in apple coredata code when closing survey
+* A specific attribute survey crashes app (EXC_BAD_ACCESS) in apple core data code when closing survey
     I can still load it, edit it and save it without problem.
 
 ### Nice to fix
 
 These bugs can be worked around or ignored.
 
-* Defaults for when to display of the edit dialog is confusing for some combinations of the tracklogs/transects properties.
+* Defaults for when to display of the edit dialog is confusing for some combinations of the track logs/transects properties.
 * When waiting on GPS (i.e. exceeds allowable error), hide edit, show cancel, disallow save.
-* Canceling a mission property dialog when launched from tracklogging or observing button does not cancel operation only attribute editing.
+* Canceling a mission property dialog when launched from track logging or observing button does not cancel operation only attribute editing.
 * Getting the most recent Mission Property (for default) from database does not consider adhoc locations
-* Problem with Mission Properties with required values and no editing on start tracklog (values will be null)
+* Problem with Mission Properties with required values and no editing on start track log (values will be null)
 * When editing multiple features, if one has validation errors when you decide to move another feature, the validation interrupts the move
 * When exporting, the export date is updated before we know if the export succeeds.  If it fails, we need to undo the export date.
 * When returning from background addGpsLocation can be called from cache and from locationManager out of order
 * Chaos may ensue if the user does not tap on the map when "Moving to map location"; start modal mode?
-* Slide out view does not check width on device rotation (limit to maxWidth as % of screenwidth)
+* Slide out view does not check width on device rotation (limit to maxWidth as % of screen width)
 * Refresh the current file list if the slide out is hidden and re-shown
 * Alarm does not play alert sound when app is active
 * Add notice to turn on notification in settings if denied for alarm setting
 * User can provide a unique value renderer for track logs and or gps points, but graphics do not have the necessary attributes
 * The safe area (on devices with safe area - iPhone X and 11) mucks with styling of slide out view
-* Mission Properties are not created when start/stop observing, and tracklog = none
-* The default mission property "display editor" properties are not appropriate for all cases (i.e. tracklog = none)
+* Mission Properties are not created when start/stop observing, and track log = none
+* The default mission property "display editor" properties are not appropriate for all cases (i.e. track log = none)
 * ObservationPresenter/Selector title needs to be updated if the feature has a label field and it is edited.
 * Doubt that .ignoresSafeArea() is being used correctly on modern devices and with keyboard appearance.
 
