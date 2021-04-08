@@ -1,4 +1,5 @@
-#  Adding the ArcGIS SDK
+# Adding the ArcGIS SDK
+
 This project has a dependency on the ArcGIS Runtime SDK for iOS
 100.10.0 or greater (previous versions of 100.x will not work, and version
 10.2.5 will definitely not work). This document describes a manual
@@ -8,13 +9,15 @@ package managers.
 Xcode 12.3 or higher requires a format for the SDK that was not
 adopted until 100.10.0, therefore the
 [build instructions](https://developers.arcgis.com/ios/reference/release-notes/#breaking-api-changess)
-changed at version 100.10.0.  
+changed at version 100.10.0.
 
 This was last updated for version 100.10.0 on 2021-02-08.
 Instructions for previous versions are in the earlier versions
 of this document (see the commit history).
 
-1) Download the SDK from https://developers.arcgis.com/ios.
+1) Download the SDK from <https://developers.arcgis.com/ios>.
+You will need to sign in with a free esri account to access
+the download page.
 Run the installer.  This will install the ArcGIS framework under
 `${HOME}/Library/ArcGIS/`. You can support multiple versions
 by renaming the last folder with the version number and using
