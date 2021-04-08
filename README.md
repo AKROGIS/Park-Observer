@@ -36,8 +36,25 @@ Park Observer on your personal device.  You  will need an
      ([Instructions](Park%20Observer/Documentation/Adding%20ArcGIS.md))
   3) Open `Park Observer.xcodeproj` in XCode
   4) To run in a simulator, select a simulator and click the run button.
-  5) To run on your personal device, follow the instructions in this
-  [Stack Overflow answer](https://stackoverflow.com/a/4952845/542911).
+  5) To run on your personal device, follow the following instructions
+     (adapted for Xcode 12 from this
+     [Stack Overflow answer](https://stackoverflow.com/a/4952845/542911)).
+     * In Xcode, add your Apple ID to the Account preferences.
+     * In the project navigator, select the project and your target to
+       display the project editor.
+     * Select the _Signing & Capabilities_ tab
+     * Replace `gov.nps.akro` in the **Bundle Identifier** with something
+       unique to you.
+     * Choose your name from the *Team* pop-up menu.
+     * XCode should now create a provisioning profile and signing certificate.
+     * Connect your device to your Mac and choose your device from the Scheme
+       toolbar menu.
+     * Click **Run** button. Xcode installs the app on the device before
+       launching the app.
+     * After the first attempted launch (which will likely fail), go to the
+       Settings app, and under **General/Device Management**, select your
+       Development ID and then click the **Trust** button.
+     * You can now manually launch the app on your device.
 
 ## Usage
 
