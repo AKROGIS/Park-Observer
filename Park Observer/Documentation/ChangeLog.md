@@ -21,19 +21,19 @@ changes, so it has no date. The date is the date that release was published.
 
 * Improve clarity of error message when survey does not load.
 * Fixed bug for incorrect drawing of compass rose button on iOS 14.0.
-* Fixed bug where DecimalEntry incorrectly added a stepper when the attribute
-  type was an Int16/Int32/Int64.
-* DecimalEntry with fractionDigits = 0 now correctly display no decimals instead
-  of 6.
-* Upgraded to version 100.10.0 of the esri ArcGIS Runtime API for iOS.
+* Fixed bug where `DecimalEntry` incorrectly added a stepper when the attribute
+  type was an `Int16`, `Int32`, or `Int64`.
+* `DecimalEntry` with `fractionDigits = 0` now correctly display no decimals
+  instead of 6.
+* Upgraded to version 100.10.0 of the esri _ArcGIS Runtime API for iOS_.
 * Upgraded to the new base map styles in version 100.10.
 * Fix iOS 14 issue with keyboard appearance shrinking height of slide out menu.
 * Fix iOS 14 multiline text field.
 * Fix iOS 14 bug where tristate toggle would only change between nil and On
   (could not set to Off).
-* Fix Bug that required fractionDigits = 0 with DecimalEntry with attribute type
-  of Int. No fractionDigits = 0 is assumed. Other values are ignored - could be
-  an error, but I decided otherwise.
+* Fix bug that required `fractionDigits = 0` with `DecimalEntry` with attribute
+  type of `Int`. No `fractionDigits = 0` is assumed. Other values are ignored -
+  could be an error, but I decided otherwise.
 
 ## 2020-09-04: Beta4
 
@@ -41,23 +41,23 @@ changes, so it has no date. The date is the date that release was published.
   observing button (i.e. "Survey", "Transect").
 * Replaced "Mission Properties" with "{observing label} Info", e.g.
   "Survey Info" in attribute editor.
-* Protocol property dialog.title was not used, so it is now optional in the
+* Protocol property `dialog.title` was not used, so it is now optional in the
   protocol file.
-* Fixed bug: protocol feature.label.field must **case_sensitive** match one of
-  feature.attribute.name.
+* Fixed bug: protocol `feature.label.field` must **case_sensitive** match one of
+  `feature.attribute.name`.
 * Allow protocol with label definition and no attributes (label could be a
   constant).
 * Removed second vertical accuracy line from GPS details form.
-* Do not show mission property button or editor when no mission or
-  mission.attributes defined in protocol.
+* Do not show mission property button or editor when no `mission` or
+  `mission.attributes` defined in protocol.
 * Fixed bug where gps points, mission property points and track logs did not
-  draw on map when there was no mission defined in protocol.
+  draw on map when there was no `mission` defined in protocol.
 * Fixed bug where features with no dialog were not added to map at map touch
   (when multiple allowed).
 * Fixed bug where protocol date in list was 1 day earlier than the date in the
   protocol details view.
-* Fixed bug where totalizer shows ?? for field value for the first track log in
-  a survey even after setting the field value.
+* Fixed bug where the totalizer shows `??` for field value for the first track
+  log in a survey even after setting the field value.
 * Fixed bug where the info message "touch map to move observation" disappears
   when track logging.
 * Added capability to have multiple error/warning and info messages at the same
