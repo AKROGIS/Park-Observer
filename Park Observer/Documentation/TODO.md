@@ -103,7 +103,7 @@ These bugs can be worked around or ignored.
   * The default mission property "display editor" properties are not appropriate for all cases (i.e. tracklog = none)
   * ObservationPresenter/Selector title needs to be updated if the feature has a label field and it is edited.
   * Doubt that .ignoresSafeArea() is being used correctly on modern devices and with keyboard appearance.
- 
+
 ## Annoying
 These bugs are related to potential functionality (so while incorrect, they have no impact yet).
   * encode(AnyJSON(agsRenderer.toJSON())) converts 0 to false, so result is no longer valid on read
@@ -124,13 +124,13 @@ These issues are in software provided by others (Apple, Esri). If they become a 
     The user should be able to navigate to next/previous Text/Number field with a next/prev key on the on-screen keyboard, or
     the tab (shift-tab) keys on a bluetooth keyboard.  Unfortunately, this is not supported in SwiftUI (iOS 13 and 14_beta).
     See https://developer.apple.com/forums/thread/650263
-  * In iOS 14.0 and 14.1 the TextField (including Decimal and Int Text boxes) in View/SlideOutViews/AttributeFormView.swift 
+  * In iOS 14.0 and 14.1 the TextField (including Decimal and Int Text boxes) in View/SlideOutViews/AttributeFormView.swift
     no longer works. Every new character is erased after entry (but last character typed is added to the text when focus is lost).
     This bug did not exist in iOS 13.x and was fixed in iOS 14.2+
 
 
 # Documentation
-  * Finish Readme.md
+
   * Finish Documentation/Protocol Guide.md
   * Finish Documentation/Contributing.md
   * Finish website help/index.md
