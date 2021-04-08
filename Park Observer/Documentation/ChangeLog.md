@@ -6,7 +6,7 @@ This is a user facing summary for publishing on the website.  Newest changes
 are at the top. The first group is always the current list of unpublished
 changes, so it has no date. The date is the date that release was published.
 
-## Beta7
+## Unpublished Changes
 
 * Removed 10 character limit on feature names in protocol file.
 
@@ -14,7 +14,8 @@ changes, so it has no date. The date is the date that release was published.
 
 * Add minimum height to multiline text fields to prevent collapsing to zero
   height in attribute form.
-* Rebuilt with a new developer profile, (expires 3/29/2022)
+* Rebuilt with a new developer profile. Expires 3/29/2022, previous betas
+  expired 3/17/2021.
 
 ## 2021-02-18: Beta5
 
@@ -25,9 +26,9 @@ changes, so it has no date. The date is the date that release was published.
 * DecimalEntry with fractionDigits = 0 now correctly display no decimals instead
   of 6.
 * Upgraded to version 100.10.0 of the esri ArcGIS Runtime API for iOS.
-* Upgraded to the new basemap styles in version 100.10
-* Fix iOS 14 issue with keyboard appearance shrinking height of slideout menu
-* Fix iOS 14 multiline text field
+* Upgraded to the new base map styles in version 100.10.
+* Fix iOS 14 issue with keyboard appearance shrinking height of slide out menu.
+* Fix iOS 14 multiline text field.
 * Fix iOS 14 bug where tristate toggle would only change between nil and On
   (could not set to Off).
 * Fix Bug that required fractionDigits = 0 with DecimalEntry with attribute type
@@ -55,7 +56,7 @@ changes, so it has no date. The date is the date that release was published.
   (when multiple allowed).
 * Fixed bug where protocol date in list was 1 day earlier than the date in the
   protocol details view.
-* Fixed bug where totalizer shows ?? for field value for the first tracklog in
+* Fixed bug where totalizer shows ?? for field value for the first track log in
   a survey even after setting the field value.
 * Fixed bug where the info message "touch map to move observation" disappears
   when track logging.
@@ -63,14 +64,14 @@ changes, so it has no date. The date is the date that release was published.
   time.
 * Improve contrast in error(red), warning(yellow), and info(green) messages.
 * Fixed text alignment in *Add feature at GPS button* with larger (accessible)
-  fonts
+  fonts.
 
 ## 2020-08-21: Beta3
 
 * On first launch the app selects an online map for the default.
 * On first launch the app creates a sample survey and set it as the default.
 * Fixed a bug that failed to update labels and symbology when changing
-  attributes from null to non-null
+  attributes from null to non-null.
 * Fixed a display glitch with the disclosure angle for the details view in
   survey and protocol lists.
 * Fixed a bug where the editor was not presented when creating a new feature at
@@ -85,7 +86,7 @@ changes, so it has no date. The date is the date that release was published.
   from the list of selected features.
 * The undo button while editing the survey name was confusing. It is now a
   "clear text" button and a new undo button was added.
-* Made the totalizer and info banner more visible
+* Made the totalizer and info banner more visible.
 * Made the totalizer with fields behave like the old Park Observer (shows total
   for entire survey not just current track log).
 * The feature selector/presenter now shows the feature id in the title.
