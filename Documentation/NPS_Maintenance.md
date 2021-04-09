@@ -167,7 +167,7 @@ teams Apple Enterprise Developer's Account.
   * If your Apple ID is a member of the Enterprise Developer Program,
     you will be able to build the repo for development and testing.
   * If your Apple ID is NOT a member of the Enterprise Developer Program,
-    the see the [repo Readme](../Readme.md#building) for build details.
+    the see the [repo Readme](../README.md#building) for build details.
 * Install the private key
   * You will need the GIS Team's private encryption key in order to sign
     an archive (in the publishing steps above)
