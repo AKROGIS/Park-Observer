@@ -11,6 +11,7 @@
 		59269AF925D1FABB00D3526C /* ArcGIS.xcframework in Frameworks */ = {isa = PBXBuildFile; fileRef = 59269AF825D1FABB00D3526C /* ArcGIS.xcframework */; };
 		59269AFA25D1FABB00D3526C /* ArcGIS.xcframework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 59269AF825D1FABB00D3526C /* ArcGIS.xcframework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		59269B0025D1FCCE00D3526C /* ArcGIS.xcframework in Frameworks */ = {isa = PBXBuildFile; fileRef = 59269AF825D1FABB00D3526C /* ArcGIS.xcframework */; };
+		5930420E2620D5830064F5EE /* Sample.obsprot in Resources */ = {isa = PBXBuildFile; fileRef = 593042032620D5830064F5EE /* Sample.obsprot */; };
 		5935172924A68A8800A4CD45 /* OnlineBaseMaps.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5935172824A68A8800A4CD45 /* OnlineBaseMaps.swift */; };
 		5935172B24AAFC3700A4CD45 /* SurveyController+MapViewDrawing.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5935172A24AAFC3700A4CD45 /* SurveyController+MapViewDrawing.swift */; };
 		5935172D24ABC99A00A4CD45 /* MapViewTouchDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5935172C24ABC99A00A4CD45 /* MapViewTouchDelegate.swift */; };
@@ -58,7 +59,6 @@
 		7423E4CB249BE18300195DBB /* MessageView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7423E4CA249BE18300195DBB /* MessageView.swift */; };
 		744C9B36247482700099D414 /* SurveyTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 744C9B35247482700099D414 /* SurveyTests.swift */; };
 		744C9B3A24760A700099D414 /* Formatters.swift in Sources */ = {isa = PBXBuildFile; fileRef = 744C9B3924760A700099D414 /* Formatters.swift */; };
-		7451FF4924E7A43800A37A61 /* Sample.obsprot in Resources */ = {isa = PBXBuildFile; fileRef = 74A25FBC24522465006D82CE /* Sample.obsprot */; };
 		7466877024A265D500A8FEFA /* OnlineMapListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7466876F24A265D500A8FEFA /* OnlineMapListView.swift */; };
 		7466877224A274FB00A8FEFA /* UserSettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7466877124A274FB00A8FEFA /* UserSettingsView.swift */; };
 		7466877424A27C4B00A8FEFA /* UserSettings.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7466877324A27C4B00A8FEFA /* UserSettings.swift */; };
@@ -155,6 +155,17 @@
 /* Begin PBXFileReference section */
 		5907D9712506D23500E92E43 /* MapReferenceTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MapReferenceTests.swift; sourceTree = "<group>"; };
 		59269AF825D1FABB00D3526C /* ArcGIS.xcframework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcframework; name = ArcGIS.xcframework; path = ../../Library/SDKs/ArcGIS/Frameworks/ArcGIS.xcframework; sourceTree = "<group>"; };
+		593041FB2620D5830064F5EE /* ChangeLog.md */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = net.daringfireball.markdown; path = ChangeLog.md; sourceTree = "<group>"; };
+		593041FC2620D5830064F5EE /* Protocol Guide.md */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = net.daringfireball.markdown; path = "Protocol Guide.md"; sourceTree = "<group>"; };
+		593041FD2620D5830064F5EE /* NPS_Maintenance.md */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = net.daringfireball.markdown; path = NPS_Maintenance.md; sourceTree = "<group>"; };
+		593041FE2620D5830064F5EE /* Adding ArcGIS.md */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = net.daringfireball.markdown; path = "Adding ArcGIS.md"; sourceTree = "<group>"; };
+		593041FF2620D5830064F5EE /* TODO.md */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = net.daringfireball.markdown; path = TODO.md; sourceTree = "<group>"; };
+		593042002620D5830064F5EE /* protocol.v2.schema.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = protocol.v2.schema.json; sourceTree = "<group>"; };
+		593042012620D5830064F5EE /* Sample Protocol.v2.obsprot */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = "Sample Protocol.v2.obsprot"; sourceTree = "<group>"; };
+		593042022620D5830064F5EE /* Sample Protocol.v1.obsprot */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = "Sample Protocol.v1.obsprot"; sourceTree = "<group>"; };
+		593042032620D5830064F5EE /* Sample.obsprot */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = Sample.obsprot; sourceTree = "<group>"; };
+		593042042620D5830064F5EE /* Protocol Specification.md */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = net.daringfireball.markdown; path = "Protocol Specification.md"; sourceTree = "<group>"; };
+		593042052620D5830064F5EE /* protocol.v1.schema.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = protocol.v1.schema.json; sourceTree = "<group>"; };
 		5935172824A68A8800A4CD45 /* OnlineBaseMaps.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnlineBaseMaps.swift; sourceTree = "<group>"; };
 		5935172A24AAFC3700A4CD45 /* SurveyController+MapViewDrawing.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "SurveyController+MapViewDrawing.swift"; sourceTree = "<group>"; };
 		5935172C24ABC99A00A4CD45 /* MapViewTouchDelegate.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MapViewTouchDelegate.swift; sourceTree = "<group>"; };
@@ -185,8 +196,6 @@
 		59BA0EC824A50F6300CA6EF2 /* FileListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FileListView.swift; sourceTree = "<group>"; };
 		59BA0ECA24A50FC700CA6EF2 /* FileItemView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FileItemView.swift; sourceTree = "<group>"; };
 		59BA0ECC24A510B800CA6EF2 /* ObservationView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ObservationView.swift; sourceTree = "<group>"; };
-		59C8282A24D88C090082BED2 /* TODO.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = TODO.md; sourceTree = "<group>"; };
-		59C8282B24D88C1B0082BED2 /* Contributing.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = Contributing.md; sourceTree = "<group>"; };
 		59C8282F24DB33770082BED2 /* MultiLineTextView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MultiLineTextView.swift; sourceTree = "<group>"; };
 		59C8283124DB40FC0082BED2 /* ActivityIndicatorView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ActivityIndicatorView.swift; sourceTree = "<group>"; };
 		59C8283324DB7E1D0082BED2 /* AlarmView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AlarmView.swift; sourceTree = "<group>"; };
@@ -202,10 +211,8 @@
 		741679A02482241400FF353C /* TrackLogTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrackLogTests.swift; sourceTree = "<group>"; };
 		741679A22482244500FF353C /* FormatterTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FormatterTests.swift; sourceTree = "<group>"; };
 		7423E4CA249BE18300195DBB /* MessageView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MessageView.swift; sourceTree = "<group>"; };
-		742B08A2244A477A00A5137C /* Protocol Specification.md */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = net.daringfireball.markdown; path = "Protocol Specification.md"; sourceTree = "<group>"; };
 		744C9B35247482700099D414 /* SurveyTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SurveyTests.swift; sourceTree = "<group>"; };
 		744C9B3924760A700099D414 /* Formatters.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Formatters.swift; sourceTree = "<group>"; };
-		7451FF4724E79B8200A37A61 /* Sample Protocol.v2.obsprot */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = "Sample Protocol.v2.obsprot"; sourceTree = "<group>"; };
 		7466876F24A265D500A8FEFA /* OnlineMapListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnlineMapListView.swift; sourceTree = "<group>"; };
 		7466877124A274FB00A8FEFA /* UserSettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserSettingsView.swift; sourceTree = "<group>"; };
 		7466877324A27C4B00A8FEFA /* UserSettings.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserSettings.swift; sourceTree = "<group>"; };
@@ -222,7 +229,6 @@
 		74716609243C37AA00A9C960 /* Park ObserverUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "Park ObserverUITests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
 		7471660D243C37AA00A9C960 /* Park_ObserverUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Park_ObserverUITests.swift; sourceTree = "<group>"; };
 		7471660F243C37AA00A9C960 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		74716620243C41C900A9C960 /* Adding ArcGIS.md */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = net.daringfireball.markdown; path = "Adding ArcGIS.md"; sourceTree = "<group>"; };
 		74716623243C422700A9C960 /* ArcGIS.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = ArcGIS.framework; path = ../../Library/SDKs/ArcGIS/iOS/Frameworks/Dynamic/ArcGIS.framework; sourceTree = "<group>"; };
 		74716628243C487300A9C960 /* MapView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MapView.swift; sourceTree = "<group>"; };
 		7471662A243C4AF700A9C960 /* ViewPointController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewPointController.swift; sourceTree = "<group>"; };
@@ -239,12 +245,7 @@
 		749DE9B32469D6DC003D433A /* FileManagerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FileManagerTests.swift; sourceTree = "<group>"; };
 		749DE9B7246A32A3003D433A /* SurveyInfoTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SurveyInfoTests.swift; sourceTree = "<group>"; };
 		749DE9B9246A3378003D433A /* SurveyInfo.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SurveyInfo.swift; sourceTree = "<group>"; };
-		74A25FB62451F206006D82CE /* protocol.v1.schema.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = protocol.v1.schema.json; sourceTree = "<group>"; };
-		74A25FB72451F206006D82CE /* protocol.v2.schema.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = protocol.v2.schema.json; sourceTree = "<group>"; };
 		74A25FBA2451F33F006D82CE /* SurveyProtocol.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SurveyProtocol.swift; sourceTree = "<group>"; };
-		74A25FBC24522465006D82CE /* Sample.obsprot */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = Sample.obsprot; sourceTree = "<group>"; };
-		74A25FBD24522466006D82CE /* Sample Protocol.v1.obsprot */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = "Sample Protocol.v1.obsprot"; sourceTree = "<group>"; };
-		74A25FC024522877006D82CE /* Protocol Guide.md */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = net.daringfireball.markdown; path = "Protocol Guide.md"; sourceTree = "<group>"; };
 		74A25FC224522B48006D82CE /* SurveyProtocolTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SurveyProtocolTests.swift; sourceTree = "<group>"; };
 		74A25FC524523371006D82CE /* ProtocolMission.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProtocolMission.swift; sourceTree = "<group>"; };
 		74A25FC724523381006D82CE /* Dialog.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Dialog.swift; sourceTree = "<group>"; };
@@ -308,6 +309,24 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		593041FA2620D5830064F5EE /* Documentation */ = {
+			isa = PBXGroup;
+			children = (
+				593041FE2620D5830064F5EE /* Adding ArcGIS.md */,
+				593041FB2620D5830064F5EE /* ChangeLog.md */,
+				593041FD2620D5830064F5EE /* NPS_Maintenance.md */,
+				593041FC2620D5830064F5EE /* Protocol Guide.md */,
+				593042042620D5830064F5EE /* Protocol Specification.md */,
+				593042052620D5830064F5EE /* protocol.v1.schema.json */,
+				593042002620D5830064F5EE /* protocol.v2.schema.json */,
+				593042022620D5830064F5EE /* Sample Protocol.v1.obsprot */,
+				593042012620D5830064F5EE /* Sample Protocol.v2.obsprot */,
+				593042032620D5830064F5EE /* Sample.obsprot */,
+				593041FF2620D5830064F5EE /* TODO.md */,
+			);
+			path = Documentation;
+			sourceTree = "<group>";
+		};
 		5996045F24FA19F80042738A /* Controllers */ = {
 			isa = PBXGroup;
 			children = (
@@ -385,6 +404,7 @@
 				7471660C243C37AA00A9C960 /* Park ObserverUITests */,
 				747165E9243C37A800A9C960 /* Products */,
 				74716622243C422700A9C960 /* Frameworks */,
+				593041FA2620D5830064F5EE /* Documentation */,
 			);
 			sourceTree = "<group>";
 		};
@@ -406,7 +426,6 @@
 				7471661C243C391E00A9C960 /* Views */,
 				74716634243E844C00A9C960 /* Utilities */,
 				7471661E243C393B00A9C960 /* Assets */,
-				7471661F243C394400A9C960 /* Documentation */,
 			);
 			path = "Park Observer";
 			sourceTree = "<group>";
@@ -511,23 +530,6 @@
 				747165F3243C37AA00A9C960 /* Preview Content */,
 			);
 			path = Assets;
-			sourceTree = "<group>";
-		};
-		7471661F243C394400A9C960 /* Documentation */ = {
-			isa = PBXGroup;
-			children = (
-				74716620243C41C900A9C960 /* Adding ArcGIS.md */,
-				59C8282B24D88C1B0082BED2 /* Contributing.md */,
-				74A25FC024522877006D82CE /* Protocol Guide.md */,
-				742B08A2244A477A00A5137C /* Protocol Specification.md */,
-				74A25FB62451F206006D82CE /* protocol.v1.schema.json */,
-				74A25FB72451F206006D82CE /* protocol.v2.schema.json */,
-				74A25FBD24522466006D82CE /* Sample Protocol.v1.obsprot */,
-				7451FF4724E79B8200A37A61 /* Sample Protocol.v2.obsprot */,
-				74A25FBC24522465006D82CE /* Sample.obsprot */,
-				59C8282A24D88C090082BED2 /* TODO.md */,
-			);
-			path = Documentation;
 			sourceTree = "<group>";
 		};
 		74716622243C422700A9C960 /* Frameworks */ = {
@@ -712,7 +714,7 @@
 			files = (
 				747165F8243C37AA00A9C960 /* LaunchScreen.storyboard in Resources */,
 				747165F2243C37AA00A9C960 /* Assets.xcassets in Resources */,
-				7451FF4924E7A43800A37A61 /* Sample.obsprot in Resources */,
+				5930420E2620D5830064F5EE /* Sample.obsprot in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
