@@ -4,19 +4,20 @@ A "_How To_" guide for maintaining Park Observer inside NPS.
 This is intended to help reluctant programmers maintain the code base
 in the event that the primary developer retires :wink:.
 
-Instructions below assume you have a clone of the repo on your development
-computer and that you have commit privileges to the repo.  If you do not have
-commit access you will need to create a fork and issue a pull request when
-your work is done.
+These instructions below assume you have a [clone of the repo](#clone-a-repository)
+on your [development computer(#setting-up-a-mac)] and that you have commit
+privileges to the repo. If you do not have commit access you will need to create
+a fork and issue a pull request when your work is done.
 
 ## Fixing Bugs
 
-1) Create an issue in GitHub. Ensure it is reproducible. Document step by step
+1) [Create an issue](#submit-an-issue) in GitHub. Ensure it is reproducible.
+   Document step by step
    how to reproduce the bug and the behavior you expect.  If a bug is not
    reproducible, or the expected outcome is unknown it may be impossible to
    correctly fix the bug. For more info search on
    [bug reporting best practices](https://duckduckgo.com/?q=bug+reporting+best+practices).
-2) Create a branch in git for this bug.
+2) [Create a branch](#create-a-branch) in git for this bug.
 3) Create at least one test case that should pass, but fails due to the bug.
 4) Fix the code. Make only the minimal amount of changes to fix the bug at issue.
    Do not do additional "code cleanup", or add/extend other features.
@@ -29,22 +30,22 @@ your work is done.
 8) Do a functional test on the simulators and a real device. Do not just test
    your bug, but run through several mock data collection scenarios with various
    protocol files to ensure nothing unexpected was impacted.
-9) Run `swift-format` on changed files to lint the code.
+9) [Format your code](#formatting-code).
 10) Bump the patch (3rd) number of the version i.e. `2.0.0` -> `2.0.1`. Skip
     this step if the minor or patch number has already been bumped since the
     last published version.
 11) Get a peer to review your code (or review the pull request).
-12) Merge the branch (or pull request) into master.
+12) [Merge the branch](3merge-a-branch) (or pull request) into master.
 13) Close the issue (linking to the pull request or last commit).
 14) Summarize the bug fix in the [Change Log](./ChangeLog.md).
-15) There is no need to publish a new version immediately unless there is an
-    urgent user request.
+15) There is no need to [publish](#publishing-an-update) a new version
+    immediately unless there is an urgent user request.
 
 ## Adding A New Feature
 
-1) Create an issue in GitHub. Discuss the functionality with all affected users
-   to ensure the scope is well understood.
-2) Create a branch in git for this feature.
+1) [Create an issue](#submit-an-issue) in GitHub. Discuss the functionality with
+   all affected users to ensure the scope is well understood.
+2) [Create a branch](#create-a-branch) in git for this feature.
 3) Update documentation. This is helpful to do up front, as it clarifies the
    functionality. Try and get user review of the documentation before coding.
 4) Create at least one test case that should pass, but fails due to a lack of
@@ -61,7 +62,7 @@ your work is done.
 9) Do a functional test on the simulators and a real device. Do not just test
    your bug, but run through several mock data collection scenarios with various
    protocol files to ensure nothing unexpected was impacted.
-10) Run `swift-format` on changed files to lint the code.
+10) [Format your code](#formatting-code).
 11) Bump the patch (3rd) number of the version i.e. 2.0.0 -> 2.0.1
 12) Revisit the documentation and ensure it matches the actual implementation.
 13) If the new functionality requires an change to the protocol (*.obsprot)
@@ -78,11 +79,11 @@ your work is done.
     to zero. i.e. `2.0.3` -> `2.1.0`. Skip this step if the minor number has
     already been bumped since the last published version.
 15) Get a peer to review your code (or review the pull request).
-16) Merge the branch (or pull request) into master.
+16) [Merge the branch](3merge-a-branch) (or pull request) into master.
 17) Close the issue (linking to the pull request or last commit).
 18) Summarize the new feature in the [Change Log](./ChangeLog.md).
-19) There is no need to publish a new version immediately unless there is an
-    urgent user request.
+19) There is no need to [publish](#publishing-an-update) a new version
+    immediately unless there is an urgent user request.
 
 ## Publishing an Update
 
@@ -92,12 +93,12 @@ your work is done.
    See the instructions above. If this is just a new code signing, i.e.
    extending the expiration date without any code changes, then bump the
    patch (3rd) number.
-4) Create an archive.
+4) [Create an archive](#create-an-archive).
    * This step will fail if your Apple ID is not in the Team's development
      account. See the section on
      [Certificates and Provisioning Profiles](#certificates-and-provisioning-profiles)
      below for details.
-5) Create an ipa
+5) Create an `ipa`
    * In the _Organizer_ window, select the archive you want to sign and publish.
    * Click the blue `Distribute App` button
    * Select `Enterprise` then `Next`
@@ -196,9 +197,38 @@ teams Apple Enterprise Developer's Account.
 
 ### Submit an Issue
 
+* Go to <https://github.com/AKROGIS/Park-Observer/issues>
+* Search the issues to make sure there is no existing equivalent issue.
+* Sign in to GitHub (top right of page).
+* Click the `New issue` button, and fill out the form.
+
 ### Clone a Repository
 
+* Go to <https://github.com/AKROGIS/Park-Observer>
+* Click on the green `Code` button.
+
+or
+
+* On the command line `git clone https://github.com/AKROGIS/Park-Observer.git`
+
+or
+
+* In GitHub Desktop `File` -> `Clone Repositoy...` in the menu
+* If you have commit access, it will appear in your list under the `github.com`
+  tab, other wise enter `AKROGIS/Park-Observer` under the `URL` tab.
+
 ### Create a Branch
+
+* In GitHub Desktop: `Branch` -> `New Branch...`
+
+### Merge a Branch
+
+* In GitHub Desktop select the branch you want to merge into, typically
+  `main` or `master`
+* Do a `Fetch` and/or `Pull` to make sure the main branch is up to date.
+* In the menu select `Branch` -> `Merge into Current Branch...`
+* Select the bug or feature branch and click the `Merge into ...` button.
+* Delete the bug or feature branch.
 
 ## Using X code
 
