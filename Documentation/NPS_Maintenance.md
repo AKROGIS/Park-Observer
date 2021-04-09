@@ -5,7 +5,7 @@ This is intended to help reluctant programmers maintain the code base
 in the event that the primary developer retires :wink:.
 
 These instructions below assume you have a [clone of the repo](#clone-a-repository)
-on your [development computer(#setting-up-a-mac)] and that you have commit
+on your [development computer](#setting-up-a-mac) and that you have commit
 privileges to the repo. If you do not have commit access you will need to create
 a fork and issue a pull request when your work is done.
 
@@ -31,11 +31,12 @@ a fork and issue a pull request when your work is done.
    your bug, but run through several mock data collection scenarios with various
    protocol files to ensure nothing unexpected was impacted.
 9) [Format your code](#formatting-code).
-10) Bump the patch (3rd) number of the version i.e. `2.0.0` -> `2.0.1`. Skip
+10) [Bump the version number](#change-the-version-number). For bugs, bump the
+    patch (3rd) number of the version i.e. `2.0.0` -> `2.0.1`. Skip
     this step if the minor or patch number has already been bumped since the
     last published version.
 11) Get a peer to review your code (or review the pull request).
-12) [Merge the branch](3merge-a-branch) (or pull request) into master.
+12) [Merge the branch](#merge-a-branch) (or pull request) into master.
 13) Close the issue (linking to the pull request or last commit).
 14) Summarize the bug fix in the [Change Log](./ChangeLog.md).
 15) There is no need to [publish](#publishing-an-update) a new version
@@ -75,11 +76,12 @@ a fork and issue a pull request when your work is done.
     * Use an online validator (see the
       [protocol documentation](./Protocol%20Specification.md) to ensure that all
       known protocol files pass.
-14) Bump the minor (2rd) number of the version, and reset the patch (3rd) number
+14) [Bump the version number](#change-the-version-number). For features, bump
+    the minor (2rd) number of the version, and reset the patch (3rd) number
     to zero. i.e. `2.0.3` -> `2.1.0`. Skip this step if the minor number has
     already been bumped since the last published version.
 15) Get a peer to review your code (or review the pull request).
-16) [Merge the branch](3merge-a-branch) (or pull request) into master.
+16) [Merge the branch](#merge-a-branch) (or pull request) into master.
 17) Close the issue (linking to the pull request or last commit).
 18) Summarize the new feature in the [Change Log](./ChangeLog.md).
 19) There is no need to [publish](#publishing-an-update) a new version
@@ -234,13 +236,52 @@ or
 
 ### Create a test
 
+All The unit tests are in `Park ObserverTests`.  They are organized to align
+with each code file in the `Park Observer` folder.  (Not everything has unit
+tests yet)  There are currently no User Interface tests in
+`Park ObserverTestsUI`.
+
+* If you add a new file, add a new file under `Park ObserverTests` with a
+  similar name (follow the existing convention of adding `Tests` to the name of
+  the module being tested). It is easiest to start by copying the boiler plate
+  from another file.
+* If you are editing an existing file, the create a new test functions in the
+  appropriate Test file.
+
 ### Running tests
+
+* In XCode, click the test navigator button (dash in a diamond) at the top of
+  the table of contents on the left side of the screen.  The test hierarchy
+  shows each test function in the `Park ObserverTests`.  Click the run button to
+  the left of a single test to run just one test, or any higher level in the
+  ierarchy to run all tests in that group.
 
 ### Running on a simulator
 
+* Select the simulator device and OS version in the Schema selector toolbar (top
+  left of the window).
+* Click on the `Run` button (top left of the window).
+
 ### Running on a device
 
+* Plug in a device, and trust the computer.  The device must be "awake" to
+  install a new build.
+* Select the device in the Schema selector toolbar (top left of the window).
+* Click on the `Run` button (top left of the window).
+
 ### Change the version number
+
+* In the code navigator (top left button - file folder in the table of contents
+  on the left side of the window)
+* Click on `Park Observer` at the top of the file navigator.
+* In the left side of the project pane, Select `Park Observer` as the `Target`
+* In the `General` tab, edit the `Version` (third field in the `Identity` section
+  at the top of the `General` tab.)
+* The version is shown on the settings page in the Park Observer app.  It is
+  recommended that each published `*.ipa` has a different version number so
+  that you can easily determine what code the user is running.
+* I recommend updating the third number 2.0.x if you just fixing bugs, and only
+  updating the second number 2.x if you are adding new features.
 
 ### Create an Archive
 
