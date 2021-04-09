@@ -149,7 +149,6 @@ These issues are in software provided by others (Apple, Esri). If they become a 
 ## Documentation
 
 * Finish Documentation/Protocol Guide.md
-* Finish Documentation/Contributing.md
 * Finish website help/index.md
 * Finish website help/user_guide.md
 
