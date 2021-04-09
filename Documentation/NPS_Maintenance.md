@@ -95,7 +95,7 @@ your work is done.
 4) Create an archive.
    * This step will fail if your Apple ID is not in the Team's development
      account. See the section on
-     [Certificates and Provisioning Profiles](#Certificates_and_Provisioning_Profiles)
+     [Certificates and Provisioning Profiles](#certificates-and-provisioning-profiles)
      below for details.
 5) Create an ipa
    * In the _Organizer_ window, select the archive you want to sign and publish.
@@ -109,7 +109,7 @@ your work is done.
    * Select `Automatically manage signing` then `Next`
      * This step will fail if you do not have the team's Developer ID private
        key. See the section on
-       [Certificates and Provisioning Profiles](#Certificates_and_Provisioning_Profiles)
+       [Certificates and Provisioning Profiles](#certificates-and-provisioning-profiles)
        below for details.
      * If this step fails with a private key installed, click `Previous` and
        select `Manually manage signing` and select a distribution profile and
@@ -167,7 +167,7 @@ teams Apple Enterprise Developer's Account.
   * If your Apple ID is a member of the Enterprise Developer Program,
     you will be able to build the repo for development and testing.
   * If your Apple ID is NOT a member of the Enterprise Developer Program,
-    the see the [repo Readme](../Readme.md#Building) for build details.
+    the see the [repo Readme](../Readme.md#building) for build details.
 * Install the private key
   * You will need the GIS Team's private encryption key in order to sign
     an archive (in the publishing steps above)
