@@ -36,7 +36,8 @@ your work is done.
 11) Get a peer to review your code (or review the pull request).
 12) Merge the branch (or pull request) into master.
 13) Close the issue (linking to the pull request or last commit).
-14) There is no need to publish a new version immediately unless there is an
+14) Summarize the bug fix in the [Change Log](./ChangeLog.md).
+15) There is no need to publish a new version immediately unless there is an
     urgent user request.
 
 ## Adding A New Feature
@@ -79,49 +80,88 @@ your work is done.
 15) Get a peer to review your code (or review the pull request).
 16) Merge the branch (or pull request) into master.
 17) Close the issue (linking to the pull request or last commit).
-18) There is no need to publish a new version immediately unless there is an
+18) Summarize the new feature in the [Change Log](./ChangeLog.md).
+19) There is no need to publish a new version immediately unless there is an
     urgent user request.
 
 ## Publishing an Update
 
-1) Open the project in Xcode
-2) Ensure that the version number is different than the last published version.
+1) Set up the signing certificate (see the following section).
+2) Open the project in Xcode
+3) Ensure that the version number is different than the last published version.
    See the instructions above. If this is just a new code signing, i.e.
    extending the expiration date without any code changes, then bump the
    patch (3rd) number.
-3) Create an Archive.
-4) Create an ipa
-   * In the Archive Window, select new archive (should be named for the new version number)
-   * Click the blue "Distribute App" button
+4) Create an archive.
+5) Create an ipa
+   * In the _Organizer_ window, select the archive you want to sign and publish.
+   * Click the blue `Distribute App` button
    * Select `Enterprise` then `Next`
      * App Thinning: None
-     * Rebuild from Bitcode: uncheck
-     * Include Manifest: uncheck
-     * click `Next`
-   * Select `Automatically manage Signing` then `Next` (You may need to authenticate)
+     * Rebuild from Bitcode: Check
+     * Include Manifest: Uncheck
+     * Click `Next`
+   * Select `Automatically manage signing` then `Next` (You may need to authenticate)
    * Review the summary and click `Export`
      * Select a location to save the export file
      * Rename the `ipa` as `ParkObserver2.0.0.beta4.ipa` or similar
-5) Update the web site
-   * Copy the `ipa` to the teams drive and to the website downloads folder
+6) Update the web site
+   * Copy the `*.ipa` to the teams drive and to the website `Downloads2` folder.
    * Edit the following files in <https://github.com/AKROGIS/Park-Observer-Website>
-     * `Downloads2/Changelog.html` - Create a new section for this release and summarize the changes
-     * `Downloads2/versionlist.json` - copy/paste/edit a new entry for the new version
-     * `Downloads2/ParkObserver2.plist` - update the paths to reflect the new version (2 places)
-     * Commit the changes, and copy to the published website folder.
+     * `Downloads2/Changelog.html`
+       * Create a new section for this release.
+       * Convert the [Change Log](./ChangeLog.md) to html using an online
+         markdown to html converter.
+       * Copy paste the html for this release into the new section.
+     * `Downloads2/versionlist.json`
+       * Copy/paste the entry for the previous version.
+       * Edit the copy to reflect the record for the new version.
+     * `Downloads2/ParkObserver2.plist`
+       * Update the `ipa` name in two paths to point to the new `ipa` file.
+   * Commit the changes
+   * Copy the changed files to the published website folder.
 
 ## Setting up a Mac
 
-* Certificates
-* Software
+The username and password for the GIS teams iMac Pro computer is stored in
+in the GIS team's password keeper.  That account has been used to create and
+maintain Park Observer.  However a future maintainer will need to add
+their Apple ID to the XCode preferences for code signing.  The following
+bullets assume you are using a different computer.
+
+### Software
+
+* Install XCode from the Mac App Store
+* Install [swift-format](https://github.com/apple/swift-format) from the
+  GitHub repo.
+* Install [GitHub Desktop](https://desktop.github.com/)
+
+### Code
+
+* Use GitHub Desktop (or the git command line) to clone this repo to your
+  computer.
+* Install the [ArcGIS Runtime SDK for iOS](./Adding%20ArcGIS.md)
+
+### Certificates and Provisioning Profiles
+
+The Alaska Region GIS Team has an Apple Enterprise Developer's Account and
+license. You must use the team's signing certificate to create a provisioning
+profile and an installation package that can be installed on any NPS iOS device.
+To use the team's signing certificate, you need a copy of the team's private
+key (which is in the team's password keeper), and an Apple ID that is in the
+teams Apple Enterprise Developer's Account.
+
+* Add the Apple ID to the Account in Prefernces
+* Install the private key
+* Build
 
 ## Using Git/GitHub
 
 ### Submit an Issue
 
+### Clone a Repository
+
 ### Create a Branch
-* Cloning
-* Branches
 
 ## Using X code
 
@@ -151,7 +191,7 @@ each release.
 * You can review the list of archives by selecting _Organizer_ in the _Windows_
   menu.
 
-### Formatting code
+### Formatting Code
 
 All of the Swift code in the project is formatted with the default settings
 of the [swift-format](https://github.com/apple/swift-format) command line tool.
