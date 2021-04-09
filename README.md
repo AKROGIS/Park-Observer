@@ -1,6 +1,6 @@
 # Park Observer 2.0
 
-![Park Observer 2.0 Logo](https://github.com/AKROGIS/Park-Observer/blob/master/Park%20Observer/Assets/Assets.xcassets/AppIcon.appiconset/180.png)
+![Park Observer 2.0 Logo](Park%20Observer/Assets/Assets.xcassets/AppIcon.appiconset/180.png)
 
 An iOS application for spatial data collection.
 The application is well suited for collecting the location,
@@ -24,7 +24,7 @@ the current version of iOS unless you have the most current version of XCode
 which typically requires the most current version of macOS.
 
 If you are maintaining Park Observer for the Alaska Region NPS, see the
-[NPS maintenance document](Park%20Observer/Documentation/NPS_Maintenance.md)
+[NPS maintenance document](Documentation/NPS_Maintenance.md)
 for details on publishing with the enterprise license.
 
 If you don't have an Apple Developer account, you can still build and install
@@ -33,7 +33,7 @@ Park Observer on your personal device.  You  will need an
 
   1) Clone this repo to your computer
   2) Install the ArcGIS Runtime for iOS.
-     ([Instructions](Park%20Observer/Documentation/Adding%20ArcGIS.md))
+     ([Instructions](Documentation/Adding%20ArcGIS.md))
   3) Open `Park Observer.xcodeproj` in XCode
   4) To run in a simulator, select a simulator and click the run button.
   5) To run on your personal device, follow the following instructions
