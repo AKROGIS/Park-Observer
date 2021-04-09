@@ -3,6 +3,7 @@
     "adhoc",
     "akrgis",
     "obsprot",
-    "struct"
+    "struct",
+    "versionlist"
   ]
 }

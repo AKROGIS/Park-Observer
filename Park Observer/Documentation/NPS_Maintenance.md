@@ -93,15 +93,27 @@ your work is done.
    extending the expiration date without any code changes, then bump the
    patch (3rd) number.
 4) Create an archive.
+   * This step will fail if your Apple ID is not in the Team's development
+     account. See the section on
+     [Certificates and Provisioning Profiles](#Certificates_and_Provisioning_Profiles)
+     below for details.
 5) Create an ipa
    * In the _Organizer_ window, select the archive you want to sign and publish.
    * Click the blue `Distribute App` button
    * Select `Enterprise` then `Next`
      * App Thinning: None
-     * Rebuild from Bitcode: Check
+     * Rebuild from BitCode: Either option is ok. Checked is slower, but the
+       `*.ipa` file is slightly smaller.
      * Include Manifest: Uncheck
      * Click `Next`
-   * Select `Automatically manage signing` then `Next` (You may need to authenticate)
+   * Select `Automatically manage signing` then `Next`
+     * This step will fail if you do not have the team's Developer ID private
+       key. See the section on
+       [Certificates and Provisioning Profiles](#Certificates_and_Provisioning_Profiles)
+       below for details.
+     * If this step fails with a private key installed, click `Previous` and
+       select `Manually manage signing` and select a distribution profile and
+       distribution certificate in the `Next` page.
    * Review the summary and click `Export`
      * Select a location to save the export file
      * Rename the `ipa` as `ParkObserver2.0.0.beta4.ipa` or similar
@@ -151,9 +163,34 @@ To use the team's signing certificate, you need a copy of the team's private
 key (which is in the team's password keeper), and an Apple ID that is in the
 teams Apple Enterprise Developer's Account.
 
-* Add the Apple ID to the Account in Prefernces
+* Add your Apple ID to the Accounts in XCode Preferences
+  * If your Apple ID is a member of the Enterprise Developer Program,
+    you will be able to build the repo for development and testing.
+  * If your Apple ID is NOT a member of the Enterprise Developer Program,
+    the see the [repo Readme](../Readme.md#Building) for build details.
 * Install the private key
-* Build
+  * You will need the GIS Team's private encryption key in order to sign
+    an archive (in the publishing steps above)
+  * Download the private key file `NPS_iOS_Distribution_private_key.p12` from
+    the team's password keeper on the team's network drive to the mac.
+  * Install the private key in _KeyChain_.
+    * Double click the `*.p12` file.
+    * Select `login` for the `Keychain` in the _Add Certificates_ dialog, and
+      click `Add`.
+    * Enter the password for the `*.p12` file (in the password keeper) and
+      click `OK`.
+  * **GUARD THE PRIVATE KEY AND DO NOT LOSE IT.**
+    If the private encryption key is lost, then you will need to create a new
+    one and revoke the existing signing certificate - **which will cause all
+    copies of Park Observer in the wild to stop working!**  You can then
+    create a new signing certificate with the new private key.  See
+    [Apple Developer Certificates](https://developer.apple.com/support/certificates/)
+    for more information about certificates.  Note that we are only using
+    an iOS Distribution Certificate.  We do not need any other _capabilities_
+    like _Apple Pay_ or _Push Notifications_.
+  * If the team's password keeper is lost or corrupted and that private key is
+    lost, it can be exported _KeyChain_ on any mac computer that has the private
+    key installed.
 
 ## Using Git/GitHub
 
