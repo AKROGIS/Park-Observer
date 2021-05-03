@@ -1,20 +1,70 @@
-Protocol Files -- 2.0
-=====================
+# Protocol Files -- 2.0
 
-*This document is for Park Observer 2.0.  If you are still using Park Observer 1.x
-please see [this version](Protocol_Guide_V1.html).* 
+*This document is for Park Observer 2.0.  If you are still using Park Observer
+1.x please see [this version](Protocol_Guide_V1.html).*
 
-A protocol file is required to use the Park Observer.  It provides the standard for a data collection effort,
-and defines the schema for the GIS database on the server.
-You can create your own protocol file if you follow the specification, however this is the file format is very picky,
-and it is easier (and recommended) to get help from the AKR GIS Team.
+A protocol file is required to use Park Observer.  It does the following things:
 
-This document discusses some of the considerations in making a protocol file suitable for your survey needs.
-It is not the definitive guide to exactly what is allowed in the content and
-format of a protocol file.  For that, see the [Protocol Specifications](Protocol_Specification_V2.html).
+1) Controls how the app behaves, for example is a track log required.
+2) Defines what things you can observe and what attributes you want to collect
+   for each observation.
+3) Defines how the attribute input form looks and restrictions on valid values.
+4) Defines how the observations, gps points and track logs look on the map.
 
-Basic Definition
-----------------
+You can create your own protocol file if you follow the
+[Protocol Specifications](Protocol_Specification_V2.html), however the
+requirements for creating a valid protocol file are very specific.
+It is easier (and recommended) to get help from the AKR GIS Team.
+
+This document describes the features and functions of Park Observer and where
+to affect those choices in the protocol file. To correctly implement those
+choices, see the details in the protocol specifications.
+
+## Definitions
+
+* Track log
+* Transect
+* Mission Properties
+
+* Feature
+
+  Features are defined in a protocol. A feature is the _kind_ of thing you will
+  looking for in your survey (e.g. Sheep). You can define multiple features in a
+  protocol (i.e. Sheep and Moose).  A feature can have a list of attributes that
+  define the information you want collected for each observation of a feature.
+
+* Observation
+
+  The act of observing means to record at least the kind of observation
+  (feature), time and location of something that was seen while surveying.
+  Typically an observation also includes collecting additional attributes of the
+  feature observed.
+
+* Survey
+
+  A survey is both the act of collecting observations, as well as the container
+  (file) for those observation. An empty survey file is created from a
+  protocol. Park Observer can have multiple survey files, but only one can
+  be active at a time.
+
+* Protocol
+
+  A protocol is the definition of a survey and it is contained in a protocol
+  file (*.obsprot).  This document describes protocols.  Protocols are used
+  to create surveys
+
+## Basic Protocol Properties
+
+A protocol has a name, version, and date.  These are attributes in the file
+contents that are shown to the user when browsing the list of protocols.
+The file name of the protocol is largely irrelevant, except that Park Observer
+cannot have two protocol with the same file name.
+
+When a survey is created it is given the name of the protocol. Multiple surveys
+can be created from a protocol. The survey name can be edited to distinguish
+the different surveys.
+
+
 A protocol file is defined by a name and a version.  The name and version are used to sync to the GIS database on the server,
 so the name should reflect the scope of the protocol, and the version is used to distinguish changes over time.
 
@@ -26,8 +76,7 @@ The protocol defines the list of attributes tracked during a mission (called mis
 The protocol defines the list of features (and their attributes) that are observed during a survey.
 Most survey are limited to a single feature (animal).
 
-Name and Version
-----------------
+### Name and Version
 
 A Protocol should have a unique name and version.  To avoid confusion, the file name should match the name attribute
 inside the file, but this is not required.
@@ -43,19 +92,16 @@ database schema). The world may end if you try to sync two different surveys wit
 protocol name and major version number.
 Please don't do that.
 
-Mission Properties
-------------------
+## Mission Properties
 
+## Features
 
-Features
---------
+## Attributes
 
-
-Attributes
-----------
 Attributes can be text, numbers, or boolean (true/false).
 Date/time and locations are captured automatically for all observations.
 Forms can use:
+
   * step controls (+/-) (useful for small integers)
   * switches (used for yes/no values)
   * single line text
@@ -64,8 +110,8 @@ Forms can use:
   * picklists (see discussion below)
 
 
-PickLists
----------
+### PickLists
+
   * Text vs. Integer – The underlying database type for a picklist can either be text (i.e. the text displayed in the picklist display),
   or an integer (0 for the first item in the list, 1 for the second item, etc).  The choice of integer vs. text is an important early distinction,
   as this can’t be changed later without creating a new database.  Integers are more convenient/efficient for searching, sorting, and validating;
@@ -82,8 +128,7 @@ PickLists
   * Ordering – The Items in the picklist will be ordered (top to bottom) in the order that you provided them
 
 
-Locations
----------
+## Locations
 
 What types of locations do you want to allow/require? Your choices are:
 
