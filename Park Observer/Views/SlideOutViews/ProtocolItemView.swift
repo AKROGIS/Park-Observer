@@ -32,7 +32,7 @@ struct ProtocolItemView: View {
         }.onTapGesture {
           self.infoMessage = nil
           self.errorMessage = nil
-          self.createSurvey()
+          self.createSurvey(name: info?.name ?? self.name)
         }
         Spacer()
         Button(action: { self.navigationTag = 1 }) {
@@ -64,12 +64,12 @@ struct ProtocolItemView: View {
           ActionSheet.Button.destructive(
             Text("Replace"),
             action: {
-              self.createSurveyReplace()
+              self.createSurveyReplace(name: info?.name ?? self.name)
             }),
           ActionSheet.Button.default(
             Text("Keep Both"),
             action: {
-              self.createSurveyKeepBoth()
+              self.createSurveyKeepBoth(name: info?.name ?? self.name)
             }),
           ActionSheet.Button.default(
             Text("Stop"),
@@ -84,9 +84,9 @@ struct ProtocolItemView: View {
     return "Version: \(version), Date: \(date)"
   }
 
-  private func createSurvey() {
+  private func createSurvey(name: String) {
     do {
-      let newName = try Survey.create(self.name, from: self.name, conflict: .fail)
+      let newName = try Survey.create(name, from: self.name, conflict: .fail)
       infoMessage = "Created new survey \(newName)"
     } catch {
       if (error as NSError).code == NSFileWriteFileExistsError {
@@ -97,18 +97,18 @@ struct ProtocolItemView: View {
     }
   }
 
-  private func createSurveyKeepBoth() {
+  private func createSurveyKeepBoth(name: String) {
     do {
-      let newName = try Survey.create(self.name, from: self.name, conflict: .keepBoth)
+      let newName = try Survey.create(name, from: self.name, conflict: .keepBoth)
       infoMessage = "Created new survey \(newName)"
     } catch {
       errorMessage = error.localizedDescription
     }
   }
 
-  private func createSurveyReplace() {
+  private func createSurveyReplace(name: String) {
     do {
-      let newName = try Survey.create(self.name, from: self.name, conflict: .replace)
+      let newName = try Survey.create(name, from: self.name, conflict: .replace)
       infoMessage = "Created new survey \(newName)"
     } catch {
       errorMessage = error.localizedDescription

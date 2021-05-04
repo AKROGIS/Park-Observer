@@ -133,7 +133,7 @@ extension Survey {
       let surveyProtocolURL = SurveyBundle(name: newName).protocolURL
       try FileManager.default.copyItem(at: sourceProtocolURL, to: surveyProtocolURL)
       let infoURL = SurveyBundle(name: newName).infoURL
-      let info = SurveyInfo(named: name)
+      let info = SurveyInfo(named: newName)
       try info.write(to: infoURL)
     } catch {
       try? AppFile(type: .survey, name: newName).delete()

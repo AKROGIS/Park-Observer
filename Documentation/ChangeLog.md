@@ -9,6 +9,7 @@ changes, so it has no date. The date is the date that release was published.
 ## Unpublished Changes
 
 * Removed 10 character limit on feature names in protocol file.
+* New Survey name is based on protocol name, not protocol file name.
 
 ## 2021-03-29 Beta6
 
