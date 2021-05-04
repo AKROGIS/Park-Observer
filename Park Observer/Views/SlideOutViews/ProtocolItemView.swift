@@ -59,13 +59,15 @@ struct ProtocolItemView: View {
     }.actionSheet(isPresented: $showingActionSheet) {
       ActionSheet(
         title: Text("Survey exists"),
-        message: Text("This survey already exists. Do you want to replace it with a new one?"),
+        message: Text("A survey with this name already exists. What do you want to do?"),
         buttons: [
-          ActionSheet.Button.destructive(
-            Text("Replace"),
-            action: {
-              self.createSurveyReplace(name: info?.name ?? self.name)
-            }),
+          // Omit the replace option, until we check for unsaved content in the
+          // survey, and provide a second "are you sure" warning if so.
+          // ActionSheet.Button.destructive(
+          //   Text("Replace"),
+          //   action: {
+          //     self.createSurveyReplace(name: info?.name ?? self.name)
+          //   }),
           ActionSheet.Button.default(
             Text("Keep Both"),
             action: {

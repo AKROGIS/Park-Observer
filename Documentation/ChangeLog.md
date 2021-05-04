@@ -10,6 +10,8 @@ changes, so it has no date. The date is the date that release was published.
 
 * Removed 10 character limit on feature names in protocol file.
 * New Survey name is based on protocol name, not protocol file name.
+* Remove the unsafe replace survey option until we check for unsaved content in
+  the survey, and provide a second "are you sure" warning if so.
 
 ## 2021-03-29 Beta6
 
