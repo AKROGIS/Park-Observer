@@ -33,9 +33,9 @@ A property value can also be a list of property values.
 A list begins with an opening square bracket (`[`), and ends with a closing square bracket (`]`).
 Items in the list are separated by a comma (`,`).
 
-The official specifications of the JSON file format can be found at http://www.json.org/.
+The official specifications of the JSON file format can be found at <http://www.json.org>.
 The JSON file format is very specific and it is easy to introduce errors when editing by
-hand.  There are a number of online JSON linters (e.g. https://jsonlint.com) that will
+hand.  There are a number of online JSON linters (e.g. <https://jsonlint.com>) that will
 check your protocol file to ensure it is valid JSON.  Most linters will also provide suggestions
 for how to fix invalid JSON.
 
@@ -45,10 +45,10 @@ This specification is also defined in a machine readable form in
 [`protocol.v1.schema.json`](protocol.v1.schema.json)
 and [`protocol.v2.schema.json`](protocol.v2.schema.json).
 These schemas are also JSON files in the
-[JSON Schema](http://json-schema.org/) format.
+[JSON Schema](http://json-schema.org) format.
 These schema files can be used to validate a protocol file to ensure that it is not just valid
 JSON, but meets the requirements of this specification.
-One example of an online validator is https://www.jsonschemavalidator.net.
+One example of an online validator is <https://www.jsonschemavalidator.net>.
 
 **IMPORTANT:**
 This specification and the related schema documents, define the proper format of the
@@ -314,17 +314,17 @@ A required number that identifies the type (kind) of data the attribute stores.
 The type must be an integer code with the following definitions.
 These numbers (with the exception of 0) correspond with NSAttributeType in the iOS SDK.
 
--   0 -> sequential integer id (not editable, only available in v2)
--	100 -> 16bit integer
--	200 -> 32bit integer
--	300 -> 64bit integer
--	400 -> NSDecimal (currently not supported by esri)
--	500 -> double precision floating point number
--	600 -> single precision floating point number
--	700 -> string
--	800 -> boolean (converts to an esri integer; true => 1, false =>  0)
--	900 -> DateTime
--	1000 -> binary blob (not supported)
+* 0 -> sequential integer id (not editable, only available in v2)
+* 100 -> 16bit integer
+* 200 -> 32bit integer
+* 300 -> 64bit integer
+* 400 -> NSDecimal (currently not supported by esri)
+* 500 -> double precision floating point number
+* 600 -> single precision floating point number
+* 700 -> string
+* 800 -> boolean (converts to an esri integer; true => 1, false =>  0)
+* 900 -> DateTime
+* 1000 -> binary blob (not supported)
 
 The type 0 is ignored in versions of Park Observer before 0.9.8.
 Only one attribute can have a type of 0.
@@ -1122,7 +1122,7 @@ JSON object as described in the
 
 The minimal text symbol is:
 
-```
+```json
 {
   "type": "esriTS"
 }
@@ -1130,7 +1130,7 @@ The minimal text symbol is:
 
 Which comes with the following default values:
 
-```
+```json
 "color": [0, 0, 0, 255]          // opaque black
 "backgroundColor": [0, 0, 0, 0]  // transparent black
 "borderLineSize": 0.0
@@ -1156,7 +1156,7 @@ Which comes with the following default values:
 The runtime SDK has the following text symbol properties
 that cannot be set in JSON but have the following defaults:
 
-```
+```json
 "angleAlignment": "AGSMarkerSymbolAngleAlignmentScreen"
 "leaderOffsetX": 0.0
 "leaderOffsetY": 0.0
@@ -1165,7 +1165,7 @@ that cannot be set in JSON but have the following defaults:
 
 The following documented text symbol property is supported in the Runtime SDK
 
-```
+```json
 "rightToLeft": false
 ```
 
@@ -1181,17 +1181,17 @@ Runtime defines additional JSON properties that are not included in the Web map
 specification. Refer to the
 [JSON label class properties](https://developers.arcgis.com/ios/latest/swift/guide/json-label-class-properties.htm) topic for a description of the available properties, their expected values, and
 the defaults used for each."
-from https://developers.arcgis.com/ios/latest/swift/guide/add-labels.htm
+from <https://developers.arcgis.com/ios/latest/swift/guide/add-labels.htm>
 
 Additional references:
-https://developers.arcgis.com/documentation/common-data-types/labeling-objects.htm
-and https://developers.arcgis.com/ios/latest/api-reference/interface_a_g_s_label_definition.html
+<https://developers.arcgis.com/documentation/common-data-types/labeling-objects.htm>
+and <https://developers.arcgis.com/ios/latest/api-reference/interface_a_g_s_label_definition.html>
 
 A simple example which labels the feature with the id number if it is greater than 10.
 Using the default text symbol (see above), and the default labeling properties
 (see references)
 
-```
+```json
 {
   "labelExpression": "[id]",
   "where": "id > 10"
@@ -1200,7 +1200,7 @@ Using the default text symbol (see above), and the default labeling properties
 
 Using Arcade which labels the feature with the capitalized first letter of the name.
 
-```
+```json
 {
   "labelExpressionInfo": {"expression": "Upper(Left($feature.name, 1))"}
 }
@@ -1208,7 +1208,7 @@ Using Arcade which labels the feature with the capitalized first letter of the n
 
 Using a simple expression to concatenate multiple values with static text and a newline.  A test symbol is used to increase the font size.
 
-```
+```json
 {
   "labelExpression":  "\"Name: \" CONCAT [name] CONCAT NEWLINE CONCAT \"id: \" CONCAT [id]",
   "symbol": { "type": "esriTS", "font": {"size": 18} }
@@ -1230,7 +1230,7 @@ Each renderer has a `type` property which is required and must be one of
 
 The minimal simple renderer is:
 
-```
+```json
 {
   "type": "simple"
 }
@@ -1238,7 +1238,7 @@ The minimal simple renderer is:
 
 Which comes with the following default values:
 
-```
+```json
 "symbol": null
 "label": ""
 "description": ""
@@ -1249,11 +1249,11 @@ Which comes with the following default values:
 This renderer is useless, as it has no symbol.  An appropriate symbol (as discussed below)
 needs to be provided to match the geometry of the feature being symbolized.
 
-### Unique Value Renderer:
+### Unique Value Renderer
 
 Similarly, the minimal (although useless) unique value renderer is:
 
-```
+```json
 {
   "type": "uniqueValue"
 }
@@ -1261,7 +1261,7 @@ Similarly, the minimal (although useless) unique value renderer is:
 
 Which comes with the following default values:
 
-```
+```json
 "field1": null
 "field2": null
 "field3": null
@@ -1275,7 +1275,7 @@ Which comes with the following default values:
 
 A more useful example is:
 
-```
+```json
 {
   "type": "uniqueValue",
   "field1": "name",
@@ -1300,7 +1300,7 @@ A more useful example is:
 
 The defaults in this case are:
 
-```
+```json
 "field3": null
 "defaultLabel": ""
 "rotationType": "geographic"
@@ -1309,7 +1309,7 @@ The defaults in this case are:
 
 And for each item in the `uniqueValueInfos` list the defaults are
 
-```
+```json
 "label": ""
 "description": ""
 ```
@@ -1319,11 +1319,11 @@ of fields used. If more than 1 field is used, then `fieldDelimiter` is required 
 be included in the `uniqueValueInfos.value` string to separate the values.  There must
 be same number of values in the `uniqueValueInfos.value` string as there are fields defined.
 
-### Class Breaks Renderer:
+### Class Breaks Renderer
 
 Similarly, the minimal valid (although useless) class breaks renderer is:
 
-```
+```json
 {
   "type": "classBreaks"
 }
@@ -1331,7 +1331,7 @@ Similarly, the minimal valid (although useless) class breaks renderer is:
 
 This has the following defaults:
 
-```
+```json
 "field": null
 "classificationMethod": "esriClassifyManual"
 "normalizationType": "esriNormalizeNone"
@@ -1346,7 +1346,7 @@ This has the following defaults:
 "classBreakInfos": []
 ```
 
-While not defined in https://developers.arcgis.com/documentation/common-data-types/renderer-objects.htm
+While not defined in <https://developers.arcgis.com/documentation/common-data-types/renderer-objects.htm>
 the known classification methods in the SDK are listed here.
 Only `esriClassifyManual` (the default) is mentioned in the documentation.
 
@@ -1360,7 +1360,7 @@ Only `esriClassifyManual` (the default) is mentioned in the documentation.
 
 A more useful minimal example is:
 
-```
+```json
 {
   "type": "classBreaks",
   "field": "age",
@@ -1378,7 +1378,7 @@ A more useful minimal example is:
 
 The defaults in this case are:
 
-```
+```json
 "classificationMethod": "esriClassifyManual"
 "normalizationType": "esriNormalizeNone"
 "normalizationField": null
@@ -1391,7 +1391,7 @@ The defaults in this case are:
 
 And for each item in the `classBreakInfos` list the defaults are
 
-```
+```json
 "classMinValue": null (NaN)
 "label": ""
 "description": ""
@@ -1408,7 +1408,7 @@ and the [Runtime SDK Documentation](https://developers.arcgis.com/documentation/
 
 The minimal simple marker symbol (for points) is:
 
-```
+```json
 {
   "type": "esriSMS"
 }
@@ -1416,7 +1416,7 @@ The minimal simple marker symbol (for points) is:
 
 Which comes with the following default values:
 
-```
+```json
 "style": "esriSMSCircle"
 "color":  [211, 211, 211, 255] // Light Gray (82% white); Opaque
 "outline": null
@@ -1428,7 +1428,7 @@ Which comes with the following default values:
 
 With a minimal outline, it is:
 
-```
+```json
 {
   "type": "esriSMS",
   "outline": {}
@@ -1437,7 +1437,7 @@ With a minimal outline, it is:
 
 The `outline` object comes with the following default values:
 
-```
+```json
 "color": [211, 211, 211, 255] // Light Gray (82% white); Opaque
 "style": "esriSLSSolid"
 "width": 1.0
@@ -1446,7 +1446,7 @@ The `outline` object comes with the following default values:
 The runtime SDK has the following simple marker symbol properties
 that cannot be set in JSON but have the following defaults:
 
-```
+```json
 "angleAlignment": "AGSMarkerSymbolAngleAlignmentScreen"
 "leaderOffsetX": 0.0
 "leaderOffsetY": 0.0
@@ -1457,7 +1457,7 @@ that cannot be set in JSON but have the following defaults:
 
 The minimal simple line symbol is:
 
-```
+```json
 {
   "type": "esriSLS"
 }
@@ -1465,7 +1465,7 @@ The minimal simple line symbol is:
 
 Which comes with the following default values:
 
-```
+```json
 "color": [211, 211, 211, 255] // Light Gray (82% white); Opaque
 "style": "esriSLSSolid"
 "width": 1.0
@@ -1474,7 +1474,7 @@ Which comes with the following default values:
 The runtime SDK has the following simple line symbol properties
 that cannot be set in JSON but have the following defaults:
 
-```
+```json
 "antialias": false
 "markerPlacement": "AGSSimpleLineSymbolMarkerPlacementEnd"
 "markerStyle": "AGSSimpleLineSymbolMarkerStyleNone"
@@ -1484,7 +1484,7 @@ that cannot be set in JSON but have the following defaults:
 
 The minimal picture marker symbol is:
 
-```
+```json
 {
 "type": "esriPMS"
 }
@@ -1498,7 +1498,7 @@ must be available when running the app, or the image will not display.
 
 The minimal picture marker symbol comes with the following default values:
 
-```
+```json
 "url": ""
 "imageData": ""
 "contentType": ""
@@ -1512,7 +1512,7 @@ The minimal picture marker symbol comes with the following default values:
 The runtime SDK has the following simple line symbol properties
 that cannot be set in JSON but have the following defaults:
 
-```
+```json
 "angleAlignment": "AGSMarkerSymbolAngleAlignmentScreen"
 "leaderOffsetX": 0.0
 "leaderOffsetY": 0.0
