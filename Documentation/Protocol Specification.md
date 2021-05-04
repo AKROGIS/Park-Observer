@@ -464,6 +464,9 @@ This property sets the default value for the `"QBooleanElement"`. It is ignored 
 Protocol authors are discouraged from using this property to set an initial value,
 see the discussion for [`selected`](#-dialog-section-element-selected-).
 
+Prior to Park Observer 2.0.0, boolean values could not be null, and the default
+was true (1).
+
 ##### `dialog.section.element.minimumValue`
 This property is optional.  If provided it must be a number.
 This is the minimum value allowed in `"QIntegerElement"` or `"QDecimalElement"`.
