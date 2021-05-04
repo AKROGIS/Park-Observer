@@ -1,5 +1,10 @@
 # Protocol Files -- 2.0
 
+#############
+Revise this document.  It should:
+Describe app interface, and how to control it with the protocol file.
+#############
+
 *This document is for Park Observer 2.0.  If you are still using Park Observer
 1.x please see [this version](Protocol_Guide_V1.html).*
 
