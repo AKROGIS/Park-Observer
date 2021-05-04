@@ -6,7 +6,7 @@ This is a user facing summary for publishing on the website.  Newest changes
 are at the top. The first group is always the current list of unpublished
 changes, so it has no date. The date is the date that release was published.
 
-## Unpublished Changes
+## 2021-05-03 2.0.0 (Beta is over!)
 
 * Removed 10 character limit on feature names in protocol file.
 * New Survey name is based on protocol name, not protocol file name.
