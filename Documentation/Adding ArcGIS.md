@@ -31,6 +31,11 @@ however do not add it to the repo as it contains a 500MB+ binary file.
 to the value that you see in your
 [licensing page](https://developers.arcgis.com/ios/license-and-deployment/license/#license-string)
 (You will need to be logged in the the esri developer site).
+3) Create a new basemap API Key on
+[your APIkey page](https://developers.arcgis.com/api-keys)
+(while logged in) and replace
+[the existing key](https://github.com/AKROGIS/Park-Observer/blob/90ea7999d958add14e77c8245c6fc42ecb6c3e16/Park%20Observer/Utilities/LicenseManager.swift#L26-L28)
+with yours.
 
 The following steps have already been done for this project, but you
 would need to do them for a new project.  It is possible that you may
