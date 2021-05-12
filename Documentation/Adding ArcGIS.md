@@ -32,7 +32,7 @@ to the value that you see in your
 [licensing page](https://developers.arcgis.com/ios/license-and-deployment/license/#license-string)
 (You will need to be logged in the the esri developer site).
 3) Create a new basemap API Key on
-[your APIkey page](https://developers.arcgis.com/api-keys)
+[your API Key page](https://developers.arcgis.com/api-keys)
 (while logged in) and replace
 [the existing key](https://github.com/AKROGIS/Park-Observer/blob/90ea7999d958add14e77c8245c6fc42ecb6c3e16/Park%20Observer/Utilities/LicenseManager.swift#L26-L28)
 with yours.
