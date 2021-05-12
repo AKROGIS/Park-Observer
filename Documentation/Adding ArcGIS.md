@@ -29,7 +29,7 @@ however do not add it to the repo as it contains a 500MB+ binary file.
 2) Change the
 [runtime lite license string](https://github.com/AKROGIS/Park-Observer/blob/90ea7999d958add14e77c8245c6fc42ecb6c3e16/Park%20Observer/Utilities/LicenseManager.swift#L17)
 to the value that you see in your
-[licenseing page](https://developers.arcgis.com/ios/license-and-deployment/license/#license-string)
+[licensing page](https://developers.arcgis.com/ios/license-and-deployment/license/#license-string)
 (You will need to be logged in the the esri developer site).
 
 The following steps have already been done for this project, but you
