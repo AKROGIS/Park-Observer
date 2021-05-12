@@ -26,6 +26,11 @@ i.e. `ln -s ArcGIS_100.10.0 ArcGIS`. You also need to rename
 `${HOME}/Library/Application Support/AGSiOSRuntimeSDK`.
 You could also copy the framework from another computer that has it,
 however do not add it to the repo as it contains a 500MB+ binary file.
+2) Change the
+[runtime license code](https://github.com/AKROGIS/Park-Observer/blob/90ea7999d958add14e77c8245c6fc42ecb6c3e16/Park%20Observer/Utilities/LicenseManager.swift#L17)
+to the value that you see in your
+[licenseing page](https://developers.arcgis.com/ios/license-and-deployment/license/)
+(You will need to be logged in the the esri developer site).
 
 The following steps have already been done for this project, but you
 would need to do them for a new project.  It is possible that you may
