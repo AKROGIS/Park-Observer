@@ -145,6 +145,9 @@ class SurveyController: NSObject, ObservableObject {
   let locationManager = CLLocationManager()
   var touchDelegate: MapViewTouchDelegate? = nil
 
+  // provide a public check for a critical private variable
+  var hasSurvey: Bool { return survey != nil }
+  
   private var survey: Survey? = nil {
     didSet {
       updateMapReference()

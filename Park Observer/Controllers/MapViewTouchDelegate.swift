@@ -48,6 +48,9 @@ class MapViewTouchDelegate: NSObject, AGSGeoViewTouchDelegate {
 
   func geoView(_ geoView: AGSGeoView, didTapAtScreenPoint screenPoint: CGPoint, mapPoint: AGSPoint)
   {
+    // Ignore all map touches if we don't have a survey
+    guard surveyController.hasSurvey else { return }
+
     //Priority:
     // 1) Move to tap (if requested)
     // 2) Select feature for review/edit (if tap hits observation(s))
