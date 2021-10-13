@@ -8,8 +8,6 @@
 
 /* Begin PBXBuildFile section */
 		5907D9722506D23500E92E43 /* MapReferenceTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5907D9712506D23500E92E43 /* MapReferenceTests.swift */; };
-		59269AF925D1FABB00D3526C /* ArcGIS.xcframework in Frameworks */ = {isa = PBXBuildFile; fileRef = 59269AF825D1FABB00D3526C /* ArcGIS.xcframework */; };
-		59269AFA25D1FABB00D3526C /* ArcGIS.xcframework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 59269AF825D1FABB00D3526C /* ArcGIS.xcframework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		59269B0025D1FCCE00D3526C /* ArcGIS.xcframework in Frameworks */ = {isa = PBXBuildFile; fileRef = 59269AF825D1FABB00D3526C /* ArcGIS.xcframework */; };
 		5930420E2620D5830064F5EE /* Sample.obsprot in Resources */ = {isa = PBXBuildFile; fileRef = 593042032620D5830064F5EE /* Sample.obsprot */; };
 		5935172924A68A8800A4CD45 /* OnlineBaseMaps.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5935172824A68A8800A4CD45 /* OnlineBaseMaps.swift */; };
@@ -46,6 +44,7 @@
 		59C8283224DB40FC0082BED2 /* ActivityIndicatorView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 59C8283124DB40FC0082BED2 /* ActivityIndicatorView.swift */; };
 		59C8283424DB7E1D0082BED2 /* AlarmView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 59C8283324DB7E1D0082BED2 /* AlarmView.swift */; };
 		59CAA5BD2502FDCB00491A94 /* MessagesView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 59CAA5BC2502FDCB00491A94 /* MessagesView.swift */; };
+		59FEB9DF2717563A00C049E5 /* ArcGIS in Frameworks */ = {isa = PBXBuildFile; productRef = 59FEB9DE2717563A00C049E5 /* ArcGIS */; };
 		7401743A24CB82010005555E /* TotalizerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7401743924CB82010005555E /* TotalizerView.swift */; };
 		7401743C24CB83850005555E /* Totalizer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7401743B24CB83850005555E /* Totalizer.swift */; };
 		740D5AC1246DB3420018A684 /* Legacy Archives in Resources */ = {isa = PBXBuildFile; fileRef = 740D5AC0246DB3420018A684 /* Legacy Archives */; };
@@ -145,7 +144,6 @@
 			dstPath = "";
 			dstSubfolderSpec = 10;
 			files = (
-				59269AFA25D1FABB00D3526C /* ArcGIS.xcframework in Embed Frameworks */,
 			);
 			name = "Embed Frameworks";
 			runOnlyForDeploymentPostprocessing = 0;
@@ -286,8 +284,8 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				59269AF925D1FABB00D3526C /* ArcGIS.xcframework in Frameworks */,
 				749FD68E246B99AE001FB182 /* Zip in Frameworks */,
+				59FEB9DF2717563A00C049E5 /* ArcGIS in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -620,6 +618,7 @@
 			name = "Park Observer";
 			packageProductDependencies = (
 				749FD68D246B99AE001FB182 /* Zip */,
+				59FEB9DE2717563A00C049E5 /* ArcGIS */,
 			);
 			productName = "Park Observer";
 			productReference = 747165E8243C37A800A9C960 /* Park Observer.app */;
@@ -695,6 +694,7 @@
 			mainGroup = 747165DF243C37A800A9C960;
 			packageReferences = (
 				749FD68C246B99AE001FB182 /* XCRemoteSwiftPackageReference "Zip" */,
+				59FEB9DD2717563A00C049E5 /* XCRemoteSwiftPackageReference "arcgis-runtime-ios" */,
 			);
 			productRefGroup = 747165E9243C37A800A9C960 /* Products */;
 			projectDirPath = "";
@@ -1172,6 +1172,14 @@
 /* End XCConfigurationList section */
 
 /* Begin XCRemoteSwiftPackageReference section */
+		59FEB9DD2717563A00C049E5 /* XCRemoteSwiftPackageReference "arcgis-runtime-ios" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/esri/arcgis-runtime-ios";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 100.0.0;
+			};
+		};
 		749FD68C246B99AE001FB182 /* XCRemoteSwiftPackageReference "Zip" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/marmelroy/Zip.git";
@@ -1183,6 +1191,11 @@
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
+		59FEB9DE2717563A00C049E5 /* ArcGIS */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 59FEB9DD2717563A00C049E5 /* XCRemoteSwiftPackageReference "arcgis-runtime-ios" */;
+			productName = ArcGIS;
+		};
 		749FD68D246B99AE001FB182 /* Zip */ = {
 			isa = XCSwiftPackageProductDependency;
 			package = 749FD68C246B99AE001FB182 /* XCRemoteSwiftPackageReference "Zip" */;
