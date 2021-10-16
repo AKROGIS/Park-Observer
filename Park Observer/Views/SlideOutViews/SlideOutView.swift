@@ -50,7 +50,7 @@ struct SlideOutView: View {
         }
         .frame(width: width)
         .offset(x: self.surveyController.slideOutMenuVisible ? 0 : -1 * width)
-        .animation(.default)
+        .animation(.default, value: self.surveyController.slideOutMenuVisible)
         Spacer()
       }
       .onAppear {
