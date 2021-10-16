@@ -89,8 +89,6 @@ These bugs create errors in stored data.
 
 These bugs limit required functionality.
 
-* Deprecation warning for locationManager authorization status in iOS14.
-* Deprecation warning for testing in iOS14
 * A specific attribute survey crashes app (EXC_BAD_ACCESS) in apple core data code when closing survey
     I can still load it, edit it and save it without problem.
 
