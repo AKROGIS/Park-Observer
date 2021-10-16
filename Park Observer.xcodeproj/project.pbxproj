@@ -8,7 +8,6 @@
 
 /* Begin PBXBuildFile section */
 		5907D9722506D23500E92E43 /* MapReferenceTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5907D9712506D23500E92E43 /* MapReferenceTests.swift */; };
-		59269B0025D1FCCE00D3526C /* ArcGIS.xcframework in Frameworks */ = {isa = PBXBuildFile; fileRef = 59269AF825D1FABB00D3526C /* ArcGIS.xcframework */; };
 		5930420E2620D5830064F5EE /* Sample.obsprot in Resources */ = {isa = PBXBuildFile; fileRef = 593042032620D5830064F5EE /* Sample.obsprot */; };
 		5935172924A68A8800A4CD45 /* OnlineBaseMaps.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5935172824A68A8800A4CD45 /* OnlineBaseMaps.swift */; };
 		5935172B24AAFC3700A4CD45 /* SurveyController+MapViewDrawing.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5935172A24AAFC3700A4CD45 /* SurveyController+MapViewDrawing.swift */; };
@@ -293,7 +292,6 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				59269B0025D1FCCE00D3526C /* ArcGIS.xcframework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
