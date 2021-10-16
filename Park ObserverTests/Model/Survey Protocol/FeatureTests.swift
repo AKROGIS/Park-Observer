@@ -204,28 +204,6 @@ class FeatureTests: XCTestCase {
     XCTAssertNil(json)  // Failed parsing; JSON is invalid
   }
 
-  func testFeatureNameBadLong() {
-    // Given:
-    struct TestJson: Codable {
-      let feature: Feature
-    }
-    let jsonData = Data(
-      """
-      {
-        "feature": {
-          "name": "B1234567890",
-          "locations": [{"type": "gps"}]
-        }
-      }
-      """.utf8)
-
-    // When:
-    let json = try? JSONDecoder().decode(TestJson.self, from: jsonData)
-
-    // Then:
-    XCTAssertNil(json)  // Failed parsing; JSON is invalid
-  }
-
   func testFeatureAttributesInvalid() {
     // Given:
     struct TestJson: Codable {
