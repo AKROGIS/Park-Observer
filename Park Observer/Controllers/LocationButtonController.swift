@@ -65,7 +65,8 @@ class LocationButtonController: ObservableObject {
   func restoreState() {
     showLocation = Defaults.mapLocationDisplay.readBool()
     autoPanMode = Defaults.mapAutoPanMode.readMapAutoPanMode()
-    authorized = Authorized(from: CLLocationManager.authorizationStatus())
+    // We do not restore authorized here; it will get set during init
+    // by the CL delegate in hookupMapView()
   }
 
   func saveState() {
@@ -148,6 +149,9 @@ class LocationButtonController: ObservableObject {
       _ manager: CLLocationManager,
       didChangeAuthorization status: CLAuthorizationStatus
     ) {
+      // Per the docs, this will get called when the CLLocationManager is created
+      // so we can set the restore the initial autorization state during init
+      // print("LocationButtonController got authorization status")
       controller?.authorized = Authorized(from: status)
     }
   }
