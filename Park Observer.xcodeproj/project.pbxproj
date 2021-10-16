@@ -1176,8 +1176,8 @@
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/esri/arcgis-runtime-ios";
 			requirement = {
-				kind = upToNextMajorVersion;
-				minimumVersion = 100.0.0;
+				kind = upToNextMinorVersion;
+				minimumVersion = 100.12.0;
 			};
 		};
 		749FD68C246B99AE001FB182 /* XCRemoteSwiftPackageReference "Zip" */ = {
