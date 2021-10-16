@@ -89,7 +89,7 @@ class SurveyTests: XCTestCase {
 
   func testCreateNewSurvey() {
     // Given:
-    let surveyName = "My <Survey>"
+    let surveyName = "My Survey"
     let protocolName = "My Protocol"
     let protocolUrl = AppFile(type: .surveyProtocol, name: protocolName).url
     // Protocol file content is not checked during creation
@@ -160,7 +160,7 @@ class SurveyTests: XCTestCase {
 
   func testCreateNewSurveyConflictFail() {
     // Given:
-    let surveyName = "My <Survey>"
+    let surveyName = "My Survey"
     let protocolName = "My Protocol"
     let protocolUrl = AppFile(type: .surveyProtocol, name: protocolName).url
     // Protocol file content is not checked during creation
@@ -192,7 +192,7 @@ class SurveyTests: XCTestCase {
 
   func testCreateNewSurveyConflictKeepBoth() {
     // Given:
-    let surveyName = "My <Survey>"
+    let surveyName = "My Survey"
     let protocolName = "My Protocol"
     let protocolUrl = AppFile(type: .surveyProtocol, name: protocolName).url
     // Protocol file content is not checked during creation
