@@ -5,6 +5,7 @@
 //  Created by Regan Sarwas on 7/28/20.
 //  Copyright © 2020 Alaska Region GIS Team. All rights reserved.
 //
+//  ALS 05/26/2022- Increase distance limitation from 1000 to 10000; immediate need from GLBA
 
 import SwiftUI  // For Binding
 
@@ -125,9 +126,10 @@ extension AngleDistanceFormDefinition {
   }
 
   var distanceCaption: String? {
-    "Range: 1..1000"
+    // ALS 05/26/2022- Updated from 1000 to 10000
+    "Range: 1..10000"
     // For debugging
-    //"Range: 0..1000 (DB:\(self.location.distance) meters)"
+    //"Range: 0..10000 (DB:\(self.location.distance) meters)"
   }
 
   var distanceError: String? {
@@ -141,7 +143,8 @@ extension AngleDistanceFormDefinition {
   var distanceFormatter: NumberFormatter {
     let formatter = NumberFormatter()
     formatter.minimum = 0
-    formatter.maximum = 1000
+    // ALS 05/26/2022- Updated from 1000 to 10000
+    formatter.maximum = 10000
     formatter.maximumFractionDigits = 0
     return formatter
   }
