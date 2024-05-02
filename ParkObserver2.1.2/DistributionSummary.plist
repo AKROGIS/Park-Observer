@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>Park Observer.ipa</key>
+	<array>
+		<dict>
+			<key>architectures</key>
+			<array>
+				<string>arm64</string>
+			</array>
+			<key>certificate</key>
+			<dict>
+				<key>SHA1</key>
+				<string>AD648661F2E82C764CF7EC0C172F1248DC16564A</string>
+				<key>dateExpires</key>
+				<string>5/2/27</string>
+				<key>type</key>
+				<string>iOS Distribution</string>
+			</dict>
+			<key>embeddedBinaries</key>
+			<array>
+				<dict>
+					<key>architectures</key>
+					<array>
+						<string>arm64</string>
+					</array>
+					<key>certificate</key>
+					<dict>
+						<key>SHA1</key>
+						<string>AD648661F2E82C764CF7EC0C172F1248DC16564A</string>
+						<key>dateExpires</key>
+						<string>5/2/27</string>
+						<key>type</key>
+						<string>iOS Distribution</string>
+					</dict>
+					<key>name</key>
+					<string>ArcGIS.framework</string>
+					<key>team</key>
+					<dict>
+						<key>id</key>
+						<string>F3CMMML9FD</string>
+						<key>name</key>
+						<string>National Park Service</string>
+					</dict>
+				</dict>
+			</array>
+			<key>entitlements</key>
+			<dict>
+				<key>application-identifier</key>
+				<string>F3CMMML9FD.gov.nps.akro.Park-Observer</string>
+				<key>com.apple.developer.team-identifier</key>
+				<string>F3CMMML9FD</string>
+				<key>get-task-allow</key>
+				<false/>
+				<key>keychain-access-groups</key>
+				<array>
+					<string>F3CMMML9FD.gov.nps.akro.Park-Observer</string>
+				</array>
+			</dict>
+			<key>name</key>
+			<string>Park Observer.app</string>
+			<key>profile</key>
+			<dict>
+				<key>UUID</key>
+				<string>c16bcb25-4013-41dc-a769-43f575fc473a</string>
+				<key>name</key>
+				<string>iOS Team Inhouse Provisioning Profile: gov.nps.akro.Park-Observer</string>
+			</dict>
+			<key>team</key>
+			<dict>
+				<key>id</key>
+				<string>F3CMMML9FD</string>
+				<key>name</key>
+				<string>National Park Service</string>
+			</dict>
+		</dict>
+	</array>
+</dict>
+</plist>
